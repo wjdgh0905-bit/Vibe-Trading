@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>melange.tattoo — 타투 스튜디오</title>
+    <meta
+      name="description"
+      data-i18n="meta.description"
+      content="melange.tattoo — 파인라인과 블랙워크를 블렌딩하는 타투 스튜디오. 포트폴리오 감상과 예약 문의."
+    />
+    <meta name="theme-color" content="#0d0c0b" />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="melange.tattoo" />
+    <meta property="og:description" content="파인라인과 블랙워크를 블렌딩하는 타투 스튜디오." />
+    <meta property="og:type" content="website" />
+
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+
+  <body>
+    <a class="skip-link" href="#main" data-i18n="a11y.skip">본문 바로가기</a>
+
+    <!-- ===================== Header / Nav ===================== -->
+    <header class="site-header" id="siteHeader">
+      <div class="container header-inner">
+        <a class="brand" href="#hero" aria-label="melange.tattoo home">
+          <span class="brand-mark" aria-hidden="true"></span>
+          <span class="brand-text">melange<span class="brand-dot">.</span>tattoo</span>
+        </a>
+
+        <nav class="nav" id="primaryNav" aria-label="Primary">
+          <a href="#about" class="nav-link" data-i18n="nav.about">소개</a>
+          <a href="#gallery" class="nav-link" data-i18n="nav.gallery">갤러리</a>
+          <a href="#booking" class="nav-link" data-i18n="nav.booking">예약</a>
+          <button
+            class="lang-toggle"
+            id="langToggle"
+            type="button"
+            aria-label="Switch language"
+          >
+            <span class="lang-opt" data-lang="ko">KO</span>
+            <span class="lang-sep">/</span>
+            <span class="lang-opt" data-lang="en">EN</span>
+          </button>
+        </nav>
+
+        <button
+          class="nav-toggle"
+          id="navToggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="primaryNav"
+          aria-label="Menu"
+        >
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </header>
+
+    <main id="main">
+      <!-- ===================== Hero ===================== -->
+      <section class="hero" id="hero">
+        <div class="hero-bg" aria-hidden="true"></div>
+        <div class="container hero-inner">
+          <p class="hero-eyebrow" data-i18n="hero.eyebrow">Seoul · Tattoo Studio</p>
+          <h1 class="hero-title">
+            <span data-i18n="hero.title1">경계를 흐리는</span><br />
+            <span class="italic" data-i18n="hero.title2">한 점의 블렌드</span>
+          </h1>
+          <p class="hero-sub" data-i18n="hero.sub">
+            파인라인과 블랙워크 사이, 당신의 이야기를 피부 위에 조율합니다.
+          </p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#booking" data-i18n="hero.cta">예약 문의</a>
+            <a class="btn btn-ghost" href="#gallery" data-i18n="hero.cta2">작업 보기</a>
+          </div>
+        </div>
+        <a class="scroll-cue" href="#about" aria-label="scroll">
+          <span data-i18n="hero.scroll">아래로</span>
+        </a>
+      </section>
+
+      <!-- ===================== About ===================== -->
+      <section class="section about" id="about">
+        <div class="container about-grid">
+          <div class="about-visual" aria-hidden="true">
+            <div class="about-frame ph ph-1"></div>
+          </div>
+          <div class="about-copy">
+            <p class="section-eyebrow" data-i18n="about.eyebrow">About</p>
+            <h2 class="section-title" data-i18n="about.title">멜란지, 섞이는 것들의 미학</h2>
+            <p class="lead" data-i18n="about.lead">
+              melange는 &lsquo;혼합&rsquo;이라는 뜻입니다. 서로 다른 결의 선과 면, 빛과 어둠을
+              한 사람의 피부 위에서 조율해 온전한 하나의 이야기를 새깁니다.
+            </p>
+            <p data-i18n="about.body">
+              작은 파인라인부터 깊이 있는 블랙워크까지, 도안은 상담에서 시작됩니다. 유행이 아니라
+              당신에게 오래 남을 그림을 함께 찾습니다. 위생과 안전을 최우선으로, 1:1 예약제로
+              운영합니다.
+            </p>
+            <ul class="feature-list">
+              <li>
+                <span class="feature-k" data-i18n="about.f1k">스타일</span>
+                <span class="feature-v" data-i18n="about.f1v">파인라인 · 블랙워크 · 레터링</span>
+              </li>
+              <li>
+                <span class="feature-k" data-i18n="about.f2k">방식</span>
+                <span class="feature-v" data-i18n="about.f2v">1:1 완전 예약제 · 커스텀 도안</span>
+              </li>
+              <li>
+                <span class="feature-k" data-i18n="about.f3k">위치</span>
+                <span class="feature-v" data-i18n="about.f3v">서울 · 예약 시 상세 안내</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== Gallery ===================== -->
+      <section class="section gallery" id="gallery">
+        <div class="container">
+          <div class="section-head center">
+            <p class="section-eyebrow" data-i18n="gallery.eyebrow">Portfolio</p>
+            <h2 class="section-title" data-i18n="gallery.title">작업 갤러리</h2>
+            <p class="section-desc" data-i18n="gallery.desc">
+              이미지를 눌러 크게 볼 수 있습니다. 실제 작업물로 교체하려면 README를 참고하세요.
+            </p>
+          </div>
+
+          <div class="gallery-grid" id="galleryGrid">
+            <!-- Tiles injected by script.js -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== Booking / Contact ===================== -->
+      <section class="section booking" id="booking">
+        <div class="container booking-grid">
+          <div class="booking-intro">
+            <p class="section-eyebrow" data-i18n="booking.eyebrow">Booking</p>
+            <h2 class="section-title" data-i18n="booking.title">예약 &amp; 문의</h2>
+            <p class="lead" data-i18n="booking.lead">
+              원하는 위치, 크기, 레퍼런스를 알려주시면 24시간 이내에 답변드립니다.
+            </p>
+
+            <ul class="contact-list">
+              <li>
+                <span class="contact-k" data-i18n="booking.c1k">인스타그램</span>
+                <a class="contact-v" href="https://instagram.com/melange.tattoo" target="_blank" rel="noopener">@melange.tattoo</a>
+              </li>
+              <li>
+                <span class="contact-k" data-i18n="booking.c2k">카카오톡</span>
+                <a class="contact-v" href="#" data-i18n="booking.c2v">채널 아이디: melange</a>
+              </li>
+              <li>
+                <span class="contact-k" data-i18n="booking.c3k">이메일</span>
+                <a class="contact-v" href="mailto:hello@melange.tattoo">hello@melange.tattoo</a>
+              </li>
+              <li>
+                <span class="contact-k" data-i18n="booking.c4k">운영</span>
+                <span class="contact-v" data-i18n="booking.c4v">화–일 12:00–20:00 · 완전 예약제</span>
+              </li>
+            </ul>
+          </div>
+
+          <form class="booking-form" id="bookingForm" novalidate>
+            <div class="field">
+              <label for="f-name" data-i18n="form.name">이름 / 활동명</label>
+              <input id="f-name" name="name" type="text" autocomplete="name" required />
+              <span class="err" data-err-for="name"></span>
+            </div>
+
+            <div class="field">
+              <label for="f-contact" data-i18n="form.contact">연락처 (인스타 / 이메일 / 전화)</label>
+              <input id="f-contact" name="contact" type="text" required />
+              <span class="err" data-err-for="contact"></span>
+            </div>
+
+            <div class="field-row">
+              <div class="field">
+                <label for="f-part" data-i18n="form.part">부위</label>
+                <input id="f-part" name="part" type="text" data-i18n-ph="form.part_ph" placeholder="예: 팔 안쪽" />
+              </div>
+              <div class="field">
+                <label for="f-size" data-i18n="form.size">대략 크기</label>
+                <input id="f-size" name="size" type="text" data-i18n-ph="form.size_ph" placeholder="예: 10cm" />
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="f-date" data-i18n="form.date">희망 날짜</label>
+              <input id="f-date" name="date" type="date" />
+            </div>
+
+            <div class="field">
+              <label for="f-desc" data-i18n="form.desc">시안 설명 / 레퍼런스</label>
+              <textarea id="f-desc" name="desc" rows="4" required data-i18n-ph="form.desc_ph" placeholder="원하는 그림, 분위기, 레퍼런스 링크 등을 자유롭게 적어주세요."></textarea>
+              <span class="err" data-err-for="desc"></span>
+            </div>
+
+            <button class="btn btn-primary btn-block" type="submit" data-i18n="form.submit">문의 보내기</button>
+            <p class="form-note" data-i18n="form.note">
+              전송 버튼을 누르면 메일 앱으로 내용이 정리되어 열립니다.
+            </p>
+            <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <!-- ===================== Footer ===================== -->
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        <span class="brand-text small">melange<span class="brand-dot">.</span>tattoo</span>
+        <nav class="footer-links" aria-label="Footer">
+          <a href="https://instagram.com/melange.tattoo" target="_blank" rel="noopener">Instagram</a>
+          <a href="mailto:hello@melange.tattoo">Email</a>
+          <a href="#hero" data-i18n="footer.top">맨 위로</a>
+        </nav>
+        <span class="copyright">© <span id="year">2026</span> melange.tattoo</span>
+      </div>
+    </footer>
+
+    <!-- ===================== Lightbox ===================== -->
+    <div class="lightbox" id="lightbox" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Gallery viewer">
+      <button class="lb-close" id="lbClose" type="button" aria-label="Close">&times;</button>
+      <button class="lb-nav lb-prev" id="lbPrev" type="button" aria-label="Previous">&#8249;</button>
+      <figure class="lb-figure">
+        <div class="lb-media" id="lbMedia"></div>
+        <figcaption class="lb-caption" id="lbCaption"></figcaption>
+      </figure>
+      <button class="lb-nav lb-next" id="lbNext" type="button" aria-label="Next">&#8250;</button>
+    </div>
+
+    <script src="script.js" defer></script>
+  </body>
+</html>

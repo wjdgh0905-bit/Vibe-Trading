@@ -3,7 +3,9 @@
     "superpowers@superpowers-marketplace": true,
     "marketing-skills@marketingskills": true,
     "ui-ux-pro-max@ui-ux-pro-max-skill": true,
-    "claude-mem@thedotmack": true
+    "claude-mem@thedotmack": true,
+    "taste-skill@taste-skill": true,
+    "impeccable@impeccable": true
   },
   "extraKnownMarketplaces": {
     "superpowers-marketplace": {
@@ -28,6 +30,18 @@
       "source": {
         "source": "github",
         "repo": "thedotmack/claude-mem"
+      }
+    },
+    "taste-skill": {
+      "source": {
+        "source": "github",
+        "repo": "Leonxlnx/taste-skill"
+      }
+    },
+    "impeccable": {
+      "source": {
+        "source": "github",
+        "repo": "pbakaus/impeccable"
       }
     }
   }

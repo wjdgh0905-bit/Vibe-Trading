@@ -1,7 +1,7 @@
 # Agent Skills — 설치 구성
 
-블로그에서 소개된 스킬 5종을 이 저장소에 적용했습니다.
-`.claude/settings.json`(플러그인 4종) + `.claude/skills/`(Remotion 12종) 두 갈래로 구성됩니다.
+블로그·릴스에서 소개된 스킬 팩을 이 저장소에 적용했습니다.
+`.claude/settings.json`(플러그인 6종) + `.claude/skills/`(Remotion 12종) 두 갈래로 구성됩니다.
 
 ## 1. 플러그인 (`.claude/settings.json`, project scope)
 
@@ -14,6 +14,8 @@
 | `marketing-skills` | `marketingskills` | `coreyhaines31/marketingskills` | 50 |
 | `ui-ux-pro-max` | `ui-ux-pro-max-skill` | `nextlevelbuilder/ui-ux-pro-max-skill` | 7 |
 | `claude-mem` | `thedotmack` | `thedotmack/claude-mem` | 19 |
+| `taste-skill` | `taste-skill` | `Leonxlnx/taste-skill` | 13 |
+| `impeccable` | `impeccable` | `pbakaus/impeccable` | 1 (+커맨드 23, 에이전트 4) |
 
 - **superpowers** — 기획 → 계획 → 실행 → 검증 워크플로우. `/brainstorm`, `/write-plan`,
   `/execute-plan`, TDD·체계적 디버깅 등. SessionStart 훅 1개를 등록합니다.
@@ -23,6 +25,16 @@
 - **claude-mem** — 세션 간 컨텍스트 영속화. 훅 6개와 `mcp-search` MCP 서버를 등록하며,
   최초 실행 시 Setup 훅이 런타임을 자동 부트스트랩합니다.
   (블로그의 `npx claude-mem install` 대신 플러그인 경로로 설치했습니다 — 둘 중 하나만 하면 됩니다.)
+- **taste-skill** — "AI 티" 나는 밋밋한 프론트엔드를 막는 안티슬롭 스킬 묶음.
+  `brutalist-skill`·`minimalist-skill`·`soft-skill`로 톤을 고르고, `redesign-skill`로 기존 화면을
+  다시 잡고, `image-to-code-skill`·`stitch-skill`로 시안을 코드로 옮깁니다. (https://tasteskill.dev)
+- **impeccable** — Anthropic `frontend-design`에서 출발한 디자인 언어 스킬.
+  `/impeccable polish`, `/impeccable audit`, `/impeccable critique` 등 커맨드 23개와
+  안티패턴 탐지 규칙을 제공하며 PostToolUse·Stop 훅으로 자동 검사합니다. (https://impeccable.style)
+
+  > 홈페이지 작업을 시작할 때 프로젝트 루트에서 `/impeccable init`을 한 번 실행하세요.
+  > `PRODUCT.md`와 `DESIGN.md`를 만들어 브랜드·타깃·색·타이포를 고정해두면
+  > 이후 커맨드들이 그 기준으로 동작합니다.
 
 ### 수동 재설치 / 갱신
 
@@ -54,7 +66,7 @@ npx skills remove remotion-maps   # 개별 제거
 
 ## 토큰 비용 참고
 
-플러그인 4종의 상시 로드 비용은 세션당 약 17,000 토큰이며, 그중 `marketing-skills`가
+플러그인 6종의 상시 로드 비용은 세션당 약 19,300 토큰이며, 그중 `marketing-skills`가
 약 13,500 토큰으로 대부분을 차지합니다. 트레이딩 작업에만 집중할 때는 아래로 끌 수 있습니다.
 
 ```bash
@@ -65,7 +77,7 @@ claude plugin enable  marketing-skills      # 다시 활성화
 ## 전체 제거
 
 ```bash
-for p in superpowers marketing-skills ui-ux-pro-max claude-mem; do
+for p in superpowers marketing-skills ui-ux-pro-max claude-mem taste-skill impeccable; do
   claude plugin uninstall "$p" --scope project
 done
 rm -rf .claude/skills skills-lock.json

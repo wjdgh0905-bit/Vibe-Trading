@@ -7,6 +7,12 @@
       "skillPath": "agent_reach/skill/SKILL.md",
       "computedHash": "7887c5920f15988d7c4a9aa3b0b439332a30120e7b52169fd3eee851c3e20da6"
     },
+    "archify": {
+      "source": "tt-a1i/archify",
+      "sourceType": "github",
+      "skillPath": "archify/SKILL.md",
+      "computedHash": "f468f6986c2d25676bb9cd4abce9302bcd42c9983ad32b3c93d6d7be189d9988"
+    },
     "remotion-best-practices": {
       "source": "remotion-dev/skills",
       "sourceType": "github",

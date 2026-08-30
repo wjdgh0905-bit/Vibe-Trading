@@ -142,17 +142,13 @@
   ];
 
   /* ------------------------------------------------------------
-     Guest spots — edit as travel dates are confirmed, e.g.
+     Guest spots — empty until a trip is actually confirmed. Add an
+     entry only once real dates exist, e.g.
      { regionKey: "SouthKorea", city: "Seoul", status: "Mar 3–15 — DM to book" }
      `status` overrides the default "Dates via Instagram" text when set.
+     With no entries, the section shows an Instagram-follow note instead.
      ------------------------------------------------------------ */
-  const GUEST_SPOTS = [
-    { regionKey: "SouthKorea" },
-    { regionKey: "Australia" },
-    { regionKey: "UnitedStates" },
-    { regionKey: "UnitedKingdom" },
-    { regionKey: "Europe" },
-  ];
+  const GUEST_SPOTS = [];
 
   const ANGLES = [30, 55, 80, 110, 135, 160, 20, 70, 100, 45, 95, 150];
 
@@ -255,6 +251,8 @@
       "guestSpots.desc":
         "Melange travels as a guest artist. Exact cities and dates go up on Instagram as they're confirmed. The studio address is shared directly once a booking is confirmed.",
       "guestSpots.status": "Dates via Instagram",
+      "guestSpots.empty": "No confirmed guest dates right now.",
+      "guestSpots.followLink": "Follow on Instagram",
       "booking.eyebrow": "Booking",
       "booking.title": "Booking Information",
       "booking.lead": "By appointment only. Every booking starts with a short consultation.",
@@ -359,6 +357,8 @@
       "guestSpots.desc":
         "멜란지는 게스트 아티스트로 여러 지역에서 작업합니다. 정확한 도시와 일정은 확정되는 대로 인스타그램에 공지되며, 스튜디오 주소는 예약이 확정된 분께 직접 안내드립니다.",
       "guestSpots.status": "일정은 인스타그램 공지",
+      "guestSpots.empty": "현재 확정된 게스트 일정이 없습니다.",
+      "guestSpots.followLink": "인스타그램 팔로우",
       "booking.eyebrow": "예약",
       "booking.title": "예약 안내",
       "booking.lead": "예약제로만 운영됩니다. 모든 예약은 간단한 상담으로 시작됩니다.",
@@ -646,8 +646,11 @@
      Guest spots
      ------------------------------------------------------------ */
   const spotsGrid = document.getElementById("spotsGrid");
+  const spotsEmptyNote = document.getElementById("spotsEmptyNote");
   function renderSpots() {
     spotsGrid.innerHTML = "";
+    spotsGrid.hidden = GUEST_SPOTS.length === 0;
+    spotsEmptyNote.hidden = GUEST_SPOTS.length > 0;
     GUEST_SPOTS.forEach((spot) => {
       const card = document.createElement("div");
       card.className = "spot-card";

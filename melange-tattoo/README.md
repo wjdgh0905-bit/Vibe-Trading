@@ -74,22 +74,19 @@ images and no other artists' work.
 
 ## Updating guest spots
 
-`script.js` also has a `GUEST_SPOTS` array, rendered into the "Upcoming Guest Spots" section:
+`script.js` also has a `GUEST_SPOTS` array, rendered into the "Upcoming Guest Spots" section.
+It starts **empty** — add an entry only once a trip is actually confirmed:
 
 ```js
 const GUEST_SPOTS = [
-  { regionKey: "SouthKorea" },
-  // ...
+  { regionKey: "SouthKorea", city: "Seoul", status: "Mar 3–15 — DM to book" },
 ];
 ```
 
-`regionKey` must match an entry in the `REGIONS` dictionary. By default each card shows the
-generic "Dates via Instagram" status (translated). Once a city and date range are confirmed,
-add `city` and `status` to override it:
-
-```js
-{ regionKey: "SouthKorea", city: "Seoul", status: "Mar 3–15 — DM to book" }
-```
+`regionKey` must match an entry in the `REGIONS` dictionary. `city` and `status` are optional;
+without them a card falls back to the region name and a generic "Dates via Instagram" status
+(both translated). While the array is empty, the section shows a short "no confirmed dates"
+note with an Instagram link instead of an empty grid.
 
 Exact studio addresses are intentionally never shown on the site — per the booking process,
 those are sent directly to clients once a deposit confirms their appointment.

@@ -56,30 +56,33 @@
           <span class="brand-text">MELANGE<span class="brand-sp"> </span>TATTOO</span>
         </a>
 
-        <nav class="nav" id="primaryNav" aria-label="Primary">
-          <a href="#work" class="nav-link" data-i18n="nav.work">Work</a>
-          <a href="#about" class="nav-link" data-i18n="nav.about">About</a>
-          <a href="#guest-spots" class="nav-link" data-i18n="nav.guestSpots">Guest Spots</a>
-          <a href="#booking" class="nav-link" data-i18n="nav.booking">Booking</a>
-          <a href="#faq" class="nav-link" data-i18n="nav.faq">FAQ</a>
+        <div class="header-right">
+          <nav class="nav" id="primaryNav" aria-label="Primary">
+            <a href="#work" class="nav-link" data-i18n="nav.work">Work</a>
+            <a href="#about" class="nav-link" data-i18n="nav.about">About</a>
+            <a href="#guest-spots" class="nav-link" data-i18n="nav.guestSpots">Guest Spots</a>
+            <a href="#booking" class="nav-link" data-i18n="nav.booking">Booking</a>
+            <a href="#faq" class="nav-link" data-i18n="nav.faq">FAQ</a>
+            <a href="#booking" class="btn btn-small btn-primary nav-cta" data-i18n="nav.book">Book</a>
+          </nav>
+
           <button class="lang-toggle" id="langToggle" type="button" aria-label="Switch language">
             <span class="lang-opt" data-lang="en">EN</span>
             <span class="lang-sep">/</span>
             <span class="lang-opt" data-lang="ko">KO</span>
           </button>
-          <a href="#booking" class="btn btn-small btn-primary nav-cta" data-i18n="nav.book">Book</a>
-        </nav>
 
-        <button
-          class="nav-toggle"
-          id="navToggle"
-          type="button"
-          aria-expanded="false"
-          aria-controls="primaryNav"
-          aria-label="Menu"
-        >
-          <span></span><span></span><span></span>
-        </button>
+          <button
+            class="nav-toggle"
+            id="navToggle"
+            type="button"
+            aria-expanded="false"
+            aria-controls="primaryNav"
+            aria-label="Menu"
+          >
+            <span></span><span></span><span></span>
+          </button>
+        </div>
       </div>
     </header>
 
@@ -372,6 +375,9 @@
         <span class="copyright">© <span id="year">2026</span> Melange Tattoo</span>
       </div>
     </footer>
+
+    <!-- ===================== Sticky mobile booking bar ===================== -->
+    <a href="#booking" class="sticky-cta" id="stickyCta" data-i18n="nav.book">Book</a>
 
     <!-- ===================== Lightbox ===================== -->
     <div class="lightbox" id="lightbox" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Gallery viewer">

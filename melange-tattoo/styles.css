@@ -144,6 +144,11 @@ h3 {
   justify-content: space-between;
   height: 72px;
 }
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: clamp(12px, 2vw, 20px);
+}
 .brand {
   display: inline-flex;
   align-items: center;
@@ -947,6 +952,34 @@ h3 {
 }
 
 /* ============================================================
+   Sticky mobile booking bar — mobile only, see the 720px
+   breakpoint below for display:flex. Sits above safe-area insets
+   for notched phones.
+   ============================================================ */
+.sticky-cta {
+  display: none;
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 90;
+  align-items: center;
+  justify-content: center;
+  height: 56px;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  background: var(--blue);
+  color: #fff;
+  font-size: 0.86rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  box-shadow: 0 -8px 24px -12px rgba(22, 24, 28, 0.35);
+}
+.sticky-cta:hover {
+  background: var(--blue-deep);
+}
+
+/* ============================================================
    Responsive
    ============================================================ */
 @media (max-width: 860px) {
@@ -964,6 +997,9 @@ h3 {
 }
 
 @media (max-width: 720px) {
+  body {
+    padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px));
+  }
   .nav {
     position: fixed;
     inset: 72px 0 auto 0;
@@ -990,13 +1026,13 @@ h3 {
     width: 100%;
     border-bottom: 1px solid var(--line);
   }
-  .lang-toggle {
-    margin-top: 14px;
-  }
   .nav-cta {
-    margin: 14px 0 0;
+    display: none;
   }
   .nav-toggle {
+    display: flex;
+  }
+  .sticky-cta {
     display: flex;
   }
 }

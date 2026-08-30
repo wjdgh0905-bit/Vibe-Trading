@@ -513,11 +513,24 @@ h3 {
 /* ============================================================
    About
    ============================================================ */
-.about-grid {
-  display: grid;
-  grid-template-columns: 1.15fr 0.85fr;
-  gap: clamp(32px, 6vw, 80px);
-  align-items: center;
+.about {
+  position: relative;
+  overflow: hidden;
+}
+.about-mark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(60vw, 720px);
+  transform: translate(-50%, -50%);
+  opacity: 0.08;
+  z-index: 0;
+  pointer-events: none;
+}
+.about-copy {
+  position: relative;
+  z-index: 1;
+  max-width: 640px;
 }
 .about-copy .section-title {
   margin-bottom: 22px;
@@ -525,27 +538,6 @@ h3 {
 .about-copy p + p {
   margin-top: 16px;
   color: var(--muted);
-}
-.about-visual {
-  position: relative;
-}
-.about-visual::before {
-  content: "";
-  position: absolute;
-  inset: -18% -10%;
-  background: radial-gradient(circle, var(--blue-soft) 0%, transparent 68%);
-  z-index: 0;
-}
-.about-frame {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.about-frame img {
-  width: 100%;
-  filter: drop-shadow(0 30px 50px rgba(31, 63, 174, 0.22));
 }
 
 /* ============================================================
@@ -1087,12 +1079,8 @@ h3 {
    Responsive
    ============================================================ */
 @media (max-width: 860px) {
-  .about-grid,
   .process-grid {
     grid-template-columns: 1fr;
-  }
-  .about-visual {
-    max-width: 360px;
   }
   .gallery-grid {
     column-count: 3;

@@ -224,7 +224,7 @@
       "hero.title1": "Tattoo work built on",
       "hero.title2": "wave motion and blue.",
       "hero.sub":
-        "Dragon, snake, phoenix, koi, whale, flowers, clouds, lightning, pattern — each redrawn into Melange's own line and color, shaped to fit the body.",
+        "Dragon, snake, phoenix, koi, whale, flowers, clouds, lightning, pattern, each redrawn into Melange's own line and color, shaped to fit the body.",
       "hero.ctaWork": "View Work",
       "hero.ctaBooking": "Booking Info",
       "hero.meta":

@@ -1,78 +1,114 @@
-# melange.tattoo — 홈페이지
+# MELANGE TATTOO — website
 
-타투 스튜디오 **melange.tattoo**를 위한 독립 정적 홈페이지입니다.
-빌드 도구·프레임워크·의존성이 전혀 없는 순수 **HTML / CSS / JS** 로 만들어져,
-파일만 열면 어디서든 동작하고 어떤 정적 호스팅에도 그대로 배포할 수 있습니다.
+Standalone static homepage for **Melange Tattoo**, a guest tattoo artist working across
+South Korea, Australia, the United States, the United Kingdom, and Europe.
+Built with plain **HTML / CSS / JS** — no build tools, no framework, no dependencies.
+Open the file or drop it on any static host and it works.
 
-이 폴더는 저장소의 나머지 코드(트레이딩 앱)와 완전히 분리되어 있습니다.
+This folder is fully separate from the rest of this repository (the trading app).
 
-## 구성
+## Structure
 
 ```
 melange-tattoo/
-├── index.html        # 단일 페이지 (헤더 · 히어로 · 소개 · 갤러리 · 예약/문의 · 푸터)
-├── styles.css        # 다크 에디토리얼 테마, 디자인 토큰(CSS 변수), 반응형
-├── script.js         # KO/EN 토글 · 모바일 메뉴 · 갤러리 라이트박스 · 예약 폼
+├── index.html        # single page: Hero → Work → About → Style & Process →
+│                      #   Guest Spots → Booking → FAQ → Contact → Footer
+├── styles.css         # minimal editorial theme, CSS variable tokens, responsive
+├── script.js          # gallery + guest spots (data-driven) · nav · lightbox · booking form
 ├── assets/
-│   └── favicon.svg
+│   ├── favicon.svg
+│   └── gallery/       # put real tattoo photos here
 └── README.md
 ```
 
-## 로컬에서 보기
+## View it locally
 
-가장 간단한 방법 — `index.html`을 브라우저로 바로 엽니다.
+Simplest — open `index.html` directly in a browser.
 
-로컬 서버로 보고 싶다면:
+Or run a local server:
 
 ```bash
 python3 -m http.server 8000 -d melange-tattoo
 # → http://localhost:8000
 ```
 
-## 언어 (한국어 / 영어)
+## Adding real tattoo photos
 
-- 헤더 우측의 **KO / EN** 버튼으로 전환합니다. 선택은 브라우저에 저장(localStorage)되어
-  다음 방문에도 유지됩니다. 기본값은 한국어입니다.
-- 모든 문구는 `script.js` 상단의 `I18N` 객체(`ko`, `en`)에 있습니다.
-  텍스트를 바꾸려면 이 객체의 값만 수정하면 됩니다. HTML의 `data-i18n="키"` 속성이
-  해당 키와 연결됩니다.
-
-## 갤러리 이미지 교체
-
-현재 갤러리는 **플레이스홀더 타일**(CSS 패턴)로 채워져 있습니다.
-실제 타투 작업 사진으로 바꾸는 방법:
-
-1. 사진을 `assets/gallery/` 폴더에 넣습니다 (예: `work-01.jpg` … 정사각형 권장, 1000×1000px 내외).
-2. `script.js`의 **6. Gallery generation** 블록에서 플레이스홀더 `<span class="ph">` 대신
-   `<img src="assets/gallery/work-01.jpg" alt="...">`를 넣도록 수정합니다.
-   (라이트박스의 `renderLb()`도 같은 이미지 경로를 쓰도록 함께 바꾸면 확대 보기까지 연결됩니다.)
-
-## 예약 폼 연결
-
-폼은 기본적으로 입력 내용을 정리해 **메일 앱(`mailto:`)** 을 여는 방식입니다.
-받는 주소는 `script.js`의 `CONTACT_EMAIL` 상수(`hello@melange.tattoo`)에서 바꿉니다.
-
-실제 서버 없이 폼 데이터를 받고 싶다면 [Formspree](https://formspree.io) 같은 서비스를 연결하세요.
-`script.js`의 `form.addEventListener("submit", ...)` 안에서 `mailto` 조립 블록을 아래처럼 교체하면 됩니다:
+The gallery ("Selected Work") is data-driven so photos can be swapped in without touching
+the HTML. Open `script.js` and find the `GALLERY` array near the top:
 
 ```js
-fetch("https://formspree.io/f/여러분의_ID", {
+const GALLERY = [
+  { tag: "Dragon", src: "" },
+  { tag: "Snake", src: "" },
+  // ...
+];
+```
+
+To add a photo:
+
+1. Put the image file in `assets/gallery/` (square-ish crops work best, ~1200px wide).
+2. Set that entry's `src` to the file path, e.g. `"assets/gallery/dragon-01.jpg"`.
+
+Any entry left with `src: ""` shows a placeholder tile instead, so you can fill the gallery
+in gradually. Add, remove, or reorder entries freely — the grid and the lightbox both read
+from this same array, so they always stay in sync. There's no fixed limit of 9; the grid
+reflows to fit however many entries are in the array.
+
+Only use Melange's own finished tattoo photos here — no AI-generated tattoo images and no
+other artists' work.
+
+## Updating guest spots
+
+`script.js` also has a `GUEST_SPOTS` array, rendered into the "Upcoming Guest Spots" section:
+
+```js
+const GUEST_SPOTS = [
+  { region: "South Korea", status: "Dates via Instagram" },
+  // ...
+];
+```
+
+Once a city and date range are confirmed, update the matching entry, e.g.:
+
+```js
+{ region: "Seoul, South Korea", status: "Mar 3–15 — DM to book" }
+```
+
+Exact studio addresses are intentionally never shown on the site — per the booking process,
+those are sent directly to clients once a deposit confirms their appointment.
+
+## Booking form
+
+The booking form composes a `mailto:` to `melange.tattoo@gmail.com` with the visitor's
+details filled in (name, city, tattoo idea, placement, size, preferred date, Instagram).
+`mailto:` links can't attach files, so the form reminds visitors to attach a placement photo
+themselves before sending — this can't be automated from a static page.
+
+To swap in a real backend instead (so submissions land somewhere without relying on the
+visitor's mail client), a service like [Formspree](https://formspree.io) can replace the
+`mailto` block in `script.js`'s `form.addEventListener("submit", ...)` handler with something
+like:
+
+```js
+fetch("https://formspree.io/f/your-id", {
   method: "POST",
   headers: { Accept: "application/json" },
   body: new FormData(form),
 }).then(() => {
-  status.textContent = lang === "ko" ? "문의가 전송되었습니다. 감사합니다!" : "Sent — thank you!";
+  status.textContent = "Sent — thank you!";
   form.reset();
 });
 ```
 
-## 연락처·문구 커스터마이즈
+## Editing copy
 
-- 인스타그램/카카오/이메일/운영시간: `index.html`의 **Booking** 섹션과 푸터에서 수정.
-- 색상·폰트·간격: `styles.css` 최상단 `:root` 의 CSS 변수(`--accent`, `--bg`, `--font-serif` 등)에서 한 번에 조정.
+All page text lives directly in `index.html`, organized by section (`<section id="...">`).
+Contact details (Instagram handle, email) appear in a few places — the header CTA, the
+booking section, the contact band, and the footer — so update all of them together if they
+ever change.
 
-## 배포
+## Deploying
 
-정적 파일이므로 다음 어디에나 이 폴더를 올리면 됩니다:
-GitHub Pages · Cloudflare Pages · Netlify · Vercel · 일반 웹호스팅.
-빌드 명령은 필요 없습니다.
+Static files — upload this folder as-is to GitHub Pages, Cloudflare Pages, Netlify, Vercel,
+or any web host. No build command needed.

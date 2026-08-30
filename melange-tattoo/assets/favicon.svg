@@ -1,13 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
-  <defs>
-    <radialGradient id="g" cx="34%" cy="30%" r="75%">
-      <stop offset="0%" stop-color="#e0c288"/>
-      <stop offset="48%" stop-color="#c8a15a"/>
-      <stop offset="100%" stop-color="#3a2c12"/>
-    </radialGradient>
-  </defs>
-  <rect width="64" height="64" rx="14" fill="#0e1b2f"/>
-  <circle cx="32" cy="30" r="15" fill="url(#g)"/>
-  <text x="32" y="55" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif"
-        font-style="italic" font-size="15" fill="#ffffff">m</text>
+  <rect width="64" height="64" rx="14" fill="#faf9f6"/>
+  <path d="M8 40c5 0 5-8 10-8s5 8 10 8 5-8 10-8 5 8 10 8 5-8 10-8"
+        fill="none" stroke="#1f3fae" stroke-width="3.5" stroke-linecap="round"/>
+  <path d="M8 26c5 0 5-8 10-8s5 8 10 8 5-8 10-8 5 8 10 8 5-8 10-8"
+        fill="none" stroke="#1f3fae" stroke-width="3.5" stroke-linecap="round" opacity="0.35"/>
 </svg>

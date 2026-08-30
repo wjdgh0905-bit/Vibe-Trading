@@ -23,11 +23,13 @@
     { tag: "Koi", src: "" },
     { tag: "Whale", src: "" },
     { tag: "Flowers", src: "assets/gallery/flowers-01.jpg" },
-    { tag: "Clouds", src: "" },
-    { tag: "Lightning", src: "" },
+    { tag: "Clouds", src: "assets/gallery/clouds-01.jpg" },
+    { tag: "Lightning", src: "assets/gallery/lightning-01.jpg" },
     { tag: "Pattern", src: "assets/gallery/pattern-01.jpg" },
     { tag: "Dragon", src: "assets/gallery/dragon-02.jpg" },
     { tag: "Phoenix", src: "assets/gallery/phoenix-02.jpg" },
+    { tag: "Pattern", src: "assets/gallery/pattern-02.jpg" },
+    { tag: "Pattern", src: "assets/gallery/pattern-03.jpg" },
   ];
 
   /* ------------------------------------------------------------

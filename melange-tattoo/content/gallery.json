@@ -1,0 +1,11 @@
+[
+  { "id": "work-01", "motif": "Dragon",   "placement": "", "image": "images/work/work-01.jpg", "placeholder": true },
+  { "id": "work-02", "motif": "Snake",    "placement": "", "image": "images/work/work-02.jpg", "placeholder": true },
+  { "id": "work-03", "motif": "Phoenix",  "placement": "", "image": "images/work/work-03.jpg", "placeholder": true },
+  { "id": "work-04", "motif": "Koi",      "placement": "", "image": "images/work/work-04.jpg", "placeholder": true },
+  { "id": "work-05", "motif": "Whale",    "placement": "", "image": "images/work/work-05.jpg", "placeholder": true },
+  { "id": "work-06", "motif": "Flowers",  "placement": "", "image": "images/work/work-06.jpg", "placeholder": true },
+  { "id": "work-07", "motif": "Clouds",   "placement": "", "image": "images/work/work-07.jpg", "placeholder": true },
+  { "id": "work-08", "motif": "Lightning","placement": "", "image": "images/work/work-08.jpg", "placeholder": true },
+  { "id": "work-09", "motif": "Patterns", "placement": "", "image": "images/work/work-09.jpg", "placeholder": true }
+]

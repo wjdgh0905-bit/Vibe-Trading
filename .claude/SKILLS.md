@@ -1,7 +1,7 @@
 # Agent Skills — 설치 구성
 
 블로그·릴스에서 소개된 스킬 팩을 이 저장소에 적용했습니다.
-`.claude/settings.json`(플러그인 6종) + `.claude/skills/`(직접 설치 14종) 두 갈래로 구성됩니다.
+`.claude/settings.json`(플러그인 6종) + `.claude/skills/`(직접 설치 15종) 두 갈래로 구성됩니다.
 
 ## 0. 내 컴퓨터에 적용하기 (git pull 이후 1회)
 
@@ -123,6 +123,32 @@ pipx install openai-whisper
 # 사용 예시 — 자연어로 시키면 알아서 스크립트를 조합합니다
 "~/clip.mp4 무음 구간 빼고 hormozi 스타일 자막 넣어서 1.25배속으로 만들어줘"
 ```
+
+### Agent Reach — 인터넷 여러 플랫폼 읽기 (1종)
+
+`Panniantong/Agent-Reach` (MIT, GitHub 트렌딩 1위). 트위터/X, Reddit, 유튜브,
+깃허브, RSS 등 15개 플랫폼의 글을 가져오는 스킬입니다. "이 트윗 스레드 요약해줘",
+"레딧에 이 종목 관련 반응 찾아줘" 처럼 시키면 자동으로 발동됩니다.
+
+```bash
+"이 코인 관련해서 레딧 반응 좀 찾아줘"
+"이 유튜브 영상 자막 요약해줘"
+```
+
+**동작 방식 참고:**
+- 웹페이지·유튜브·깃허브·RSS는 설정 없이 바로 됩니다 (공개 API/도구 사용).
+- 트위터·Reddit·LinkedIn·샤오홍슈는 **본인 브라우저 쿠키**로 로그인 세션을 재사용합니다.
+  본인 계정으로 보는 것과 동일하지만, 자동화된 접근이라 해당 플랫폼 이용약관과
+  마찰이 있을 수 있다는 점은 알아두세요. 쿠키는 로컬에만 저장되고 업로드되지 않습니다.
+
+**실행 전 필요:**
+
+```bash
+pip install https://github.com/Panniantong/agent-reach/archive/main.zip
+agent-reach doctor --json     # 어떤 플랫폼이 바로 되는지 확인
+```
+
+---
 
 ### Playwright CLI — AI가 직접 브라우저로 확인 (로컬 설치, 스킬 아님)
 

@@ -215,7 +215,7 @@
       "nav.guestSpots": "Guest Spots",
       "nav.booking": "Booking",
       "nav.faq": "FAQ",
-      "nav.book": "Book",
+      "nav.book": "Inquire",
       "hero.title1": "Tattoo work built on",
       "hero.title2": "wave motion and blue.",
       "hero.sub":
@@ -317,7 +317,7 @@
       "nav.guestSpots": "게스트 일정",
       "nav.booking": "예약",
       "nav.faq": "FAQ",
-      "nav.book": "예약하기",
+      "nav.book": "문의하기",
       "hero.title1": "파도와 블루로",
       "hero.title2": "완성하는 타투.",
       "hero.sub":

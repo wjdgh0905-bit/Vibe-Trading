@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MELANGE TATTOO — Melange, Tattoo Artist</title>
+<meta name="description" content="Melange is a solo international guest tattoo artist working across South Korea, Australia, the United States, the United Kingdom, and Europe. Wave-flow line work in signature blue. Appointment only.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23faf9f5'/%3E%3Cpath d='M0 60 Q25 45 50 60 T100 60 V100 H0 Z' fill='%231c46c7'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="site-header" id="site-header">
+  <div class="wrap">
+    <a href="#top" class="wordmark">MELANGE <span>TATTOO</span></a>
+    <nav class="nav-links">
+      <a href="#work">Work</a>
+      <a href="#about">About</a>
+      <a href="#style">Style</a>
+      <a href="#guest-spots">Guest Spots</a>
+      <a href="#booking">Booking</a>
+      <a href="#faq">FAQ</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <a href="#contact" class="nav-cta">Book</a>
+    <button class="nav-toggle" id="nav-toggle" aria-label="Toggle menu">☰</button>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="wrap">
+      <p class="eyebrow">Solo Artist — International Guest Spots</p>
+      <h1>Wave-flow tattoos in Melange&rsquo;s signature blue.</h1>
+      <p class="subhead">Solo artist. Appointment only. Booking by consultation.</p>
+      <div class="hero-actions">
+        <a class="btn primary" href="https://instagram.com/melange.tattoo" target="_blank" rel="noopener">Start a Booking Inquiry</a>
+        <a class="btn ghost" href="mailto:melange.tattoo@gmail.com">Email Melange</a>
+      </div>
+      <div class="hero-strip">
+        <span class="chip">South Korea</span>
+        <span class="chip">Australia</span>
+        <span class="chip">United States</span>
+        <span class="chip">United Kingdom</span>
+        <span class="chip">Europe</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Selected Work -->
+  <section id="work">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">Selected Work</p>
+        <h2>Selected Work</h2>
+        <p>Real tattoo photos only — no AI-generated images, no other artists&rsquo; work. Photos are added and updated continuously. Where a photo isn&rsquo;t available yet, a labeled placeholder is shown. Work spans dragon, snake, phoenix, koi, whale, flower, cloud, lightning, and pattern designs, unified by wave-flow line work and signature blue.</p>
+      </div>
+      <div class="filter-row" id="gallery-filters"></div>
+      <div class="gallery-grid" id="gallery-grid"></div>
+    </div>
+  </section>
+
+  <!-- About Melange -->
+  <section id="about" class="alt">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">About</p>
+        <h2>About Melange</h2>
+      </div>
+      <div class="about-grid">
+        <div>
+          <p>Melange is a solo tattoo artist. No team, no other artists.</p>
+          <p>Work covers a wide range of subjects, reworked through Melange&rsquo;s own wave-flow and blue-color signature.</p>
+          <p>Core motifs: dragon, snake, phoenix, koi, whale, flowers, clouds, lightning, patterns.</p>
+          <p>Each design is built around the shape and movement of the body part being tattooed.</p>
+          <p>Melange works in both stencil and freehand, depending on the design.</p>
+          <p>Other artists&rsquo; work is never copied directly. Every design is reworked into Melange&rsquo;s own style.</p>
+        </div>
+        <div class="about-portrait" aria-label="Portrait photo placeholder">
+          <span style="color:var(--ink-soft);font-size:0.85rem;">Portrait — coming soon</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Style / Process -->
+  <section id="style">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">Style / Process</p>
+        <h2>Style / Process</h2>
+      </div>
+      <div class="split-grid">
+        <div>
+          <h3>Style</h3>
+          <p>A wide range of subjects, reworked through wave-flow line work and a signature blue color.</p>
+          <p>Core motifs: dragon, snake, phoenix, koi, whale, flowers, clouds, lightning, patterns.</p>
+          <p>Each design is built around the shape and movement of the specific body part being tattooed.</p>
+          <ul class="motif-list">
+            <li>Dragon</li><li>Snake</li><li>Phoenix</li><li>Koi</li><li>Whale</li>
+            <li>Flowers</li><li>Clouds</li><li>Lightning</li><li>Patterns</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Process</h3>
+          <p>Some designs are prepared in advance.</p>
+          <p>Parts that need to follow the body&rsquo;s flow are drawn freehand on the day.</p>
+          <p>Final design and any changes are confirmed with the client in person before tattooing.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Upcoming Guest Spots -->
+  <section id="guest-spots" class="alt">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">Upcoming Guest Spots</p>
+        <h2>Upcoming Guest Spots</h2>
+        <p>Melange is not based at a fixed studio. Work takes place as an international guest artist across the following regions.</p>
+      </div>
+      <div class="region-row" id="region-row"></div>
+      <div class="spots-list" id="spots-list"></div>
+      <p style="margin-top:1.4rem;font-size:0.85rem;color:var(--ink-soft);">No confirmed cities or dates at this time. Follow Instagram (<a href="https://instagram.com/melange.tattoo" target="_blank" rel="noopener" style="color:var(--blue);">@melange.tattoo</a>) for updates. The exact studio address for a confirmed city is shared privately with the booked client only.</p>
+    </div>
+  </section>
+
+  <!-- Booking Information -->
+  <section id="booking">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">Booking Information</p>
+        <h2>Booking Information</h2>
+        <p>Appointment only. No walk-ins. Consultation required before booking.</p>
+      </div>
+      <div class="booking-grid">
+        <div>
+          <h3>What to include in your inquiry</h3>
+          <ul class="info-list">
+            <li>Name</li>
+            <li>City</li>
+            <li>Tattoo idea or preferred design</li>
+            <li>Placement</li>
+            <li>Approximate size in cm</li>
+            <li>Preferred date</li>
+            <li>Clear photo of the placement</li>
+          </ul>
+        </div>
+        <div>
+          <h3>How it works</h3>
+          <ol class="process-list">
+            <li>Melange reviews the inquiry and sends size, difficulty, estimated time, and price.</li>
+            <li>Bookings are confirmed in the order deposits are paid.</li>
+            <li>The deposit is deducted from the final price. The deposit is non-refundable.</li>
+            <li>Design work starts only after the booking is confirmed.</li>
+            <li>Some designs are prepared in advance; parts that need to follow the body&rsquo;s flow are drawn freehand on the day.</li>
+            <li>Final design and any changes are confirmed with the client in person before tattooing.</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" class="alt">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">FAQ</p>
+        <h2>FAQ</h2>
+      </div>
+      <div class="faq-list">
+        <div class="faq-item">
+          <button class="faq-q">Do you take walk-ins? <span class="icon">+</span></button>
+          <div class="faq-a"><p>No. Appointment only. Consultation required before booking.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">Where is your studio located? <span class="icon">+</span></button>
+          <div class="faq-a"><p>Melange is not based at a fixed studio. Melange works as an international guest artist across South Korea, Australia, United States, United Kingdom, and Europe. The exact studio address for a confirmed city is shared privately with the booked client only.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">How do I book an appointment? <span class="icon">+</span></button>
+          <div class="faq-a"><p>Contact Melange via Instagram DM or email with your booking information. See Booking Information above for what to include.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">Is the deposit refundable? <span class="icon">+</span></button>
+          <div class="faq-a"><p>No. The deposit is non-refundable. It is deducted from the final price.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">How much will my tattoo cost? <span class="icon">+</span></button>
+          <div class="faq-a"><p>Price depends on size, placement, and difficulty. After reviewing your inquiry, Melange sends an estimated price.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">Do you copy designs from other artists? <span class="icon">+</span></button>
+          <div class="faq-a"><p>No. Every design is reworked into Melange&rsquo;s own style.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">Do you work freehand or with stencils? <span class="icon">+</span></button>
+          <div class="faq-a"><p>Both. Some designs are prepared in advance. Parts that need to follow the body&rsquo;s flow are drawn freehand on the day.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section id="contact" class="contact-section">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">Contact</p>
+        <h2>Contact</h2>
+        <p>For all booking inquiries, please contact me via Instagram DM or email.</p>
+      </div>
+      <div class="contact-links">
+        <a class="btn primary" href="https://instagram.com/melange.tattoo" target="_blank" rel="noopener">Instagram — @melange.tattoo</a>
+        <a class="btn ghost" href="mailto:melange.tattoo@gmail.com">melange.tattoo@gmail.com</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap" style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.8rem;width:100%;">
+    <span>&copy; 2026 MELANGE TATTOO</span>
+    <span><a href="https://instagram.com/melange.tattoo" target="_blank" rel="noopener">@melange.tattoo</a> · <a href="mailto:melange.tattoo@gmail.com">melange.tattoo@gmail.com</a></span>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>

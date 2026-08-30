@@ -156,9 +156,11 @@
   const ANGLES = [30, 55, 80, 110, 135, 160, 20, 70, 100, 45, 95, 150];
 
   /* ------------------------------------------------------------
-     Formspree endpoint — replace YOUR_FORM_ID once the form is
-     created at formspree.io. Until then submissions will fail
-     gracefully with an error message pointing to direct email.
+     Formspree endpoint — the "Booking Inquiries" form at
+     formspree.io. If this ever needs resetting, set it back to a
+     string containing "YOUR_FORM_ID" and the form will show a
+     friendly error pointing at direct email instead of failing
+     silently.
      ------------------------------------------------------------ */
   const FORMSPREE_ENDPOINT = "https://formspree.io/f/mwlkpjyw";
 

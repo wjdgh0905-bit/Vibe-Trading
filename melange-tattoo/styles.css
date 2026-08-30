@@ -130,6 +130,7 @@ h3 {
   inset: 0 0 auto 0;
   z-index: 100;
   background: rgba(250, 249, 246, 0.88);
+  -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid transparent;
   transition: box-shadow 0.3s var(--ease), border-color 0.3s var(--ease);
@@ -312,14 +313,6 @@ h3 {
 }
 .hero-inner {
   max-width: 720px;
-}
-.hero-eyebrow {
-  font-size: 0.8rem;
-  font-weight: 600;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--blue);
-  margin: 0 0 22px;
 }
 .hero-title {
   font-size: clamp(2.4rem, 6.4vw, 4.4rem);
@@ -876,6 +869,7 @@ h3 {
   justify-content: center;
   padding: clamp(16px, 5vw, 40px);
   background: rgba(10, 11, 13, 0.55);
+  -webkit-backdrop-filter: blur(4px);
   backdrop-filter: blur(4px);
   opacity: 0;
   visibility: hidden;
@@ -944,6 +938,7 @@ h3 {
   gap: clamp(8px, 3vw, 40px);
   padding: clamp(16px, 5vw, 60px);
   background: rgba(10, 11, 13, 0.94);
+  -webkit-backdrop-filter: blur(6px);
   backdrop-filter: blur(6px);
   opacity: 0;
   visibility: hidden;

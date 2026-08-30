@@ -12,12 +12,14 @@ This folder is fully separate from the rest of this repository (the trading app)
 ```
 melange-tattoo/
 ├── index.html        # single page: Hero → Work → About → Style & Process →
-│                      #   Guest Spots → Booking → FAQ → Contact → Footer
+│                      #   Guest Spots → Booking → FAQ → Contact → Footer,
+│                      #   plus the inquiry modal and gallery lightbox
 ├── styles.css         # minimal editorial theme, CSS variable tokens, responsive
-├── script.js          # gallery + guest spots (data-driven) · nav · lightbox · booking form
+├── script.js          # bilingual copy (KO/EN) · gallery + guest spots (data-driven) ·
+│                      #   nav · lightbox · inquiry modal · booking form (Formspree)
 ├── assets/
 │   ├── favicon.svg
-│   └── gallery/       # put real tattoo photos here
+│   └── gallery/       # tattoo photos live here
 └── README.md
 ```
 
@@ -32,6 +34,18 @@ python3 -m http.server 8000 -d melange-tattoo
 # → http://localhost:8000
 ```
 
+## Language (KO / EN)
+
+The site is bilingual. All copy lives in the `I18N` object near the top of `script.js`
+(one block for `en`, one for `ko`) — **not** in `index.html`. Markup only carries
+`data-i18n="some.key"` attributes; `script.js` fills in the actual text for whichever
+language is active. To edit any sentence on the site, find its key in `I18N` and change
+the value there, for both languages.
+
+The visitor's choice is saved to `localStorage` and defaults to English. Gallery tags and
+guest-spot region names have their own small dictionaries (`TAGS`, `REGIONS`) for the same
+reason — they're rendered dynamically, not written directly in the HTML.
+
 ## Adding real tattoo photos
 
 The gallery ("Selected Work") is data-driven so photos can be swapped in without touching
@@ -39,24 +53,24 @@ the HTML. Open `script.js` and find the `GALLERY` array near the top:
 
 ```js
 const GALLERY = [
-  { tag: "Dragon", src: "" },
-  { tag: "Snake", src: "" },
+  { tagKey: "Dragon", src: "assets/gallery/dragon-01.jpg" },
+  { tagKey: "Snake", src: "assets/gallery/snake-01.jpg" },
   // ...
 ];
 ```
 
-To add a photo:
+`tagKey` must match an entry in the `TAGS` dictionary (further down the file) so the label
+translates correctly — use `"MelangeStyle"` for pieces that don't fit one of the named
+subjects. To add a photo:
 
-1. Put the image file in `assets/gallery/` (square-ish crops work best, ~1200px wide).
-2. Set that entry's `src` to the file path, e.g. `"assets/gallery/dragon-01.jpg"`.
+1. Put the image file in `assets/gallery/` (compress it first — aim for well under 1MB;
+   the existing photos were resized to ~1600px wide).
+2. Add an entry with that `src` path and a `tagKey`.
 
-Any entry left with `src: ""` shows a placeholder tile instead, so you can fill the gallery
+Leaving `src: ""` on an entry shows a placeholder tile instead, so the gallery can be filled
 in gradually. Add, remove, or reorder entries freely — the grid and the lightbox both read
-from this same array, so they always stay in sync. There's no fixed limit of 9; the grid
-reflows to fit however many entries are in the array.
-
-Only use Melange's own finished tattoo photos here — no AI-generated tattoo images and no
-other artists' work.
+from this same array. Only use Melange's own finished tattoo photos — no AI-generated tattoo
+images and no other artists' work.
 
 ## Updating guest spots
 
@@ -64,15 +78,17 @@ other artists' work.
 
 ```js
 const GUEST_SPOTS = [
-  { region: "South Korea", status: "Dates via Instagram" },
+  { regionKey: "SouthKorea" },
   // ...
 ];
 ```
 
-Once a city and date range are confirmed, update the matching entry, e.g.:
+`regionKey` must match an entry in the `REGIONS` dictionary. By default each card shows the
+generic "Dates via Instagram" status (translated). Once a city and date range are confirmed,
+add `city` and `status` to override it:
 
 ```js
-{ region: "Seoul, South Korea", status: "Mar 3–15 — DM to book" }
+{ regionKey: "SouthKorea", city: "Seoul", status: "Mar 3–15 — DM to book" }
 ```
 
 Exact studio addresses are intentionally never shown on the site — per the booking process,
@@ -80,33 +96,23 @@ those are sent directly to clients once a deposit confirms their appointment.
 
 ## Booking form
 
-The booking form composes a `mailto:` to `melange.tattoo@gmail.com` with the visitor's
-details filled in (name, city, tattoo idea, placement, size, preferred date, Instagram).
-`mailto:` links can't attach files, so the form reminds visitors to attach a placement photo
-themselves before sending — this can't be automated from a static page.
+"Inquire" in the header, the mobile sticky bar, and the button at the end of the Booking
+section all open the **same form in a modal** (`#inquiryModal` in `index.html`) — there's
+only one `<form>` in the page, so there's one place to edit its fields.
 
-To swap in a real backend instead (so submissions land somewhere without relying on the
-visitor's mail client), a service like [Formspree](https://formspree.io) can replace the
-`mailto` block in `script.js`'s `form.addEventListener("submit", ...)` handler with something
-like:
-
-```js
-fetch("https://formspree.io/f/your-id", {
-  method: "POST",
-  headers: { Accept: "application/json" },
-  body: new FormData(form),
-}).then(() => {
-  status.textContent = "Sent — thank you!";
-  form.reset();
-});
-```
+The form submits to [Formspree](https://formspree.io) via `fetch()` (see
+`FORMSPREE_ENDPOINT` near the top of `script.js`), including the optional placement photo as
+a file upload — nothing opens the visitor's mail app. Submissions land in the connected
+Formspree account/email. If the endpoint is ever reset (e.g. `"...f/YOUR_FORM_ID"`), the form
+shows a friendly inline error pointing at direct email instead of failing silently.
 
 ## Editing copy
 
-All page text lives directly in `index.html`, organized by section (`<section id="...">`).
-Contact details (Instagram handle, email) appear in a few places — the header CTA, the
-booking section, the contact band, and the footer — so update all of them together if they
-ever change.
+Section-by-section English and Korean text both live in `script.js`'s `I18N` object — see
+**Language** above. `index.html` only holds structure and `data-i18n` keys, not the actual
+sentences. Contact details (Instagram handle, email) appear in a few places — the booking
+section, the inquiry modal, the contact band, and the footer — so update all of them together
+if they ever change.
 
 ## Deploying
 

@@ -124,6 +124,78 @@ pipx install openai-whisper
 "~/clip.mp4 무음 구간 빼고 hormozi 스타일 자막 넣어서 1.25배속으로 만들어줘"
 ```
 
+### Playwright CLI — AI가 직접 브라우저로 확인 (로컬 설치, 스킬 아님)
+
+마이크로소프트 공식 CLI입니다. `.claude/skills/`에 넣을 수 있는 게 아니라
+전역 npm 도구라서, 로컬 PC에서 한 번 설치해두면 Claude Code가 직접 스크린샷을 찍어
+자기가 만든 화면을 검증합니다. 홈페이지 작업 시 특히 유용합니다.
+
+```bash
+npm install -g @playwright/cli@latest
+playwright-cli install --skills
+```
+
+---
+
+## 3. MCP 서버 (`.mcp.json`, project scope)
+
+| 서버 | 출처 | 하는 일 |
+|---|---|---|
+| `context7` | `@upstash/context7-mcp` | 라이브러리·프레임워크의 최신 공식 문서를 실시간으로 가져와 컨텍스트에 주입. 학습 데이터가 오래돼서 생기는 API 환각(존재하지 않는 함수 지어내기)을 줄여줌 |
+
+세션 시작 시 자동 연결되고, 최초 1회 "Pending approval" 승인만 하면 됩니다
+(`claude` 실행 후 뜨는 프롬프트에서 신뢰 확인). API 키 없이도 동작하며,
+요청량이 많아지면 [context7.com/dashboard](https://context7.com/dashboard)에서
+무료 키를 받아 `.mcp.json`의 `args`에 `--api-key`를 추가하면 됩니다.
+
+## 4. 검토 후 보류한 것 — 필요할 때 직접 설치
+
+아래 둘은 이 저장소(트레이딩 앱) 성격과 안 맞거나, 실행 자체가 위험 부담이 있어
+지금은 설치하지 않고 방법만 적어둡니다.
+
+### Strix — AI 자동 침투테스트 (보류)
+
+"AI 해커"가 자율적으로 앱을 공격해 취약점을 찾고 **고치기까지** 하는 도구입니다.
+설치 자체는 가볍지만, 실행하려면:
+
+- **Docker 데몬 필요** — 이 원격 실행 환경 컨테이너엔 Docker 데몬이 없어 지금은 돌릴 수 없습니다.
+- **AI API 키 필요** — Anthropic/OpenAI 키를 소비하며 스캔을 돌립니다.
+- **실제 트레이딩 API·거래소 연동에 부하**를 줄 수 있습니다. 자율 에이전트가
+  코드를 직접 고치기도 하므로, 사람 확인 없이 돌리면 리스크가 있습니다.
+
+로컬 PC(Docker 있는 곳)에서 직접 판단해 설치하세요.
+
+```bash
+pip install strix-agent      # 또는 pipx install strix-agent
+# 사용 전 Docker Desktop 실행 + ANTHROPIC_API_KEY/OPENAI_API_KEY 설정 필요
+# https://github.com/usestrix/strix
+```
+
+### Supabase Plugin (보류)
+
+이 저장소는 Supabase를 쓰지 않아(코드 전체 검색 결과 없음) 설치하지 않았습니다.
+나중에 Supabase로 DB를 옮기게 되면:
+
+```bash
+npx plugins add supabase-community/supabase-plugin
+```
+
+### Skill UI — 마음에 드는 사이트 디자인을 스킬로 추출 (설치 불필요, 그때그때 실행)
+
+상시 설치하는 스킬이 아니라 **분석하고 싶은 사이트가 생겼을 때** 그 자리에서
+`npx`로 실행하는 CLI입니다. 홈페이지 리뉴얼 시안이 정해지면 이렇게 쓰세요.
+
+```bash
+npx skillui https://참고하고싶은사이트.com
+# → DESIGN.md, <이름>.skill 생성
+# → cd 해당폴더 && claude 실행하면 자동으로 그 디자인 시스템을 따라감
+```
+
+`taste-skill`·`impeccable`·`ui-ux-pro-max`(이미 설치됨)와 같이 쓰면
+"이 사이트처럼 만들어줘" 한 줄로 참고 사이트의 색·폰트·컴포넌트를 그대로 가져올 수 있습니다.
+
+---
+
 ## 토큰 비용 참고
 
 플러그인 6종의 상시 로드 비용은 세션당 약 19,300 토큰이며, 그중 `marketing-skills`가

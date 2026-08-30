@@ -51,6 +51,13 @@ else
   echo "  ok ($(find .claude/skills -maxdepth 1 -mindepth 1 -type d | wc -l)종)"
 fi
 
+echo "==> 4/4 MCP 서버 확인 (.mcp.json)"
+if [ -f ".mcp.json" ]; then
+  echo "  ok (.mcp.json 은 git 에 커밋돼 있어 별도 설치 불필요 — 첫 실행 시 신뢰 승인만 하면 됨)"
+else
+  echo "  없음: .mcp.json"; fail=1
+fi
+
 echo
 if [ "$fail" -eq 0 ]; then
   echo "완료. Claude Code 를 재시작하면 스킬이 로드됩니다."

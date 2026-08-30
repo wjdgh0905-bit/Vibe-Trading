@@ -602,14 +602,14 @@ h3 {
 /* ============================================================
    Booking
    ============================================================ */
-.booking-grid {
-  display: grid;
-  grid-template-columns: 1.05fr 0.95fr;
-  gap: clamp(36px, 6vw, 80px);
-  align-items: start;
+.booking-single {
+  max-width: 640px;
 }
 .booking-intro .section-title {
   margin-bottom: 18px;
+}
+.js-open-inquiry.btn {
+  margin-top: 36px;
 }
 .direct-contact {
   margin: 22px 0 40px;
@@ -685,11 +685,7 @@ h3 {
 }
 
 .booking-form {
-  background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  padding: clamp(22px, 3.5vw, 34px);
-  box-shadow: 0 30px 60px -40px rgba(22, 24, 28, 0.3);
+  margin: 0;
 }
 .field {
   margin-bottom: 16px;
@@ -869,6 +865,73 @@ h3 {
 }
 
 /* ============================================================
+   Inquiry Modal
+   ============================================================ */
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(16px, 5vw, 40px);
+  background: rgba(10, 11, 13, 0.55);
+  backdrop-filter: blur(4px);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s var(--ease), visibility 0.3s var(--ease);
+}
+.modal.open {
+  opacity: 1;
+  visibility: visible;
+}
+.modal-panel {
+  position: relative;
+  width: 100%;
+  max-width: 540px;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: clamp(24px, 4vw, 40px);
+  box-shadow: 0 40px 80px -30px rgba(22, 24, 28, 0.5);
+}
+.modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  color: var(--ink);
+  font-size: 1.3rem;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.2s var(--ease), color 0.2s var(--ease);
+}
+.modal-close:hover {
+  border-color: var(--blue);
+  color: var(--blue);
+}
+.modal-title {
+  font-size: clamp(1.3rem, 3vw, 1.7rem);
+  font-weight: 800;
+  padding-right: 40px;
+}
+.modal-note {
+  margin: 14px 0 26px;
+  padding: 12px 16px;
+  background: var(--blue-soft);
+  border-radius: var(--radius);
+  font-size: 0.86rem;
+  color: var(--muted);
+}
+
+/* ============================================================
    Lightbox
    ============================================================ */
 .lightbox {
@@ -984,7 +1047,6 @@ h3 {
    ============================================================ */
 @media (max-width: 860px) {
   .about-grid,
-  .booking-grid,
   .process-grid {
     grid-template-columns: 1fr;
   }

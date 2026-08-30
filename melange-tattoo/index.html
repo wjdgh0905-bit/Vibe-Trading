@@ -63,7 +63,7 @@
             <a href="#guest-spots" class="nav-link" data-i18n="nav.guestSpots">Guest Spots</a>
             <a href="#booking" class="nav-link" data-i18n="nav.booking">Booking</a>
             <a href="#faq" class="nav-link" data-i18n="nav.faq">FAQ</a>
-            <a href="#booking" class="btn btn-small btn-primary nav-cta" data-i18n="nav.book">Book</a>
+            <a href="#booking" class="btn btn-small btn-primary nav-cta js-open-inquiry" data-i18n="nav.book">Book</a>
           </nav>
 
           <button class="lang-toggle" id="langToggle" type="button" aria-label="Switch language">
@@ -206,7 +206,7 @@
 
       <!-- ===================== Booking ===================== -->
       <section class="section booking" id="booking">
-        <div class="container booking-grid">
+        <div class="container booking-single">
           <div class="booking-intro">
             <p class="section-eyebrow" data-i18n="booking.eyebrow">Booking</p>
             <h2 class="section-title" data-i18n="booking.title">Booking Information</h2>
@@ -241,60 +241,9 @@
               <li data-i18n="booking.steps.5">Your design is created after the booking is confirmed, not before.</li>
               <li data-i18n="booking.steps.6">Final design and any changes are reviewed together in person before the tattoo starts.</li>
             </ol>
+
+            <button class="btn btn-primary js-open-inquiry" type="button" data-i18n="booking.openForm">Open Inquiry Form</button>
           </div>
-
-          <form class="booking-form" id="bookingForm" novalidate>
-            <div class="field">
-              <label for="f-name" data-i18n="form.name">Name</label>
-              <input id="f-name" name="name" type="text" autocomplete="name" required />
-              <span class="err" data-err-for="name"></span>
-            </div>
-
-            <div class="field-row">
-              <div class="field">
-                <label for="f-city" data-i18n="form.city">City</label>
-                <input id="f-city" name="city" type="text" required data-i18n-ph="form.cityPh" placeholder="e.g. Seoul" />
-                <span class="err" data-err-for="city"></span>
-              </div>
-              <div class="field">
-                <label for="f-ig" data-i18n="form.instagram">Instagram (optional)</label>
-                <input id="f-ig" name="instagram" type="text" placeholder="@handle" />
-              </div>
-            </div>
-
-            <div class="field">
-              <label for="f-idea" data-i18n="form.idea">Tattoo idea or preferred design</label>
-              <textarea id="f-idea" name="idea" rows="3" required data-i18n-ph="form.ideaPh" placeholder="Subject, style references, mood..."></textarea>
-              <span class="err" data-err-for="idea"></span>
-            </div>
-
-            <div class="field-row">
-              <div class="field">
-                <label for="f-placement" data-i18n="form.placement">Placement</label>
-                <input id="f-placement" name="placement" type="text" data-i18n-ph="form.placementPh" placeholder="e.g. forearm" />
-              </div>
-              <div class="field">
-                <label for="f-size" data-i18n="form.size">Approximate size (cm)</label>
-                <input id="f-size" name="size" type="text" data-i18n-ph="form.sizePh" placeholder="e.g. 15" />
-              </div>
-            </div>
-
-            <div class="field">
-              <label for="f-date" data-i18n="form.date">Preferred date</label>
-              <input id="f-date" name="date" type="date" />
-            </div>
-
-            <div class="field">
-              <label for="f-photo" data-i18n="form.photo">Photo of the placement area (optional)</label>
-              <input id="f-photo" name="photo" type="file" accept="image/*" />
-            </div>
-
-            <button class="btn btn-primary btn-block" type="submit" data-i18n="form.submit">Send Inquiry</button>
-            <p class="form-note" data-i18n="form.note">
-              Submitted directly — no email app needed.
-            </p>
-            <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
-          </form>
         </div>
       </section>
 
@@ -377,7 +326,71 @@
     </footer>
 
     <!-- ===================== Sticky mobile booking bar ===================== -->
-    <a href="#booking" class="sticky-cta" id="stickyCta" data-i18n="nav.book">Book</a>
+    <a href="#booking" class="sticky-cta js-open-inquiry" id="stickyCta" data-i18n="nav.book">Book</a>
+
+    <!-- ===================== Inquiry Modal ===================== -->
+    <div class="modal" id="inquiryModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="inquiryModalTitle">
+      <div class="modal-panel">
+        <button class="modal-close" id="modalClose" type="button" aria-label="Close">&times;</button>
+        <h2 class="modal-title" id="inquiryModalTitle" data-i18n="modal.title">Send an Inquiry</h2>
+        <p class="modal-note" data-i18n="modal.instaNote">
+          Prefer Instagram? DM @melange.tattoo directly — no form needed.
+        </p>
+
+        <form class="booking-form" id="bookingForm" novalidate>
+          <div class="field">
+            <label for="f-name" data-i18n="form.name">Name</label>
+            <input id="f-name" name="name" type="text" autocomplete="name" required />
+            <span class="err" data-err-for="name"></span>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label for="f-city" data-i18n="form.city">City</label>
+              <input id="f-city" name="city" type="text" required data-i18n-ph="form.cityPh" placeholder="e.g. Seoul" />
+              <span class="err" data-err-for="city"></span>
+            </div>
+            <div class="field">
+              <label for="f-ig" data-i18n="form.instagram">Instagram (optional)</label>
+              <input id="f-ig" name="instagram" type="text" placeholder="@handle" />
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="f-idea" data-i18n="form.idea">Tattoo idea or preferred design</label>
+            <textarea id="f-idea" name="idea" rows="3" required data-i18n-ph="form.ideaPh" placeholder="Subject, style references, mood..."></textarea>
+            <span class="err" data-err-for="idea"></span>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label for="f-placement" data-i18n="form.placement">Placement</label>
+              <input id="f-placement" name="placement" type="text" data-i18n-ph="form.placementPh" placeholder="e.g. forearm" />
+            </div>
+            <div class="field">
+              <label for="f-size" data-i18n="form.size">Approximate size (cm)</label>
+              <input id="f-size" name="size" type="text" data-i18n-ph="form.sizePh" placeholder="e.g. 15" />
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="f-date" data-i18n="form.date">Preferred date</label>
+            <input id="f-date" name="date" type="date" />
+          </div>
+
+          <div class="field">
+            <label for="f-photo" data-i18n="form.photo">Photo of the placement area (optional)</label>
+            <input id="f-photo" name="photo" type="file" accept="image/*" />
+          </div>
+
+          <button class="btn btn-primary btn-block" type="submit" data-i18n="form.submit">Send Inquiry</button>
+          <p class="form-note" data-i18n="form.note">
+            Submitted directly — no email app needed.
+          </p>
+          <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </div>
 
     <!-- ===================== Lightbox ===================== -->
     <div class="lightbox" id="lightbox" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Gallery viewer">

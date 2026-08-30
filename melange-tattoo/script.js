@@ -269,6 +269,9 @@
       "booking.steps.4": "The deposit is deducted from the final price and is non-refundable.",
       "booking.steps.5": "Your design is created after the booking is confirmed, not before.",
       "booking.steps.6": "Final design and any changes are reviewed together in person before the tattoo starts.",
+      "booking.openForm": "Open Inquiry Form",
+      "modal.title": "Send an Inquiry",
+      "modal.instaNote": "Prefer Instagram? DM @melange.tattoo directly — no form needed.",
       "form.name": "Name",
       "form.city": "City",
       "form.cityPh": "e.g. Seoul",
@@ -370,6 +373,9 @@
       "booking.steps.4": "예약금은 최종 금액에서 차감되며 환불되지 않습니다.",
       "booking.steps.5": "디자인은 예약이 확정된 후에 제작됩니다.",
       "booking.steps.6": "최종 디자인과 수정 사항은 작업 시작 전 현장에서 함께 확인합니다.",
+      "booking.openForm": "문의 폼 열기",
+      "modal.title": "문의 보내기",
+      "modal.instaNote": "인스타그램이 편하시면 @melange.tattoo로 바로 DM 주세요 — 폼 작성 없이도 괜찮아요.",
       "form.name": "이름",
       "form.city": "도시",
       "form.cityPh": "예: 서울",
@@ -587,6 +593,43 @@
     if (e.key === "Escape") closeLb();
     else if (e.key === "ArrowLeft") step(-1);
     else if (e.key === "ArrowRight") step(1);
+  });
+
+  /* ------------------------------------------------------------
+     Inquiry modal — every "Inquire" entry point (header, sticky
+     mobile bar, the booking section's own button) opens this
+     instead of scrolling, so the form is always one tap away.
+     ------------------------------------------------------------ */
+  const modal = document.getElementById("inquiryModal");
+  const modalClose = document.getElementById("modalClose");
+  let modalLastFocused = null;
+
+  function openModal() {
+    modalLastFocused = document.activeElement;
+    modal.classList.add("open");
+    modal.setAttribute("aria-hidden", "false");
+    document.body.style.overflow = "hidden";
+    document.getElementById("f-name").focus();
+  }
+  function closeModal() {
+    modal.classList.remove("open");
+    modal.setAttribute("aria-hidden", "true");
+    document.body.style.overflow = "";
+    if (modalLastFocused) modalLastFocused.focus();
+  }
+  document.querySelectorAll(".js-open-inquiry").forEach((el) => {
+    el.addEventListener("click", (e) => {
+      e.preventDefault();
+      closeNav();
+      openModal();
+    });
+  });
+  modalClose.addEventListener("click", closeModal);
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) closeModal();
+  });
+  document.addEventListener("keydown", (e) => {
+    if (modal.classList.contains("open") && e.key === "Escape") closeModal();
   });
 
   /* ------------------------------------------------------------

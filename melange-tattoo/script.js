@@ -160,7 +160,7 @@
      created at formspree.io. Until then submissions will fail
      gracefully with an error message pointing to direct email.
      ------------------------------------------------------------ */
-  const FORMSPREE_ENDPOINT = "https://formspree.io/f/YOUR_FORM_ID";
+  const FORMSPREE_ENDPOINT = "https://formspree.io/f/mwlkpjyw";
 
   /* ------------------------------------------------------------
      Translations
@@ -318,8 +318,8 @@
       "nav.booking": "예약",
       "nav.faq": "FAQ",
       "nav.book": "예약하기",
-      "hero.title1": "파도의 흐름과 블루로",
-      "hero.title2": "완성하는 타투 작업.",
+      "hero.title1": "파도와 블루로",
+      "hero.title2": "완성하는 타투.",
       "hero.sub":
         "용, 뱀, 불사조, 잉어, 고래, 꽃, 구름, 번개, 패턴 — 각각 멜란지만의 선과 색으로 다시 그려 몸의 형태에 맞춥니다.",
       "hero.ctaWork": "작업 보기",

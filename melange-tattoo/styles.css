@@ -24,7 +24,7 @@
   --gutter: clamp(20px, 5vw, 56px);
   --radius: 3px;
 
-  --font: "Inter", system-ui, -apple-system, sans-serif;
+  --font: "Inter", "Noto Sans KR", system-ui, -apple-system, sans-serif;
 
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -58,6 +58,21 @@ body {
   line-height: 1.65;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+}
+
+/* Latin letter-spacing/weight tuning doesn't read well on Hangul —
+   tighten tracking and drop a touch of weight for Korean. */
+:lang(ko) {
+  letter-spacing: 0;
+  word-break: keep-all;
+}
+:lang(ko) h1,
+:lang(ko) h2,
+:lang(ko) h3,
+:lang(ko) .brand-text,
+:lang(ko) .btn,
+:lang(ko) .nav-link {
+  font-weight: 700;
 }
 img {
   max-width: 100%;
@@ -304,6 +319,10 @@ h3 {
 .hero-title {
   font-size: clamp(2.4rem, 6.4vw, 4.4rem);
   font-weight: 800;
+}
+:lang(ko) .hero-title {
+  font-size: clamp(2.1rem, 5.6vw, 3.7rem);
+  line-height: 1.25;
 }
 .hero-sub {
   margin: 26px 0 36px;

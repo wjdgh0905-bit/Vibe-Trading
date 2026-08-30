@@ -3,6 +3,33 @@
 블로그·릴스에서 소개된 스킬 팩을 이 저장소에 적용했습니다.
 `.claude/settings.json`(플러그인 6종) + `.claude/skills/`(직접 설치 14종) 두 갈래로 구성됩니다.
 
+## 0. 내 컴퓨터에 적용하기 (git pull 이후 1회)
+
+이 저장소가 들고 있는 건 **설정과 스킬 파일**이지, 플러그인 본체가 아닙니다.
+플러그인 실체는 각자 머신의 `~/.claude/plugins/` 에 받아야 하므로 아래를 한 번 실행하세요.
+
+```bash
+git pull
+./.claude/setup-skills.sh     # 여러 번 실행해도 안전
+```
+
+그리고 **Claude Code 를 재시작**하세요. 스킬·훅·플러그인은 세션이 시작될 때
+한 번만 읽히기 때문에, 이미 열려 있는 세션에는 반영되지 않습니다.
+
+| 상황 | 반영 여부 |
+|---|---|
+| 이 저장소에서 새로 연 세션 | 반영됨 |
+| 이 저장소에서 이미 열려 있던 세션 | 재시작 필요 |
+| 다른 프로젝트 폴더 | 반영 안 됨 (project scope) |
+
+다른 프로젝트에서도 쓰려면 `--scope user` 로 다시 설치하면 됩니다.
+
+```bash
+claude plugin install superpowers@superpowers-marketplace --scope user
+```
+
+---
+
 ## 1. 플러그인 (`.claude/settings.json`, project scope)
 
 `extraKnownMarketplaces` + `enabledPlugins`에 선언되어 있어, 이 저장소에서 Claude Code를

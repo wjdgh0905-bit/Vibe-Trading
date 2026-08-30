@@ -22,6 +22,7 @@ agent/.env
 # Shared agent-skill setup (see .claude/SKILLS.md)
 !.claude/settings.json
 !.claude/SKILLS.md
+!.claude/setup-skills.sh
 !.claude/skills/
 CLAUDE.md
 .vscode/

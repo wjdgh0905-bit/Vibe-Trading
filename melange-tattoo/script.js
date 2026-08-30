@@ -20,8 +20,6 @@
     { tag: "Dragon", src: "assets/gallery/dragon-01.jpg" },
     { tag: "Snake", src: "assets/gallery/snake-01.jpg" },
     { tag: "Phoenix", src: "assets/gallery/phoenix-01.jpg" },
-    { tag: "Koi", src: "" },
-    { tag: "Whale", src: "" },
     { tag: "Flowers", src: "assets/gallery/flowers-01.jpg" },
     { tag: "Clouds", src: "assets/gallery/clouds-01.jpg" },
     { tag: "Lightning", src: "assets/gallery/lightning-01.jpg" },

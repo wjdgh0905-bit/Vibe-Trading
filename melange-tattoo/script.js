@@ -138,6 +138,7 @@
     { tagKey: "MelangeStyle", src: "assets/gallery/custom-106.jpg" },
     { tagKey: "MelangeStyle", src: "assets/gallery/custom-107.jpg" },
     { tagKey: "MelangeStyle", src: "assets/gallery/custom-108.jpg" },
+    { tagKey: "Flash", src: "assets/gallery/flash-01.jpg" },
   ];
 
   /* ------------------------------------------------------------
@@ -177,6 +178,7 @@
       Lightning: "Lightning",
       Pattern: "Pattern",
       MelangeStyle: "Melange Style",
+      Flash: "Flash",
     },
     ko: {
       Dragon: "드래곤",
@@ -187,6 +189,7 @@
       Lightning: "번개",
       Pattern: "패턴",
       MelangeStyle: "멜란지 스타일",
+      Flash: "플래시",
     },
   };
 
@@ -210,7 +213,7 @@
   const I18N = {
     en: {
       "meta.description":
-        "Melange Tattoo — guest tattoo artist working across South Korea, Australia, the United States, the United Kingdom, and Europe. Custom work built around wave motion and blue color.",
+        "Melange Tattoo: guest tattoo artist working across South Korea, Australia, the United States, the United Kingdom, and Europe. Custom work built around wave motion and blue color.",
       "a11y.skip": "Skip to content",
       "nav.work": "Work",
       "nav.about": "About",
@@ -228,13 +231,13 @@
         "South Korea  ·  Australia  ·  United States  ·  United Kingdom  ·  Europe",
       "work.eyebrow": "Selected Work",
       "work.title": "Recent tattoos",
-      "work.desc": "A running collection of finished pieces. Tap to enlarge — new work is added regularly.",
+      "work.desc": "Finished pieces, updated as new work comes in. Tap any photo to enlarge.",
       "about.eyebrow": "About",
       "about.title": "About Melange",
       "about.lead":
-        "Melange works across dragon, snake, phoenix, koi, whale, flower, cloud, lightning, and pattern designs — each one rebuilt around a consistent wave motion and blue color palette.",
+        "Melange works across dragon, snake, phoenix, koi, whale, flower, cloud, lightning, and pattern designs, all built around the same wave motion and blue color palette.",
       "about.body":
-        "Every design is drawn to fit the shape and movement of its placement, not fitted to a fixed template. Reference images are a starting point, not something to copy — each piece is redrawn into Melange's own line work and color.",
+        "Every design is drawn to fit the shape and movement of its placement rather than a fixed template. Reference images are a starting point, not something to copy. Each piece is redrawn in Melange's own line work and color.",
       "process.eyebrow": "Style & Process",
       "process.title": "How each piece is made",
       "process.styleH": "Style",
@@ -250,7 +253,7 @@
       "guestSpots.eyebrow": "Upcoming Guest Spots",
       "guestSpots.title": "Where Melange is working",
       "guestSpots.desc":
-        "Melange travels as a guest artist. Exact cities and dates are announced on Instagram as they're confirmed — the studio address is shared directly with confirmed bookings.",
+        "Melange travels as a guest artist. Exact cities and dates go up on Instagram as they're confirmed. The studio address is shared directly once a booking is confirmed.",
       "guestSpots.status": "Dates via Instagram",
       "booking.eyebrow": "Booking",
       "booking.title": "Booking Information",
@@ -267,13 +270,13 @@
       "booking.howItWorks": "How it works",
       "booking.steps.1": "Send the details above via Instagram DM or email.",
       "booking.steps.2": "Melange reviews your message and replies with size, difficulty, estimated time, and price.",
-      "booking.steps.3": "A deposit secures your date — spots are confirmed in the order deposits are received.",
+      "booking.steps.3": "A deposit secures your date. Spots are confirmed in the order deposits come in.",
       "booking.steps.4": "The deposit is deducted from the final price and is non-refundable.",
       "booking.steps.5": "Your design is created after the booking is confirmed, not before.",
       "booking.steps.6": "Final design and any changes are reviewed together in person before the tattoo starts.",
       "booking.openForm": "Open Inquiry Form",
       "modal.title": "Send an Inquiry",
-      "modal.instaNote": "Prefer Instagram? DM @melange.tattoo directly — no form needed.",
+      "modal.instaNote": "Prefer Instagram? DM @melange.tattoo directly. No form needed.",
       "form.name": "Name",
       "form.city": "City",
       "form.cityPh": "e.g. Seoul",
@@ -287,10 +290,10 @@
       "form.date": "Preferred date",
       "form.photo": "Photo of the placement area (optional)",
       "form.submit": "Send Inquiry",
-      "form.note": "Submitted directly — no email app needed.",
+      "form.note": "Submitted directly. No email app needed.",
       "form.sending": "Sending…",
-      "form.success": "Thanks — I'll be in touch soon.",
-      "form.error": "Something went wrong — please email me directly at melange.tattoo@gmail.com.",
+      "form.success": "Thanks, I'll be in touch soon.",
+      "form.error": "Something went wrong. Please email me directly at melange.tattoo@gmail.com.",
       "faq.eyebrow": "FAQ",
       "faq.title": "Common Questions",
       "faq.q1": "Where are you based?",
@@ -315,7 +318,7 @@
     },
     ko: {
       "meta.description":
-        "멜란지 타투 — 대한민국, 호주, 미국, 영국, 유럽에서 활동하는 게스트 타투이스트. 파도의 흐름과 블루 컬러를 중심으로 한 커스텀 작업.",
+        "멜란지 타투. 대한민국, 호주, 미국, 영국, 유럽에서 활동하는 게스트 타투이스트로, 파도의 흐름과 블루 컬러를 중심으로 한 커스텀 작업을 합니다.",
       "a11y.skip": "본문 바로가기",
       "nav.work": "작업",
       "nav.about": "소개",
@@ -326,17 +329,17 @@
       "hero.title1": "파도와 블루로",
       "hero.title2": "완성하는 타투.",
       "hero.sub":
-        "용, 뱀, 불사조, 잉어, 고래, 꽃, 구름, 번개, 패턴 — 각각 멜란지만의 선과 색으로 다시 그려 몸의 형태에 맞춥니다.",
+        "용, 뱀, 불사조, 잉어, 고래, 꽃, 구름, 번개, 패턴을 각각 멜란지만의 선과 색으로 다시 그려 몸의 형태에 맞춥니다.",
       "hero.ctaWork": "작업 보기",
       "hero.ctaBooking": "예약 안내",
       "hero.meta": "대한민국  ·  호주  ·  미국  ·  영국  ·  유럽",
       "work.eyebrow": "작업",
       "work.title": "최근 작업",
-      "work.desc": "완성작 모음입니다. 클릭하면 크게 볼 수 있어요 — 새 작업은 계속 추가됩니다.",
+      "work.desc": "완성작 모음입니다. 새 작업이 생기면 계속 추가돼요. 사진을 누르면 크게 볼 수 있어요.",
       "about.eyebrow": "소개",
       "about.title": "멜란지 소개",
       "about.lead":
-        "멜란지는 용, 뱀, 불사조, 잉어, 고래, 꽃, 구름, 번개, 패턴 등 다양한 소재를 다룹니다 — 모두 일관된 파도의 흐름과 블루 컬러를 중심으로 재구성됩니다.",
+        "멜란지는 용, 뱀, 불사조, 잉어, 고래, 꽃, 구름, 번개, 패턴 등 다양한 소재를 다룹니다. 모두 같은 파도의 흐름과 블루 컬러를 중심으로 재구성됩니다.",
       "about.body":
         "모든 디자인은 정해진 틀이 아니라 시술 부위의 형태와 움직임에 맞춰 그려집니다. 레퍼런스 이미지는 시작점일 뿐 그대로 베끼지 않으며, 모든 작업은 멜란지만의 선과 색으로 다시 그려집니다.",
       "process.eyebrow": "스타일 & 작업 방식",
@@ -377,7 +380,7 @@
       "booking.steps.6": "최종 디자인과 수정 사항은 작업 시작 전 현장에서 함께 확인합니다.",
       "booking.openForm": "문의 폼 열기",
       "modal.title": "문의 보내기",
-      "modal.instaNote": "인스타그램이 편하시면 @melange.tattoo로 바로 DM 주세요 — 폼 작성 없이도 괜찮아요.",
+      "modal.instaNote": "인스타그램이 편하시면 @melange.tattoo로 바로 DM 주세요. 폼 작성 없이도 괜찮아요.",
       "form.name": "이름",
       "form.city": "도시",
       "form.cityPh": "예: 서울",
@@ -391,10 +394,10 @@
       "form.date": "희망 날짜",
       "form.photo": "시술 부위 사진 (선택)",
       "form.submit": "문의 보내기",
-      "form.note": "제출하면 바로 접수돼요 — 메일 앱 필요 없습니다.",
+      "form.note": "제출하면 바로 접수돼요. 메일 앱은 필요 없습니다.",
       "form.sending": "전송 중…",
-      "form.success": "감사합니다 — 곧 연락드릴게요.",
-      "form.error": "전송에 실패했어요 — melange.tattoo@gmail.com으로 직접 메일 부탁드려요.",
+      "form.success": "감사합니다. 곧 연락드릴게요.",
+      "form.error": "전송에 실패했어요. melange.tattoo@gmail.com으로 직접 메일 부탁드려요.",
       "faq.eyebrow": "FAQ",
       "faq.title": "자주 묻는 질문",
       "faq.q1": "어디서 활동하나요?",
@@ -497,7 +500,7 @@
     if (entry.src) {
       const img = document.createElement("img");
       img.src = entry.src;
-      img.alt = "Melange Tattoo — " + tTag(entry.tagKey) + " tattoo";
+      img.alt = "Melange Tattoo " + tTag(entry.tagKey) + " tattoo";
       img.loading = "lazy";
       return img;
     }
@@ -550,7 +553,7 @@
     if (entry.src) {
       const img = document.createElement("img");
       img.src = entry.src;
-      img.alt = "Melange Tattoo — " + tTag(entry.tagKey) + " tattoo";
+      img.alt = "Melange Tattoo " + tTag(entry.tagKey) + " tattoo";
       lbMedia.appendChild(img);
     } else {
       const ph = document.createElement("span");

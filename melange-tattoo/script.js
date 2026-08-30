@@ -17,7 +17,7 @@
      Add more entries any time — the grid reflows automatically.
      ------------------------------------------------------------ */
   const GALLERY = [
-    { tag: "Dragon", src: "" },
+    { tag: "Dragon", src: "assets/gallery/dragon-01.jpg" },
     { tag: "Snake", src: "" },
     { tag: "Phoenix", src: "" },
     { tag: "Koi", src: "" },

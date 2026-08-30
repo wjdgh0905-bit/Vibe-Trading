@@ -6,6 +6,7 @@
     <title>MELANGE TATTOO — Guest Tattoo Artist</title>
     <meta
       name="description"
+      data-i18n-content="meta.description"
       content="Melange Tattoo — guest tattoo artist working across South Korea, Australia, the United States, the United Kingdom, and Europe. Custom work built around wave motion and blue color."
     />
     <meta name="theme-color" content="#faf9f6" />
@@ -29,7 +30,7 @@
   </head>
 
   <body>
-    <a class="skip-link" href="#main">Skip to content</a>
+    <a class="skip-link" href="#main" data-i18n="a11y.skip">Skip to content</a>
 
     <!-- ===================== Header / Nav ===================== -->
     <header class="site-header" id="siteHeader">
@@ -56,12 +57,17 @@
         </a>
 
         <nav class="nav" id="primaryNav" aria-label="Primary">
-          <a href="#work" class="nav-link">Work</a>
-          <a href="#about" class="nav-link">About</a>
-          <a href="#guest-spots" class="nav-link">Guest Spots</a>
-          <a href="#booking" class="nav-link">Booking</a>
-          <a href="#faq" class="nav-link">FAQ</a>
-          <a href="#booking" class="btn btn-small btn-primary nav-cta">Book</a>
+          <a href="#work" class="nav-link" data-i18n="nav.work">Work</a>
+          <a href="#about" class="nav-link" data-i18n="nav.about">About</a>
+          <a href="#guest-spots" class="nav-link" data-i18n="nav.guestSpots">Guest Spots</a>
+          <a href="#booking" class="nav-link" data-i18n="nav.booking">Booking</a>
+          <a href="#faq" class="nav-link" data-i18n="nav.faq">FAQ</a>
+          <button class="lang-toggle" id="langToggle" type="button" aria-label="Switch language">
+            <span class="lang-opt" data-lang="en">EN</span>
+            <span class="lang-sep">/</span>
+            <span class="lang-opt" data-lang="ko">KO</span>
+          </button>
+          <a href="#booking" class="btn btn-small btn-primary nav-cta" data-i18n="nav.book">Book</a>
         </nav>
 
         <button
@@ -81,22 +87,25 @@
       <!-- ===================== Hero ===================== -->
       <section class="hero" id="hero">
         <div class="container hero-inner">
-          <h1 class="hero-title">Tattoo work built on<br />wave motion and blue.</h1>
-          <p class="hero-sub">
+          <h1 class="hero-title">
+            <span data-i18n="hero.title1">Tattoo work built on</span><br />
+            <span data-i18n="hero.title2">wave motion and blue.</span>
+          </h1>
+          <p class="hero-sub" data-i18n="hero.sub">
             Dragon, snake, phoenix, koi, whale, flowers, clouds, lightning, pattern — each
             redrawn into Melange's own line and color, shaped to fit the body.
           </p>
           <div class="hero-actions">
-            <a class="btn btn-primary" href="#work">View Work</a>
-            <a class="btn btn-ghost" href="#booking">Booking Info</a>
+            <a class="btn btn-primary" href="#work" data-i18n="hero.ctaWork">View Work</a>
+            <a class="btn btn-ghost" href="#booking" data-i18n="hero.ctaBooking">Booking Info</a>
           </div>
-          <p class="hero-meta">
+          <p class="hero-meta" data-i18n="hero.meta">
             South Korea &nbsp;·&nbsp; Australia &nbsp;·&nbsp; United States &nbsp;·&nbsp; United Kingdom &nbsp;·&nbsp; Europe
           </p>
         </div>
         <svg class="hero-wave" viewBox="0 0 1200 40" preserveAspectRatio="none" aria-hidden="true">
           <path
-            d="M0 20c50 0 50-16 100-16s50 16 100 16 50-16 100-16 50 16 100 16 50-16 100-16 50 16 100 16 50-16 100-16 50 16 100 16 50-16 100-16 50 16 100 16 50-16 100-16 50 16 100 16"
+            d="M0 20c50 0 50-16 100-16s50 16 100 16 50-16 100-16 50 16 100 16 50-16 100-16 50 16 100 16 50-16 100-16 50 16 100 16 50-16 100-16 50 16 100 16"
             fill="none" stroke="currentColor" stroke-width="1.5"
           />
         </svg>
@@ -106,9 +115,9 @@
       <section class="section work" id="work">
         <div class="container">
           <div class="section-head">
-            <p class="section-eyebrow">Selected Work</p>
-            <h2 class="section-title">Recent tattoos</h2>
-            <p class="section-desc">
+            <p class="section-eyebrow" data-i18n="work.eyebrow">Selected Work</p>
+            <h2 class="section-title" data-i18n="work.title">Recent tattoos</h2>
+            <p class="section-desc" data-i18n="work.desc">
               A running collection of finished pieces. Tap to enlarge — new work is added regularly.
             </p>
           </div>
@@ -123,14 +132,14 @@
       <section class="section about" id="about">
         <div class="container about-grid">
           <div class="about-copy">
-            <p class="section-eyebrow">About</p>
-            <h2 class="section-title">About Melange</h2>
-            <p class="lead">
+            <p class="section-eyebrow" data-i18n="about.eyebrow">About</p>
+            <h2 class="section-title" data-i18n="about.title">About Melange</h2>
+            <p class="lead" data-i18n="about.lead">
               Melange works across dragon, snake, phoenix, koi, whale, flower, cloud, lightning,
               and pattern designs — each one rebuilt around a consistent wave motion and blue
               color palette.
             </p>
-            <p>
+            <p data-i18n="about.body">
               Every design is drawn to fit the shape and movement of its placement, not fitted to
               a fixed template. Reference images are a starting point, not something to copy —
               each piece is redrawn into Melange's own line work and color.
@@ -146,27 +155,27 @@
       <section class="section process" id="process">
         <div class="container">
           <div class="section-head">
-            <p class="section-eyebrow">Style &amp; Process</p>
-            <h2 class="section-title">How each piece is made</h2>
+            <p class="section-eyebrow" data-i18n="process.eyebrow">Style &amp; Process</p>
+            <h2 class="section-title" data-i18n="process.title">How each piece is made</h2>
           </div>
 
           <div class="process-grid">
             <div class="process-col">
-              <h3 class="process-h">Style</h3>
+              <h3 class="process-h" data-i18n="process.styleH">Style</h3>
               <ul class="dot-list">
-                <li>Recurring subjects: dragon, snake, phoenix, koi, whale, flowers, clouds, lightning, pattern</li>
-                <li>Built around wave motion and a blue color palette</li>
-                <li>Adapted to the shape and movement of the placement</li>
-                <li>Reference is reworked, not copied</li>
+                <li data-i18n="process.style.1">Recurring subjects: dragon, snake, phoenix, koi, whale, flowers, clouds, lightning, pattern</li>
+                <li data-i18n="process.style.2">Built around wave motion and a blue color palette</li>
+                <li data-i18n="process.style.3">Adapted to the shape and movement of the placement</li>
+                <li data-i18n="process.style.4">Reference is reworked, not copied</li>
               </ul>
             </div>
             <div class="process-col">
-              <h3 class="process-h">Process</h3>
+              <h3 class="process-h" data-i18n="process.processH">Process</h3>
               <ul class="dot-list">
-                <li>Stencil and freehand are both used, depending on the piece</li>
-                <li>Base elements are prepared ahead of time</li>
-                <li>Sections that follow the body's flow are drawn freehand on the day</li>
-                <li>Final design and any changes are confirmed together before starting</li>
+                <li data-i18n="process.process.1">Stencil and freehand are both used, depending on the piece</li>
+                <li data-i18n="process.process.2">Base elements are prepared ahead of time</li>
+                <li data-i18n="process.process.3">Sections that follow the body's flow are drawn freehand on the day</li>
+                <li data-i18n="process.process.4">Final design and any changes are confirmed together before starting</li>
               </ul>
             </div>
           </div>
@@ -177,9 +186,9 @@
       <section class="section guest-spots" id="guest-spots">
         <div class="container">
           <div class="section-head">
-            <p class="section-eyebrow">Upcoming Guest Spots</p>
-            <h2 class="section-title">Where Melange is working</h2>
-            <p class="section-desc">
+            <p class="section-eyebrow" data-i18n="guestSpots.eyebrow">Upcoming Guest Spots</p>
+            <h2 class="section-title" data-i18n="guestSpots.title">Where Melange is working</h2>
+            <p class="section-desc" data-i18n="guestSpots.desc">
               Melange travels as a guest artist. Exact cities and dates are announced on
               Instagram as they're confirmed — the studio address is shared directly with
               confirmed bookings.
@@ -196,86 +205,90 @@
       <section class="section booking" id="booking">
         <div class="container booking-grid">
           <div class="booking-intro">
-            <p class="section-eyebrow">Booking</p>
-            <h2 class="section-title">Booking Information</h2>
-            <p class="lead">
-              By appointment only. No walk-ins. Every booking starts with a short consultation.
+            <p class="section-eyebrow" data-i18n="booking.eyebrow">Booking</p>
+            <h2 class="section-title" data-i18n="booking.title">Booking Information</h2>
+            <p class="lead" data-i18n="booking.lead">
+              By appointment only. Every booking starts with a short consultation.
             </p>
 
             <p class="direct-contact">
-              Prefer to reach out directly?
+              <span data-i18n="booking.directContact">Prefer to reach out directly?</span>
               <a href="https://instagram.com/melange.tattoo" target="_blank" rel="noopener">Instagram</a>
               &nbsp;·&nbsp;
               <a href="mailto:melange.tattoo@gmail.com">Email</a>
             </p>
 
-            <h3 class="booking-h">What to include in your first message</h3>
+            <h3 class="booking-h" data-i18n="booking.whatToInclude">What to include in your first message</h3>
             <ul class="check-list">
-              <li>Name</li>
-              <li>City</li>
-              <li>Tattoo idea or preferred design</li>
-              <li>Placement</li>
-              <li>Approximate size in cm</li>
-              <li>Preferred date</li>
-              <li>A clear photo of the placement area</li>
+              <li data-i18n="booking.checklist.1">Name</li>
+              <li data-i18n="booking.checklist.2">City</li>
+              <li data-i18n="booking.checklist.3">Tattoo idea or preferred design</li>
+              <li data-i18n="booking.checklist.4">Placement</li>
+              <li data-i18n="booking.checklist.5">Approximate size in cm</li>
+              <li data-i18n="booking.checklist.6">Preferred date</li>
+              <li data-i18n="booking.checklist.7">A clear photo of the placement area</li>
             </ul>
 
-            <h3 class="booking-h">How it works</h3>
+            <h3 class="booking-h" data-i18n="booking.howItWorks">How it works</h3>
             <ol class="step-list">
-              <li>Send the details above via Instagram DM or email.</li>
-              <li>Melange reviews your message and replies with size, difficulty, estimated time, and price.</li>
-              <li>A deposit secures your date — spots are confirmed in the order deposits are received.</li>
-              <li>The deposit is deducted from the final price and is non-refundable.</li>
-              <li>Your design is created after the booking is confirmed, not before.</li>
-              <li>Final design and any changes are reviewed together in person before the tattoo starts.</li>
+              <li data-i18n="booking.steps.1">Send the details above via Instagram DM or email.</li>
+              <li data-i18n="booking.steps.2">Melange reviews your message and replies with size, difficulty, estimated time, and price.</li>
+              <li data-i18n="booking.steps.3">A deposit secures your date — spots are confirmed in the order deposits are received.</li>
+              <li data-i18n="booking.steps.4">The deposit is deducted from the final price and is non-refundable.</li>
+              <li data-i18n="booking.steps.5">Your design is created after the booking is confirmed, not before.</li>
+              <li data-i18n="booking.steps.6">Final design and any changes are reviewed together in person before the tattoo starts.</li>
             </ol>
           </div>
 
           <form class="booking-form" id="bookingForm" novalidate>
             <div class="field">
-              <label for="f-name">Name</label>
+              <label for="f-name" data-i18n="form.name">Name</label>
               <input id="f-name" name="name" type="text" autocomplete="name" required />
               <span class="err" data-err-for="name"></span>
             </div>
 
             <div class="field-row">
               <div class="field">
-                <label for="f-city">City</label>
-                <input id="f-city" name="city" type="text" required placeholder="e.g. Seoul" />
+                <label for="f-city" data-i18n="form.city">City</label>
+                <input id="f-city" name="city" type="text" required data-i18n-ph="form.cityPh" placeholder="e.g. Seoul" />
                 <span class="err" data-err-for="city"></span>
               </div>
               <div class="field">
-                <label for="f-ig">Instagram (optional)</label>
+                <label for="f-ig" data-i18n="form.instagram">Instagram (optional)</label>
                 <input id="f-ig" name="instagram" type="text" placeholder="@handle" />
               </div>
             </div>
 
             <div class="field">
-              <label for="f-idea">Tattoo idea or preferred design</label>
-              <textarea id="f-idea" name="idea" rows="3" required placeholder="Subject, style references, mood..."></textarea>
+              <label for="f-idea" data-i18n="form.idea">Tattoo idea or preferred design</label>
+              <textarea id="f-idea" name="idea" rows="3" required data-i18n-ph="form.ideaPh" placeholder="Subject, style references, mood..."></textarea>
               <span class="err" data-err-for="idea"></span>
             </div>
 
             <div class="field-row">
               <div class="field">
-                <label for="f-placement">Placement</label>
-                <input id="f-placement" name="placement" type="text" placeholder="e.g. forearm" />
+                <label for="f-placement" data-i18n="form.placement">Placement</label>
+                <input id="f-placement" name="placement" type="text" data-i18n-ph="form.placementPh" placeholder="e.g. forearm" />
               </div>
               <div class="field">
-                <label for="f-size">Approximate size (cm)</label>
-                <input id="f-size" name="size" type="text" placeholder="e.g. 15" />
+                <label for="f-size" data-i18n="form.size">Approximate size (cm)</label>
+                <input id="f-size" name="size" type="text" data-i18n-ph="form.sizePh" placeholder="e.g. 15" />
               </div>
             </div>
 
             <div class="field">
-              <label for="f-date">Preferred date</label>
+              <label for="f-date" data-i18n="form.date">Preferred date</label>
               <input id="f-date" name="date" type="date" />
             </div>
 
-            <button class="btn btn-primary btn-block" type="submit">Send Inquiry</button>
-            <p class="form-note">
-              Opens your mail app with the details filled in — please attach a clear photo of the
-              placement area before sending.
+            <div class="field">
+              <label for="f-photo" data-i18n="form.photo">Photo of the placement area (optional)</label>
+              <input id="f-photo" name="photo" type="file" accept="image/*" />
+            </div>
+
+            <button class="btn btn-primary btn-block" type="submit" data-i18n="form.submit">Send Inquiry</button>
+            <p class="form-note" data-i18n="form.note">
+              Submitted directly — no email app needed.
             </p>
             <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
           </form>
@@ -286,45 +299,41 @@
       <section class="section faq" id="faq">
         <div class="container">
           <div class="section-head">
-            <p class="section-eyebrow">FAQ</p>
-            <h2 class="section-title">Common Questions</h2>
+            <p class="section-eyebrow" data-i18n="faq.eyebrow">FAQ</p>
+            <h2 class="section-title" data-i18n="faq.title">Common Questions</h2>
           </div>
 
           <div class="faq-list">
             <details class="faq-item">
-              <summary>Do you take walk-ins?</summary>
-              <p>No. All work is by appointment only.</p>
-            </details>
-            <details class="faq-item">
-              <summary>Where are you based?</summary>
-              <p>
+              <summary data-i18n="faq.q1">Where are you based?</summary>
+              <p data-i18n="faq.a1">
                 Melange travels as a guest artist across South Korea, Australia, the United
                 States, the United Kingdom, and Europe. Exact cities and dates are posted on
                 Instagram.
               </p>
             </details>
             <details class="faq-item">
-              <summary>How do I get the exact studio address?</summary>
-              <p>It's sent directly once your booking is confirmed.</p>
+              <summary data-i18n="faq.q2">How do I get the exact studio address?</summary>
+              <p data-i18n="faq.a2">It's sent directly once your booking is confirmed.</p>
             </details>
             <details class="faq-item">
-              <summary>What should I include in my first message?</summary>
-              <p>
+              <summary data-i18n="faq.q3">What should I include in my first message?</summary>
+              <p data-i18n="faq.a3">
                 Your name, city, tattoo idea or reference, placement, approximate size in cm,
                 preferred date, and a clear photo of the placement area.
               </p>
             </details>
             <details class="faq-item">
-              <summary>How much does it cost?</summary>
-              <p>Price depends on size, placement, and difficulty. You'll get an estimate after sending your inquiry.</p>
+              <summary data-i18n="faq.q4">How much does it cost?</summary>
+              <p data-i18n="faq.a4">Price depends on size, placement, and difficulty. You'll get an estimate after sending your inquiry.</p>
             </details>
             <details class="faq-item">
-              <summary>Is the deposit refundable?</summary>
-              <p>No. The deposit secures your date and is deducted from the final price.</p>
+              <summary data-i18n="faq.q5">Is the deposit refundable?</summary>
+              <p data-i18n="faq.a5">No. The deposit secures your date and is deducted from the final price.</p>
             </details>
             <details class="faq-item">
-              <summary>Can I see the design before the appointment?</summary>
-              <p>
+              <summary data-i18n="faq.q6">Can I see the design before the appointment?</summary>
+              <p data-i18n="faq.a6">
                 Designs are made after booking is confirmed. Base elements may be prepared ahead
                 of time, and parts that follow the body's flow are drawn freehand on the day. The
                 final design is confirmed with you in person before starting.
@@ -337,8 +346,8 @@
       <!-- ===================== Contact CTA ===================== -->
       <section class="cta-band" id="contact">
         <div class="container cta-inner">
-          <h2 class="cta-title">Let's talk about your tattoo.</h2>
-          <p class="cta-text">For all booking inquiries, please contact me via Instagram DM or email.</p>
+          <h2 class="cta-title" data-i18n="contact.title">Let's talk about your tattoo.</h2>
+          <p class="cta-text" data-i18n="contact.text">For all booking inquiries, please contact me via Instagram DM or email.</p>
           <div class="cta-actions">
             <a class="btn btn-primary" href="https://instagram.com/melange.tattoo" target="_blank" rel="noopener">
               Instagram — @melange.tattoo
@@ -358,7 +367,7 @@
         <nav class="footer-links" aria-label="Footer">
           <a href="https://instagram.com/melange.tattoo" target="_blank" rel="noopener">Instagram</a>
           <a href="mailto:melange.tattoo@gmail.com">Email</a>
-          <a href="#hero">Back to top</a>
+          <a href="#hero" data-i18n="footer.backToTop">Back to top</a>
         </nav>
         <span class="copyright">© <span id="year">2026</span> Melange Tattoo</span>
       </div>

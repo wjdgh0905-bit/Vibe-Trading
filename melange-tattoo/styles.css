@@ -187,6 +187,32 @@ h3 {
   margin-left: 4px;
 }
 
+.lang-toggle {
+  background: none;
+  border: 1px solid var(--line);
+  color: var(--muted);
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  display: inline-flex;
+  gap: 5px;
+  transition: border-color 0.2s var(--ease);
+}
+.lang-toggle:hover {
+  border-color: var(--blue);
+}
+.lang-opt {
+  transition: color 0.2s var(--ease);
+}
+.lang-opt.active {
+  color: var(--blue);
+}
+.lang-sep {
+  color: var(--muted-2);
+}
+
 .nav-toggle {
   display: none;
   flex-direction: column;
@@ -944,6 +970,9 @@ h3 {
     padding: 12px 0;
     width: 100%;
     border-bottom: 1px solid var(--line);
+  }
+  .lang-toggle {
+    margin-top: 14px;
   }
   .nav-cta {
     margin: 14px 0 0;

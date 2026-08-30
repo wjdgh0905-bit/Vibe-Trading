@@ -1,7 +1,7 @@
 # Agent Skills — 설치 구성
 
 블로그·릴스에서 소개된 스킬 팩을 이 저장소에 적용했습니다.
-`.claude/settings.json`(플러그인 6종) + `.claude/skills/`(Remotion 12종) 두 갈래로 구성됩니다.
+`.claude/settings.json`(플러그인 6종) + `.claude/skills/`(직접 설치 14종) 두 갈래로 구성됩니다.
 
 ## 1. 플러그인 (`.claude/settings.json`, project scope)
 
@@ -45,7 +45,9 @@ claude plugin list                          # 설치 상태 확인
 claude plugin details marketing-skills      # 스킬 목록과 토큰 비용 확인
 ```
 
-## 2. Remotion 스킬 (`.claude/skills/`, 12종)
+## 2. 직접 설치 스킬 (`.claude/skills/`, 14종)
+
+### Remotion (12종)
 
 Remotion은 플러그인 마켓플레이스가 없어 스킬 파일을 저장소에 직접 넣었습니다.
 `skills-lock.json`(저장소 루트)이 출처와 해시를 기록합니다.
@@ -63,6 +65,37 @@ npx skills remove remotion-maps   # 개별 제거
 
 > Remotion 스킬은 실제 영상을 만들려면 Remotion 프로젝트(`npx create-video`)가 필요합니다.
 > 이 저장소 안에서는 스킬 지식만 로드됩니다.
+
+### 영상 기본 세팅 — FFmpeg · Whisper (2종)
+
+Remotion(모션·렌더)과 합쳐 FFmpeg(컷·변환·인코딩) + Whisper(음성 전사·자막)
+3종 세트를 이룹니다. 마켓플레이스가 없어 파일을 직접 넣었습니다.
+
+| 스킬 | 출처 | 하는 일 |
+|---|---|---|
+| `ffmpeg` | `digitalsamba/claude-code-video-toolkit` (MIT) | 포맷 변환, 리사이즈, 압축, 오디오 추출, GIF→MP4, 플랫폼별 인코딩 프리셋 |
+| `video-editing` | `6missedcalls/video-editing-skill` (MIT) | 트림, 점프컷(무음 제거), Whisper 자막 생성·번인, 텍스트 오버레이, 속도 조절 |
+
+`video-editing`은 순수 Bash 스크립트 6개(`scripts/`)로 되어 있고, 네트워크 호출이나
+외부 런타임 없이 `ffmpeg`만 호출합니다. 원본 SKILL.md에 프론트매터가 없어
+`name`/`description`을 추가했습니다.
+
+**실행 전 로컬에 바이너리가 필요합니다.**
+
+```bash
+# macOS
+brew install ffmpeg
+pipx install openai-whisper     # 또는 brew install whisper-cpp
+
+# Ubuntu/Debian
+sudo apt install ffmpeg
+pipx install openai-whisper
+```
+
+```bash
+# 사용 예시 — 자연어로 시키면 알아서 스크립트를 조합합니다
+"~/clip.mp4 무음 구간 빼고 hormozi 스타일 자막 넣어서 1.25배속으로 만들어줘"
+```
 
 ## 토큰 비용 참고
 

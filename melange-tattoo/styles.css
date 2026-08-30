@@ -1,20 +1,23 @@
 /* ============================================================
    melange.tattoo — standalone static site styles
-   Dark editorial theme. No build step, no external CSS deps.
+   Editorial blue/white theme with a gold accent. No build step.
    ============================================================ */
 
 :root {
   /* Design tokens */
-  --bg: #0d0c0b;
-  --bg-elev: #16130f;
-  --bg-elev-2: #1e1a15;
-  --line: #2a251f;
-  --text: #efe9df;
-  --muted: #a89f90;
-  --muted-2: #6f665a;
-  --accent: #c8a15a; /* warm gold */
-  --accent-soft: #e0c288;
-  --danger: #d98b7a;
+  --bg: #ffffff;
+  --bg-soft: #f3f6fb; /* light blue-white for alternating sections */
+  --bg-elev: #eaf0f8;
+  --navy: #0e1b2f; /* deep blue block — hero / footer */
+  --navy-2: #16335c;
+  --line: #dfe6ef;
+  --text: #101826;
+  --muted: #55637a;
+  --muted-2: #8a96a8;
+  --accent: #a17324; /* gold, darkened for AA contrast on white text use */
+  --accent-fill: #c9974f; /* gold for solid fills (buttons/badges) */
+  --accent-soft: #e3c483; /* light gold for use on the navy blocks */
+  --danger: #b8483a;
 
   --maxw: 1160px;
   --gutter: clamp(20px, 5vw, 56px);
@@ -51,7 +54,8 @@ body {
   color: var(--text);
   font-family: var(--font-sans);
   font-weight: 400;
-  line-height: 1.6;
+  font-size: 16.5px;
+  line-height: 1.65;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
 }
@@ -86,8 +90,8 @@ h3 {
   position: absolute;
   left: -9999px;
   top: 0;
-  background: var(--accent);
-  color: #1a1509;
+  background: var(--accent-fill);
+  color: var(--navy);
   padding: 10px 16px;
   z-index: 200;
   border-radius: var(--radius);
@@ -98,25 +102,26 @@ h3 {
 }
 
 :focus-visible {
-  outline: 2px solid var(--accent-soft);
+  outline: 2px solid var(--accent-fill);
   outline-offset: 3px;
 }
 
 /* ============================================================
-   Header
+   Header — persistent light bar, readable over both the navy
+   hero and the white sections beneath it.
    ============================================================ */
 .site-header {
   position: fixed;
   inset: 0 0 auto 0;
   z-index: 100;
-  transition: background 0.4s var(--ease), border-color 0.4s var(--ease),
-    backdrop-filter 0.4s var(--ease);
-  border-bottom: 1px solid transparent;
+  background: rgba(255, 255, 255, 0.86);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line);
+  transition: box-shadow 0.4s var(--ease), background 0.4s var(--ease);
 }
 .site-header.scrolled {
-  background: rgba(13, 12, 11, 0.82);
-  backdrop-filter: blur(12px);
-  border-bottom-color: var(--line);
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 6px 24px -14px rgba(14, 27, 47, 0.25);
 }
 .header-inner {
   display: flex;
@@ -134,8 +139,8 @@ h3 {
   width: 26px;
   height: 26px;
   border-radius: 50%;
-  background: radial-gradient(circle at 32% 30%, var(--accent-soft), var(--accent) 45%, #3a2c12 100%);
-  box-shadow: 0 0 0 1px rgba(200, 161, 90, 0.35), 0 0 18px -6px var(--accent);
+  background: radial-gradient(circle at 32% 30%, var(--accent-soft), var(--accent-fill) 45%, #8a5f22 100%);
+  box-shadow: 0 0 0 1px rgba(161, 115, 36, 0.3), 0 0 16px -6px var(--accent-fill);
   flex: none;
 }
 .brand-text {
@@ -143,6 +148,7 @@ h3 {
   font-size: 1.42rem;
   font-weight: 600;
   letter-spacing: 0.01em;
+  color: var(--navy);
 }
 .brand-text.small {
   font-size: 1.15rem;
@@ -158,6 +164,7 @@ h3 {
 }
 .nav-link {
   font-size: 0.82rem;
+  font-weight: 500;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--muted);
@@ -171,13 +178,13 @@ h3 {
   left: 0;
   bottom: 0;
   width: 0;
-  height: 1px;
-  background: var(--accent);
+  height: 2px;
+  background: var(--accent-fill);
   transition: width 0.3s var(--ease);
 }
 .nav-link:hover,
 .nav-link:focus-visible {
-  color: var(--text);
+  color: var(--navy);
 }
 .nav-link:hover::after {
   width: 100%;
@@ -196,13 +203,14 @@ h3 {
   transition: border-color 0.25s var(--ease);
 }
 .lang-toggle:hover {
-  border-color: var(--accent);
+  border-color: var(--accent-fill);
 }
 .lang-opt {
   transition: color 0.2s var(--ease);
 }
 .lang-opt.active {
-  color: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 600;
 }
 .lang-sep {
   color: var(--muted-2);
@@ -219,7 +227,7 @@ h3 {
 .nav-toggle span {
   width: 24px;
   height: 2px;
-  background: var(--text);
+  background: var(--navy);
   transition: transform 0.3s var(--ease), opacity 0.3s var(--ease);
 }
 .nav-toggle[aria-expanded="true"] span:nth-child(1) {
@@ -243,6 +251,7 @@ h3 {
   padding: 14px 30px;
   border-radius: var(--radius);
   font-size: 0.82rem;
+  font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   border: 1px solid transparent;
@@ -253,18 +262,19 @@ h3 {
   transform: translateY(1px);
 }
 .btn-primary {
-  background: var(--accent);
-  color: #1a1509;
+  background: var(--accent-fill);
+  color: var(--navy);
 }
 .btn-primary:hover {
   background: var(--accent-soft);
 }
 .btn-ghost {
-  border-color: var(--line);
-  color: var(--text);
+  /* used on the navy hero block */
+  border-color: rgba(255, 255, 255, 0.35);
+  color: #fff;
 }
 .btn-ghost:hover {
-  border-color: var(--accent);
+  border-color: var(--accent-soft);
   color: var(--accent-soft);
 }
 .btn-block {
@@ -272,7 +282,7 @@ h3 {
 }
 
 /* ============================================================
-   Hero
+   Hero — navy block bookends the page with the footer
    ============================================================ */
 .hero {
   position: relative;
@@ -280,26 +290,26 @@ h3 {
   display: flex;
   align-items: center;
   overflow: hidden;
+  color: #fff;
 }
 .hero-bg {
   position: absolute;
   inset: 0;
   z-index: 0;
   background:
-    radial-gradient(120% 80% at 78% 18%, rgba(200, 161, 90, 0.16), transparent 55%),
-    radial-gradient(90% 70% at 8% 92%, rgba(120, 90, 160, 0.1), transparent 60%),
-    linear-gradient(180deg, #0a0908, #100d0a 60%, #0a0908);
+    radial-gradient(120% 80% at 78% 15%, rgba(201, 151, 79, 0.22), transparent 55%),
+    radial-gradient(90% 70% at 6% 95%, rgba(255, 255, 255, 0.08), transparent 60%),
+    linear-gradient(180deg, #0a1526, #14294a 55%, #0a1526);
 }
 .hero-bg::after {
-  /* subtle grain/line texture via repeating gradient */
   content: "";
   position: absolute;
   inset: 0;
-  opacity: 0.5;
+  opacity: 0.6;
   background-image: repeating-linear-gradient(
     115deg,
-    rgba(255, 255, 255, 0.015) 0px,
-    rgba(255, 255, 255, 0.015) 1px,
+    rgba(255, 255, 255, 0.025) 0px,
+    rgba(255, 255, 255, 0.025) 1px,
     transparent 1px,
     transparent 7px
   );
@@ -312,9 +322,10 @@ h3 {
 }
 .hero-eyebrow {
   font-size: 0.8rem;
+  font-weight: 600;
   letter-spacing: 0.28em;
   text-transform: uppercase;
-  color: var(--accent);
+  color: var(--accent-soft);
   margin: 0 0 22px;
 }
 .hero-title {
@@ -322,6 +333,7 @@ h3 {
   font-size: clamp(2.9rem, 9vw, 6.4rem);
   font-weight: 500;
   letter-spacing: -0.01em;
+  color: #fff;
 }
 .hero-title .italic {
   font-style: italic;
@@ -331,7 +343,7 @@ h3 {
   margin: 26px 0 40px;
   max-width: 34ch;
   font-size: clamp(1rem, 2.3vw, 1.2rem);
-  color: var(--muted);
+  color: rgba(255, 255, 255, 0.72);
 }
 .hero-actions {
   display: flex;
@@ -345,9 +357,10 @@ h3 {
   transform: translateX(-50%);
   z-index: 1;
   font-size: 0.68rem;
+  font-weight: 600;
   letter-spacing: 0.24em;
   text-transform: uppercase;
-  color: var(--muted-2);
+  color: rgba(255, 255, 255, 0.45);
   display: inline-flex;
   flex-direction: column;
   align-items: center;
@@ -357,7 +370,7 @@ h3 {
   content: "";
   width: 1px;
   height: 40px;
-  background: linear-gradient(var(--muted-2), transparent);
+  background: linear-gradient(rgba(255, 255, 255, 0.45), transparent);
   animation: cue 2.2s var(--ease) infinite;
 }
 @keyframes cue {
@@ -385,6 +398,7 @@ h3 {
 }
 .section-eyebrow {
   font-size: 0.76rem;
+  font-weight: 600;
   letter-spacing: 0.24em;
   text-transform: uppercase;
   color: var(--accent);
@@ -394,6 +408,7 @@ h3 {
   font-family: var(--font-serif);
   font-size: clamp(2rem, 5vw, 3.4rem);
   font-weight: 500;
+  color: var(--navy);
 }
 .section-desc {
   color: var(--muted);
@@ -411,7 +426,7 @@ h3 {
 }
 .lead {
   font-size: clamp(1.05rem, 2.2vw, 1.3rem);
-  color: var(--text);
+  color: var(--navy);
   font-family: var(--font-serif);
   font-style: italic;
   line-height: 1.5;
@@ -420,7 +435,7 @@ h3 {
 /* ---------- Placeholder tiles (swap with real photos) ---------- */
 .ph {
   position: relative;
-  background: var(--bg-elev);
+  background: linear-gradient(155deg, var(--bg-soft), #dbe4ef 55%, #ccd9e9);
   overflow: hidden;
 }
 .ph::before {
@@ -428,11 +443,11 @@ h3 {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(80% 60% at 30% 20%, rgba(200, 161, 90, 0.14), transparent 60%),
+    radial-gradient(75% 60% at 30% 20%, rgba(161, 115, 36, 0.16), transparent 60%),
     repeating-linear-gradient(
       var(--angle, 45deg),
-      rgba(255, 255, 255, 0.04) 0px,
-      rgba(255, 255, 255, 0.04) 1px,
+      rgba(14, 27, 47, 0.05) 0px,
+      rgba(14, 27, 47, 0.05) 1px,
       transparent 1px,
       transparent 12px
     );
@@ -441,12 +456,15 @@ h3 {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(160deg, transparent 40%, rgba(0, 0, 0, 0.5));
+  background: linear-gradient(160deg, transparent 45%, rgba(14, 27, 47, 0.16));
 }
 
 /* ============================================================
    About
    ============================================================ */
+.about {
+  background: var(--bg);
+}
 .about-grid {
   display: grid;
   grid-template-columns: 0.85fr 1.15fr;
@@ -457,6 +475,7 @@ h3 {
   aspect-ratio: 3 / 4;
   border-radius: var(--radius);
   border: 1px solid var(--line);
+  box-shadow: 0 30px 60px -32px rgba(14, 27, 47, 0.35);
 }
 .about-copy .section-title {
   margin-bottom: 24px;
@@ -484,6 +503,7 @@ h3 {
   flex: none;
   width: 84px;
   font-size: 0.74rem;
+  font-weight: 600;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--accent);
@@ -496,6 +516,9 @@ h3 {
 /* ============================================================
    Gallery
    ============================================================ */
+.gallery {
+  background: var(--bg-soft);
+}
 .gallery-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -509,7 +532,8 @@ h3 {
   border-radius: var(--radius);
   overflow: hidden;
   aspect-ratio: 1 / 1;
-  transition: transform 0.5s var(--ease);
+  box-shadow: 0 1px 0 rgba(14, 27, 47, 0.04);
+  transition: transform 0.5s var(--ease), box-shadow 0.5s var(--ease);
 }
 .gallery-item:nth-child(4n) {
   aspect-ratio: 1 / 1.35;
@@ -526,7 +550,8 @@ h3 {
   font-family: var(--font-serif);
   font-style: italic;
   font-size: 1.05rem;
-  color: var(--text);
+  color: #fff;
+  text-shadow: 0 2px 10px rgba(14, 27, 47, 0.5);
   opacity: 0;
   transform: translateY(6px);
   transition: opacity 0.35s var(--ease), transform 0.35s var(--ease);
@@ -544,6 +569,7 @@ h3 {
 .gallery-item:hover,
 .gallery-item:focus-visible {
   transform: translateY(-4px);
+  box-shadow: 0 24px 40px -20px rgba(14, 27, 47, 0.35);
   outline: none;
 }
 .gallery-item:hover .g-label,
@@ -554,12 +580,15 @@ h3 {
   transform: none;
 }
 .gallery-item:focus-visible {
-  box-shadow: 0 0 0 2px var(--accent-soft);
+  box-shadow: 0 0 0 2px var(--accent-fill);
 }
 
 /* ============================================================
    Booking
    ============================================================ */
+.booking {
+  background: var(--bg);
+}
 .booking-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -586,6 +615,7 @@ h3 {
   flex: none;
   width: 92px;
   font-size: 0.74rem;
+  font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--muted);
@@ -595,14 +625,15 @@ h3 {
   transition: color 0.2s var(--ease);
 }
 a.contact-v:hover {
-  color: var(--accent-soft);
+  color: var(--accent);
 }
 
 .booking-form {
-  background: var(--bg-elev);
+  background: var(--bg-soft);
   border: 1px solid var(--line);
   border-radius: var(--radius);
   padding: clamp(22px, 3.5vw, 36px);
+  box-shadow: 0 30px 60px -36px rgba(14, 27, 47, 0.3);
 }
 .field {
   margin-bottom: 18px;
@@ -615,6 +646,7 @@ a.contact-v:hover {
 .field label {
   display: block;
   font-size: 0.76rem;
+  font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--muted);
@@ -638,8 +670,8 @@ a.contact-v:hover {
 .field input:focus,
 .field textarea:focus {
   outline: none;
-  border-color: var(--accent);
-  background: var(--bg-elev-2);
+  border-color: var(--accent-fill);
+  background: #fff;
 }
 .field input::placeholder,
 .field textarea::placeholder {
@@ -666,16 +698,21 @@ a.contact-v:hover {
   margin: 12px 0 0;
   text-align: center;
   font-size: 0.88rem;
-  color: var(--accent-soft);
+  font-weight: 600;
+  color: var(--accent);
   min-height: 1.2em;
 }
 
 /* ============================================================
-   Footer
+   Footer — navy, bookends the hero
    ============================================================ */
 .site-footer {
-  border-top: 1px solid var(--line);
+  background: var(--navy);
+  color: rgba(255, 255, 255, 0.7);
   padding-block: 40px;
+}
+.site-footer .brand-text {
+  color: #fff;
 }
 .footer-inner {
   display: flex;
@@ -689,14 +726,14 @@ a.contact-v:hover {
   gap: 26px;
   font-size: 0.82rem;
   letter-spacing: 0.06em;
-  color: var(--muted);
+  color: rgba(255, 255, 255, 0.65);
 }
 .footer-links a:hover {
   color: var(--accent-soft);
 }
 .copyright {
   font-size: 0.8rem;
-  color: var(--muted-2);
+  color: rgba(255, 255, 255, 0.4);
   letter-spacing: 0.04em;
 }
 
@@ -712,7 +749,7 @@ a.contact-v:hover {
   justify-content: center;
   gap: clamp(8px, 3vw, 40px);
   padding: clamp(16px, 5vw, 60px);
-  background: rgba(6, 5, 4, 0.94);
+  background: rgba(6, 10, 18, 0.94);
   backdrop-filter: blur(6px);
   opacity: 0;
   visibility: hidden;
@@ -732,20 +769,20 @@ a.contact-v:hover {
   aspect-ratio: 3 / 4;
   width: 100%;
   border-radius: var(--radius);
-  border: 1px solid var(--line);
+  border: 1px solid rgba(255, 255, 255, 0.12);
 }
 .lb-caption {
   margin-top: 16px;
   font-family: var(--font-serif);
   font-style: italic;
   font-size: 1.1rem;
-  color: var(--muted);
+  color: rgba(255, 255, 255, 0.75);
 }
 .lb-close,
 .lb-nav {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid var(--line);
-  color: var(--text);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: #fff;
   width: 48px;
   height: 48px;
   border-radius: 50%;
@@ -759,8 +796,8 @@ a.contact-v:hover {
 }
 .lb-close:hover,
 .lb-nav:hover {
-  background: rgba(255, 255, 255, 0.12);
-  border-color: var(--accent);
+  background: rgba(255, 255, 255, 0.16);
+  border-color: var(--accent-fill);
 }
 .lb-close {
   position: absolute;
@@ -791,7 +828,7 @@ a.contact-v:hover {
     flex-direction: column;
     align-items: flex-start;
     gap: 4px;
-    background: rgba(13, 12, 11, 0.97);
+    background: rgba(255, 255, 255, 0.98);
     backdrop-filter: blur(14px);
     border-bottom: 1px solid var(--line);
     padding: 18px var(--gutter) 26px;

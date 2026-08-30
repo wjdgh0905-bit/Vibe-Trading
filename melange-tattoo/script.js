@@ -18,14 +18,16 @@
      ------------------------------------------------------------ */
   const GALLERY = [
     { tag: "Dragon", src: "assets/gallery/dragon-01.jpg" },
-    { tag: "Snake", src: "" },
-    { tag: "Phoenix", src: "" },
+    { tag: "Snake", src: "assets/gallery/snake-01.jpg" },
+    { tag: "Phoenix", src: "assets/gallery/phoenix-01.jpg" },
     { tag: "Koi", src: "" },
     { tag: "Whale", src: "" },
-    { tag: "Flowers", src: "" },
+    { tag: "Flowers", src: "assets/gallery/flowers-01.jpg" },
     { tag: "Clouds", src: "" },
     { tag: "Lightning", src: "" },
-    { tag: "Pattern", src: "" },
+    { tag: "Pattern", src: "assets/gallery/pattern-01.jpg" },
+    { tag: "Dragon", src: "assets/gallery/dragon-02.jpg" },
+    { tag: "Phoenix", src: "assets/gallery/phoenix-02.jpg" },
   ];
 
   /* ------------------------------------------------------------

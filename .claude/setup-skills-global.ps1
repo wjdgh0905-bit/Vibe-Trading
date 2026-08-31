@@ -56,6 +56,38 @@ foreach ($p in $plugins) {
     claude plugin install $p --scope user -y | Out-Null
 }
 
+Write-Host "==> 4/4 고급 기능 전역 적용 (모든 프로젝트 공통)"
+$globalSettingsPath = Join-Path $env:USERPROFILE ".claude\settings.json"
+$advanced = @{
+    enableWorkflows            = $true
+    enableArtifact              = $true
+    alwaysThinkingEnabled       = $true
+    autoCompactEnabled          = $true
+    precomputeCompactionEnabled = $true
+    fastMode                    = $true
+    promptCacheTtl              = "1h"
+    ultracode                   = $true
+    workflowSizeGuideline       = "large"
+}
+
+$settings = if (Test-Path $globalSettingsPath) {
+    Get-Content $globalSettingsPath -Raw | ConvertFrom-Json -AsHashtable
+} else {
+    @{}
+}
+foreach ($key in $advanced.Keys) {
+    $settings[$key] = $advanced[$key]
+}
+if (-not $settings.ContainsKey("permissions")) {
+    $settings["permissions"] = @{}
+}
+$settings["permissions"]["defaultMode"] = "auto"
+
+New-Item -ItemType Directory -Force -Path (Split-Path $globalSettingsPath) | Out-Null
+$settings | ConvertTo-Json -Depth 20 | Set-Content -Path $globalSettingsPath -Encoding utf8
+Write-Host "  ok ($globalSettingsPath)"
+
 Write-Host ""
 Write-Host "완료. 열려 있는 Claude Code 세션은 재시작해야 반영됩니다."
 Write-Host "다시 동기화하고 싶으면 이 스크립트를 그냥 다시 실행하면 됩니다."
+Write-Host "이제 이 컴퓨터의 모든 프로젝트에서 스킬·플러그인·고급기능이 동일하게 적용됩니다."

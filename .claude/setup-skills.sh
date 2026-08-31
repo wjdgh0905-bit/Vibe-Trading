@@ -41,7 +41,7 @@ done
 
 echo "==> 3/3 직접 설치 스킬 확인 (.claude/skills/)"
 missing=0
-for s in ffmpeg video-editing remotion-best-practices agent-reach; do
+for s in ffmpeg video-editing remotion-best-practices agent-reach archify frontend-design; do
   [ -f ".claude/skills/$s/SKILL.md" ] || { echo "  없음: $s"; missing=1; }
 done
 if [ "$missing" -eq 1 ]; then

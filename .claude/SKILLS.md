@@ -1,7 +1,7 @@
 # Agent Skills — 설치 구성
 
 블로그·릴스에서 소개된 스킬 팩을 이 저장소에 적용했습니다.
-`.claude/settings.json`(플러그인 6종) + `.claude/skills/`(직접 설치 15종) 두 갈래로 구성됩니다.
+`.claude/settings.json`(플러그인 6종) + `.claude/skills/`(직접 설치 16종) 두 갈래로 구성됩니다.
 
 ## 0. 내 컴퓨터에 적용하기 (git pull 이후 1회)
 
@@ -178,6 +178,14 @@ playwright-cli install --skills
 
 아래 둘은 이 저장소(트레이딩 앱) 성격과 안 맞거나, 실행 자체가 위험 부담이 있어
 지금은 설치하지 않고 방법만 적어둡니다.
+
+### frontend-design — Anthropic 공식 (1종)
+
+`anthropics/skills`. "AI 티" 나는 뻔한 화면 대신 브랜드에 맞는 독자적인 디자인
+방향을 잡아주는 스킬. 설치 79만 건으로 가장 널리 쓰이는 디자인 스킬 중 하나이며,
+`taste-skill`·`ui-ux-pro-max`와 같이 발동됩니다.
+
+---
 
 ### Strix — AI 자동 침투테스트 (보류)
 

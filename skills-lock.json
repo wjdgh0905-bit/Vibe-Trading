@@ -13,6 +13,12 @@
       "skillPath": "archify/SKILL.md",
       "computedHash": "f468f6986c2d25676bb9cd4abce9302bcd42c9983ad32b3c93d6d7be189d9988"
     },
+    "frontend-design": {
+      "source": "anthropics/skills",
+      "sourceType": "github",
+      "skillPath": "skills/frontend-design/SKILL.md",
+      "computedHash": "4eabc66183767153e404b39d1b839b1c37f2d82d86f0a0d7e880a579d8d62336"
+    },
     "remotion-best-practices": {
       "source": "remotion-dev/skills",
       "sourceType": "github",

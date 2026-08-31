@@ -190,6 +190,29 @@ export const api = {
   alphaCompareStreamUrl: (jobId: string) =>
     withAuthQuery(`${BASE}/alpha/compare/${encodeURIComponent(jobId)}/stream`),
 
+  // Options Lab API — pure calculation/aggregation endpoints (no LLM run,
+  // no order placement / mandate gating; see agent/src/api/options_routes.py).
+  getOptionsChain: (symbol: string, expiration?: number) => {
+    const q = new URLSearchParams({ symbol });
+    if (expiration !== undefined) q.set("expiration", String(expiration));
+    return request<OptionsChainResponse>(`/options/chain?${q.toString()}`);
+  },
+  getOptionsSurface: (body: OptionsSurfaceRequest) =>
+    request<OptionsSurfaceResponse>("/options/surface", {
+      method: "POST",
+      body: JSON.stringify(body),
+    }),
+  getOptionsGreeks: (body: OptionsGreeksRequest) =>
+    request<OptionsGreeksResponse>("/options/greeks", {
+      method: "POST",
+      body: JSON.stringify(body),
+    }),
+  getOptionsPayoff: (body: OptionsPayoffRequest) =>
+    request<OptionsPayoffResponse>("/options/payoff", {
+      method: "POST",
+      body: JSON.stringify(body),
+    }),
+
   // Connector runtime channel — privileged surface actions (NOT agent tools).
   // commit is the ONLY action that writes a mandate; halt trips the kill switch.
   commitMandate: (body: CommitMandateRequest) =>
@@ -971,4 +994,127 @@ export interface MessageItem {
   created_at: string;
   linked_attempt_id?: string;
   metadata?: Record<string, unknown>;
+}
+
+// --- Options Lab types (agent/src/api/options_routes.py) ---
+
+export interface OptionsContract {
+  contract_symbol?: string;
+  strike: number;
+  last_price?: number | null;
+  bid?: number | null;
+  ask?: number | null;
+  volume?: number | null;
+  open_interest?: number | null;
+  implied_volatility?: number | null;
+  in_the_money?: boolean;
+  expiration?: number;
+}
+
+export interface OptionsChainResponse {
+  status: string;
+  ticker: string;
+  expiration?: number;
+  expirations: number[];
+  calls_count: number;
+  puts_count: number;
+  calls: OptionsContract[];
+  puts: OptionsContract[];
+}
+
+export interface OptionsSurfaceRequest {
+  symbol: string;
+  max_expirations?: number;
+}
+
+export interface OptionsSurfacePoint {
+  expiry: number;
+  strike: number | null;
+  iv: number | null;
+  option_type: "call" | "put";
+  /** Missing/non-positive IV on a thin chain — render greyed-out, not as an error. */
+  outlier?: boolean;
+}
+
+export interface OptionsSurfaceResponse {
+  status: string;
+  symbol: string;
+  expirations: number[];
+  points: OptionsSurfacePoint[];
+}
+
+export type OptionType = "call" | "put";
+
+export interface OptionLeg {
+  option_type: OptionType;
+  strike: number;
+  expiry_days: number;
+  /** Annualised implied volatility, e.g. 0.25 for 25%. */
+  iv: number;
+  /** Signed contract count: positive = long, negative = short. */
+  quantity: number;
+  risk_free_rate?: number | null;
+}
+
+export interface OptionsGreeksRequest {
+  spot: number;
+  risk_free_rate?: number;
+  legs: OptionLeg[];
+}
+
+export interface OptionsLegGreeks {
+  index: number;
+  option_type: OptionType;
+  strike: number;
+  expiry_days: number;
+  iv: number;
+  quantity: number;
+  price: number;
+  delta: number;
+  gamma: number;
+  theta: number;
+  vega: number;
+  status: "ok" | "degenerate" | "error";
+  warning?: string | null;
+}
+
+export interface OptionsAggregateGreeks {
+  delta: number;
+  gamma: number;
+  theta: number;
+  vega: number;
+  total_cost: number;
+}
+
+export interface OptionsGreeksResponse {
+  status: string;
+  spot: number;
+  legs: OptionsLegGreeks[];
+  aggregate: OptionsAggregateGreeks;
+}
+
+export interface OptionsPriceRange {
+  min: number;
+  max: number;
+  steps?: number;
+}
+
+export interface OptionsPayoffRequest {
+  spot: number;
+  risk_free_rate?: number;
+  legs: OptionLeg[];
+  price_range?: OptionsPriceRange;
+  days_elapsed?: number;
+  iv_shift?: number;
+}
+
+export interface OptionsPayoffResponse {
+  status: string;
+  spot: number;
+  days_elapsed: number;
+  iv_shift: number;
+  entry_cost: number;
+  prices: number[];
+  expiry_pnl: number[];
+  scenario_pnl: number[];
 }

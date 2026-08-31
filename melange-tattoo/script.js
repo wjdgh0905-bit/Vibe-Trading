@@ -494,6 +494,14 @@
     renderGallery();
     renderSpots();
 
+    // Reels are only rendered once at init (rebuilding them on every
+    // language switch would re-trigger Instagram's embed script and
+    // stack duplicate carousel event listeners) — just retranslate the
+    // fallback link text shown before/if the real embed loads.
+    document.querySelectorAll("#reelsRow blockquote.instagram-media > a").forEach((a) => {
+      a.textContent = t("process.reelsFallback");
+    });
+
     document.documentElement.removeAttribute("data-lang-loading");
   }
 

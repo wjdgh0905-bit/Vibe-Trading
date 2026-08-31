@@ -709,9 +709,9 @@ h3 {
   display: flex;
   gap: 14px;
   overflow-x: auto;
-  padding: 4px 4px 18px;
+  padding: 4px 52px 18px;
   scroll-snap-type: x proximity;
-  scroll-padding-left: 4px;
+  scroll-padding-left: 52px;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
 }
@@ -760,14 +760,18 @@ h3 {
   pointer-events: none;
 }
 .reel-prev {
-  left: 0;
+  left: 4px;
 }
 .reel-next {
-  right: 0;
+  right: 4px;
 }
 @media (max-width: 640px) {
   .reel-nav {
     display: none;
+  }
+  .reels-row {
+    padding: 4px 4px 18px;
+    scroll-padding-left: 4px;
   }
 }
 /* Fallback look before embed.js processes the blockquote (or if it
@@ -777,7 +781,7 @@ blockquote.instagram-media {
   margin: 0;
   aspect-ratio: 9 / 16;
   border: none;
-  border-radius: 18px;
+  border-radius: var(--radius);
   background: var(--card);
   display: flex;
   align-items: center;

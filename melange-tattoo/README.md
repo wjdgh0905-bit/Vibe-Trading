@@ -72,6 +72,36 @@ in gradually. Add, remove, or reorder entries freely — the grid and the lightb
 from this same array. Only use Melange's own finished tattoo photos — no AI-generated tattoo
 images and no other artists' work.
 
+Each entry also carries `w`/`h` (the photo's real pixel dimensions), so the browser can
+reserve the right amount of space before the image loads instead of the whole page jumping
+around as 100+ photos load in. Get a new photo's dimensions (e.g. `python3 -c "from PIL import
+Image; print(Image.open('file.jpg').size)"`) and include them when adding an entry.
+
+The filter chips above the gallery ("All", "Dragon", "Snake", …) are generated automatically
+from whichever `tagKey`s are actually present in `GALLERY` — nothing to maintain by hand.
+
+## Instagram Reels
+
+`script.js` has a `REELS` array, shown as embedded clips under "Style & Process":
+
+```js
+const REELS = [
+  { url: "https://www.instagram.com/reel/AbCdefGHij/" },
+];
+```
+
+Paste in the reel's permalink URL (the link from Instagram's "Copy Link" on that post). Uses
+Instagram's own oEmbed script, so no video files are hosted here. Leave the array empty and
+the whole block stays hidden — nothing shows a broken or empty state.
+
+## Dark mode
+
+The site follows the visitor's system dark/light preference automatically
+(`prefers-color-scheme`) — there's no manual toggle. All colors are CSS variables in
+`styles.css`'s `:root` block plus a `@media (prefers-color-scheme: dark)` override further
+down; add a new color anywhere on the site by adding a token there rather than a literal hex
+value, or it won't adapt in dark mode.
+
 ## Updating guest spots
 
 `script.js` also has a `GUEST_SPOTS` array, rendered into the "Upcoming Guest Spots" section.

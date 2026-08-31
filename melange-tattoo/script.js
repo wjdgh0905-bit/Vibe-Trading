@@ -150,6 +150,14 @@
      ------------------------------------------------------------ */
   const GUEST_SPOTS = [];
 
+  /* ------------------------------------------------------------
+     Instagram Reels — process/behind-the-scenes clips shown in the
+     "Style & Process" section. Paste the reel's permalink URL, e.g.
+     { url: "https://www.instagram.com/reel/AbCdefGHij/" }
+     Leave empty and the whole block stays hidden.
+     ------------------------------------------------------------ */
+  const REELS = [];
+
   const ANGLES = [30, 55, 80, 110, 135, 160, 20, 70, 100, 45, 95, 150];
 
   /* ------------------------------------------------------------
@@ -228,6 +236,8 @@
       "work.eyebrow": "Selected Work",
       "work.title": "Recent tattoos",
       "work.desc": "Finished pieces, updated as new work comes in. Tap any photo to enlarge.",
+      "work.filterAll": "All",
+      "work.filterLabel": "Filter by style",
       "about.eyebrow": "About",
       "about.title": "About Melange",
       "about.lead":
@@ -246,6 +256,7 @@
       "process.process.2": "Base elements are prepared ahead of time",
       "process.process.3": "Sections that follow the body's flow are drawn freehand on the day",
       "process.process.4": "Final design and any changes are confirmed together before starting",
+      "process.reelsH": "Recent process, on Instagram",
       "guestSpots.eyebrow": "Upcoming Guest Spots",
       "guestSpots.title": "Where Melange is working",
       "guestSpots.desc":
@@ -334,6 +345,8 @@
       "work.eyebrow": "작업",
       "work.title": "최근 작업",
       "work.desc": "완성작 모음입니다. 새 작업이 생기면 계속 추가돼요. 사진을 누르면 크게 볼 수 있어요.",
+      "work.filterAll": "전체",
+      "work.filterLabel": "스타일로 필터링",
       "about.eyebrow": "소개",
       "about.title": "멜란지 소개",
       "about.lead":
@@ -352,6 +365,7 @@
       "process.process.2": "기본 요소는 사전에 준비",
       "process.process.3": "몸의 흐름을 따르는 부분은 당일 프리핸드로 진행",
       "process.process.4": "최종 디자인과 수정 사항은 시작 전 함께 확인",
+      "process.reelsH": "인스타그램 작업 영상",
       "guestSpots.eyebrow": "게스트 일정",
       "guestSpots.title": "멜란지가 작업하는 지역",
       "guestSpots.desc":
@@ -497,6 +511,8 @@
      Gallery generation
      ------------------------------------------------------------ */
   const grid = document.getElementById("galleryGrid");
+  const filtersBar = document.getElementById("galleryFilters");
+  let activeFilter = "all";
 
   function tileMedia(entry, angle) {
     if (entry.src) {
@@ -517,6 +533,40 @@
     return ph;
   }
 
+  function galleryTagsInUse() {
+    const seen = [];
+    GALLERY.forEach((entry) => {
+      if (entry.tagKey && !seen.includes(entry.tagKey)) seen.push(entry.tagKey);
+    });
+    return seen;
+  }
+
+  function applyGalleryFilter() {
+    grid.querySelectorAll(".gallery-item").forEach((item) => {
+      item.hidden = activeFilter !== "all" && item.getAttribute("data-tag") !== activeFilter;
+    });
+  }
+
+  function renderGalleryFilters() {
+    filtersBar.innerHTML = "";
+    filtersBar.setAttribute("aria-label", t("work.filterLabel"));
+
+    const options = ["all", ...galleryTagsInUse()];
+    options.forEach((key) => {
+      const chip = document.createElement("button");
+      chip.type = "button";
+      chip.className = "filter-chip" + (key === activeFilter ? " active" : "");
+      chip.setAttribute("aria-pressed", String(key === activeFilter));
+      chip.textContent = key === "all" ? t("work.filterAll") : tTag(key);
+      chip.addEventListener("click", () => {
+        activeFilter = key;
+        renderGalleryFilters();
+        applyGalleryFilter();
+      });
+      filtersBar.appendChild(chip);
+    });
+  }
+
   function renderGallery() {
     grid.innerHTML = "";
     GALLERY.forEach((entry, i) => {
@@ -525,6 +575,7 @@
       item.type = "button";
       item.className = "gallery-item";
       item.setAttribute("data-index", String(i));
+      item.setAttribute("data-tag", entry.tagKey);
       item.setAttribute("aria-label", "Open " + tTag(entry.tagKey) + " tattoo image");
 
       const plus = document.createElement("span");
@@ -538,6 +589,8 @@
       item.append(tileMedia(entry, angle), plus, label);
       grid.appendChild(item);
     });
+    renderGalleryFilters();
+    applyGalleryFilter();
   }
 
   /* ------------------------------------------------------------
@@ -585,8 +638,18 @@
     document.body.style.overflow = "";
     if (lastFocused) lastFocused.focus();
   }
+  function visibleGalleryIndices() {
+    if (activeFilter === "all") return GALLERY.map((_, i) => i);
+    const indices = [];
+    GALLERY.forEach((entry, i) => {
+      if (entry.tagKey === activeFilter) indices.push(i);
+    });
+    return indices;
+  }
   function step(dir) {
-    currentIndex = (currentIndex + dir + GALLERY.length) % GALLERY.length;
+    const indices = visibleGalleryIndices();
+    const pos = indices.indexOf(currentIndex);
+    currentIndex = indices[(pos + dir + indices.length) % indices.length];
     renderLb();
   }
 
@@ -671,6 +734,38 @@
   }
 
   /* ------------------------------------------------------------
+     Instagram Reels — official oEmbed blockquotes, processed by
+     Instagram's own embed.js. Not language-dependent, so this runs
+     once at init rather than on every language switch.
+     ------------------------------------------------------------ */
+  function renderReels() {
+    const block = document.getElementById("reelsBlock");
+    const row = document.getElementById("reelsRow");
+    if (!REELS.length) {
+      block.hidden = true;
+      return;
+    }
+    block.hidden = false;
+    row.innerHTML = "";
+    REELS.forEach((reel) => {
+      const bq = document.createElement("blockquote");
+      bq.className = "instagram-media";
+      bq.setAttribute("data-instgrm-permalink", reel.url);
+      bq.setAttribute("data-instgrm-version", "14");
+      row.appendChild(bq);
+    });
+
+    if (window.instgrm && window.instgrm.Embeds) {
+      window.instgrm.Embeds.process();
+    } else {
+      const script = document.createElement("script");
+      script.async = true;
+      script.src = "https://www.instagram.com/embed.js";
+      document.body.appendChild(script);
+    }
+  }
+
+  /* ------------------------------------------------------------
      Booking form — submits to Formspree (see FORMSPREE_ENDPOINT
      above). Falls back to an inline error pointing at direct
      email if the endpoint isn't configured yet or the request
@@ -741,9 +836,33 @@
   });
 
   /* ------------------------------------------------------------
+     Scroll reveal — subtle one-time fade/rise for .reveal elements
+     as they enter the viewport. Skipped for prefers-reduced-motion
+     (the global CSS override already kills the transition, but this
+     also avoids leaving anything permanently at opacity: 0).
+     ------------------------------------------------------------ */
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches || !("IntersectionObserver" in window)) {
+    document.querySelectorAll(".reveal").forEach((el) => el.classList.add("in-view"));
+  } else {
+    const revealObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("in-view");
+            revealObserver.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.15, rootMargin: "0px 0px -8% 0px" }
+    );
+    document.querySelectorAll(".reveal").forEach((el) => revealObserver.observe(el));
+  }
+
+  /* ------------------------------------------------------------
      Init
      ------------------------------------------------------------ */
   const yearEl = document.getElementById("year");
   if (yearEl) yearEl.textContent = String(new Date().getFullYear());
   applyLang();
+  renderReels();
 })();

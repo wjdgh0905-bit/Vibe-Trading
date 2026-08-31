@@ -18,7 +18,8 @@
       data-i18n-content="meta.description"
       content="Melange Tattoo: guest tattoo artist working across South Korea, Australia, the United States, the United Kingdom, and Europe. Custom work built around wave motion and blue color."
     />
-    <meta name="theme-color" content="#faf9f6" />
+    <meta name="theme-color" content="#faf9f6" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#141412" media="(prefers-color-scheme: dark)" />
 
     <!-- Open Graph -->
     <meta property="og:title" content="MELANGE TATTOO" />
@@ -132,12 +133,16 @@
       <!-- ===================== Selected Work ===================== -->
       <section class="section work" id="work">
         <div class="container">
-          <div class="section-head">
+          <div class="section-head reveal">
             <p class="section-eyebrow" data-i18n="work.eyebrow">Selected Work</p>
             <h2 class="section-title" data-i18n="work.title">Recent tattoos</h2>
             <p class="section-desc" data-i18n="work.desc">
               Finished pieces, updated as new work comes in. Tap any photo to enlarge.
             </p>
+          </div>
+
+          <div class="gallery-filters" id="galleryFilters">
+            <!-- Chips injected by script.js from the tags present in GALLERY -->
           </div>
 
           <div class="gallery-grid" id="galleryGrid">
@@ -150,7 +155,7 @@
       <section class="section about" id="about">
         <img class="about-mark" src="assets/wave-mark.png" alt="" aria-hidden="true" />
         <div class="container">
-          <div class="about-copy">
+          <div class="about-copy reveal">
             <p class="section-eyebrow" data-i18n="about.eyebrow">About</p>
             <h2 class="section-title" data-i18n="about.title">About Melange</h2>
             <p class="lead" data-i18n="about.lead">
@@ -169,7 +174,7 @@
       <!-- ===================== Style & Process ===================== -->
       <section class="section process" id="process">
         <div class="container">
-          <div class="section-head">
+          <div class="section-head reveal">
             <p class="section-eyebrow" data-i18n="process.eyebrow">Style &amp; Process</p>
             <h2 class="section-title" data-i18n="process.title">How each piece is made</h2>
           </div>
@@ -194,13 +199,20 @@
               </ul>
             </div>
           </div>
+
+          <div class="reels-block" id="reelsBlock" hidden>
+            <h3 class="process-h" data-i18n="process.reelsH">Recent process, on Instagram</h3>
+            <div class="reels-row" id="reelsRow">
+              <!-- Instagram Reel embeds injected by script.js from the REELS array -->
+            </div>
+          </div>
         </div>
       </section>
 
       <!-- ===================== Upcoming Guest Spots ===================== -->
       <section class="section guest-spots" id="guest-spots">
         <div class="container">
-          <div class="section-head">
+          <div class="section-head reveal">
             <p class="section-eyebrow" data-i18n="guestSpots.eyebrow">Upcoming Guest Spots</p>
             <h2 class="section-title" data-i18n="guestSpots.title">Where Melange is working</h2>
             <p class="section-desc" data-i18n="guestSpots.desc">
@@ -223,7 +235,7 @@
       <!-- ===================== Booking ===================== -->
       <section class="section booking" id="booking">
         <div class="container booking-single">
-          <div class="booking-intro">
+          <div class="booking-intro reveal">
             <p class="section-eyebrow" data-i18n="booking.eyebrow">Booking</p>
             <h2 class="section-title" data-i18n="booking.title">Booking Information</h2>
             <p class="lead" data-i18n="booking.lead">
@@ -266,7 +278,7 @@
       <!-- ===================== FAQ ===================== -->
       <section class="section faq" id="faq">
         <div class="container">
-          <div class="section-head">
+          <div class="section-head reveal">
             <p class="section-eyebrow" data-i18n="faq.eyebrow">FAQ</p>
             <h2 class="section-title" data-i18n="faq.title">Common Questions</h2>
           </div>
@@ -314,7 +326,7 @@
       <!-- ===================== Contact CTA ===================== -->
       <section class="cta-band" id="contact">
         <img class="cta-mark" src="assets/wave-mark.png" alt="" aria-hidden="true" />
-        <div class="container cta-inner">
+        <div class="container cta-inner reveal">
           <h2 class="cta-title" data-i18n="contact.title">Let's talk about your tattoo.</h2>
           <p class="cta-text" data-i18n="contact.text">For all booking inquiries, please contact me via Instagram DM or email.</p>
           <div class="cta-actions">

@@ -30,114 +30,114 @@
     { tagKey: "Phoenix", src: "assets/gallery/phoenix-02.jpg", w: 1600, h: 2131 },
     { tagKey: "Pattern", src: "assets/gallery/pattern-02.jpg", w: 1600, h: 2131 },
     { tagKey: "Pattern", src: "assets/gallery/pattern-03.jpg", w: 1600, h: 2131 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-001.jpg", w: 1600, h: 2131 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-002.jpg", w: 1600, h: 2131 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-003.jpg", w: 1600, h: 1997 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-004.jpg", w: 1600, h: 2131 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-005.jpg", w: 1600, h: 2131 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-006.jpg", w: 1600, h: 2131 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-007.jpg", w: 1600, h: 2000 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-008.jpg", w: 1600, h: 2844 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-009.jpg", w: 1600, h: 2131 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-010.jpg", w: 1600, h: 2131 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-011.jpg", w: 1600, h: 2000 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-012.jpg", w: 1600, h: 2131 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-013.jpg", w: 1600, h: 1997 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-014.jpg", w: 1600, h: 2131 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-015.jpg", w: 1600, h: 2131 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-016.jpg", w: 1600, h: 2131 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-017.jpg", w: 1600, h: 2131 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-018.jpg", w: 1600, h: 2131 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-019.jpg", w: 1600, h: 2000 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-020.jpg", w: 1600, h: 2000 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-021.jpg", w: 1600, h: 2844 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-022.jpg", w: 1600, h: 2400 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-023.jpg", w: 1600, h: 2000 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-024.jpg", w: 1600, h: 1066 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-025.jpg", w: 1600, h: 2000 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-026.jpg", w: 1600, h: 2000 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-027.jpg", w: 1600, h: 2400 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-028.jpg", w: 1600, h: 1997 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-029.jpg", w: 1600, h: 1997 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-030.jpg", w: 1600, h: 2131 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-031.jpg", w: 1600, h: 2000 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-032.jpg", w: 1600, h: 2000 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-033.jpg", w: 1600, h: 2131 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-034.jpg", w: 1600, h: 1066 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-035.jpg", w: 1600, h: 2000 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-036.jpg", w: 1600, h: 2000 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-037.jpg", w: 1600, h: 2131 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-038.jpg", w: 1600, h: 2133 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-039.jpg", w: 1600, h: 2000 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-040.jpg", w: 1600, h: 1997 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-041.jpg", w: 1600, h: 2131 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-042.jpg", w: 1600, h: 1997 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-043.jpg", w: 1600, h: 1997 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-044.jpg", w: 1600, h: 2000 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-045.jpg", w: 1600, h: 1997 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-046.jpg", w: 1600, h: 2131 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-047.jpg", w: 1600, h: 1997 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-048.jpg", w: 1600, h: 1997 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-049.jpg", w: 1600, h: 2131 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-050.jpg", w: 1600, h: 1997 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-051.jpg", w: 1600, h: 2131 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-052.jpg", w: 1600, h: 1997 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-053.jpg", w: 1600, h: 1997 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-054.jpg", w: 1600, h: 2844 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-055.jpg", w: 1600, h: 1997 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-056.jpg", w: 1600, h: 2131 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-057.jpg", w: 1600, h: 1997 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-058.jpg", w: 1600, h: 2000 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-059.jpg", w: 1600, h: 2000 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-060.jpg", w: 1600, h: 2131 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-061.jpg", w: 1600, h: 2844 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-062.jpg", w: 1600, h: 1997 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-063.jpg", w: 1600, h: 1997 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-064.jpg", w: 1600, h: 2239 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-065.jpg", w: 1600, h: 2131 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-066.jpg", w: 1600, h: 1997 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-067.jpg", w: 1600, h: 2131 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-068.jpg", w: 1600, h: 2000 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-069.jpg", w: 1600, h: 1997 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-070.jpg", w: 1600, h: 2000 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-071.jpg", w: 1600, h: 1997 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-072.jpg", w: 1600, h: 2844 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-073.jpg", w: 1600, h: 2131 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-074.jpg", w: 1600, h: 1997 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-075.jpg", w: 1600, h: 2400 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-076.jpg", w: 1600, h: 2000 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-077.jpg", w: 1600, h: 2131 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-078.jpg", w: 1600, h: 2000 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-079.jpg", w: 1600, h: 2131 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-080.jpg", w: 1600, h: 2131 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-081.jpg", w: 1600, h: 1997 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-082.jpg", w: 1600, h: 2131 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-083.jpg", w: 1600, h: 2131 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-084.jpg", w: 1600, h: 1997 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-085.jpg", w: 1600, h: 2131 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-086.jpg", w: 1600, h: 1997 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-087.jpg", w: 1600, h: 2131 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-088.jpg", w: 1600, h: 1997 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-089.jpg", w: 1600, h: 2131 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-090.jpg", w: 1600, h: 1997 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-091.jpg", w: 1600, h: 2131 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-092.jpg", w: 1600, h: 1997 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-093.jpg", w: 1600, h: 2400 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-094.jpg", w: 1600, h: 2400 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-095.jpg", w: 1600, h: 2131 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-096.jpg", w: 1600, h: 2000 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-097.jpg", w: 1600, h: 2000 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-098.jpg", w: 1600, h: 2131 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-099.jpg", w: 1600, h: 998 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-100.jpg", w: 1600, h: 1997 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-101.jpg", w: 1600, h: 2131 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-102.jpg", w: 1600, h: 2131 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-103.jpg", w: 1600, h: 2000 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-104.jpg", w: 1600, h: 2131 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-105.jpg", w: 1600, h: 2000 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-106.jpg", w: 1600, h: 1997 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-107.jpg", w: 1600, h: 2000 },
-    { tagKey: "MelangeStyle", src: "assets/gallery/custom-108.jpg", w: 1600, h: 1998 },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-001.jpg", w: 1600, h: 2131, desc: { en: "upper arm dragon tattoos, matching pair in red and blue", ko: "팔뚝 위쪽 용 타투, 빨간색과 파란색 매칭 한 쌍" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-002.jpg", w: 1600, h: 2131, desc: { en: "forearm portrait tattoo, blue painted style", ko: "팔뚝 여성 초상화 타투, 파란색 페인팅 스타일" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-003.jpg", w: 1600, h: 1997, desc: { en: "forearm skull and sword design, blue ink", ko: "팔뚝 해골과 검 디자인, 파란색 잉크" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-004.jpg", w: 1600, h: 2131, desc: { en: "forearm dragon sleeve, blue with orange clouds", ko: "팔뚝 용 슬리브, 파란색과 주황 구름" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-005.jpg", w: 1600, h: 2131, desc: { en: "ribs Hindu goddess tattoo with skull necklace", ko: "옆구리 힌두 여신 타투, 해골 목걸이" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-006.jpg", w: 1600, h: 2131, desc: { en: "forearm wave pattern with bat and stars, blue and pink ink", ko: "팔뚝 파도 패턴과 박쥐, 별 장식, 파란색과 핑크 잉크" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-007.jpg", w: 1600, h: 2000, desc: { en: "forearm ornamental mask design with cherry blossoms, pink ink", ko: "팔뚝 장식 가면 디자인과 벚꽃, 핑크 잉크" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-008.jpg", w: 1600, h: 2844, desc: { en: "forearm sword tattoo, black linework", ko: "팔뚝 검 타투, 블랙 라인워크" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-009.jpg", w: 1600, h: 2131, desc: { en: "forearm ornamental turtle design, blue and orange", ko: "팔뚝 장식 거북이 디자인, 파란색과 주황색" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-010.jpg", w: 1600, h: 2131, desc: { en: "forearm abstract flame design, purple and blue", ko: "팔뚝 추상 불꽃 디자인, 보라색과 파란색" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-011.jpg", w: 1600, h: 2000, desc: { en: "shoulder geometric pattern with flowers, blue ink", ko: "어깨 기하학 패턴과 꽃, 파란색 잉크" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-012.jpg", w: 1600, h: 2131, desc: { en: "upper back wing design, blue ink", ko: "등 위쪽 날개 디자인, 파란색 잉크" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-013.jpg", w: 1600, h: 1997, desc: { en: "shin tribal flame pattern, red and black", ko: "정강이 트라이벌 화염 패턴, 빨간색과 검정색" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-014.jpg", w: 1600, h: 2131, desc: { en: "full arm dragon sleeve, deep blue with wave details", ko: "팔 전체 용 슬리브, 짙은 파란색과 파도 디테일" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-015.jpg", w: 1600, h: 2131, desc: { en: "upper arm dagger tattoo, blue ink", ko: "팔뚝 위쪽 단검 타투, 파란색 잉크" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-016.jpg", w: 1600, h: 2131, desc: { en: "forearm ornamental sleeve, blue scrollwork", ko: "팔뚝 장식 슬리브, 파란색 스크롤 패턴" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-017.jpg", w: 1600, h: 2131, desc: { en: "upper arm flower vase tattoo, pink and yellow bouquet", ko: "팔뚝 위쪽 꽃병 타투, 핑크와 노란 꽃다발" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-018.jpg", w: 1600, h: 2131, desc: { en: "full arm ornamental wave sleeve, pink and red", ko: "팔 전체 장식 파도 슬리브, 핑크와 빨간색" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-019.jpg", w: 1600, h: 2000, desc: { en: "back of neck wave design, blue ink", ko: "목 뒤 파도 디자인, 파란색 잉크" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-020.jpg", w: 1600, h: 2000, desc: { en: "inner arm ornamental cross tattoo, blue ink", ko: "팔 안쪽 장식 십자 타투, 파란색 잉크" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-021.jpg", w: 1600, h: 2844, desc: { en: "forearm dragon and wave design, blue linework", ko: "팔뚝 용과 파도 디자인, 파란색 라인워크" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-022.jpg", w: 1600, h: 2400, desc: { en: "full arm ornamental sleeve, blue and orange", ko: "팔 전체 장식 슬리브, 파란색과 주황색" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-023.jpg", w: 1600, h: 2000, desc: { en: "collarbone floral vine tattoo, blue ink, symmetrical pair", ko: "쇄골 꽃 넝쿨 타투, 파란색 잉크, 대칭 디자인" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-024.jpg", w: 1600, h: 1066, desc: { en: "chest ornamental wing piece, blue ink", ko: "가슴 장식 날개 디자인, 파란색 잉크" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-025.jpg", w: 1600, h: 2000, desc: { en: "inner elbow wave heart tattoo, blue ink", ko: "팔 안쪽 파도 하트 타투, 파란색 잉크" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-026.jpg", w: 1600, h: 2000, desc: { en: "inner arm butterfly tattoo, blue and orange", ko: "팔 안쪽 나비 타투, 파란색과 주황색" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-027.jpg", w: 1600, h: 2400, desc: { en: "full arm geometric floral sleeve, blue ink", ko: "팔 전체 기하학 꽃무늬 슬리브, 파란색 잉크" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-028.jpg", w: 1600, h: 1997, desc: { en: "shoulder dragon tattoo, black and grey with blue wave", ko: "어깨 용 타투, 흑회색과 파란 파도" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-029.jpg", w: 1600, h: 1997, desc: { en: "forearm ornamental wave design with gem accents, blue ink", ko: "팔뚝 장식 파도 디자인과 보석 장식, 파란색 잉크" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-030.jpg", w: 1600, h: 2131, desc: { en: "side neck cherry blossom branch tattoo, blue ink", ko: "목 옆 벚꽃 가지 타투, 파란색 잉크" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-031.jpg", w: 1600, h: 2000, desc: { en: "forearm tattoo collection, small symbols and lotus flower", ko: "팔뚝 작은 심볼과 연꽃 모음 타투" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-032.jpg", w: 1600, h: 2000, desc: { en: "ribs ornamental wave design with eye motif, blue ink", ko: "옆구리 장식 파도 디자인과 눈 모티프, 파란색 잉크" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-033.jpg", w: 1600, h: 2131, desc: { en: "back angel warrior piece, blue and black", ko: "등 천사 전사 디자인, 파란색과 검정색" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-034.jpg", w: 1600, h: 1066, desc: { en: "collarbone dragon tattoo, mirrored pair in black and blue", ko: "쇄골 쌍용 타투, 검정색과 파란색" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-035.jpg", w: 1600, h: 2000, desc: { en: "forearm tiger and snake design, blue and white", ko: "팔뚝 호랑이와 뱀 디자인, 파란색과 흰색" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-036.jpg", w: 1600, h: 2000, desc: { en: "shoulder-to-collarbone dragon tattoo, mirrored pair, close-up view", ko: "어깨부터 쇄골까지 쌍용 타투, 근접 사진" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-037.jpg", w: 1600, h: 2131, desc: { en: "forearm koi fish and flowers tattoo, blue ink", ko: "팔뚝 잉어와 꽃 타투, 파란색 잉크" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-038.jpg", w: 1600, h: 2133, desc: { en: "upper arm floral ribbon sleeve, blue ink", ko: "팔뚝 위쪽 꽃과 리본 슬리브, 파란색 잉크" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-039.jpg", w: 1600, h: 2000, desc: { en: "forearm flower medallion tattoo, blue and gold", ko: "팔뚝 꽃 메달리온 타투, 파란색과 금색" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-040.jpg", w: 1600, h: 1997, desc: { en: "ribs dragon and floral linework, black ink", ko: "옆구리 용과 꽃 라인워크, 블랙 잉크" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-041.jpg", w: 1600, h: 2131, desc: { en: "calf ornamental cat tattoo, blue ink", ko: "종아리 장식 고양이 타투, 파란색 잉크" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-042.jpg", w: 1600, h: 1997, desc: { en: "shoulder blade swallow tattoo, blue ink", ko: "어깨뼈 제비 타투, 파란색 잉크" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-043.jpg", w: 1600, h: 1997, desc: { en: "upper arm abstract calligraphy design, blue ink", ko: "팔뚝 위쪽 추상 캘리그래피 디자인, 파란색 잉크" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-044.jpg", w: 1600, h: 2000, desc: { en: "upper arm flower vase tattoo, orange flowers", ko: "팔뚝 위쪽 꽃병 타투, 주황색 꽃" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-045.jpg", w: 1600, h: 1997, desc: { en: "forearm tribal branch pattern, blue ink", ko: "팔뚝 트라이벌 나뭇가지 패턴, 파란색 잉크" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-046.jpg", w: 1600, h: 2131, desc: { en: "hand tattoo with eyes and stars, blue ink", ko: "손등 눈과 별 타투, 파란색 잉크" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-047.jpg", w: 1600, h: 1997, desc: { en: "upper arm chrysanthemum flower tattoo, blue ink", ko: "팔뚝 위쪽 국화 타투, 파란색 잉크" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-048.jpg", w: 1600, h: 1997, desc: { en: "upper arm dragon tattoo, green with red accents", ko: "팔뚝 위쪽 용 타투, 초록색과 빨간색" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-049.jpg", w: 1600, h: 2131, desc: { en: "forearm dragon tattoo, teal ink, coiled wave design", ko: "팔뚝 용 타투, 청록색 잉크, 파도처럼 휘감긴 디자인" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-050.jpg", w: 1600, h: 1997, desc: { en: "forearm snake tattoo, blue ink with star accent", ko: "팔뚝 뱀 타투, 파란색 잉크와 별 장식" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-051.jpg", w: 1600, h: 2131, desc: { en: "upper arm hexagon pattern tattoo, blue ornamental center", ko: "팔뚝 위쪽 육각형 패턴 타투, 파란색 장식 중앙" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-052.jpg", w: 1600, h: 1997, desc: { en: "forearm panther tattoo, blue ink", ko: "팔뚝 표범 타투, 파란색 잉크" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-053.jpg", w: 1600, h: 1997, desc: { en: "thigh dragon tattoo, black with blue flames", ko: "허벅지 용 타투, 검정색과 파란 불꽃" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-054.jpg", w: 1600, h: 2844, desc: { en: "upper arm fox mask tattoo with flower burst, red and white", ko: "팔뚝 위쪽 여우 가면 타투와 꽃 장식, 빨간색과 흰색" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-055.jpg", w: 1600, h: 1997, desc: { en: "forearm floral vine tattoo, blue ink", ko: "팔뚝 꽃 넝쿨 타투, 파란색 잉크" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-056.jpg", w: 1600, h: 2131, desc: { en: "forearm warrior figure tattoo, blue ink", ko: "팔뚝 전사 캐릭터 타투, 파란색 잉크" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-057.jpg", w: 1600, h: 1997, desc: { en: "upper arm dragon tattoo, black with blue flames and dragonfly accent", ko: "팔뚝 위쪽 용 타투, 검정색과 파란 불꽃, 잠자리 장식" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-058.jpg", w: 1600, h: 2000, desc: { en: "forearm wave and thorn pattern, teal ink", ko: "팔뚝 파도와 가시 패턴, 청록색 잉크" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-059.jpg", w: 1600, h: 2000, desc: { en: "upper arm cartoon cat tattoo with tiny bird, blue and orange", ko: "팔뚝 위쪽 만화 고양이 타투, 작은 새와 함께, 파란색과 주황색" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-060.jpg", w: 1600, h: 2131, desc: { en: "forearm ornamental vase tattoo, dark blue", ko: "팔뚝 장식 항아리 타투, 짙은 파란색" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-061.jpg", w: 1600, h: 2844, desc: { en: "forearm koi fish tattoo with crescent moon accents, blue ink", ko: "팔뚝 잉어 타투, 파란색 잉크, 초승달 장식" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-062.jpg", w: 1600, h: 1997, desc: { en: "inner arm dragon tattoo, black and blue", ko: "팔 안쪽 용 타투, 검정색과 파란색" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-063.jpg", w: 1600, h: 1997, desc: { en: "upper arm peony flower tattoo, blue ink", ko: "팔뚝 위쪽 작약 타투, 파란색 잉크" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-064.jpg", w: 1600, h: 2239, desc: { en: "forearm snake and dagger tattoo, red and blue", ko: "팔뚝 뱀과 단검 타투, 빨간색과 파란색" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-065.jpg", w: 1600, h: 2131, desc: { en: "upper arm butterfly tattoo, blue with gold trim", ko: "팔뚝 위쪽 나비 타투, 파란색과 금색 테두리" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-066.jpg", w: 1600, h: 1997, desc: { en: "full arm dragon sleeve, orange and blue", ko: "팔 전체 용 슬리브, 주황색과 파란색" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-067.jpg", w: 1600, h: 2131, desc: { en: "chest ornamental pattern tattoo, blue ink", ko: "가슴 장식 패턴 타투, 파란색 잉크" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-068.jpg", w: 1600, h: 2000, desc: { en: "forearm snake tattoo with red flowers, black ink", ko: "팔뚝 뱀과 빨간 꽃 타투, 블랙 잉크" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-069.jpg", w: 1600, h: 1997, desc: { en: "upper arm paisley pattern tattoo, multicolor", ko: "팔뚝 위쪽 페이즐리 패턴 타투, 멀티컬러" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-070.jpg", w: 1600, h: 2000, desc: { en: "upper arm dragon tattoo, blue ink with wave scrollwork", ko: "팔뚝 위쪽 용 타투, 파란색 잉크와 파도 스크롤" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-071.jpg", w: 1600, h: 1997, desc: { en: "upper back dragon tattoo, dark blue, looping design", ko: "등 위쪽 용 타투, 짙은 파란색, 고리 모양 디자인" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-072.jpg", w: 1600, h: 2844, desc: { en: "back ornamental linework tattoo, black and grey", ko: "등 장식 라인워크 타투, 흑회색" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-073.jpg", w: 1600, h: 2131, desc: { en: "shin tribal heart pattern, blue ink", ko: "정강이 트라이벌 하트 패턴, 파란색 잉크" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-074.jpg", w: 1600, h: 1997, desc: { en: "forearm ornamental wave sleeve, teal and tan", ko: "팔뚝 장식 파도 슬리브, 청록색과 황토색" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-075.jpg", w: 1600, h: 2400, desc: { en: "thigh dragon tattoo, blue ink with flower accent", ko: "허벅지 용 타투, 파란색 잉크와 꽃 장식" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-076.jpg", w: 1600, h: 2000, desc: { en: "upper arm skull tattoo, blue ink, melting mirror frame", ko: "팔뚝 위쪽 해골 타투, 파란색 잉크, 녹아내리는 액자 모양" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-077.jpg", w: 1600, h: 2131, desc: { en: "upper back branching pattern tattoo, blue and black", ko: "등 위쪽 나뭇가지 패턴 타투, 파란색과 검정색" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-078.jpg", w: 1600, h: 2000, desc: { en: "shoulder abstract brushstroke tattoo, black ink", ko: "어깨 추상 붓터치 타투, 블랙 잉크" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-079.jpg", w: 1600, h: 2131, desc: { en: "cheek ornamental swirl tattoo, blue ink", ko: "볼 장식 소용돌이 타투, 파란색 잉크" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-080.jpg", w: 1600, h: 2131, desc: { en: "full arm dragon sleeve, teal blue with cloud accents", ko: "팔 전체 용 슬리브, 청록색과 구름 장식" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-081.jpg", w: 1600, h: 1997, desc: { en: "upper arm ornamental dagger tattoo, blue ink", ko: "팔뚝 위쪽 장식 단검 타투, 파란색 잉크" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-082.jpg", w: 1600, h: 2131, desc: { en: "full arm thorn vine sleeve, black ink", ko: "팔 전체 가시 넝쿨 슬리브, 블랙 잉크" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-083.jpg", w: 1600, h: 2131, desc: { en: "knee tattoo, matching pair, wave and eye motif in teal", ko: "무릎 타투, 대칭 한 쌍, 파도와 눈 모티프, 청록색" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-084.jpg", w: 1600, h: 1997, desc: { en: "forearm abstract flame design, blue and black", ko: "팔뚝 추상 불꽃 디자인, 파란색과 검정색" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-085.jpg", w: 1600, h: 2131, desc: { en: "upper arm deer tattoo, blue watercolor style", ko: "팔뚝 위쪽 사슴 타투, 파란색 수채화 스타일" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-086.jpg", w: 1600, h: 1997, desc: { en: "forearm dragon tattoo, grey ink with flower accent", ko: "팔뚝 용 타투, 회색 잉크와 꽃 장식" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-087.jpg", w: 1600, h: 2131, desc: { en: "full arm dragon and snake sleeve, black and grey", ko: "팔 전체 용과 뱀 슬리브, 흑회색" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-088.jpg", w: 1600, h: 1997, desc: { en: "shoulder wave design, blue ink", ko: "어깨 파도 디자인, 파란색 잉크" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-089.jpg", w: 1600, h: 2131, desc: { en: "full arm abstract ornamental sleeve, pale blue", ko: "팔 전체 추상 장식 슬리브, 연한 파란색" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-090.jpg", w: 1600, h: 1997, desc: { en: "forearm trident tattoo, blue ink", ko: "팔뚝 삼지창 타투, 파란색 잉크" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-091.jpg", w: 1600, h: 2131, desc: { en: "upper arm cartoon devil tattoo, red and color", ko: "팔뚝 위쪽 만화 악마 타투, 빨간색과 컬러" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-092.jpg", w: 1600, h: 1997, desc: { en: "forearm hooded figure tattoo in heart frame, blue ink", ko: "팔뚝 로브 입은 인물 타투, 하트 프레임, 파란색 잉크" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-093.jpg", w: 1600, h: 2400, desc: { en: "knee flower tattoo with cloud accents, blue and gold", ko: "무릎 꽃 타투와 구름 장식, 파란색과 금색" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-094.jpg", w: 1600, h: 2400, desc: { en: "jawline ornamental tattoo, blue ink", ko: "턱선 장식 타투, 파란색 잉크" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-095.jpg", w: 1600, h: 2131, desc: { en: "shoulder dragon tattoo, blue and white, wings spread", ko: "어깨 용 타투, 파란색과 흰색, 날개 펼친 모습" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-096.jpg", w: 1600, h: 2000, desc: { en: "side and arm floral vine tattoo, blue ink", ko: "옆구리와 팔 꽃 넝쿨 타투, 파란색 잉크" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-097.jpg", w: 1600, h: 2000, desc: { en: "upper arm spider lily tattoo, blue and orange", ko: "팔뚝 위쪽 상사화 타투, 파란색과 주황색" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-098.jpg", w: 1600, h: 2131, desc: { en: "upper arm reaper figure tattoo with roses, blue and gold", ko: "팔뚝 위쪽 저승사자 캐릭터 타투와 장미, 파란색과 금색" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-099.jpg", w: 1600, h: 998, desc: { en: "shoulder swimmer tattoo, blue linework with waves", ko: "어깨 수영하는 사람 타투, 파란색 라인워크와 파도" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-100.jpg", w: 1600, h: 1997, desc: { en: "forearm snake tattoo, blue ink, wrapping to hand", ko: "팔뚝 뱀 타투, 파란색 잉크, 손까지 이어짐" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-101.jpg", w: 1600, h: 2131, desc: { en: "upper chest ornamental design, blue ink", ko: "가슴 위쪽 장식 디자인, 파란색 잉크" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-102.jpg", w: 1600, h: 2131, desc: { en: "ribs dragon tattoo, red and blue two-tone", ko: "옆구리 용 타투, 빨간색과 파란색 투톤" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-103.jpg", w: 1600, h: 2000, desc: { en: "thigh dragon tattoo, black ink", ko: "허벅지 용 타투, 블랙 잉크" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-104.jpg", w: 1600, h: 2131, desc: { en: "both arms dragon sleeves, blue and red", ko: "양팔 용 슬리브, 파란색과 빨간색" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-105.jpg", w: 1600, h: 2000, desc: { en: "forearm cartoon sea creature tattoo, blue ink", ko: "팔뚝 만화 바다생물 타투, 파란색 잉크" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-106.jpg", w: 1600, h: 1997, desc: { en: "upper arm tattoo collection, butterfly and fan", ko: "팔뚝 위쪽 나비와 부채 모음 타투" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-107.jpg", w: 1600, h: 2000, desc: { en: "upper arm dragon tattoo, blue and gold, coiled design", ko: "팔뚝 위쪽 용 타투, 파란색과 금색, 똬리 튼 디자인" } },
+    { tagKey: "MelangeStyle", src: "assets/gallery/custom-108.jpg", w: 1600, h: 1998, desc: { en: "forearm wave pattern tattoo, blue ink, wrist to forearm", ko: "팔뚝 파도 패턴 타투, 파란색 잉크, 손목부터 팔뚝까지" } },
     { tagKey: "Flash", src: "assets/gallery/flash-01.jpg", w: 1400, h: 1750 },
   ];
 
@@ -473,6 +473,7 @@
 
   const t = (key) => (I18N[lang] && I18N[lang][key]) || key;
   const tTag = (key) => (TAGS[lang] && TAGS[lang][key]) || key;
+  const entryLabel = (entry) => (entry.desc && (entry.desc[lang] || entry.desc.en)) || tTag(entry.tagKey);
   const tRegion = (key) => (REGIONS[lang] && REGIONS[lang][key]) || key;
 
   /* ------------------------------------------------------------
@@ -586,7 +587,7 @@
     if (entry.src) {
       const img = document.createElement("img");
       img.src = entry.src;
-      img.alt = "Melange Tattoo " + tTag(entry.tagKey) + " tattoo";
+      img.alt = entry.desc ? "Melange Tattoo — " + entryLabel(entry) + " tattoo" : "Melange Tattoo " + tTag(entry.tagKey) + " tattoo";
       img.loading = "lazy";
       img.decoding = "async";
       if (entry.w && entry.h) {
@@ -609,7 +610,7 @@
       item.type = "button";
       item.className = "gallery-item";
       item.setAttribute("data-index", String(i));
-      item.setAttribute("aria-label", "Open " + tTag(entry.tagKey) + " tattoo image");
+      item.setAttribute("aria-label", "Open " + entryLabel(entry) + " tattoo image");
 
       const plus = document.createElement("span");
       plus.className = "g-plus";
@@ -617,7 +618,7 @@
 
       const label = document.createElement("span");
       label.className = "g-label";
-      label.textContent = tTag(entry.tagKey);
+      label.textContent = entryLabel(entry);
 
       item.append(tileMedia(entry, angle), plus, label);
       grid.appendChild(item);
@@ -679,7 +680,7 @@
     if (entry.src) {
       const img = document.createElement("img");
       img.src = entry.src;
-      img.alt = "Melange Tattoo " + tTag(entry.tagKey) + " tattoo";
+      img.alt = entry.desc ? "Melange Tattoo — " + entryLabel(entry) + " tattoo" : "Melange Tattoo " + tTag(entry.tagKey) + " tattoo";
       lbMedia.appendChild(img);
     } else {
       const ph = document.createElement("span");
@@ -687,7 +688,7 @@
       ph.style.setProperty("--angle", angle + "deg");
       lbMedia.appendChild(ph);
     }
-    lbCaption.textContent = tTag(entry.tagKey) + " · #" + String(currentIndex + 1).padStart(2, "0");
+    lbCaption.textContent = entryLabel(entry) + " · #" + String(currentIndex + 1).padStart(2, "0");
   }
   function openLb(index) {
     currentIndex = index;

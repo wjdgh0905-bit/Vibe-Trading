@@ -244,8 +244,7 @@
       "work.eyebrow": "Selected Work",
       "work.title": "Recent tattoos",
       "work.desc": "Finished pieces, updated as new work comes in. Tap any photo to enlarge.",
-      "work.filterAll": "All",
-      "work.filterLabel": "Filter by style",
+      "work.seeMore": "See more",
       "about.eyebrow": "About",
       "about.title": "About Melange",
       "about.lead":
@@ -284,7 +283,7 @@
       "booking.checklist.4": "Placement",
       "booking.checklist.5": "Approximate size in cm",
       "booking.checklist.6": "Preferred date",
-      "booking.checklist.7": "A clear photo of the placement area",
+      "booking.checklist.7": "A clear photo of the placement area (send via Instagram DM or email)",
       "booking.howItWorks": "How it works",
       "booking.steps.1": "Send the details above via Instagram DM or email.",
       "booking.steps.2": "Melange reviews your message and replies with size, difficulty, estimated time, and price.",
@@ -306,7 +305,7 @@
       "form.size": "Approximate size (cm)",
       "form.sizePh": "e.g. 15",
       "form.date": "Preferred date",
-      "form.photo": "Photo of the placement area (optional)",
+      "form.photoNote": "Have a placement photo? Send it to @melange.tattoo on Instagram or by email — this form can't take attachments.",
       "form.submit": "Send Inquiry",
       "form.note": "Submitted directly. No email app needed.",
       "form.sending": "Sending…",
@@ -321,7 +320,7 @@
       "faq.a2": "It's sent directly once your booking is confirmed.",
       "faq.q3": "What should I include in my first message?",
       "faq.a3":
-        "Your name, city, tattoo idea or reference, placement, approximate size in cm, preferred date, and a clear photo of the placement area.",
+        "Your name, city, tattoo idea or reference, placement, approximate size in cm, and preferred date. A clear photo of the placement area helps too — send it via Instagram DM or email.",
       "faq.q4": "How much does it cost?",
       "faq.a4": "Price depends on size, placement, and difficulty. You'll get an estimate after sending your inquiry.",
       "faq.q5": "Is the deposit refundable?",
@@ -354,8 +353,7 @@
       "work.eyebrow": "작업",
       "work.title": "최근 작업",
       "work.desc": "완성작 모음입니다. 새 작업이 생기면 계속 추가됩니다. 사진을 누르면 크게 볼 수 있습니다.",
-      "work.filterAll": "전체",
-      "work.filterLabel": "스타일로 필터링",
+      "work.seeMore": "더 보기",
       "about.eyebrow": "소개",
       "about.title": "멜란지 소개",
       "about.lead":
@@ -394,7 +392,7 @@
       "booking.checklist.4": "시술 부위",
       "booking.checklist.5": "예상 사이즈(cm)",
       "booking.checklist.6": "희망 날짜",
-      "booking.checklist.7": "시술 부위가 잘 보이는 사진",
+      "booking.checklist.7": "시술 부위가 잘 보이는 사진 (인스타그램 DM 또는 이메일로 전송)",
       "booking.howItWorks": "진행 방식",
       "booking.steps.1": "위 내용을 인스타그램 DM이나 이메일로 보내주세요.",
       "booking.steps.2": "멜란지가 메시지를 확인한 후 사이즈, 난이도, 예상 소요 시간과 금액을 안내드립니다.",
@@ -416,7 +414,7 @@
       "form.size": "예상 사이즈 (cm)",
       "form.sizePh": "예: 15",
       "form.date": "희망 날짜",
-      "form.photo": "시술 부위 사진 (선택)",
+      "form.photoNote": "시술 부위 사진이 있으신가요? 인스타그램 @melange.tattoo DM이나 이메일로 보내주세요 — 이 폼은 파일 첨부가 안 됩니다.",
       "form.submit": "문의 보내기",
       "form.note": "제출하면 바로 접수돼요. 메일 앱은 필요 없습니다.",
       "form.sending": "전송 중…",
@@ -429,7 +427,7 @@
       "faq.q2": "정확한 스튜디오 주소는 어떻게 알 수 있나요?",
       "faq.a2": "예약이 확정되면 직접 안내드립니다.",
       "faq.q3": "첫 메시지에는 뭘 포함해야 하나요?",
-      "faq.a3": "이름, 도시, 타투 아이디어 또는 레퍼런스, 시술 부위, 예상 사이즈(cm), 희망 날짜, 시술 부위가 잘 보이는 사진을 보내주세요.",
+      "faq.a3": "이름, 도시, 타투 아이디어 또는 레퍼런스, 시술 부위, 예상 사이즈(cm), 희망 날짜를 보내주세요. 시술 부위가 잘 보이는 사진이 있으면 인스타그램 DM이나 이메일로 함께 보내주시면 더 좋습니다.",
       "faq.q4": "가격은 어떻게 되나요?",
       "faq.a4": "가격은 사이즈, 부위, 난이도에 따라 달라집니다. 문의 주시면 견적을 안내드립니다.",
       "faq.q5": "예약금은 환불되나요?",
@@ -547,8 +545,9 @@
      Gallery generation
      ------------------------------------------------------------ */
   const grid = document.getElementById("galleryGrid");
-  const filtersBar = document.getElementById("galleryFilters");
-  let activeFilter = "all";
+  const galleryMoreBtn = document.getElementById("galleryMore");
+  const GALLERY_PAGE_SIZE = 12;
+  let galleryVisibleCount = GALLERY_PAGE_SIZE;
 
   function tileMedia(entry, angle) {
     if (entry.src) {
@@ -569,49 +568,14 @@
     return ph;
   }
 
-  function galleryTagsInUse() {
-    const seen = [];
-    GALLERY.forEach((entry) => {
-      if (entry.tagKey && !seen.includes(entry.tagKey)) seen.push(entry.tagKey);
-    });
-    return seen;
-  }
-
-  function applyGalleryFilter() {
-    grid.querySelectorAll(".gallery-item").forEach((item) => {
-      item.hidden = activeFilter !== "all" && item.getAttribute("data-tag") !== activeFilter;
-    });
-  }
-
-  function renderGalleryFilters() {
-    filtersBar.innerHTML = "";
-    filtersBar.setAttribute("aria-label", t("work.filterLabel"));
-
-    const options = ["all", ...galleryTagsInUse()];
-    options.forEach((key) => {
-      const chip = document.createElement("button");
-      chip.type = "button";
-      chip.className = "filter-chip" + (key === activeFilter ? " active" : "");
-      chip.setAttribute("aria-pressed", String(key === activeFilter));
-      chip.textContent = key === "all" ? t("work.filterAll") : tTag(key);
-      chip.addEventListener("click", () => {
-        activeFilter = key;
-        renderGalleryFilters();
-        applyGalleryFilter();
-      });
-      filtersBar.appendChild(chip);
-    });
-  }
-
   function renderGallery() {
     grid.innerHTML = "";
-    GALLERY.forEach((entry, i) => {
+    GALLERY.slice(0, galleryVisibleCount).forEach((entry, i) => {
       const angle = ANGLES[i % ANGLES.length];
       const item = document.createElement("button");
       item.type = "button";
       item.className = "gallery-item";
       item.setAttribute("data-index", String(i));
-      item.setAttribute("data-tag", entry.tagKey);
       item.setAttribute("aria-label", "Open " + tTag(entry.tagKey) + " tattoo image");
 
       const plus = document.createElement("span");
@@ -625,9 +589,13 @@
       item.append(tileMedia(entry, angle), plus, label);
       grid.appendChild(item);
     });
-    renderGalleryFilters();
-    applyGalleryFilter();
+    galleryMoreBtn.hidden = galleryVisibleCount >= GALLERY.length;
   }
+
+  galleryMoreBtn.addEventListener("click", () => {
+    galleryVisibleCount += GALLERY_PAGE_SIZE;
+    renderGallery();
+  });
 
   /* ------------------------------------------------------------
      Shared dialog helpers (lightbox + inquiry modal)
@@ -704,18 +672,8 @@
     document.body.style.overflow = "";
     if (lastFocused) lastFocused.focus();
   }
-  function visibleGalleryIndices() {
-    if (activeFilter === "all") return GALLERY.map((_, i) => i);
-    const indices = [];
-    GALLERY.forEach((entry, i) => {
-      if (entry.tagKey === activeFilter) indices.push(i);
-    });
-    return indices;
-  }
   function step(dir) {
-    const indices = visibleGalleryIndices();
-    const pos = indices.indexOf(currentIndex);
-    currentIndex = indices[(pos + dir + indices.length) % indices.length];
+    currentIndex = (currentIndex + dir + GALLERY.length) % GALLERY.length;
     renderLb();
   }
 
@@ -848,24 +806,6 @@
       script.async = true;
       script.src = "https://www.instagram.com/embed.js";
       document.body.appendChild(script);
-    }
-
-    // Carousel: whichever card sits over the row's exact horizontal
-    // center gets the "in focus" look; neighbors stay dimmed/scaled
-    // down. rootMargin collapses the row's box to a 0-width vertical
-    // line at its center, so only the centered card ever intersects.
-    if ("IntersectionObserver" in window) {
-      const centerObserver = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            entry.target.classList.toggle("is-active", entry.isIntersecting);
-          });
-        },
-        { root: row, threshold: 0, rootMargin: "0px -50% 0px -50%" }
-      );
-      items.forEach((el) => centerObserver.observe(el));
-    } else {
-      items[0].classList.add("is-active");
     }
 
     function scrollByOne(dir) {

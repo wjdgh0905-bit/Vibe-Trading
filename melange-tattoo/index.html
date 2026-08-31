@@ -159,13 +159,19 @@
             </p>
           </div>
 
-          <div class="gallery-filters" id="galleryFilters">
-            <!-- Chips injected by script.js from the tags present in GALLERY -->
-          </div>
-
           <div class="gallery-grid" id="galleryGrid">
             <!-- Tiles injected by script.js from the GALLERY array -->
           </div>
+
+          <button
+            class="btn btn-ghost gallery-more"
+            id="galleryMore"
+            type="button"
+            hidden
+            data-i18n="work.seeMore"
+          >
+            See more
+          </button>
         </div>
       </section>
 
@@ -280,7 +286,7 @@
                 <li data-i18n="booking.checklist.4">Placement</li>
                 <li data-i18n="booking.checklist.5">Approximate size in cm</li>
                 <li data-i18n="booking.checklist.6">Preferred date</li>
-                <li data-i18n="booking.checklist.7">A clear photo of the placement area</li>
+                <li data-i18n="booking.checklist.7">A clear photo of the placement area (send via Instagram DM or email)</li>
               </ul>
 
               <h3 class="booking-h" data-i18n="booking.howItWorks">How it works</h3>
@@ -323,8 +329,9 @@
             <details class="faq-item">
               <summary data-i18n="faq.q3">What should I include in my first message?</summary>
               <p data-i18n="faq.a3">
-                Your name, city, tattoo idea or reference, placement, approximate size in cm,
-                preferred date, and a clear photo of the placement area.
+                Your name, city, tattoo idea or reference, placement, approximate size in cm, and
+                preferred date. A clear photo of the placement area helps too — send it via
+                Instagram DM or email.
               </p>
             </details>
             <details class="faq-item">
@@ -431,10 +438,9 @@
             <input id="f-date" name="date" type="date" />
           </div>
 
-          <div class="field">
-            <label for="f-photo" data-i18n="form.photo">Photo of the placement area (optional)</label>
-            <input id="f-photo" name="photo" type="file" accept="image/*" />
-          </div>
+          <p class="form-note" data-i18n="form.photoNote">
+            Have a placement photo? Send it to @melange.tattoo on Instagram or by email — this form can't take attachments.
+          </p>
 
           <button class="btn btn-primary btn-block" type="submit" data-i18n="form.submit">Send Inquiry</button>
           <p class="form-note" data-i18n="form.note">

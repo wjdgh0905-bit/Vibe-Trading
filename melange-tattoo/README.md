@@ -77,9 +77,6 @@ reserve the right amount of space before the image loads instead of the whole pa
 around as 100+ photos load in. Get a new photo's dimensions (e.g. `python3 -c "from PIL import
 Image; print(Image.open('file.jpg').size)"`) and include them when adding an entry.
 
-The filter chips above the gallery ("All", "Dragon", "Snake", …) are generated automatically
-from whichever `tagKey`s are actually present in `GALLERY` — nothing to maintain by hand.
-
 ## Instagram Reels
 
 `script.js` has a `REELS` array, shown as embedded clips under "Style & Process":

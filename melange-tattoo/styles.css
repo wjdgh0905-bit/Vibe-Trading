@@ -538,33 +538,6 @@ h3 {
 /* ============================================================
    Gallery (Selected Work)
    ============================================================ */
-.gallery-filters {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin: -8px 0 28px;
-}
-.filter-chip {
-  background: none;
-  border: 1px solid var(--line);
-  color: var(--muted);
-  padding: 8px 16px;
-  min-height: 36px;
-  border-radius: 999px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  transition: border-color 0.2s var(--ease), color 0.2s var(--ease), background 0.2s var(--ease);
-}
-.filter-chip:hover {
-  border-color: var(--blue);
-  color: var(--ink);
-}
-.filter-chip.active {
-  background: var(--blue);
-  border-color: var(--blue);
-  color: #fff;
-}
-
 .gallery-grid {
   column-count: 4;
   column-gap: clamp(8px, 1.4vw, 16px);
@@ -649,6 +622,10 @@ h3 {
 .gallery-item:focus-visible {
   box-shadow: 0 0 0 2px var(--blue);
 }
+.gallery-more {
+  display: flex;
+  margin: clamp(20px, 3vw, 32px) auto 0;
+}
 
 /* ============================================================
    About
@@ -728,31 +705,32 @@ h3 {
   position: relative;
 }
 .reels-row {
-  --reel-card-w: 280px;
+  --reel-card-w: 240px;
   display: flex;
-  align-items: center;
-  gap: 20px;
+  gap: 14px;
   overflow-x: auto;
-  padding: 10px calc(50% - (var(--reel-card-w) / 2)) 18px;
-  scroll-snap-type: x mandatory;
+  padding: 4px 4px 18px;
+  scroll-snap-type: x proximity;
+  scroll-padding-left: 4px;
   -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.reels-row::-webkit-scrollbar {
+  display: none;
 }
 @media (max-width: 480px) {
   .reels-row {
-    --reel-card-w: min(72vw, 280px);
+    --reel-card-w: min(62vw, 240px);
   }
 }
 .reels-row > * {
   flex: none;
   width: var(--reel-card-w);
-  scroll-snap-align: center;
-  opacity: 0.4;
-  transform: scale(0.9);
-  transition: opacity 0.35s var(--ease), transform 0.35s var(--ease);
+  scroll-snap-align: start;
+  transition: transform 0.25s var(--ease);
 }
-.reels-row > *.is-active {
-  opacity: 1;
-  transform: none;
+.reels-row > *:hover {
+  transform: translateY(-4px);
 }
 .reel-nav {
   position: absolute;
@@ -797,14 +775,15 @@ h3 {
    it runs. */
 blockquote.instagram-media {
   margin: 0;
-  aspect-ratio: 9 / 14;
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
+  aspect-ratio: 9 / 16;
+  border: none;
+  border-radius: 18px;
   background: var(--card);
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 20px;
+  overflow: hidden;
 }
 blockquote.instagram-media a {
   color: var(--blue-text);
@@ -999,6 +978,9 @@ blockquote.instagram-media a:hover {
   margin: 14px 0 0;
   text-align: center;
   line-height: 1.5;
+}
+.form-note + .btn {
+  margin-top: 18px;
 }
 .form-status {
   margin: 12px 0 0;

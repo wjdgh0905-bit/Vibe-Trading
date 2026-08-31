@@ -293,7 +293,7 @@ h3 {
   border: 1px solid var(--line);
   color: var(--muted);
   padding: 9px 14px;
-  min-height: 36px;
+  min-height: 40px;
   border-radius: 999px;
   font-size: 0.7rem;
   font-weight: 600;
@@ -320,8 +320,8 @@ h3 {
   background: none;
   border: 1px solid var(--line);
   color: var(--muted);
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
   border-radius: 999px;
   display: inline-flex;
   align-items: center;

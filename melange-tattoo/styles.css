@@ -1366,6 +1366,21 @@ blockquote.instagram-media a:hover {
     height: 42px;
   }
   .gallery-grid {
-    column-count: 2;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 3px;
+  }
+  .gallery-item {
+    margin-bottom: 0;
+  }
+  .gallery-item img,
+  .gallery-item .ph {
+    aspect-ratio: 1 / 1;
+    height: 100%;
+    object-fit: cover;
+  }
+  .gallery-item .g-label,
+  .gallery-item .g-plus {
+    display: none;
   }
 }

@@ -678,12 +678,39 @@ h3 {
 }
 .reels-row {
   display: flex;
-  flex-wrap: wrap;
   gap: 20px;
+  overflow-x: auto;
+  padding-bottom: 10px;
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
 }
 .reels-row > * {
-  flex: 1 1 280px;
-  max-width: 340px;
+  flex: none;
+  width: 280px;
+  scroll-snap-align: start;
+}
+/* Fallback look before embed.js processes the blockquote (or if it
+   never loads) — Instagram's own script replaces this entirely once
+   it runs. */
+blockquote.instagram-media {
+  margin: 0;
+  aspect-ratio: 9 / 14;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+blockquote.instagram-media a {
+  color: var(--blue);
+  font-size: 0.86rem;
+  font-weight: 600;
+  text-align: center;
+}
+blockquote.instagram-media a:hover {
+  text-decoration: underline;
 }
 
 /* ============================================================

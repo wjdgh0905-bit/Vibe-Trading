@@ -156,7 +156,15 @@
      { url: "https://www.instagram.com/reel/AbCdefGHij/" }
      Leave empty and the whole block stays hidden.
      ------------------------------------------------------------ */
-  const REELS = [];
+  const REELS = [
+    { url: "https://www.instagram.com/reel/DcTcZrzJQsM/" },
+    { url: "https://www.instagram.com/reel/DbxcYgdRaYe/" },
+    { url: "https://www.instagram.com/reel/Dbf9KsRvB7z/" },
+    { url: "https://www.instagram.com/reel/DbVrTi3pJMN/" },
+    { url: "https://www.instagram.com/reel/DbG0j2Tzxmr/" },
+    { url: "https://www.instagram.com/reel/DaKrIHZNAUS/" },
+    { url: "https://www.instagram.com/reel/DUvEPM_EabA/" },
+  ];
 
   const ANGLES = [30, 55, 80, 110, 135, 160, 20, 70, 100, 45, 95, 150];
 
@@ -257,6 +265,7 @@
       "process.process.3": "Sections that follow the body's flow are drawn freehand on the day",
       "process.process.4": "Final design and any changes are confirmed together before starting",
       "process.reelsH": "Recent process, on Instagram",
+      "process.reelsFallback": "View on Instagram",
       "guestSpots.eyebrow": "Upcoming Guest Spots",
       "guestSpots.title": "Where Melange is working",
       "guestSpots.desc":
@@ -366,6 +375,7 @@
       "process.process.3": "몸의 흐름을 따르는 부분은 당일 프리핸드로 진행",
       "process.process.4": "최종 디자인과 수정 사항은 시작 전 함께 확인",
       "process.reelsH": "인스타그램 작업 영상",
+      "process.reelsFallback": "인스타그램에서 보기",
       "guestSpots.eyebrow": "게스트 일정",
       "guestSpots.title": "멜란지가 작업하는 지역",
       "guestSpots.desc":
@@ -752,6 +762,16 @@
       bq.className = "instagram-media";
       bq.setAttribute("data-instgrm-permalink", reel.url);
       bq.setAttribute("data-instgrm-version", "14");
+
+      // Fallback shown briefly while embed.js loads, and permanently if
+      // it fails — never a blank box.
+      const fallback = document.createElement("a");
+      fallback.href = reel.url;
+      fallback.target = "_blank";
+      fallback.rel = "noopener";
+      fallback.textContent = t("process.reelsFallback");
+      bq.appendChild(fallback);
+
       row.appendChild(bq);
     });
 

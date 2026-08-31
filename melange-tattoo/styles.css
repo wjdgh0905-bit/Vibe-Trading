@@ -5,27 +5,32 @@
    ============================================================ */
 
 :root {
-  /* Design tokens */
-  --bg: #faf9f6; /* warm ivory */
-  --bg-soft: #f2efe7; /* soft ivory-grey for alternating sections */
-  --card: #ffffff;
-  --ink: #16181c; /* deep charcoal, not pure black */
-  --muted: #5a5d63;
-  --muted-2: #75787f;
-  --line: #e3ddcf;
+  /* Design tokens — dark is the site's default theme (see the inline
+     head script that sets data-theme before first paint). The light
+     variant lives entirely in the [data-theme="light"] override below,
+     so this base block is the one place that changes if the default
+     values themselves need adjusting. */
+  --bg: #141412;
+  --bg-soft: #1b1a17;
+  --card: #1e1d19;
+  --ink: #f2efe6;
+  --muted: #a7a49a;
+  --muted-2: #96938a;
+  --line: #322f28;
 
-  --blue: #1f3fae; /* cobalt — primary accent */
-  --blue-deep: #16307f;
-  --blue-soft: #eef1fb;
-  --blue-text: #1f3fae; /* small accent text/icons directly on --bg — kept distinct
-                            from --blue since dark mode needs a brighter value here
-                            than button backgrounds do, for AA contrast */
+  --blue: #4f68e3; /* cobalt — primary accent */
+  --blue-deep: #a9b6ff;
+  --blue-soft: #1c2143;
+  --blue-text: #a9b6ff; /* small accent text/icons directly on --bg — kept distinct
+                            from --blue since button backgrounds need a different
+                            (more saturated) value than small text does, for AA
+                            contrast in both themes */
   --gold: #b98a3e; /* used sparingly */
-  --danger: #b8483a;
+  --danger: #e2776a;
 
-  --header-bg: rgba(250, 249, 246, 0.88);
-  --ph-1: #e3ddcf;
-  --ph-2: #d6cfba;
+  --header-bg: rgba(20, 20, 18, 0.82);
+  --ph-1: #2a281f;
+  --ph-2: #201e17;
 
   /* Fixed regardless of theme — the gallery hover pills (.g-label,
      .g-plus) always sit on a near-white chip on top of a photo. */
@@ -45,31 +50,33 @@
 
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
 
-  color-scheme: light dark;
+  color-scheme: dark;
 }
 
-/* Dark mode follows the visitor's system preference — no manual
-   toggle. Only color tokens change; layout tokens above are shared. */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #141412;
-    --bg-soft: #1b1a17;
-    --card: #1e1d19;
-    --ink: #f2efe6;
-    --muted: #a7a49a;
-    --muted-2: #96938a;
-    --line: #322f28;
+/* Explicit visitor choice via the header theme toggle (persisted to
+   localStorage as "melange.theme"). No prefers-color-scheme fallback —
+   dark is the default regardless of system setting; this is the only
+   way to get the light variant. */
+:root[data-theme="light"] {
+  --bg: #faf9f6;
+  --bg-soft: #f2efe7;
+  --card: #ffffff;
+  --ink: #16181c;
+  --muted: #5a5d63;
+  --muted-2: #75787f;
+  --line: #e3ddcf;
 
-    --blue: #4f68e3;
-    --blue-deep: #a9b6ff;
-    --blue-soft: #1c2143;
-    --blue-text: #a9b6ff;
-    --danger: #e2776a;
+  --blue: #1f3fae;
+  --blue-deep: #16307f;
+  --blue-soft: #eef1fb;
+  --blue-text: #1f3fae;
+  --danger: #b8483a;
 
-    --header-bg: rgba(20, 20, 18, 0.82);
-    --ph-1: #2a281f;
-    --ph-2: #201e17;
-  }
+  --header-bg: rgba(250, 249, 246, 0.88);
+  --ph-1: #e3ddcf;
+  --ph-2: #d6cfba;
+
+  color-scheme: light;
 }
 
 /* ---------- Reset-ish ---------- */
@@ -301,6 +308,36 @@ h3 {
 }
 .lang-sep {
   color: var(--muted-2);
+}
+
+.theme-toggle {
+  background: none;
+  border: 1px solid var(--line);
+  color: var(--muted);
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.2s var(--ease), color 0.2s var(--ease);
+}
+.theme-toggle:hover {
+  border-color: var(--blue);
+  color: var(--blue);
+}
+.theme-icon {
+  width: 17px;
+  height: 17px;
+}
+.icon-moon {
+  display: none;
+}
+:root[data-theme="light"] .icon-sun {
+  display: none;
+}
+:root[data-theme="light"] .icon-moon {
+  display: block;
 }
 
 .nav-toggle {

@@ -10,6 +10,15 @@
             document.documentElement.setAttribute("data-lang-loading", "ko");
           }
         } catch (e) {}
+        // Dark is the site default regardless of system preference —
+        // only an explicit stored "light" choice (via the theme
+        // toggle) opts out. Resolved here, before first paint, so
+        // there's no flash of the wrong theme.
+        var theme = "dark";
+        try {
+          if (localStorage.getItem("melange.theme") === "light") theme = "light";
+        } catch (e) {}
+        document.documentElement.setAttribute("data-theme", theme);
       })();
     </script>
     <title>MELANGE TATTOO · Guest Tattoo Artist</title>
@@ -18,8 +27,7 @@
       data-i18n-content="meta.description"
       content="Melange Tattoo: guest tattoo artist working across South Korea, Australia, the United States, the United Kingdom, and Europe. Custom work built around wave motion and blue color."
     />
-    <meta name="theme-color" content="#faf9f6" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#141412" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" id="themeColorMeta" content="#141412" />
 
     <!-- Open Graph -->
     <meta property="og:title" content="MELANGE TATTOO" />
@@ -85,6 +93,16 @@
             <span class="lang-opt" data-lang="en">EN</span>
             <span class="lang-sep">/</span>
             <span class="lang-opt" data-lang="ko">KO</span>
+          </button>
+
+          <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch to light theme">
+            <svg class="theme-icon icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="4.5" />
+              <path d="M12 1.5v3M12 19.5v3M4.4 4.4l2.1 2.1M17.5 17.5l2.1 2.1M1.5 12h3M19.5 12h3M4.4 19.6l2.1-2.1M17.5 6.5l2.1-2.1" />
+            </svg>
+            <svg class="theme-icon icon-moon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M20.7 14.9A9 9 0 1 1 9.1 3.3a7.2 7.2 0 0 0 11.6 11.6Z" />
+            </svg>
           </button>
 
           <button

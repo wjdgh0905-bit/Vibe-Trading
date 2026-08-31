@@ -520,6 +520,30 @@
   });
 
   /* ------------------------------------------------------------
+     Theme toggle button — dark is the site default (set by the
+     inline head script before first paint, so there's no flash);
+     this only has to handle an explicit visitor switch.
+     ------------------------------------------------------------ */
+  const THEME_STORAGE_KEY = "melange.theme";
+  const themeToggle = document.getElementById("themeToggle");
+  const themeColorMeta = document.getElementById("themeColorMeta");
+  function applyTheme(theme) {
+    document.documentElement.setAttribute("data-theme", theme);
+    themeColorMeta.setAttribute("content", theme === "light" ? "#faf9f6" : "#141412");
+    themeToggle.setAttribute("aria-label", theme === "light" ? "Switch to dark theme" : "Switch to light theme");
+  }
+  function setTheme(next) {
+    const theme = next === "light" ? "light" : "dark";
+    localStorage.setItem(THEME_STORAGE_KEY, theme);
+    applyTheme(theme);
+  }
+  applyTheme(document.documentElement.getAttribute("data-theme") === "light" ? "light" : "dark");
+  themeToggle.addEventListener("click", () => {
+    const current = document.documentElement.getAttribute("data-theme") === "light" ? "light" : "dark";
+    setTheme(current === "light" ? "dark" : "light");
+  });
+
+  /* ------------------------------------------------------------
      Gallery generation
      ------------------------------------------------------------ */
   const grid = document.getElementById("galleryGrid");

@@ -58,5 +58,17 @@
         "repo": "chopratejas/headroom"
       }
     }
+  },
+  "enableWorkflows": true,
+  "enableArtifact": true,
+  "alwaysThinkingEnabled": true,
+  "autoCompactEnabled": true,
+  "precomputeCompactionEnabled": true,
+  "fastMode": true,
+  "promptCacheTtl": "1h",
+  "ultracode": true,
+  "workflowSizeGuideline": "large",
+  "permissions": {
+    "defaultMode": "auto"
   }
 }

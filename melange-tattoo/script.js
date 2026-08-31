@@ -751,13 +751,15 @@
   function renderReels() {
     const block = document.getElementById("reelsBlock");
     const row = document.getElementById("reelsRow");
+    const prevBtn = document.getElementById("reelPrev");
+    const nextBtn = document.getElementById("reelNext");
     if (!REELS.length) {
       block.hidden = true;
       return;
     }
     block.hidden = false;
     row.innerHTML = "";
-    REELS.forEach((reel) => {
+    const items = REELS.map((reel) => {
       const bq = document.createElement("blockquote");
       bq.className = "instagram-media";
       bq.setAttribute("data-instgrm-permalink", reel.url);
@@ -773,6 +775,7 @@
       bq.appendChild(fallback);
 
       row.appendChild(bq);
+      return bq;
     });
 
     if (window.instgrm && window.instgrm.Embeds) {
@@ -783,6 +786,31 @@
       script.src = "https://www.instagram.com/embed.js";
       document.body.appendChild(script);
     }
+
+    // Carousel: whichever card sits over the row's exact horizontal
+    // center gets the "in focus" look; neighbors stay dimmed/scaled
+    // down. rootMargin collapses the row's box to a 0-width vertical
+    // line at its center, so only the centered card ever intersects.
+    if ("IntersectionObserver" in window) {
+      const centerObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            entry.target.classList.toggle("is-active", entry.isIntersecting);
+          });
+        },
+        { root: row, threshold: 0, rootMargin: "0px -50% 0px -50%" }
+      );
+      items.forEach((el) => centerObserver.observe(el));
+    } else {
+      items[0].classList.add("is-active");
+    }
+
+    function scrollByOne(dir) {
+      const step = items[0].getBoundingClientRect().width + 20; // item width + gap
+      row.scrollBy({ left: dir * step, behavior: "smooth" });
+    }
+    prevBtn.addEventListener("click", () => scrollByOne(-1));
+    nextBtn.addEventListener("click", () => scrollByOne(1));
   }
 
   /* ------------------------------------------------------------

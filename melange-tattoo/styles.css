@@ -676,18 +676,63 @@ h3 {
 .reels-block .process-h {
   margin-bottom: 18px;
 }
+.reels-carousel {
+  position: relative;
+}
 .reels-row {
   display: flex;
+  align-items: center;
   gap: 20px;
   overflow-x: auto;
-  padding-bottom: 10px;
-  scroll-snap-type: x proximity;
+  padding: 10px calc(50% - 140px) 18px;
+  scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
 }
 .reels-row > * {
   flex: none;
   width: 280px;
-  scroll-snap-align: start;
+  scroll-snap-align: center;
+  opacity: 0.4;
+  transform: scale(0.9);
+  transition: opacity 0.35s var(--ease), transform 0.35s var(--ease);
+}
+.reels-row > *.is-active {
+  opacity: 1;
+  transform: none;
+}
+.reel-nav {
+  position: absolute;
+  top: 50%;
+  translate: 0 -50%;
+  z-index: 2;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--ink);
+  font-size: 1.4rem;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 14px 28px -16px rgba(22, 24, 28, 0.35);
+  transition: border-color 0.2s var(--ease), color 0.2s var(--ease);
+}
+.reel-nav:hover {
+  border-color: var(--blue);
+  color: var(--blue);
+}
+.reel-prev {
+  left: 0;
+}
+.reel-next {
+  right: 0;
+}
+@media (max-width: 640px) {
+  .reel-nav {
+    display: none;
+  }
 }
 /* Fallback look before embed.js processes the blockquote (or if it
    never loads) — Instagram's own script replaces this entirely once

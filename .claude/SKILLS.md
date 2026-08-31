@@ -28,6 +28,25 @@ git pull
 claude plugin install superpowers@superpowers-marketplace --scope user
 ```
 
+### 윈도우 전역(모든 프로젝트) 동기화 — `setup-skills-global.ps1`
+
+이 저장소를 클라우드 세션이 아니라 **본인 컴퓨터**에서 다른 프로젝트에도 똑같이
+쓰고 싶을 때 씁니다. 플러그인 8개 + 파일 기반 스킬 27개를
+`~/.claude/`(윈도우는 `%USERPROFILE%\.claude`)로 통째로 미러링합니다.
+
+**필요 조건:** Node.js, Claude Code CLI(`npm install -g @anthropic-ai/claude-code`)가
+먼저 컴퓨터에 깔려 있어야 합니다 — PowerShell에 `claude --version` 쳐서 버전이
+나오는지 먼저 확인하세요.
+
+```powershell
+irm https://raw.githubusercontent.com/wjdgh0905-bit/Vibe-Trading/claude/skill-application-bot46l/.claude/setup-skills-global.ps1 | iex
+```
+
+**언제든 다시 실행하면 최신 상태로 정확히 맞춰집니다** — `robocopy /MIR`로 미러링해서
+저장소 쪽에서 스킬을 추가·수정·삭제하면 그대로 반영되고, 플러그인 설치도 매번
+다시 확인합니다. 클라우드 세션(이 저장소를 여는 다른 Claude Code 세션)에는
+영향 없고, 오직 이 스크립트를 실행한 **그 컴퓨터**에만 적용됩니다.
+
 ---
 
 ## 1. 플러그인 (`.claude/settings.json`, project scope)

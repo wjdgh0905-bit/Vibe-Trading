@@ -23,6 +23,7 @@ agent/.env
 !.claude/settings.json
 !.claude/SKILLS.md
 !.claude/setup-skills.sh
+!.claude/setup-skills-global.ps1
 !.claude/skills/
 CLAUDE.md
 .vscode/

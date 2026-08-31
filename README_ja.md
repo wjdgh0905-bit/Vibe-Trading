@@ -931,6 +931,158 @@ OpenSpace は 79 skills を自動検出し、auto-fix、auto-improve、community
 
 ---
 
+## 🔌 外部 MCP サーバーからツールを読み込む（MCP Client Mode）
+
+> **これは上記の MCP Plugin とは逆方向です。**
+> MCP Plugin は *他の* エージェントが Vibe-Trading のツールを呼び出せるようにします。
+> このセクションは、*組み込みの* Vibe-Trading エージェントが *あなたの* 外部 MCP サーバーのツールを呼び出せるようにします。
+
+### クイックスタート
+
+`~/.vibe-trading/agent.json` を作成します:
+
+```json
+{
+  "mcpServers": {
+    "my-server": {
+      "command": "uvx",
+      "args": ["my-mcp-server"]
+    }
+  }
+}
+```
+
+任意の CLI コマンドを実行すると、通常の外部サーバーのツールが local tools の後に自動的に agent の registry に注入されます:
+
+```bash
+vibe-trading run "use my-server to do X"
+```
+
+### 公式 IBKR MCP 読み取り専用プローブ
+
+Vibe-Trading は Interactive Brokers の公式 remote MCP endpoint に読み取り専用モードで直接接続できます。`~/.vibe-trading/agent.json` に以下を追加してください:
+
+```json
+{
+  "mcpServers": {
+    "ibkr": {
+      "type": "streamableHttp",
+      "url": "https://api.ibkr.com/v1/api/mcp",
+      "auth": {
+        "type": "oauth",
+        "scopes": ["mcp.read"],
+        "clientName": "Vibe-Trading",
+        "cacheDir": "~/.vibe-trading/live/ibkr/oauth"
+      },
+      "enabledTools": ["*"]
+    }
+  }
+}
+```
+
+続いてブラウザの OAuth フローを開始します:
+
+```bash
+vibe-trading connector authorize ibkr-live-official-mcp-readonly
+```
+
+ワイルドカード(`*`)は IBKR の `mcp.read` プローブでのみ許可されます。この profile を authorize すると IBKR の公式 read scope へのアクセスが確認されますが、`trading_account` と `trading_positions` の汎用呼び出しは、IBKR が Vibe-Trading が安全にマッピングできる安定した read tool 名を公開するまで無効のままです。`mcp.write` を追加する config は明示的な tool allowlist を指定する必要があり、それでも live order guard を通過します。
+
+IBKR が事前登録済みの OAuth client を発行する場合は、`auth` 内に `clientId` と `clientSecret` を追加してください。
+
+### Trading connector: 最速の経路
+
+IBKR OAuth client の承認を待てないユーザーは、local の TWS または IB Gateway セッションに接続できます。認証情報は IBKR のデスクトップアプリ内にとどまり、Vibe-Trading は `127.0.0.1` にのみ接続して connector profile として公開します。
+
+オプションの SDK をインストールします:
+
+```bash
+pip install "vibe-trading-ai[ibkr]"
+```
+
+TWS paper trading または IB Gateway paper を開き、API socket clients を有効化してから実行します:
+
+```bash
+vibe-trading connector list
+vibe-trading connector use ibkr-paper-local
+vibe-trading connector configure ibkr-paper-local --yes
+vibe-trading connector check
+vibe-trading connector account
+vibe-trading connector positions
+vibe-trading connector orders
+vibe-trading connector quote AAPL
+vibe-trading connector history AAPL --duration "30 D" --bar-size "1 day"
+```
+
+デフォルトの local ポート:
+
+| App | Paper | Live read-only |
+|-----|-------|----------------|
+| TWS | `7497` | `7496` |
+| IB Gateway | `4002` | `4001` |
+
+エージェントは `trading_connections`、`trading_select_connection`、`trading_check`、`trading_account`、`trading_positions`、`trading_orders`、`trading_quote`、`trading_history` という connector スコープのツールを公開します。Live-broker の raw MCP tools は `mcp_<broker>_*` として直接登録されません。IBKR の発注ツールは登録されません。
+
+### Config リファレンス
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `type` | string | stdio は推論、HTTP は必須 | stdio では省略、URL ベースのサーバーでは `sse` / `streamableHttp` を設定します。 |
+| `command` | string | stdio では必須 | stdio サーバーを起動する実行ファイル。`sse` / `streamableHttp` サーバーには無効。 |
+| `args` | array | `[]` | stdio サーバー専用のコマンドライン引数。 |
+| `env` | object | `{}` | stdio サーバーのサブプロセス環境にマージされる追加の環境変数。 |
+| `url` | string | `sse` / `streamableHttp` では必須 | Remote SSE / streamable HTTP endpoint の URL。stdio サーバーでは未使用。 |
+| `headers` | object | `{}` | `sse` / `streamableHttp` サーバー専用の追加 HTTP ヘッダー。 |
+| `toolTimeout` | number | `30` | ツール呼び出しごとのタイムアウト(秒) |
+| `initTimeout` | number | 未設定(`max(toolTimeout, 30)`) | MCP initialize / OAuth authorization のタイムアウト(秒)。遅いブラウザ認証に使用し、通常のツール呼び出しのタイムアウトは広げません。 |
+| `enabledTools` | array | `["*"]` | Tool allowlist。サーバーの全ツールを公開する場合は `["*"]` を使用 |
+
+Config ファイルの場所: `~/.vibe-trading/agent.json`(JSON または YAML)。
+
+URL ベースの transport では `type` が必須です。エージェントはもはや URL の拡張子から SSE と streamable HTTP を推測しません。
+
+### セッション単位のオーバーライド(API)
+
+API 経由でセッションを作成する際、`session.config` 内に `mcpServers` を渡すことで、そのセッションに限り global config を拡張または上書きできます:
+
+```json
+{
+  "config": {
+    "mcpServers": {
+      "research-server": {
+        "command": "uvx",
+        "args": ["research-mcp"],
+        "enabledTools": ["search", "fetch"]
+      }
+    }
+  }
+}
+```
+
+### ツール命名規則
+
+通常の remote tools は安定した名前 `mcp_<server>_<tool>` で公開されます。Live-broker の MCP サーバーは `trading_*` の connector インターフェースの背後にとどまります。
+
+2 つのサーバー名が同じ ASCII-safe な local prefix を生成する場合(例: `foo-bar` と `foo_bar` はどちらも `foo_bar` になる)、名前を一意に保つため server-segment レベルで決定論的な hash suffix が付加されます。オペレーターには次の警告が表示されます:
+
+```
+WARNING: Configured MCP server 'foo-bar' collides with another server after local name
+normalization. Using local tool prefix 'mcp_foo_bar_<hash>_<tool>' to keep generated
+tool names unique. Rename the server in agent config if you want a different prefix.
+```
+
+### v1 の制限
+
+| Limit | Detail |
+|-------|--------|
+| Transport | stdio、SSE、streamable HTTP |
+| 実行 | 直列実行のみ — MCP tools は parallel readonly path には入りません |
+| 対象範囲 | ツールのみ(resources と prompts は v1 では対象外) |
+| Hot reload | 非対応 — config 変更を反映するにはプロセスを再起動してください |
+| Swarm パス | v1 では Swarm worker registry 内で MCP tools を利用できません |
+
+---
+
 ## 📁 プロジェクト構成
 
 <details>

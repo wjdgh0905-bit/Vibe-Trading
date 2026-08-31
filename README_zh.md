@@ -928,6 +928,158 @@ OpenSpace 会自动发现全部 79 个 skills，启用 auto-fix、auto-improve �
 
 ---
 
+## 🔌 从外部 MCP 服务器加载工具（MCP Client Mode）
+
+> **这与上面的 MCP Plugin 方向相反。**
+> MCP Plugin 让*其他*智能体调用 Vibe-Trading 的工具。
+> 本节让*内置的* Vibe-Trading 智能体调用*你自己*外部 MCP 服务器提供的工具。
+
+### 快速开始
+
+创建 `~/.vibe-trading/agent.json`:
+
+```json
+{
+  "mcpServers": {
+    "my-server": {
+      "command": "uvx",
+      "args": ["my-mcp-server"]
+    }
+  }
+}
+```
+
+运行任意 CLI 命令，普通外部服务器的工具会在 local tools 之后自动注入到 agent 的 registry 中:
+
+```bash
+vibe-trading run "use my-server to do X"
+```
+
+### 官方 IBKR MCP 只读探针
+
+Vibe-Trading 可以以只读模式直接连接 Interactive Brokers 官方的 remote MCP endpoint。在 `~/.vibe-trading/agent.json` 中添加:
+
+```json
+{
+  "mcpServers": {
+    "ibkr": {
+      "type": "streamableHttp",
+      "url": "https://api.ibkr.com/v1/api/mcp",
+      "auth": {
+        "type": "oauth",
+        "scopes": ["mcp.read"],
+        "clientName": "Vibe-Trading",
+        "cacheDir": "~/.vibe-trading/live/ibkr/oauth"
+      },
+      "enabledTools": ["*"]
+    }
+  }
+}
+```
+
+然后启动浏览器 OAuth 流程:
+
+```bash
+vibe-trading connector authorize ibkr-live-official-mcp-readonly
+```
+
+通配符(`*`)仅在 IBKR 的 `mcp.read` 探针中被接受。授权此 profile 只确认了对 IBKR 官方 read scope 的访问；通用的 `trading_account` 和 `trading_positions` 调用在 IBKR 发布 Vibe-Trading 可以安全映射的稳定 read tool 名称之前，将保持禁用状态。添加 `mcp.write` 的 config 必须指定明确的 tool allowlist，并且仍需通过 live order guard。
+
+如果 IBKR 发放了预注册的 OAuth client，请在 `auth` 内添加 `clientId` 和 `clientSecret`。
+
+### Trading connector：最快路径
+
+对于无法等待 IBKR OAuth client 审批的用户，可以连接到本地的 TWS 或 IB Gateway session。凭证始终保留在 IBKR 桌面应用内，Vibe-Trading 只连接 `127.0.0.1`，并将其暴露为一个 connector profile。
+
+安装可选 SDK:
+
+```bash
+pip install "vibe-trading-ai[ibkr]"
+```
+
+打开 TWS paper trading 或 IB Gateway paper，启用 API socket clients，然后运行:
+
+```bash
+vibe-trading connector list
+vibe-trading connector use ibkr-paper-local
+vibe-trading connector configure ibkr-paper-local --yes
+vibe-trading connector check
+vibe-trading connector account
+vibe-trading connector positions
+vibe-trading connector orders
+vibe-trading connector quote AAPL
+vibe-trading connector history AAPL --duration "30 D" --bar-size "1 day"
+```
+
+默认本地端口:
+
+| App | Paper | Live read-only |
+|-----|-------|----------------|
+| TWS | `7497` | `7496` |
+| IB Gateway | `4002` | `4001` |
+
+Agent 会暴露名为 `trading_connections`、`trading_select_connection`、`trading_check`、`trading_account`、`trading_positions`、`trading_orders`、`trading_quote`、`trading_history` 的 connector 范围工具。Live-broker 的原始 MCP 工具不会直接注册为 `mcp_<broker>_*`。不会注册 IBKR 下单工具。
+
+### Config 参考
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `type` | string | stdio 可推断；HTTP 必填 | stdio 可省略，基于 URL 的服务器设为 `sse` / `streamableHttp`。 |
+| `command` | string | stdio 必填 | 用于启动 stdio 服务器的可执行文件。对 `sse` / `streamableHttp` 服务器无效。 |
+| `args` | array | `[]` | 仅用于 stdio 服务器的命令行参数。 |
+| `env` | object | `{}` | 仅为 stdio 服务器合并到子进程环境中的额外环境变量。 |
+| `url` | string | `sse` / `streamableHttp` 必填 | Remote SSE / streamable HTTP endpoint URL。stdio 服务器不使用。 |
+| `headers` | object | `{}` | 仅用于 `sse` / `streamableHttp` 服务器的额外 HTTP 头。 |
+| `toolTimeout` | number | `30` | 每次 tool 调用的超时时间（秒） |
+| `initTimeout` | number | 未设置（`max(toolTimeout, 30)`） | MCP initialize / OAuth authorization 的超时时间（秒）。用于较慢的浏览器授权流程，而不会放宽普通 tool 调用的超时。 |
+| `enabledTools` | array | `["*"]` | Tool allowlist。使用 `["*"]` 可暴露服务器的全部工具 |
+
+Config 文件位置：`~/.vibe-trading/agent.json`（JSON 或 YAML）。
+
+对于基于 URL 的 transport，`type` 是必填项。Agent 不再根据 URL 后缀猜测 SSE 与 streamable HTTP。
+
+### 按会话覆盖（API）
+
+通过 API 创建 session 时，可以在 `session.config` 内传入 `mcpServers`，仅针对该 session 扩展或覆盖 global config:
+
+```json
+{
+  "config": {
+    "mcpServers": {
+      "research-server": {
+        "command": "uvx",
+        "args": ["research-mcp"],
+        "enabledTools": ["search", "fetch"]
+      }
+    }
+  }
+}
+```
+
+### 工具命名
+
+普通 remote tools 以稳定名称 `mcp_<server>_<tool>` 暴露。Live-broker MCP 服务器仍保留在 `trading_*` connector 接口之后。
+
+如果两个服务器名称在本地规范化后产生相同的 ASCII-safe 前缀（例如 `foo-bar` 和 `foo_bar` 都会变成 `foo_bar`），会在 server-segment 级别附加一个确定性的 hash 后缀以保持名称唯一。运维者会收到如下警告:
+
+```
+WARNING: Configured MCP server 'foo-bar' collides with another server after local name
+normalization. Using local tool prefix 'mcp_foo_bar_<hash>_<tool>' to keep generated
+tool names unique. Rename the server in agent config if you want a different prefix.
+```
+
+### v1 限制
+
+| Limit | Detail |
+|-------|--------|
+| Transport | stdio、SSE、streamable HTTP |
+| 执行方式 | 仅串行 — MCP tools 不会进入 parallel readonly path |
+| 覆盖范围 | 仅工具（v1 不包含 resources 和 prompts） |
+| Hot reload | 不支持 — 需要重启进程才能应用 config 变更 |
+| Swarm 路径 | v1 中 Swarm worker registry 内不可用 MCP tools |
+
+---
+
 ## 📁 Project Structure
 
 <details>

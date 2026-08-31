@@ -934,6 +934,158 @@ npx clawhub@latest install vibe-trading --force
 
 ---
 
+## 🔌 تحميل الأدوات من خوادم MCP خارجية (MCP Client Mode)
+
+> **هذا هو الاتجاه المعاكس لـ MCP Plugin أعلاه.**
+> يتيح MCP Plugin لوكلاء *آخرين* استدعاء أدوات Vibe-Trading.
+> يتيح هذا القسم لوكيل Vibe-Trading *المدمج* استدعاء الأدوات من خوادم MCP *الخاصة بك*.
+
+### البدء السريع
+
+أنشئ `~/.vibe-trading/agent.json`:
+
+```json
+{
+  "mcpServers": {
+    "my-server": {
+      "command": "uvx",
+      "args": ["my-mcp-server"]
+    }
+  }
+}
+```
+
+شغّل أي أمر CLI — سيتم حقن أدوات الخوادم الخارجية العادية تلقائياً في registry الوكيل بعد الأدوات المحلية:
+
+```bash
+vibe-trading run "use my-server to do X"
+```
+
+### مسبار IBKR MCP الرسمي للقراءة فقط
+
+يمكن لـ Vibe-Trading الاتصال مباشرة بـ endpoint الـ MCP الرسمي البعيد الخاص بـ Interactive Brokers في وضع القراءة فقط. أضف هذا إلى `~/.vibe-trading/agent.json`:
+
+```json
+{
+  "mcpServers": {
+    "ibkr": {
+      "type": "streamableHttp",
+      "url": "https://api.ibkr.com/v1/api/mcp",
+      "auth": {
+        "type": "oauth",
+        "scopes": ["mcp.read"],
+        "clientName": "Vibe-Trading",
+        "cacheDir": "~/.vibe-trading/live/ibkr/oauth"
+      },
+      "enabledTools": ["*"]
+    }
+  }
+}
+```
+
+ثم ابدأ تدفق OAuth عبر المتصفح:
+
+```bash
+vibe-trading connector authorize ibkr-live-official-mcp-readonly
+```
+
+يُقبل الرمز البديل (`*`) فقط لمسبار `mcp.read` الخاص بـ IBKR. تفويض هذا الـ profile يؤكد فقط الوصول إلى نطاق القراءة الرسمي لدى IBKR؛ تبقى الاستدعاءات العامة لـ `trading_account` و`trading_positions` معطّلة إلى أن تنشر IBKR أسماء أدوات قراءة مستقرة يمكن لـ Vibe-Trading تعيينها بأمان. يجب على أي config يضيف `mcp.write` أن يحدد allowlist صريحة للأدوات، وستظل تمر عبر live order guard.
+
+إذا أصدرت IBKR عميل OAuth مسجّلاً مسبقاً، أضف `clientId` و`clientSecret` داخل `auth`.
+
+### موصلات التداول: أسرع طريق
+
+بالنسبة للمستخدمين الذين لا يمكنهم انتظار موافقة عميل IBKR OAuth، يمكنهم الاتصال بجلسة TWS أو IB Gateway محلية. تبقى بيانات الاعتماد داخل تطبيق IBKR لسطح المكتب فقط؛ يتصل Vibe-Trading فقط بـ `127.0.0.1` ويعرضه كـ connector profile.
+
+ثبّت الـ SDK الاختياري:
+
+```bash
+pip install "vibe-trading-ai[ibkr]"
+```
+
+افتح TWS paper trading أو IB Gateway paper، فعّل API socket clients، ثم شغّل:
+
+```bash
+vibe-trading connector list
+vibe-trading connector use ibkr-paper-local
+vibe-trading connector configure ibkr-paper-local --yes
+vibe-trading connector check
+vibe-trading connector account
+vibe-trading connector positions
+vibe-trading connector orders
+vibe-trading connector quote AAPL
+vibe-trading connector history AAPL --duration "30 D" --bar-size "1 day"
+```
+
+المنافذ المحلية الافتراضية:
+
+| App | Paper | Live read-only |
+|-----|-------|----------------|
+| TWS | `7497` | `7496` |
+| IB Gateway | `4002` | `4001` |
+
+يعرض الوكيل أدوات ضمن نطاق connector باسم `trading_connections` و`trading_select_connection` و`trading_check` و`trading_account` و`trading_positions` و`trading_orders` و`trading_quote` و`trading_history`. لا تُسجَّل أدوات MCP الخام الخاصة بـ Live-broker مباشرة كـ `mcp_<broker>_*`. لا تُسجَّل أداة لتقديم أوامر IBKR.
+
+### مرجع Config
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `type` | string | يُستنتج لـ stdio؛ مطلوب لـ HTTP | يُحذف لـ stdio، أو يُضبط على `sse` / `streamableHttp` للخوادم القائمة على URL. |
+| `command` | string | مطلوب لـ stdio | الملف التنفيذي لتشغيل خوادم stdio. غير صالح لخوادم `sse` / `streamableHttp`. |
+| `args` | array | `[]` | معطيات سطر الأوامر لخوادم stdio فقط. |
+| `env` | object | `{}` | متغيرات بيئة إضافية تُدمج في بيئة العملية الفرعية لخوادم stdio فقط. |
+| `url` | string | مطلوب لـ `sse` / `streamableHttp` | رابط endpoint البعيد لـ SSE / streamable HTTP. لا يُستخدم لخوادم stdio. |
+| `headers` | object | `{}` | رؤوس HTTP إضافية لخوادم `sse` / `streamableHttp` فقط. |
+| `toolTimeout` | number | `30` | مهلة استدعاء كل tool بالثواني |
+| `initTimeout` | number | غير مضبوط (`max(toolTimeout, 30)`) | مهلة MCP initialize / OAuth authorization بالثواني. استخدمها لتفويض المتصفح البطيء دون توسيع مهلة استدعاءات الأدوات العادية. |
+| `enabledTools` | array | `["*"]` | Tool allowlist. استخدم `["*"]` لعرض جميع أدوات الخادم |
+
+موقع ملف Config: `~/.vibe-trading/agent.json` (JSON أو YAML).
+
+بالنسبة للـ transports القائمة على URL، `type` مطلوب. لم يعد الوكيل يخمّن بين SSE وstreamable HTTP من لاحقة الـ URL.
+
+### تجاوزات لكل جلسة (API)
+
+عند إنشاء جلسة عبر الـ API، يمكنك تمرير `mcpServers` داخل `session.config` لتوسيع أو تجاوز الـ config العام لتلك الجلسة فقط:
+
+```json
+{
+  "config": {
+    "mcpServers": {
+      "research-server": {
+        "command": "uvx",
+        "args": ["research-mcp"],
+        "enabledTools": ["search", "fetch"]
+      }
+    }
+  }
+}
+```
+
+### تسمية الأدوات
+
+تُعرض الأدوات البعيدة العادية بأسماء ثابتة: `mcp_<server>_<tool>`. تبقى خوادم MCP الخاصة بـ Live-broker خلف واجهة connector الخاصة بـ `trading_*`.
+
+إذا أنتج اسما خادمين نفس البادئة المحلية الآمنة لـ ASCII (مثلاً `foo-bar` و`foo_bar` يصبحان كلاهما `foo_bar`)، تُضاف لاحقة hash حتمية على مستوى server-segment لإبقاء الأسماء فريدة. يتلقى المشغّل تحذيراً:
+
+```
+WARNING: Configured MCP server 'foo-bar' collides with another server after local name
+normalization. Using local tool prefix 'mcp_foo_bar_<hash>_<tool>' to keep generated
+tool names unique. Rename the server in agent config if you want a different prefix.
+```
+
+### قيود v1
+
+| Limit | Detail |
+|-------|--------|
+| Transport | stdio وSSE وstreamable HTTP |
+| التنفيذ | تسلسلي فقط — لا تدخل أدوات MCP مسار parallel readonly أبداً |
+| النطاق | الأدوات فقط (resources وprompts مستبعدة في v1) |
+| Hot reload | غير مدعوم — يجب إعادة تشغيل العملية لتطبيق تغييرات الـ config |
+| مسار Swarm | أدوات MCP غير متاحة داخل registries عمّال Swarm في v1 |
+
+---
+
 ## 📁 هيكل المشروع
 
 <details>

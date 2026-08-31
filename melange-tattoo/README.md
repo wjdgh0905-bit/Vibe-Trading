@@ -93,11 +93,13 @@ the whole block stays hidden — nothing shows a broken or empty state.
 
 ## Dark mode
 
-The site follows the visitor's system dark/light preference automatically
-(`prefers-color-scheme`) — there's no manual toggle. All colors are CSS variables in
-`styles.css`'s `:root` block plus a `@media (prefers-color-scheme: dark)` override further
-down; add a new color anywhere on the site by adding a token there rather than a literal hex
-value, or it won't adapt in dark mode.
+Dark is the default look regardless of the visitor's system setting. A theme toggle in the
+header (sun/moon icon) lets a visitor switch to light mode; their choice is saved to
+`localStorage` (`melange.theme`) and respected on their next visit. All colors are CSS
+variables in `styles.css`'s `:root` block (the dark defaults) with a `:root[data-theme="light"]`
+override further down for the light variant; add a new color anywhere on the site by adding a
+token in both places rather than a literal hex value, or it won't adapt when the visitor
+switches themes.
 
 ## Updating guest spots
 
@@ -125,9 +127,23 @@ section all open the **same form in a modal** (`#inquiryModal` in `index.html`) 
 only one `<form>` in the page, so there's one place to edit its fields.
 
 The form submits to [Formspree](https://formspree.io) via `fetch()` (see
-`FORMSPREE_ENDPOINT` near the top of `script.js`), including the optional placement photo as
-a file upload — nothing opens the visitor's mail app. Submissions land in the connected
-Formspree account/email. If the endpoint is ever reset (e.g. `"...f/YOUR_FORM_ID"`), the form
+`FORMSPREE_ENDPOINT` near the top of `script.js`) — nothing opens the visitor's mail app.
+Submissions land in the connected Formspree account/email. The form has no file input (browsers
+can't prefill an attachment from a link anyway), so placement photos are always handled
+separately — the form itself says so, and directs the visitor to send one via Instagram DM or
+email instead.
+
+**If the Formspree endpoint ever needs to be replaced** (new form, new owner, or it was reset
+back to a placeholder):
+
+1. Sign in at [formspree.io](https://formspree.io) (or create a free account).
+2. Create a new form and copy its endpoint URL — it looks like `https://formspree.io/f/xxxxxxxx`.
+3. In `script.js`, find the `FORMSPREE_ENDPOINT` constant near the top and replace the URL
+   string with the new one.
+4. Open the site, submit a test inquiry through the form, and confirm it arrives at the email
+   connected to the Formspree form.
+
+If the endpoint is ever reset to a placeholder value (e.g. `"...f/YOUR_FORM_ID"`), the form
 shows a friendly inline error pointing at direct email instead of failing silently.
 
 ## Editing copy

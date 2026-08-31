@@ -352,6 +352,8 @@
       "contact.title": "Let's talk about your tattoo.",
       "contact.text": "For all booking inquiries, please contact me via Instagram DM or email.",
       "footer.backToTop": "Back to top",
+      "contact.instagram": "Instagram",
+      "contact.email": "Email",
       "err.required": "This field is required.",
     },
     ko: {
@@ -459,6 +461,8 @@
       "contact.title": "타투에 대해 이야기해요.",
       "contact.text": "예약 문의는 인스타그램 DM이나 이메일로 연락해주세요.",
       "footer.backToTop": "맨 위로",
+      "contact.instagram": "인스타그램",
+      "contact.email": "이메일",
       "err.required": "필수 입력 항목입니다.",
     },
   };

@@ -21,6 +21,10 @@
   --blue: #4f68e3; /* cobalt — primary accent */
   --blue-deep: #a9b6ff;
   --blue-soft: #1c2143;
+  --btn-primary-hover: #3452c4; /* deeper cobalt — keeps #fff button text
+                                    readable on hover; --blue-deep is pale
+                                    here by design (it's the accent-text
+                                    token) so it can't double as this */
   --blue-text: #a9b6ff; /* small accent text/icons directly on --bg — kept distinct
                             from --blue since button backgrounds need a different
                             (more saturated) value than small text does, for AA
@@ -63,12 +67,13 @@
   --card: #ffffff;
   --ink: #16181c;
   --muted: #5a5d63;
-  --muted-2: #75787f;
+  --muted-2: #63666c;
   --line: #e3ddcf;
 
   --blue: #1f3fae;
   --blue-deep: #16307f;
   --blue-soft: #eef1fb;
+  --btn-primary-hover: #16307f;
   --blue-text: #1f3fae;
   --danger: #b8483a;
 
@@ -260,6 +265,7 @@ h3 {
   transition: color 0.2s var(--ease);
   position: relative;
   padding: 6px 0;
+  white-space: nowrap;
 }
 .nav-link::after {
   content: "";
@@ -393,7 +399,7 @@ h3 {
   color: #fff;
 }
 .btn-primary:hover {
-  background: var(--blue-deep);
+  background: var(--btn-primary-hover);
 }
 .btn-ghost {
   border-color: var(--ink);
@@ -401,7 +407,7 @@ h3 {
 }
 .btn-ghost:hover {
   border-color: var(--blue);
-  color: var(--blue);
+  color: var(--blue-text);
 }
 .btn-block {
   width: 100%;
@@ -1311,7 +1317,7 @@ blockquote.instagram-media a:hover {
   }
 }
 
-@media (max-width: 800px) {
+@media (max-width: 920px) {
   body {
     padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px));
   }

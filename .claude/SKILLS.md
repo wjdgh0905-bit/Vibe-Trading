@@ -1,7 +1,7 @@
 # Agent Skills — 설치 구성
 
 블로그·릴스에서 소개된 스킬 팩을 이 저장소에 적용했습니다.
-`.claude/settings.json`(플러그인 6종) + `.claude/skills/`(직접 설치 16종) 두 갈래로 구성됩니다.
+`.claude/settings.json`(플러그인 6종) + `.claude/skills/`(직접 설치 25종) 두 갈래로 구성됩니다.
 
 ## 0. 내 컴퓨터에 적용하기 (git pull 이후 1회)
 
@@ -184,6 +184,39 @@ playwright-cli install --skills
 `anthropics/skills`. "AI 티" 나는 뻔한 화면 대신 브랜드에 맞는 독자적인 디자인
 방향을 잡아주는 스킬. 설치 79만 건으로 가장 널리 쓰이는 디자인 스킬 중 하나이며,
 `taste-skill`·`ui-ux-pro-max`와 같이 발동됩니다.
+
+---
+
+### ECC에서 선별 발췌 (9종)
+
+`affaan-m/ECC` (MIT, 380개 스킬짜리 초대형 하네스)를 통째로 설치하면
+상시 토큰 비용이 **40,637토큰**(지금 6개 플러그인 전체보다 2배 이상)이라
+전체 설치는 하지 않았다. 대신 이 저장소 스택(Python/FastAPI + React/Vite +
+Robinhood 실거래 + 다중 LLM 프로바이더)에 실제로 맞는 것만 SKILL.md
+파일 단위로 9개 뽑아왔다. 각각 스크립트 의존 없는 독립 파일이라 안전하게
+발췌 가능했다.
+
+| 스킬 | 왜 뽑았는지 |
+|---|---|
+| `llm-trading-agent-security` | 프롬프트 인젝션·지출 한도·서킷 브레이커·키 관리 — Robinhood 실거래 연동에 정확히 맞음 |
+| `api-connector-builder` | 새 시세/브로커 커넥터 추가할 때 기존 패턴 그대로 따라가게 함 |
+| `production-audit` | 실거래(진짜 돈) 전 프로덕션 준비도 로컬 감사 (외부 전송 없음) |
+| `cost-aware-llm-pipeline` | OpenRouter·OpenAI·DeepSeek·Gemini·Groq 여러 모델 비용 라우팅 |
+| `fastapi-patterns` | 백엔드 프레임워크와 정확히 일치 |
+| `react-patterns` | 프론트 React 19와 정확히 일치 |
+| `vite-patterns` | 빌드 도구 Vite 6와 정확히 일치 |
+| `docker-patterns` | 기존 Dockerfile·compose 구조 개선 |
+| `e2e-testing` | Playwright E2E — 로컬에 이미 깐 Playwright CLI와 짝 |
+
+**뽑지 않은 것 (이름은 그럴싸한데 실제로는 안 맞음):**
+`dashboard-builder`(React 아니라 Grafana 운영 모니터링), `database-migrations`
+(Postgres/MySQL·Prisma용, SQLite·DuckDB엔 안 맞음), `mcp-server-patterns`
+(Node/TS용, 이 저장소 MCP 서버는 Python), `cost-tracking`(ECC 자체 훅 로그에
+의존해 단독 작동 불가), `token-budget-advisor`·`prompt-optimizer`(트레이딩
+앱이 아니라 Claude Code 채팅 자체를 다루는 메타 스킬), `agent-eval`·
+`eval-harness`·`agent-self-evaluation`(코딩 툴 비교·Claude 자기평가용).
+
+원본 라이선스는 `.claude/skills/ECC-LICENSE`에 보존.
 
 ---
 

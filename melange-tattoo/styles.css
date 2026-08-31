@@ -60,6 +60,13 @@ body {
   overflow-x: hidden;
 }
 
+/* Returning Korean-language visitors: hide the page (which renders with
+   English text first) until script.js applies the stored language, so
+   there's no visible English-to-Korean flash. Removed by applyLang(). */
+html[data-lang-loading="ko"] body {
+  visibility: hidden;
+}
+
 /* Latin letter-spacing/weight tuning doesn't read well on Hangul —
    tighten tracking and drop a touch of weight for Korean. */
 :lang(ko) {

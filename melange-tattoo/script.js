@@ -450,6 +450,8 @@
 
     renderGallery();
     renderSpots();
+
+    document.documentElement.removeAttribute("data-lang-loading");
   }
 
   function setLang(next) {

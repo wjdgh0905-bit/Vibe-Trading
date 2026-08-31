@@ -435,10 +435,10 @@ h3 {
 .hero-inner {
   position: relative;
   z-index: 1;
-  max-width: 720px;
+  max-width: 880px;
 }
 .hero-title {
-  font-size: clamp(2.4rem, 6.4vw, 4.4rem);
+  font-size: clamp(2.4rem, 5.6vw, 3.8rem);
   font-weight: 800;
 }
 :lang(ko) .hero-title {

@@ -11,12 +11,15 @@
   --card: #ffffff;
   --ink: #16181c; /* deep charcoal, not pure black */
   --muted: #5a5d63;
-  --muted-2: #8d9096;
+  --muted-2: #75787f;
   --line: #e3ddcf;
 
   --blue: #1f3fae; /* cobalt — primary accent */
   --blue-deep: #16307f;
   --blue-soft: #eef1fb;
+  --blue-text: #1f3fae; /* small accent text/icons directly on --bg — kept distinct
+                            from --blue since dark mode needs a brighter value here
+                            than button backgrounds do, for AA contrast */
   --gold: #b98a3e; /* used sparingly */
   --danger: #b8483a;
 
@@ -41,6 +44,8 @@
   --font: "Inter", "Noto Sans KR", system-ui, -apple-system, sans-serif;
 
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  color-scheme: light dark;
 }
 
 /* Dark mode follows the visitor's system preference — no manual
@@ -52,12 +57,13 @@
     --card: #1e1d19;
     --ink: #f2efe6;
     --muted: #a7a49a;
-    --muted-2: #7c7972;
+    --muted-2: #96938a;
     --line: #322f28;
 
     --blue: #4f68e3;
     --blue-deep: #a9b6ff;
     --blue-soft: #1c2143;
+    --blue-text: #a9b6ff;
     --danger: #e2776a;
 
     --header-bg: rgba(20, 20, 18, 0.82);
@@ -105,9 +111,14 @@ html[data-lang-loading="ko"] body {
 }
 
 /* Latin letter-spacing/weight tuning doesn't read well on Hangul —
-   tighten tracking and drop a touch of weight for Korean. */
+   tighten tracking and drop a touch of weight for Korean. Important
+   because this must always win over component rules (.btn, .nav-link,
+   .section-eyebrow, etc.) that set their own Latin tracking values and
+   would otherwise tie/beat this on specificity depending on source
+   order — this is a deliberate, blanket language override, not a
+   one-off exception. */
 :lang(ko) {
-  letter-spacing: 0;
+  letter-spacing: 0 !important;
   word-break: keep-all;
 }
 :lang(ko) h1,
@@ -438,7 +449,7 @@ h3 {
   font-weight: 600;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--blue);
+  color: var(--blue-text);
   margin: 0 0 14px;
 }
 .section-title {
@@ -680,17 +691,23 @@ h3 {
   position: relative;
 }
 .reels-row {
+  --reel-card-w: 280px;
   display: flex;
   align-items: center;
   gap: 20px;
   overflow-x: auto;
-  padding: 10px calc(50% - 140px) 18px;
+  padding: 10px calc(50% - (var(--reel-card-w) / 2)) 18px;
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
 }
+@media (max-width: 480px) {
+  .reels-row {
+    --reel-card-w: min(72vw, 280px);
+  }
+}
 .reels-row > * {
   flex: none;
-  width: 280px;
+  width: var(--reel-card-w);
   scroll-snap-align: center;
   opacity: 0.4;
   transform: scale(0.9);
@@ -717,11 +734,15 @@ h3 {
   align-items: center;
   justify-content: center;
   box-shadow: 0 14px 28px -16px rgba(22, 24, 28, 0.35);
-  transition: border-color 0.2s var(--ease), color 0.2s var(--ease);
+  transition: border-color 0.2s var(--ease), color 0.2s var(--ease), opacity 0.2s var(--ease);
 }
 .reel-nav:hover {
   border-color: var(--blue);
   color: var(--blue);
+}
+.reel-nav:disabled {
+  opacity: 0.35;
+  pointer-events: none;
 }
 .reel-prev {
   left: 0;
@@ -749,7 +770,7 @@ blockquote.instagram-media {
   padding: 20px;
 }
 blockquote.instagram-media a {
-  color: var(--blue);
+  color: var(--blue-text);
   font-size: 0.86rem;
   font-weight: 600;
   text-align: center;
@@ -978,7 +999,7 @@ blockquote.instagram-media a:hover {
   top: 18px;
   font-size: 1.2rem;
   font-weight: 400;
-  color: var(--blue);
+  color: var(--blue-text);
   transition: transform 0.25s var(--ease);
 }
 .faq-item[open] summary::after {
@@ -1228,7 +1249,7 @@ blockquote.instagram-media a:hover {
 }
 
 /* ============================================================
-   Sticky mobile booking bar — mobile only, see the 720px
+   Sticky mobile booking bar — mobile only, see the 800px
    breakpoint below for display:flex. Sits above safe-area insets
    for notched phones.
    ============================================================ */
@@ -1267,13 +1288,22 @@ blockquote.instagram-media a:hover {
   }
 }
 
-@media (max-width: 720px) {
+@media (max-width: 800px) {
   body {
     padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px));
   }
   .nav {
     position: fixed;
-    inset: 72px 0 auto 0;
+    /* .site-header has backdrop-filter, which makes it the containing
+       block for fixed descendants — so `bottom: 0` here would resolve
+       against the header's own ~72px height, not the viewport. Using
+       an explicit svh-based height sidesteps that entirely. */
+    top: 72px;
+    left: 0;
+    right: 0;
+    height: calc(100svh - 72px);
+    z-index: 95;
+    overflow-y: auto;
     flex-direction: column;
     align-items: flex-start;
     gap: 2px;

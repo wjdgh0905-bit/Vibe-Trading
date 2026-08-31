@@ -193,7 +193,7 @@
       Flash: "Flash",
     },
     ko: {
-      Dragon: "드래곤",
+      Dragon: "용",
       Snake: "뱀",
       Phoenix: "불사조",
       Flowers: "꽃",
@@ -353,7 +353,7 @@
       "hero.meta": "대한민국  ·  호주  ·  미국  ·  영국  ·  유럽",
       "work.eyebrow": "작업",
       "work.title": "최근 작업",
-      "work.desc": "완성작 모음입니다. 새 작업이 생기면 계속 추가돼요. 사진을 누르면 크게 볼 수 있어요.",
+      "work.desc": "완성작 모음입니다. 새 작업이 생기면 계속 추가됩니다. 사진을 누르면 크게 볼 수 있습니다.",
       "work.filterAll": "전체",
       "work.filterLabel": "스타일로 필터링",
       "about.eyebrow": "소개",
@@ -374,7 +374,7 @@
       "process.process.2": "기본 요소는 사전에 준비",
       "process.process.3": "몸의 흐름을 따르는 부분은 당일 프리핸드로 진행",
       "process.process.4": "최종 디자인과 수정 사항은 시작 전 함께 확인",
-      "process.reelsH": "인스타그램 작업 영상",
+      "process.reelsH": "인스타그램 속 최근 작업 과정",
       "process.reelsFallback": "인스타그램에서 보기",
       "guestSpots.eyebrow": "게스트 일정",
       "guestSpots.title": "멜란지가 작업하는 지역",
@@ -404,7 +404,7 @@
       "booking.steps.6": "최종 디자인과 수정 사항은 작업 시작 전 현장에서 함께 확인합니다.",
       "booking.openForm": "문의 폼 열기",
       "modal.title": "문의 보내기",
-      "modal.instaNote": "인스타그램이 편하시면 @melange.tattoo로 바로 DM 주세요. 폼 작성 없이도 괜찮아요.",
+      "modal.instaNote": "인스타그램이 편하시면 @melange.tattoo로 바로 DM 주세요. 폼 작성 없이도 괜찮습니다.",
       "form.name": "이름",
       "form.city": "도시",
       "form.cityPh": "예: 서울",
@@ -420,8 +420,8 @@
       "form.submit": "문의 보내기",
       "form.note": "제출하면 바로 접수돼요. 메일 앱은 필요 없습니다.",
       "form.sending": "전송 중…",
-      "form.success": "감사합니다. 곧 연락드릴게요.",
-      "form.error": "전송에 실패했어요. melange.tattoo@gmail.com으로 직접 메일 부탁드려요.",
+      "form.success": "감사합니다. 곧 연락드리겠습니다.",
+      "form.error": "전송에 실패했습니다. melange.tattoo@gmail.com으로 직접 메일 부탁드립니다.",
       "faq.eyebrow": "FAQ",
       "faq.title": "자주 묻는 질문",
       "faq.q1": "어디서 활동하나요?",
@@ -431,7 +431,7 @@
       "faq.q3": "첫 메시지에는 뭘 포함해야 하나요?",
       "faq.a3": "이름, 도시, 타투 아이디어 또는 레퍼런스, 시술 부위, 예상 사이즈(cm), 희망 날짜, 시술 부위가 잘 보이는 사진을 보내주세요.",
       "faq.q4": "가격은 어떻게 되나요?",
-      "faq.a4": "가격은 사이즈, 부위, 난이도에 따라 달라집니다. 문의 주시면 견적을 안내드려요.",
+      "faq.a4": "가격은 사이즈, 부위, 난이도에 따라 달라집니다. 문의 주시면 견적을 안내드립니다.",
       "faq.q5": "예약금은 환불되나요?",
       "faq.a5": "환불되지 않습니다. 예약금은 일정을 확정하는 용도이며 최종 금액에서 차감됩니다.",
       "faq.q6": "예약 전에 디자인을 미리 볼 수 있나요?",
@@ -503,10 +503,12 @@
   function closeNav() {
     nav.classList.remove("open");
     navToggle.setAttribute("aria-expanded", "false");
+    document.body.style.overflow = "";
   }
   navToggle.addEventListener("click", () => {
     const open = nav.classList.toggle("open");
     navToggle.setAttribute("aria-expanded", String(open));
+    document.body.style.overflow = open ? "hidden" : "";
   });
   nav.querySelectorAll("a").forEach((a) => a.addEventListener("click", closeNav));
 
@@ -604,6 +606,35 @@
   }
 
   /* ------------------------------------------------------------
+     Shared dialog helpers (lightbox + inquiry modal)
+     ------------------------------------------------------------ */
+  function settleScroll() {
+    // If a smooth `#anchor` scroll (e.g. "Back to top") is still
+    // in-flight when a dialog opens and locks body scroll, the browser
+    // can leave the page painted blank until that scroll animation
+    // naturally finishes. Snapping to the current position with
+    // behavior:"auto" cancels it immediately.
+    window.scrollTo({ top: window.scrollY, behavior: "auto" });
+  }
+
+  function trapFocus(container, e) {
+    if (e.key !== "Tab") return;
+    const focusable = container.querySelectorAll(
+      'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'
+    );
+    if (!focusable.length) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault();
+      first.focus();
+    }
+  }
+
+  /* ------------------------------------------------------------
      Lightbox
      ------------------------------------------------------------ */
   const lightbox = document.getElementById("lightbox");
@@ -637,10 +668,11 @@
     currentIndex = index;
     lastFocused = document.activeElement;
     renderLb();
+    settleScroll();
     lightbox.classList.add("open");
     lightbox.setAttribute("aria-hidden", "false");
     document.body.style.overflow = "hidden";
-    lbClose.focus();
+    requestAnimationFrame(() => requestAnimationFrame(() => lbClose.focus()));
   }
   function closeLb() {
     lightbox.classList.remove("open");
@@ -678,6 +710,7 @@
     if (e.key === "Escape") closeLb();
     else if (e.key === "ArrowLeft") step(-1);
     else if (e.key === "ArrowRight") step(1);
+    else trapFocus(lightbox, e);
   });
 
   /* ------------------------------------------------------------
@@ -691,10 +724,14 @@
 
   function openModal() {
     modalLastFocused = document.activeElement;
+    settleScroll();
     modal.classList.add("open");
     modal.setAttribute("aria-hidden", "false");
     document.body.style.overflow = "hidden";
-    document.getElementById("f-name").focus();
+    // Double rAF: the first only gets us to the next frame, before the
+    // visibility:hidden -> visible transition has actually been
+    // committed, so a single-rAF focus() silently no-ops.
+    requestAnimationFrame(() => requestAnimationFrame(() => document.getElementById("f-name").focus()));
   }
   function closeModal() {
     modal.classList.remove("open");
@@ -714,7 +751,9 @@
     if (e.target === modal) closeModal();
   });
   document.addEventListener("keydown", (e) => {
-    if (modal.classList.contains("open") && e.key === "Escape") closeModal();
+    if (!modal.classList.contains("open")) return;
+    if (e.key === "Escape") closeModal();
+    else trapFocus(modal, e);
   });
 
   /* ------------------------------------------------------------
@@ -811,6 +850,17 @@
     }
     prevBtn.addEventListener("click", () => scrollByOne(-1));
     nextBtn.addEventListener("click", () => scrollByOne(1));
+
+    // Fade out prev/next once there's nothing left to scroll to, so the
+    // resting-state empty gap beside the first card doesn't read as a
+    // rendering glitch — there's simply no "back" to go to yet.
+    function updateNavState() {
+      const maxScroll = row.scrollWidth - row.clientWidth;
+      prevBtn.disabled = row.scrollLeft <= 4;
+      nextBtn.disabled = row.scrollLeft >= maxScroll - 4;
+    }
+    row.addEventListener("scroll", updateNavState, { passive: true });
+    updateNavState();
   }
 
   /* ------------------------------------------------------------

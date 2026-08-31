@@ -5,7 +5,9 @@
     "ui-ux-pro-max@ui-ux-pro-max-skill": true,
     "claude-mem@thedotmack": true,
     "taste-skill@taste-skill": true,
-    "impeccable@impeccable": true
+    "impeccable@impeccable": true,
+    "claude-code-setup@claude-plugins-official": true,
+    "headroom@headroom-marketplace": true
   },
   "extraKnownMarketplaces": {
     "superpowers-marketplace": {
@@ -42,6 +44,18 @@
       "source": {
         "source": "github",
         "repo": "pbakaus/impeccable"
+      }
+    },
+    "claude-plugins-official": {
+      "source": {
+        "source": "github",
+        "repo": "anthropics/claude-plugins-official"
+      }
+    },
+    "headroom-marketplace": {
+      "source": {
+        "source": "github",
+        "repo": "chopratejas/headroom"
       }
     }
   }

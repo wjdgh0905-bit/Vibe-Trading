@@ -22,6 +22,8 @@ nextlevelbuilder/ui-ux-pro-max-skill
 thedotmack/claude-mem
 Leonxlnx/taste-skill
 pbakaus/impeccable
+anthropics/claude-plugins-official
+chopratejas/headroom
 REPOS
 
 echo "==> 2/3 플러그인 설치"
@@ -30,7 +32,9 @@ for p in superpowers@superpowers-marketplace \
          ui-ux-pro-max@ui-ux-pro-max-skill \
          claude-mem@thedotmack \
          taste-skill@taste-skill \
-         impeccable@impeccable; do
+         impeccable@impeccable \
+         claude-code-setup@claude-plugins-official \
+         headroom@headroom-marketplace; do
   printf '  %-40s ' "$p"
   if out=$(claude plugin install "$p" --scope project -y 2>&1); then
     echo "ok"
@@ -44,7 +48,7 @@ missing=0
 for s in ffmpeg video-editing remotion-best-practices agent-reach archify frontend-design \
          llm-trading-agent-security api-connector-builder production-audit \
          cost-aware-llm-pipeline fastapi-patterns react-patterns vite-patterns \
-         docker-patterns e2e-testing; do
+         docker-patterns e2e-testing task-observer; do
   [ -f ".claude/skills/$s/SKILL.md" ] || { echo "  없음: $s"; missing=1; }
 done
 if [ "$missing" -eq 1 ]; then

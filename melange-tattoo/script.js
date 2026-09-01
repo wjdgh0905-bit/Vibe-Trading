@@ -582,6 +582,11 @@
   const galleryMoreBtn = document.getElementById("galleryMore");
   const GALLERY_PAGE_SIZE = 12;
   let galleryVisibleCount = GALLERY_PAGE_SIZE;
+  // The "show 12, then See more" pagination exists to keep the dense
+  // 6-column mobile grid from dumping the whole portfolio in one
+  // scroll — it isn't meant to also cap the desktop/tablet masonry,
+  // which has room to show everything at once.
+  const mobileGalleryQuery = window.matchMedia("(max-width: 520px)");
 
   function tileMedia(entry, angle) {
     if (entry.src) {
@@ -604,7 +609,9 @@
 
   function renderGallery() {
     grid.innerHTML = "";
-    GALLERY.slice(0, galleryVisibleCount).forEach((entry, i) => {
+    const isMobileGrid = mobileGalleryQuery.matches;
+    const visible = isMobileGrid ? GALLERY.slice(0, galleryVisibleCount) : GALLERY;
+    visible.forEach((entry, i) => {
       const angle = ANGLES[i % ANGLES.length];
       const item = document.createElement("button");
       item.type = "button";
@@ -623,13 +630,14 @@
       item.append(tileMedia(entry, angle), plus, label);
       grid.appendChild(item);
     });
-    galleryMoreBtn.hidden = galleryVisibleCount >= GALLERY.length;
+    galleryMoreBtn.hidden = !isMobileGrid || galleryVisibleCount >= GALLERY.length;
   }
 
   galleryMoreBtn.addEventListener("click", () => {
     galleryVisibleCount += GALLERY_PAGE_SIZE;
     renderGallery();
   });
+  mobileGalleryQuery.addEventListener("change", renderGallery);
 
   /* ------------------------------------------------------------
      Shared dialog helpers (lightbox + inquiry modal)

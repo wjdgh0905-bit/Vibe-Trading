@@ -3402,6 +3402,14 @@ register_alpha_routes(app)
 
 
 # ============================================================================
+# Options Lab routes (Web UI) — defined in src/api/options_routes.py
+# ============================================================================
+
+from src.api.options_routes import register_options_routes  # noqa: E402
+register_options_routes(app)
+
+
+# ============================================================================
 # Scheduled Research Routes
 # ============================================================================
 #

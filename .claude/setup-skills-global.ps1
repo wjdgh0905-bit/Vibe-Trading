@@ -70,18 +70,26 @@ $advanced = @{
     workflowSizeGuideline       = "large"
 }
 
+function Set-JsonProperty($obj, [string]$name, $value) {
+    if ($obj.PSObject.Properties.Name -contains $name) {
+        $obj.$name = $value
+    } else {
+        $obj | Add-Member -MemberType NoteProperty -Name $name -Value $value
+    }
+}
+
 $settings = if (Test-Path $globalSettingsPath) {
-    Get-Content $globalSettingsPath -Raw | ConvertFrom-Json -AsHashtable
+    Get-Content $globalSettingsPath -Raw | ConvertFrom-Json
 } else {
-    @{}
+    New-Object PSObject
 }
 foreach ($key in $advanced.Keys) {
-    $settings[$key] = $advanced[$key]
+    Set-JsonProperty $settings $key $advanced[$key]
 }
-if (-not $settings.ContainsKey("permissions")) {
-    $settings["permissions"] = @{}
+if (-not ($settings.PSObject.Properties.Name -contains "permissions")) {
+    Set-JsonProperty $settings "permissions" (New-Object PSObject)
 }
-$settings["permissions"]["defaultMode"] = "auto"
+Set-JsonProperty $settings.permissions "defaultMode" "auto"
 
 New-Item -ItemType Directory -Force -Path (Split-Path $globalSettingsPath) | Out-Null
 $settings | ConvertTo-Json -Depth 20 | Set-Content -Path $globalSettingsPath -Encoding utf8

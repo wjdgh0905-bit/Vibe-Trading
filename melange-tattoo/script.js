@@ -352,6 +352,10 @@
       "contact.title": "Let's talk about your tattoo.",
       "contact.text": "For all booking inquiries, please contact me via Instagram DM or email.",
       "footer.backToTop": "Back to top",
+      "ticker.1": "Guest Tattoo Artist",
+      "ticker.2": "Custom Design",
+      "ticker.3": "Worldwide Bookings",
+      "ticker.4": "Wave Motion & Blue",
       "contact.instagram": "Instagram",
       "contact.email": "Email",
       "err.required": "This field is required.",
@@ -461,6 +465,10 @@
       "contact.title": "타투에 대해 이야기해요.",
       "contact.text": "예약 문의는 인스타그램 DM이나 이메일로 연락해주세요.",
       "footer.backToTop": "맨 위로",
+      "ticker.1": "게스트 타투 아티스트",
+      "ticker.2": "커스텀 디자인",
+      "ticker.3": "전 세계 예약 가능",
+      "ticker.4": "웨이브 모션 & 블루",
       "contact.instagram": "인스타그램",
       "contact.email": "이메일",
       "err.required": "필수 입력 항목입니다.",
@@ -574,6 +582,22 @@
     const current = document.documentElement.getAttribute("data-theme") === "light" ? "light" : "dark";
     setTheme(current === "light" ? "dark" : "light");
   });
+
+  /* ------------------------------------------------------------
+     Live clock — the visitor's own local time, not a claimed studio
+     location (Melange is a traveling guest artist with no single
+     home base, so a fixed city/timezone would misrepresent that).
+     ------------------------------------------------------------ */
+  const liveClock = document.getElementById("liveClock");
+  function updateClock() {
+    liveClock.textContent = new Date().toLocaleTimeString(lang === "ko" ? "ko-KR" : "en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+    });
+  }
+  updateClock();
+  setInterval(updateClock, 1000);
 
   /* ------------------------------------------------------------
      Gallery generation

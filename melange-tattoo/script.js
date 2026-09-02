@@ -532,12 +532,12 @@
      first lap before the real speed kicks in.
      ------------------------------------------------------------ */
   const tickerTrack = document.querySelector(".ticker-track");
-  const TICKER_PX_PER_SECOND = 34;
+  const TICKER_PX_PER_SECOND = 102;
   function updateTickerSpeed() {
     if (!tickerTrack) return;
     const oneLoopWidth = tickerTrack.scrollWidth / 2;
     if (!oneLoopWidth) return;
-    const duration = Math.max(oneLoopWidth / TICKER_PX_PER_SECOND, 24);
+    const duration = Math.max(oneLoopWidth / TICKER_PX_PER_SECOND, 8);
     tickerTrack.style.animationDuration = duration + "s";
     tickerTrack.classList.add("is-ready");
   }

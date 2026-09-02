@@ -481,6 +481,7 @@ h3 {
   display: flex;
   align-items: center;
   padding-top: 72px;
+  padding-bottom: 56px;
   overflow: hidden;
 }
 @media (min-width: 900px) {
@@ -488,9 +489,11 @@ h3 {
     /* On desktop, 92svh reserves way more height than the content
        needs, especially on shorter/wide monitors — the empty space
        above and below the centered text reads as an unfinished page
-       rather than a deliberate hero. Cap it. Mobile is unaffected;
-       that's not where the "too much whitespace" complaint is from. */
-    min-height: min(92svh, 800px);
+       rather than a deliberate hero. Cap it well below the content's
+       own height so there's only a little breathing room left, not a
+       cavern. Mobile is unaffected; that's not where the "too much
+       whitespace" complaint is from. */
+    min-height: min(92svh, 620px);
   }
 }
 .hero-mark {

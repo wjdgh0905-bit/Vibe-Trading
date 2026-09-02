@@ -9,32 +9,39 @@
      head script that sets data-theme before first paint). The light
      variant lives entirely in the [data-theme="light"] override below,
      so this base block is the one place that changes if the default
-     values themselves need adjusting. */
-  --bg: #141412;
-  --bg-soft: #1b1a17;
-  --card: #1e1d19;
-  --ink: #f2efe6;
-  --muted: #a7a49a;
-  --muted-2: #96938a;
-  --line: #322f28;
+     values themselves need adjusting.
 
-  --blue: #4f68e3; /* cobalt — primary accent */
-  --blue-deep: #a9b6ff;
-  --blue-soft: #1c2143;
-  --btn-primary-hover: #3452c4; /* deeper cobalt — keeps #fff button text
+     Palette ported from the 2026 "tide" redesign concept — a cooler,
+     bluer dark ink instead of the old warm near-black, with a single
+     blue-violet accent family (was called "wave"/"ember" in the
+     concept; kept as one accent here rather than two near-identical
+     blues). */
+  --bg: #0a0e13;
+  --bg-soft: #0d1319;
+  --card: #121a22;
+  --ink: #eef0e6;
+  --muted: #c7cabd;
+  --muted-2: #8493ad;
+  --line: #232d38;
+
+  --blue: #4f68ee; /* accent — buttons, links, active states */
+  --blue-deep: #93aef2;
+  --blue-soft: #131f42;
+  --btn-primary-hover: #3555d4; /* deeper accent — keeps #fff button text
                                     readable on hover; --blue-deep is pale
                                     here by design (it's the accent-text
                                     token) so it can't double as this */
-  --blue-text: #a9b6ff; /* small accent text/icons directly on --bg — kept distinct
+  --blue-text: #93aef2; /* small accent text/icons directly on --bg — kept distinct
                             from --blue since button backgrounds need a different
                             (more saturated) value than small text does, for AA
                             contrast in both themes */
-  --gold: #b98a3e; /* used sparingly */
+  --gold: #d99a5b; /* used sparingly */
   --danger: #e2776a;
 
-  --header-bg: rgba(20, 20, 18, 0.82);
-  --ph-1: #2a281f;
-  --ph-2: #201e17;
+  --header-bg: rgba(10, 14, 19, 0.5);
+  --header-bg-scrolled: rgba(10, 14, 19, 0.82);
+  --ph-1: #1b2731;
+  --ph-2: #121a22;
 
   /* Fixed regardless of theme — the gallery hover pills (.g-label,
      .g-plus) always sit on a near-white chip on top of a photo. */
@@ -42,16 +49,17 @@
 
   /* Fixed regardless of theme — the contact CTA band is always an
      inverted "dark band" for contrast, in both light and dark mode. */
-  --contrast-bg: #0c0d10;
-  --contrast-ink: #ffffff;
-  --contrast-muted: rgba(255, 255, 255, 0.65);
+  --contrast-bg: #0a0e13;
+  --contrast-ink: #eef0e6;
+  --contrast-muted: rgba(238, 240, 230, 0.65);
 
   --maxw: min(1400px, 92vw);
   --gutter: clamp(20px, 5vw, 56px);
-  --radius: 3px;
+  --radius: 16px;
+  --radius-lg: 24px;
 
-  --font: "Inter", "Noto Sans KR", system-ui, -apple-system, sans-serif;
-  --font-display: "Bebas Neue", "Noto Sans KR", "Inter", sans-serif;
+  --font: "Manrope", "Noto Sans KR", system-ui, -apple-system, sans-serif;
+  --font-display: "Unbounded", "Noto Sans KR", "Manrope", sans-serif;
 
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
 
@@ -63,22 +71,23 @@
    dark is the default regardless of system setting; this is the only
    way to get the light variant. */
 :root[data-theme="light"] {
-  --bg: #faf9f6;
-  --bg-soft: #f2efe7;
+  --bg: #f6f7f2;
+  --bg-soft: #eef0e6;
   --card: #ffffff;
-  --ink: #16181c;
-  --muted: #5a5d63;
-  --muted-2: #63666c;
-  --line: #e3ddcf;
+  --ink: #0d141c;
+  --muted: #545f6e;
+  --muted-2: #69748a;
+  --line: #dde1d6;
 
-  --blue: #1f3fae;
-  --blue-deep: #16307f;
-  --blue-soft: #eef1fb;
-  --btn-primary-hover: #16307f;
-  --blue-text: #1f3fae;
+  --blue: #3555d4;
+  --blue-deep: #1d3a9e;
+  --blue-soft: #e9edfb;
+  --btn-primary-hover: #223f9e;
+  --blue-text: #2743c9;
   --danger: #b8483a;
 
-  --header-bg: rgba(250, 249, 246, 0.88);
+  --header-bg: rgba(246, 247, 242, 0.72);
+  --header-bg-scrolled: rgba(246, 247, 242, 0.9);
   --ph-1: #e3ddcf;
   --ph-2: #d6cfba;
 
@@ -239,21 +248,30 @@ h3 {
   position: fixed;
   inset: 0 0 auto 0;
   z-index: 100;
-  background: var(--header-bg);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid transparent;
-  transition: box-shadow 0.3s var(--ease), border-color 0.3s var(--ease);
+  padding: 18px var(--gutter) 0;
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  backdrop-filter: blur(16px) saturate(140%);
+  transition: padding 0.35s var(--ease);
 }
 .site-header.scrolled {
-  border-bottom-color: var(--line);
-  box-shadow: 0 6px 24px -18px rgba(22, 24, 28, 0.25);
+  padding-top: 10px;
 }
 .header-inner {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 72px;
+  max-width: var(--maxw);
+  margin-inline: auto;
+  height: 64px;
+  padding-inline: clamp(16px, 2.4vw, 26px);
+  border-radius: 100px;
+  background: var(--header-bg);
+  border: 1px solid var(--line);
+  transition: background 0.35s var(--ease), box-shadow 0.35s var(--ease);
+}
+.site-header.scrolled .header-inner {
+  background: var(--header-bg-scrolled);
+  box-shadow: 0 16px 34px -20px rgba(0, 0, 0, 0.45);
 }
 .header-right {
   display: flex;
@@ -274,10 +292,14 @@ h3 {
   transform: rotate(90deg);
 }
 .brand-text {
-  font-size: 0.98rem;
+  /* clamp (not a fixed size) so it always fits on one line next to the
+     lang/theme toggles inside the header pill, down to the narrowest
+     phones — it used to wrap to a cramped 2 lines below ~420px wide. */
+  font-size: clamp(0.68rem, 3.6vw, 0.98rem);
   font-weight: 800;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   color: var(--ink);
+  white-space: nowrap;
 }
 .brand-text.small {
   font-size: 0.9rem;
@@ -433,7 +455,7 @@ h3 {
   justify-content: center;
   gap: 8px;
   padding: 14px 28px;
-  border-radius: var(--radius);
+  border-radius: 100px;
   font-size: 0.82rem;
   font-weight: 600;
   letter-spacing: 0.03em;
@@ -480,7 +502,7 @@ h3 {
   min-height: 92svh;
   display: flex;
   align-items: center;
-  padding-top: 72px;
+  padding-top: 108px;
   padding-bottom: 56px;
   overflow: hidden;
 }
@@ -1509,12 +1531,13 @@ blockquote.instagram-media a:hover {
     position: fixed;
     /* .site-header has backdrop-filter, which makes it the containing
        block for fixed descendants — so `bottom: 0` here would resolve
-       against the header's own ~72px height, not the viewport. Using
-       an explicit svh-based height sidesteps that entirely. */
-    top: 72px;
+       against the header's own ~86px height (18px top padding + the
+       64px pill), not the viewport. Using an explicit svh-based height
+       sidesteps that entirely. */
+    top: 86px;
     left: 0;
     right: 0;
-    height: calc(100svh - 72px);
+    height: calc(100svh - 86px);
     z-index: 95;
     overflow-y: auto;
     flex-direction: column;
@@ -1552,6 +1575,42 @@ blockquote.instagram-media a:hover {
 }
 
 @media (max-width: 520px) {
+  /* The floating header pill has two stacked layers of horizontal
+     padding (.site-header's outer margin + .header-inner's own inset)
+     on top of a fairly wide header-right cluster (lang toggle + theme
+     toggle + hamburger). On phones ~360px and narrower that combined
+     width overflowed the pill entirely, pushing the hamburger button
+     off-screen. Tighten every layer a little so it all fits. */
+  .site-header {
+    padding-inline: 10px;
+  }
+  .header-inner {
+    padding-inline: 10px;
+  }
+  .header-right {
+    gap: 8px;
+  }
+  .brand {
+    gap: 6px;
+  }
+  .lang-toggle {
+    padding: 9px 10px;
+  }
+}
+
+@media (max-width: 380px) {
+  /* Even with the tightening above, "MELANGE TATTOO" plus the lang
+     toggle, theme toggle and hamburger together are wider than very
+     small phones (≤360px) — the hamburger button was getting pushed
+     half off-screen. Drop the wordmark text at this width and rely on
+     the mark alone; the link still has its own aria-label so this
+     doesn't cost anything accessibility-wise. */
+  .brand-text {
+    display: none;
+  }
+}
+
+@media (max-width: 520px) {
   .field-row {
     grid-template-columns: 1fr;
   }
@@ -1562,6 +1621,9 @@ blockquote.instagram-media a:hover {
   .gallery-grid {
     grid-template-columns: repeat(6, 1fr);
     gap: 3px;
+  }
+  .gallery-item {
+    border-radius: 6px;
   }
   .gallery-item img,
   .gallery-item .ph {

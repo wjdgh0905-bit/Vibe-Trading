@@ -428,7 +428,7 @@ dialog::backdrop { background: rgba(0, 0, 0, 0.55); }
     <div class="f">
       <label for="bookingTemplate">예약 상세 안내 양식 (내가 손님에게 보내는 그대로 붙여넣기)</label>
       <textarea id="bookingTemplate" rows="8" spellcheck="false"></textarea>
-      <p class="help">채워 넣을 자리는 <span class="mono">{날짜}</span> <span class="mono">{시간}</span> <span class="mono">{예약금}</span>처럼 중괄호로 적어 두면 대화에서 찾아 채워요. 못 찾은 항목은 <span class="mono">[확인 필요]</span>로 남겨요. 한국어로 써도 손님 언어로 옮겨 보내요.</p>
+      <p class="help">기본값은 실제로 보내던 Price &amp; Deposit + Notes 문구예요. 채워 넣을 자리는 <span class="mono">{총액}</span> <span class="mono">{예약금}</span> <span class="mono">{날짜}</span>처럼 중괄호로 적어 두면 대화에서 찾아 채워요. 못 찾은 항목은 <span class="mono">[확인 필요]</span>로 남겨요. 한국어로 써도 손님 언어로 옮겨 보내요.</p>
     </div>
     <div class="f">
       <label for="context">답장 참고 메모 (예약금 정책, 게스트 일정, 자주 하는 안내)</label>
@@ -507,21 +507,24 @@ const ANALYSIS_SCHEMA = {
     confidence_note_ko: { type: "string" },
   },
 };
-// Example only. The artist replaces this with the exact text they send (설정 > 예약 상세 안내 양식).
-const DEFAULT_TEMPLATE = `Hi {손님 이름}! Here are your booking details:
+// The artist's own booking message (Price & Deposit + Notes), with the amounts as placeholders. Editable in 설정 > 예약 상세 안내 양식.
+const DEFAULT_TEMPLATE = `💰 Price & Deposit
+•Total price: {총액}
+•Deposit: {예약금} via PayPal
+→ If the "Friends & Family" option is not available, please send {예약금 (수수료 포함)}
+•The deposit is non-refundable and will be deducted from the final total
+•The remaining balance can be paid in cash or via PayPal on the day of the session
+📧 PayPal address: melange.tattoo@gmail.com
 
-Date & time: {날짜} {시간}
-Location: {스튜디오 / 게스트 장소}
-Design: {디자인} on {부위}, about {크기}
-Session: around {예상 소요 시간}
-Deposit: {예약금} (deducted from the total, non-refundable)
-Estimated total: {예상 총액}
+———
 
-To confirm your slot please send the deposit to:
-{송금 정보}
-
-Before the session: eat well, avoid alcohol the night before, and bring your ID.
-Reply here if anything changes. See you soon!`;
+📌 Notes
+•Design work begins after the deposit is received
+•Final custom designs are usually sent about 1 week before your appointment
+•Please bring a valid photo ID on the day
+•If you have a maximum budget, feel free to let me know — I can adjust the design accordingly
+•Make sure you're in good condition for the session
+* The remaining balance can be paid either in cash or via PayPal. However, PayPal sometimes doesn't work properly, so I kindly ask you to bring cash if possible.`;
 const BOOKING_SCHEMA = {
   type: "object", additionalProperties: false, required: ["message", "ko", "missing_ko"],
   properties: { message: { type: "string" }, ko: { type: "string" }, missing_ko: { type: "array", items: { type: "string" } } },

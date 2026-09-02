@@ -564,6 +564,60 @@
   onScroll();
 
   /* ------------------------------------------------------------
+     Hero — ambient wave canvas
+     Three sine-wave layers drifting at different speeds/depths, drawn
+     behind the hero text. Skipped entirely under prefers-reduced-
+     motion (the canvas is also display:none in that case via CSS, so
+     this is just avoiding the wasted rAF loop).
+     ------------------------------------------------------------ */
+  (function () {
+    const canvas = document.getElementById("heroCanvas");
+    if (!canvas || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const ctx = canvas.getContext("2d");
+    let w = 0;
+    let h = 0;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+    function resize() {
+      w = canvas.offsetWidth;
+      h = canvas.offsetHeight;
+      canvas.width = w * dpr;
+      canvas.height = h * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+    window.addEventListener("resize", resize);
+    resize();
+
+    const layers = [
+      { amp: 26, len: 0.006, speed: 0.35, y: 0.32, color: "rgba(79, 104, 238, 0.16)" },
+      { amp: 18, len: 0.009, speed: -0.22, y: 0.5, color: "rgba(147, 174, 242, 0.1)" },
+      { amp: 34, len: 0.004, speed: 0.16, y: 0.72, color: "rgba(19, 31, 66, 0.4)" },
+    ];
+
+    function draw(t) {
+      ctx.clearRect(0, 0, w, h);
+      layers.forEach((layer) => {
+        ctx.beginPath();
+        ctx.moveTo(0, h);
+        for (let x = 0; x <= w; x += 12) {
+          const y = layer.y * h + Math.sin(x * layer.len + t * layer.speed) * layer.amp;
+          ctx.lineTo(x, y);
+        }
+        ctx.lineTo(w, h);
+        ctx.closePath();
+        ctx.fillStyle = layer.color;
+        ctx.fill();
+      });
+    }
+
+    function loop(t) {
+      draw(t / 1000);
+      requestAnimationFrame(loop);
+    }
+    requestAnimationFrame(loop);
+  })();
+
+  /* ------------------------------------------------------------
      Mobile nav
      ------------------------------------------------------------ */
   const nav = document.getElementById("primaryNav");
@@ -671,15 +725,24 @@
       item.setAttribute("data-index", String(i));
       item.setAttribute("aria-label", "Open " + entryLabel(entry) + " tattoo image");
 
+      const shade = document.createElement("span");
+      shade.className = "g-shade";
+      shade.setAttribute("aria-hidden", "true");
+
       const plus = document.createElement("span");
       plus.className = "g-plus";
+      plus.setAttribute("aria-hidden", "true");
       plus.textContent = "＋";
 
       const label = document.createElement("span");
       label.className = "g-label";
-      label.textContent = entryLabel(entry);
+      label.textContent = tTag(entry.tagKey);
 
-      item.append(tileMedia(entry, angle), plus, label);
+      const info = document.createElement("span");
+      info.className = "g-info";
+      info.append(label, plus);
+
+      item.append(tileMedia(entry, angle), shade, info);
       grid.appendChild(item);
     });
     galleryMoreBtn.hidden = galleryVisibleCount >= GALLERY.length;

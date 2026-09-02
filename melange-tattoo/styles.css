@@ -467,6 +467,16 @@ h3 {
   padding-top: 72px;
   overflow: hidden;
 }
+@media (min-width: 900px) {
+  .hero {
+    /* On desktop, 92svh reserves way more height than the content
+       needs, especially on shorter/wide monitors — the empty space
+       above and below the centered text reads as an unfinished page
+       rather than a deliberate hero. Cap it. Mobile is unaffected;
+       that's not where the "too much whitespace" complaint is from. */
+    min-height: min(92svh, 800px);
+  }
+}
 .hero-mark {
   position: absolute;
   top: 50%;

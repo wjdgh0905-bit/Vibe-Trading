@@ -1079,7 +1079,12 @@ blockquote.instagram-media a:hover {
 .booking-intro .section-title {
   margin-bottom: 18px;
 }
-.js-open-inquiry.btn {
+/* Scoped to the booking section specifically — .js-open-inquiry is a
+   shared JS hook class (also on the header's nav-cta and the mobile
+   sticky-cta), so an unscoped `.js-open-inquiry.btn` selector here
+   was also matching the header's "Inquire" pill and pushing it 36px
+   down inside the header row, past the bottom of the floating pill. */
+.booking-intro .js-open-inquiry.btn {
   margin-top: 36px;
 }
 .direct-contact {

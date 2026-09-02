@@ -507,9 +507,18 @@ h3 {
   pointer-events: none;
 }
 .hero-inner {
+  /* No max-width override here on purpose — .container (the other
+     class on this element) already caps it at var(--maxw) and
+     centers it, same as every other section. It used to also set its
+     own narrower 880px cap, which centered the hero text in the
+     middle of the viewport instead of lining its left edge up with
+     the rest of the page's content — on a wide screen that reads as
+     a huge empty gutter on the left specifically, since everything
+     below it starts ~260px further left. hero-title/.hero-sub still
+     have their own font-size/ch-based limits, so removing this
+     doesn't make the text itself any wider. */
   position: relative;
   z-index: 1;
-  max-width: 880px;
 }
 .hero-title {
   font-family: var(--font-display);

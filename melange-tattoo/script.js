@@ -515,8 +515,36 @@
       a.textContent = t("process.reelsFallback");
     });
 
+    updateTickerSpeed();
+
     document.documentElement.removeAttribute("data-lang-loading");
   }
+
+  /* ------------------------------------------------------------
+     Ticker speed — a fixed animation-duration made it race by at an
+     inconsistent pace (duration was tuned for one language's text
+     length, then felt too fast once Korean's shorter phrases and the
+     bigger --gap made a full lap shorter/quicker). Measuring the
+     actual rendered width and targeting a constant, calm px/s keeps
+     the pace the same regardless of language or how many phrases are
+     in the loop. Stays paused (see the base CSS) until this runs
+     once with real numbers, so there's never a fast, wrongly-timed
+     first lap before the real speed kicks in.
+     ------------------------------------------------------------ */
+  const tickerTrack = document.querySelector(".ticker-track");
+  const TICKER_PX_PER_SECOND = 34;
+  function updateTickerSpeed() {
+    if (!tickerTrack) return;
+    const oneLoopWidth = tickerTrack.scrollWidth / 2;
+    if (!oneLoopWidth) return;
+    const duration = Math.max(oneLoopWidth / TICKER_PX_PER_SECOND, 24);
+    tickerTrack.style.animationDuration = duration + "s";
+    tickerTrack.classList.add("is-ready");
+  }
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(updateTickerSpeed);
+  }
+  window.addEventListener("resize", updateTickerSpeed);
 
   function setLang(next) {
     lang = I18N[next] ? next : "en";

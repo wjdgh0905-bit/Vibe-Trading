@@ -564,10 +564,14 @@ h3 {
 .ticker-track {
   display: flex;
   align-items: center;
-  gap: 22px;
+  gap: 48px;
   width: max-content;
   white-space: nowrap;
-  animation: ticker-scroll 26s linear infinite;
+  animation: ticker-scroll 60s linear infinite;
+  animation-play-state: paused;
+}
+.ticker-track.is-ready {
+  animation-play-state: running;
 }
 .ticker-item {
   font-family: var(--font-display);

@@ -248,7 +248,12 @@ textarea { resize: vertical; }
 .sec > header .hint { color: var(--muted-2); font-size: 12px; }
 .sec > header .right { margin-left: auto; display: flex; gap: 6px; }
 .card { background: var(--card); border: 1px solid var(--line); border-radius: 6px; padding: 14px 16px; }
-.summary { font-size: 15px; line-height: 1.65; max-width: 62ch; }
+.summary { font-size: 15px; line-height: 1.65; max-width: 62ch; overflow-wrap: anywhere; }
+.note, .out, .reply .ko, .status-line { overflow-wrap: anywhere; }
+.picklist { display: flex; flex-direction: column; gap: 6px; max-height: 50vh; overflow: auto; }
+.picklist .pick { display: grid; grid-template-columns: auto auto auto; gap: 4px 10px; align-items: center; justify-content: start; text-align: left; border: 1px solid var(--line); background: var(--bg-soft); border-radius: var(--radius); padding: 10px 12px; }
+.picklist .pick:hover { border-color: var(--blue); }
+.picklist .pick .sub { grid-column: 1 / -1; color: var(--muted); font-size: 12px; }
 .note { border-left: 3px solid var(--warn); background: var(--warn-soft); color: var(--ink); padding: 8px 12px; border-radius: 0 4px 4px 0; font-size: 12.5px; }
 .kv { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 8px 16px; }
 .kv dt { color: var(--muted); font-size: 12.5px; padding-top: 1px; }
@@ -319,8 +324,8 @@ dialog::backdrop { background: rgba(0, 0, 0, 0.55); }
 .conn .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted-2); flex: none; }
 .conn.on .dot { background: var(--good); }
 .conn.off .dot { background: var(--danger); }
-#lightbox { width: auto; max-width: calc(100vw - 32px); background: transparent; border: 0; box-shadow: none; }
-#lightbox img { max-width: calc(100vw - 32px); max-height: calc(100vh - 32px); display: block; border-radius: 6px; }
+#lightbox { width: auto; max-width: calc(100vw - 32px); max-height: none; overflow: visible; background: transparent; border: 0; box-shadow: none; }
+#lightbox img { max-width: calc(100vw - 32px); max-height: calc(100vh - 48px); display: block; border-radius: 6px; }
 
 /* ---------- toast ---------- */
 #toast {
@@ -357,7 +362,7 @@ dialog::backdrop { background: rgba(0, 0, 0, 0.55); }
   #backendChip { padding: 2px 5px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  * { transition: none !important; animation-duration: 0.01ms !important; }
+  * { transition: none !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
 }
 </style>
 </head>
@@ -374,7 +379,7 @@ dialog::backdrop { background: rgba(0, 0, 0, 0.55); }
 
 <main class="app">
   <aside class="rail">
-    <div id="drop" class="drop" tabindex="0" role="button" aria-label="스크린샷 추가">
+    <div id="drop" class="drop">
       <input type="file" id="fileInput" multiple accept="image/*" hidden />
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 15l5-5 4 4 3-3 6 6"/><circle cx="16" cy="9" r="1.6"/></svg>
       <p class="pointer"><b>스크린샷을 여기에 끌어다 놓기</b><br />붙여넣기 (Ctrl / ⌘ + V) 또는 <button class="linkbtn" id="pickBtn" type="button">파일 선택</button></p>
@@ -382,7 +387,7 @@ dialog::backdrop { background: rgba(0, 0, 0, 0.55); }
       <label class="check"><input type="checkbox" id="splitEach" /> 여러 장을 각각 따로 분석</label>
     </div>
     <div class="list-tools">
-      <input class="search" id="search" type="search" placeholder="이름, 내용, 디자인 검색" autocomplete="off" />
+      <input class="search" id="search" type="search" placeholder="이름, 내용, 디자인 검색" aria-label="대화 검색" autocomplete="off" />
       <div class="filters">
         <button class="chip filter" data-f="all" aria-pressed="true">전체</button>
         <button class="chip filter" data-f="open" aria-pressed="false">미처리</button>
@@ -395,7 +400,7 @@ dialog::backdrop { background: rgba(0, 0, 0, 0.55); }
     </div>
     <ul id="list" class="list"></ul>
   </aside>
-  <section id="detail" class="detail" aria-live="polite"></section>
+  <section id="detail" class="detail"></section>
 </main>
 
 <dialog id="settings">
@@ -580,13 +585,18 @@ function load() {
     data.seenExample = true;
   }
   // an analysis interrupted by a reload is shown as an error with a retry
-  for (const it of data.items) if (it.status === "analyzing" || it.status === "queued") { it.status = "error"; it.error = "페이지가 새로고침되어 분석이 중단됐어요. 다시 시도해 주세요."; }
+  for (const it of data.items) {
+    if (it.status === "analyzing" || it.status === "queued") { it.status = "error"; it.error = "페이지가 새로고침되어 분석이 중단됐어요. 다시 시도해 주세요."; }
+    if (it.status === "done") delete it.fresh;
+    delete it.lastMerge;
+  }
   return data;
 }
 function save() {
   try { localStorage.setItem(STORE_KEY, JSON.stringify(S)); }
   catch (e) { toast("저장 공간이 부족해요. 오래된 항목을 삭제해 주세요."); }
 }
+function saveSoon() { clearTimeout(saveSoon._t); saveSoon._t = setTimeout(save, 300); }
 function getKey() { try { return localStorage.getItem(KEY_KEY) || ""; } catch (e) { return ""; } }
 function setKey(v) { try { v ? localStorage.setItem(KEY_KEY, v) : localStorage.removeItem(KEY_KEY); } catch (e) {} }
 
@@ -633,7 +643,7 @@ const idb = {
     });
   },
   async put(id, blob) {
-    try { const db = await this.open(); await tx(db, "readwrite", st => st.put({ id, blob })); } catch (e) {}
+    try { const db = await this.open(); await tx(db, "readwrite", st => st.put({ id, blob })); return true; } catch (e) { return false; }
   },
   async get(id) {
     try { const db = await this.open(); const r = await tx(db, "readonly", st => st.get(id)); return r ? r.blob : null; } catch (e) { return null; }
@@ -666,7 +676,7 @@ async function getBlobs(item) {
   const out = [];
   for (const id of item.imageIds) {
     const b = memImages.get(id) || (await idb.get(id));
-    if (b) { memImages.set(id, b); out.push(b); }
+    if (b) { memImages.set(id, b); out.push({ id, blob: b }); }
   }
   return out;
 }
@@ -733,36 +743,47 @@ function renderBackend() {
 }
 
 /* ====================== prompts ====================== */
-function analysisPrompt(earlierText) {
+function todayStr() {
+  const d = new Date(); const days = ["일", "월", "화", "수", "목", "금", "토"];
+  return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0") + " (" + days[d.getDay()] + ")";
+}
+function dateOnly(ms) { const d = new Date(ms); return isNaN(d) ? "" : d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); }
+function analysisPrompt({ earlierText = "", note = "", captured = [] } = {}) {
   const s = S.settings;
+  const capLine = captured.length ? "The screenshots in this request were captured on: " + [...new Set(captured.filter(Boolean))].join(", ") + " (relative separators like \"(화)\" or \"어제\" are relative to that capture date)." : "";
   return [
     "You help a Korean tattoo artist (studio: Melange Tattoo, based in Korea with guest spots in Australia, the US, the UK and Europe) handle customer messages. The artist reads Korean; customers write in many languages.",
-    "The attached screenshots are consecutive scrolls of ONE chat thread (Instagram DM, WhatsApp, KakaoTalk, LINE, email or SMS), in chronological order. Consecutive screenshots usually overlap: the last bubbles of one reappear at the top of the next. Never duplicate a message.",
+    "The attached screenshots are consecutive scrolls of ONE chat thread (Instagram DM, WhatsApp, KakaoTalk, LINE, email or SMS), given in chronological order. Consecutive screenshots usually overlap at the boundary: the last one or two items of a screenshot (often cut off by the input bar) reappear at the top of the next (often faded under the header). Treat such a pair as ONE message and transcribe the fully visible copy. Merge only at boundaries: the same image or post sent again later with different neighbouring messages is a new message. If a date separator or the overlap shows the given order is wrong, reorder by the separators and say so in confidence_note_ko.",
     "How to read a chat screenshot:",
-    "- Sender: bubbles on the right (Instagram: purple/blue) are the artist" + (s.myName ? " (" + s.myName + ")" : "") + "; bubbles on the left with an avatar are the customer. Small emoji bubbles under a message (❤️ 💙 👍) are reactions, not messages.",
-    "- The header shows the customer's display name and handle (e.g. \"Ivanna\" / i.vxnna). Ignore UI chrome: status bar, input bar, read receipts (…에 읽음), activity status (…전에 활동), ad banners (광고 응답), 프로필 보기.",
-    "- Date separators (absolute like \"8월 14일 오후 2:29\" or relative like \"(화) 오전 7:30\", \"어제 오전 3:24\") apply to the messages below them. Copy them as written into transcript[].when of the first message under each; never convert relative dates into absolute ones.",
-    "- Non-text messages are messages too. Write them as a bracketed description in transcript[].original (English) and transcript[].ko (Korean): a shared post or reel (with the account handle and what it shows), a photo (what it shows: body part, a marked placement, a reference tattoo, a design mock-up), a story reply (회원님의 스토리에 답장을 보냈습니다), a story highlight (…스토리 하이라이트를 보냈습니다), a contact card (전화번호 + WhatsApp/전화 걸기 buttons: transcribe the number), a location card (place name · rating · goo.gl), a voice message. A view-once photo (a \"▶ 사진\" pill) is not visible: write [Photo (view once, not visible)] / [사진 (한 번 보기, 내용 확인 불가)].",
-    "- \"수정됨\" = edited message; \"자신에게 답장을 보냈습니다\" / \"…에게 답장\" = a quoted reply; \"…replied to an ad\" = the thread started from an ad. Mention these only when they matter.",
-    "- A bubble cut off at the very top or bottom of a screenshot may be incomplete: transcribe what is visible and say so in confidence_note_ko.",
-    "Conversations evolve: the customer asks, the artist answers, and plans change along the way (design, size, placement, colour, dates, time, price). Always separate what was said first from what is CURRENT. Base everything strictly on what is visible; never invent prices, dates, addresses or names.",
-    earlierText ? "Earlier part of this same conversation, already transcribed (the screenshots show the later part). Treat it as messages that came before the screenshots and include them in the transcript:\n" + earlierText : "",
+    "- Sender: on Instagram, right-aligned bubbles in the purple/blue gradient with no avatar are the artist" + (s.myName ? " (" + s.myName + ")" : "") + "; left-aligned grey bubbles are the customer. The customer's avatar is shown only next to the LAST bubble of a run, so grey bubbles above it are still the customer. The gradient shade drifts down the screen; different shades are not different senders. A shared post or photo belongs to whichever side it sits on, even when the post is from the artist's own account. Use \"unknown\" only when neither the side nor the colour of a bubble can be seen.",
+    "- The header shows the customer's display name and handle (e.g. \"Ivanna\" / i.vxnna). Ignore app chrome: status bar, header buttons, the \"↓\" button, the input bar, read receipts (…에 읽음), activity status (…전에 활동), ad banners (광고 응답 · 보기), system lines like \"… replied to an ad\", 프로필 보기, and the \"Liked by … and others\" line or like/comment counts on a shared post (those accounts are not the poster).",
+    "- Small emoji bubbles (❤️ 💙 👍) overlapping the edge of a bubble are reactions by the other party, not messages: never add them to the transcript and never treat one as agreement on its own. An emoji inside the bubble text is part of the message.",
+    "- Date separators (absolute like \"8월 14일 오후 2:29\" or relative like \"(화) 오전 7:30\", \"어제 오전 3:24\") apply to the messages below them. Copy them as written into transcript[].when of the first message under each; never convert a relative date into an absolute one inside `when`. If a separator is blurred or unreadable, use \"\" and mention it in confidence_note_ko instead of guessing.",
+    "- Non-text messages are messages too, one transcript entry per image even when Instagram stacks them. In original write a bracketed English tag with any text printed on the card exactly as shown (poster handle, location, date, caption fragment, a \"1/3\" badge); in ko describe what the artist needs to see: subject, style and colours, body part and side, existing tattoos, and whether it is the customer's own photo, a design mock-up, or someone else's tattoo. Cover: a shared post or reel, a photo, a story reply (회원님의 스토리에 답장을 보냈습니다), a story highlight (@…님의 스토리 하이라이트를 보냈습니다), a contact card (전화번호 + WhatsApp/전화 걸기: transcribe the number), a location card (place name · rating · goo.gl), a voice message. A view-once photo (a \"▶ 사진\" pill) is not visible: write [Photo (view once, not visible)] / [사진 (한 번 보기, 내용 확인 불가)]. When the poster is the artist's own account, say so (멜랑주 본인 게시물).",
+    "- \"수정됨\" = the message was edited; \"자신에게 답장을 보냈습니다\" / \"…에게 답장\" with a preview = a quoted reply. Mark them inside ko as [수정됨] or [↩ …에 답장]. When a message says \"this\" / \"like this\", add what it points to as a separate bracket after the translation, e.g. [→ 바로 위 게시물], never inside the translated words themselves.",
+    "- Translate only the words in the bubble. Do not insert reference names, handles or explanations into the ko translation; clarifications go in a bracket after it.",
+    "- A bubble cut off at the very top or bottom of a screenshot with no complete copy elsewhere: transcribe only the readable lines, end its ko with \"(이하 잘림)\", and say so in confidence_note_ko. If the last screenshot ends on a cut-off bubble or shows the \"↓\" button, note that later messages may exist.",
+    "Working out the CURRENT state: walk the thread in order and let each later message overwrite the earlier value of the same item. The customer decides design, placement, size and colour; the artist decides price, availability and deposit terms. A question-phrased proposal (\"12pm is okay?\", \"how about the 9th?\") sets nothing until the other side accepts it in words; a ❤️ reaction is not acceptance. The artist's price & deposit message is authoritative at the moment it is sent, but any later message by either side that changes a date, time or price supersedes it (an artist-initiated move is intent schedule_change). A customer's \"Just sent!!\" / \"Sent it\" means the deposit was reported sent, not received; only an artist message like \"I got it\" / \"I checked\" means received. When a message is ambiguous (\"Could we do 1?\" = October 1 or 1 PM), use the later clarification if there is one; otherwise record both readings in confidence_note_ko and put nothing in details.dates. Typos in dates/times stay verbatim in original and are normalised in ko and details (\"11st\" → 11일). Base everything strictly on what is visible: never invent prices, dates, addresses or names.",
+    "Today is " + todayStr() + ".",
+    capLine,
+    note ? "The artist's private notes on this thread (facts not visible in the screenshots; treat them as true): " + note : "",
+    earlierText ? "Earlier part of this same conversation, already read (the screenshots show the later part). Treat it as messages that came before the screenshots and include those messages in the transcript. The first new screenshot may overlap the end of this earlier text: de-duplicate. Carry the earlier details, changes, confirmed and pending items forward unless the new screenshots change them:\n" + earlierText : "",
     "",
     "Tasks:",
     "1. transcript: every message in order, de-duplicated, with sender, when (the date separator text in force, \"\" if none is shown right above), original (the exact text as written, typos included; a bracketed description for non-text), ko (a natural Korean translation in 해요체; if the original is already Korean, repeat it).",
-    "2. platform; customer_name (the display name as shown); customer_handle (the account handle without '@', \"\" if not shown); customer_language (BCP-47 code) and customer_language_ko (Korean language name, e.g. \"영어\").",
-    "3. summary_ko: 3-5 Korean sentences covering the whole thread: what the customer first asked for, what changed along the way, where it stands now, what happens next. status_ko: one short Korean line with the current state and whose turn it is (e.g. \"예약금 입금 확인하고 12시 시간 확정 답해야 하는 차례\").",
-    "4. details, CURRENT state only, in Korean (keep names, prices, currencies, dates, units and handles exactly as written): design (what will be tattooed, including decided style points like 흑백/블루 포인트), placement, size, style, dates (the agreed date and time; if only candidates or a window exist, say so), location (city / guest spot / studio), budget (the customer's own stated budget, \"\" if none), price (the artist's quote or the agreed total plus the deposit, e.g. \"총 USD 2,000 · 예약금 USD 300 (F&F 불가 시 330)\"), references (each shared image or post in a few words and what it is for), contact (the customer's full name, age and phone/email exactly as given, including remarks like 생일), other. Use \"\" when not mentioned.",
-    "5. changes_ko: every change of plan, one per line as \"항목: 이전 → 현재 (누가, 언제)\"; empty if nothing changed. confirmed_ko: things both sides have clearly agreed. pending_ko: things still undecided or waiting on someone (name who).",
-    "6. questions_ko: the customer's questions that are still unanswered at the end (empty if all were answered). action_items_ko: the artist's concrete next steps from here (never steps already done).",
-    "7. stage (where this customer stands right now): inquiry (first contact, key info still missing) | consulting (design/size/placement/price being discussed) | scheduling (date/time being settled) | deposit_pending (booking message sent, deposit not yet confirmed by the artist) | confirmed (the artist confirmed the deposit or the booking) | completed (the session happened) | lost (customer declined or went silent after a quote) | cancelled. intent: booking_inquiry | quote | schedule_change | cancellation | design_consult | aftercare | followup | general | other. urgency: high (needs a reply today: appointment within days, cancellation, an upset or long-waiting customer), normal (a reply is expected), low (nothing needed, or the ball is with the customer).",
-    "8. reply_draft.in_customer_language: the artist's next message in the customer's language, first person, warm and concise, matching the artist's own tone in the thread. Answer only what is open; never re-ask what was already answered, never state a different price or date than the agreed one, never promise availability or prices the artist did not state. If no reply is needed, write a short optional one-liner and start reply_draft.ko with \"(답장 필수 아님) \". reply_draft.ko: the same message in Korean.",
+    "2. platform; customer_name (the display name as shown, without decorative emoji); customer_handle (the account handle without '@', \"\" if not shown); customer_language (BCP-47 code) and customer_language_ko (Korean language name, e.g. \"영어\").",
+    "3. summary_ko: 3-5 short Korean sentences (at most about 40 words each, one idea per sentence) in this order: what the customer first asked for and when; what changed along the way; where it stands now; what happens next and by whom. If the start of the thread is not visible (the first bubble answers something off-screen), say so instead of stating who reached out first. status_ko: one short line: \"[현재 단계] — [누구] 차례: [무엇]\" (e.g. \"예약금 대기 — 나: 입금 확인하고 12시 시간 확정 답하기\").",
+    "4. details, CURRENT state only, in Korean (keep names, prices, currencies, dates, units and handles exactly as written): design (the accumulated spec of what will be tattooed, including decided style points like 흑백/블루 포인트 and excluded colours), placement (with the side 왼쪽/오른쪽 when a photo shows it, and existing tattoos nearby), size (relative if no cm was given, e.g. \"레퍼런스보다 작게\"), style, dates (the agreed date and time marked 확정, or candidates/window marked 희망 with the guest window), location (city / guest spot / studio), budget (the customer's own stated budget, \"\" if none), price (the artist's quote or the agreed total plus the deposit, e.g. \"총 USD 2,000 · 예약금 USD 300 (F&F 불가 시 330)\"; a superseded quote goes to changes_ko, not here), references (every shared post and photo in thread order as \"@handle/설명 — 참고 용도\" stating which aspect the customer wants from each: 스타일 / 위치·크기 / 포즈 / 배경 / 색감, including exclusions like \"스타일은 원하지 않음\"; include the customer's own body photo), contact (the customer's full name, age and phone/email exactly as given, including remarks like 생일), other. Use \"\" when not mentioned.",
+    "5. changes_ko: every change of plan, one per line as \"항목: 이전 → 현재 (누가, 언제)\", including a proposal that was declined (\"제안 → 거절/유지\") and explicit deviations from a reference (\"레퍼런스 → 손님 요청: 더 작게\"); exclude first-time specs and mere restatements; empty if nothing changed. confirmed_ko: things both sides have clearly agreed, plus the artist's own final terms. pending_ko: only things someone was actually asked to do or that are objectively required to proceed, each prefixed \"손님:\" or \"나:\"; stage-implied items not yet mentioned get \"(대화에 아직 없음)\"; never anything already answered, never invented acknowledgements.",
+    "6. questions_ko: the customer's questions that are still unanswered at the end (empty if all were answered; the artist's own numbered inquiry message is not a customer question). action_items_ko: the artist's concrete next steps from here (never steps already done).",
+    "7. stage (where this customer stands right now): inquiry (first contact, key info still missing) | consulting (design/size/placement/price being discussed) | scheduling (date/time being settled) | deposit_pending (booking message sent, deposit not yet confirmed by the artist) | confirmed (the artist confirmed the deposit or the booking) | completed (the session happened) | lost (customer declined or went silent after a quote) | cancelled. intent: booking_inquiry | quote | schedule_change | cancellation | design_consult | aftercare | followup | general | other. urgency: high (must act today: appointment within days judged from the separators and today's date, a cancellation, an upset or long-waiting customer), normal (a reply is expected from the artist), low (nothing needed, the ball is with the customer, or the thread ended).",
+    "8. reply_draft.in_customer_language: the artist's next message in the customer's language, first person, matching the artist's own register visible in the thread (short, upbeat, light emoji when the artist uses them). Answer only what is open; never re-ask what was already answered, never state a different price or date than the agreed one, never promise availability or prices the artist did not state, and never thank the customer again for things the artist already replied to. Never leave [확인 필요] or Korean text inside this reply: if a value is unknown, drop that line and list the gap in pending_ko / action_items_ko instead. If the customer declined, the thread ended on thanks, or the ball is with the customer, write one short optional line and start reply_draft.ko with \"(답장 필수 아님) \" — never re-quote or re-offer dates. reply_draft.ko: the same message in Korean.",
     s.inquiryTemplate ? "For a first inquiry that still lacks design/size/placement/city/date, base reply_draft on the artist's standard inquiry message below (keep its numbered list, adapt the greeting):\n" + s.inquiryTemplate : "",
-    s.bookingTemplate ? "When the customer has just accepted the price (or date and price are settled) and the booking message has not been sent yet, reply_draft = the artist's booking message below with the amounts filled in from the conversation or the artist's notes ([확인 필요] if unknown), followed by one line asking for the customer's name, age and contact number, and a time proposal if the time is not set. Keep the template's structure and wording.\nTemplate:\n" + s.bookingTemplate : "",
+    s.bookingTemplate ? "Booking message rule: when the customer has just accepted the price (or date and price are settled) AND the artist has not yet sent a price/deposit/booking message in this thread, reply_draft = a one-line lead-in plus the artist's booking message below with the amounts filled in from the artist's own messages or notes (never from the customer's budget), then one line asking for the customer's name, age and contact number, and a time proposal if the time is not set. Keep the template's structure and wording. If the artist ALREADY sent such a message in the thread, do not repeat it: write a short follow-up (slot held once the deposit arrives, design and studio details will follow).\nTemplate:\n" + s.bookingTemplate : "",
     s.context ? "Artist notes to respect when drafting: " + s.context : "",
-    "9. confidence_note_ko: anything unreadable, cut off, ambiguous (a message that could mean two things, relative dates) or uncertain, in Korean; \"\" if everything was clear.",
+    "9. confidence_note_ko: one or two short sentences on anything unreadable, cut off, ambiguous (a message that could mean two things, relative dates) or uncertain; \"\" if everything was clear.",
     "",
-    "Everything except transcript[].original, transcript[].when and reply_draft.in_customer_language must be in Korean: 해요체, concise, using the terms Korean tattoo artists use (도안, 시술, 부위, 예약금, 잔금, 게스트).",
+    "Everything except transcript[].original, transcript[].when and reply_draft.in_customer_language must be in Korean: 해요체 for sentences, 개조식 noun phrases for lists and details, refer to the artist as 나/내 and the customer as 손님, and use the terms Korean tattoo artists use (도안, 시술, 부위, 예약금, 잔금, 게스트, 레퍼런스, 블랙앤그레이, 윗팔). Keep names and handles in their original script and amounts as typed.",
   ].filter(Boolean).join("\n");
 }
 function translatePrompt(item, ko) {
@@ -772,6 +793,7 @@ function translatePrompt(item, ko) {
   return [
     "You translate a Korean tattoo artist's reply into " + lang + " (" + (a.customer_language || "") + ") for a customer chat. Keep the artist's tone: warm, concise, professional, first person. Keep names, prices, dates and units exactly. Do not add information.",
     S.settings.context ? "Artist notes: " + S.settings.context : "",
+    item.note ? "Artist's private notes on this thread: " + item.note : "",
     recent ? "Recent conversation for context:\n" + recent : "",
     "",
     "Korean reply to translate:\n" + ko,
@@ -783,15 +805,19 @@ function translatePrompt(item, ko) {
 function bookingPrompt(item) {
   const a = item.analysis || {};
   const lang = a.customer_language_ko || a.customer_language || "the customer's language";
-  const det = DETAIL_LABELS.filter(([k]) => a.details && a.details[k]).map(([k, l]) => l + ": " + a.details[k]).join("\n");
+  const keep = ["design", "placement", "size", "style", "dates", "location", "price", "contact"];
+  const det = DETAIL_LABELS.filter(([k]) => keep.includes(k) && a.details && a.details[k]).map(([k, l]) => l + ": " + a.details[k]).join("\n");
+  const alreadySent = (a.transcript || []).some(m => m.sender === "artist" && /price\s*&\s*deposit|paypal address|예약금/i.test(m.original));
   return [
-    "Fill in a Korean tattoo artist's booking-details message for a customer, using the artist's own template. Keep the template's structure, order, line breaks and wording; replace every {placeholder} with the value from the conversation, the extracted details or the artist's notes. Where a value is unknown write [확인 필요] in its place and list that item in missing_ko (Korean, short). Never invent dates, prices or addresses.",
+    "Fill in a Korean tattoo artist's booking-details message for a customer, using the artist's own template. Keep the template's structure, order, line breaks and wording exactly; replace each {placeholder} with the value from the ARTIST's own messages, the extracted current-state details or the artist's notes. Never use the customer's stated budget as the price. Never compute or invent anything: no fee gross-up, no balance, no street address, no clock time, no prices from other customers. Where a value is unknown write [확인 필요] in its place and list that item in missing_ko (short Korean).",
     "Write message in " + lang + " (" + (a.customer_language || "") + "); if the template is in another language translate it naturally, keeping the tone. ko: the same message in Korean so the artist can check it.",
+    alreadySent ? "The artist already sent a price/deposit message in this thread. If the amounts have not changed since, do not produce the template again: write a short follow-up instead (slot held once the deposit arrives, design and studio details will follow) and put \"이미 보낸 안내 메시지가 대화에 있음\" in missing_ko. If the price changed after that message, fill the template with the new amounts." : "",
     "",
     "Template:\n" + (S.settings.bookingTemplate || DEFAULT_TEMPLATE),
     "",
     S.settings.context ? "Artist notes:\n" + S.settings.context : "",
-    "Customer: " + (a.customer_name || ""),
+    item.note ? "Artist's private notes on this thread (treat as true):\n" + item.note : "",
+    "Customer: " + (a.customer_name || "") + (a.customer_handle ? " (@" + a.customer_handle + ")" : ""),
     det ? "Extracted details (current state):\n" + det : "",
     (a.confirmed_ko || []).length ? "Confirmed:\n" + a.confirmed_ko.join("\n") : "",
     "Conversation:\n" + transcriptText(a),
@@ -799,15 +825,17 @@ function bookingPrompt(item) {
 }
 async function makeBooking() {
   const it = current(); if (!it || !it.analysis) return;
+  if (it.bookingBusy) return;
   const btn = $("#bookingBtn"), st = $("#bookingStatus");
-  btn.disabled = true; st.innerHTML = `<span class="spin"></span>양식 채우는 중`;
+  it.bookingBusy = true; btn.disabled = true; st.innerHTML = `<span class="spin"></span>양식 채우는 중`;
   try {
     const r = await askJSON({ prompt: bookingPrompt(it), images: null, schema: BOOKING_SCHEMA, tier: "default" });
     it.booking = { message: String(r.message || "").trim(), ko: String(r.ko || "").trim(), missing_ko: Array.isArray(r.missing_ko) ? r.missing_ko.map(String) : [], at: Date.now() };
-    save(); renderDetail();
+    delete it.bookingBusy;
+    save(); if (currentId === it.id) renderDetail();
   } catch (e) {
-    st.textContent = (e && e.message) || "실패";
-    btn.disabled = false;
+    delete it.bookingBusy;
+    if (currentId === it.id) { const st2 = $("#bookingStatus"), b2 = $("#bookingBtn"); if (st2) st2.textContent = (e && e.message) || "실패"; if (b2) b2.disabled = false; }
   }
 }
 async function shareText(text) {
@@ -821,7 +849,9 @@ async function askJSON({ prompt, images, schema, tier }) {
     const maxN = backend.caps.images.maxCount || 1;
     const opts = { modelTier: tier || "default", cache: false };
     if (images && images.length) opts.images = images.slice(0, maxN);
-    const text = prompt + "\n\nReply with only one JSON object that matches this JSON Schema exactly (all keys required, no extra keys):\n" + JSON.stringify(schema);
+    let text = prompt + "\n\nReply with only one JSON object that matches this JSON Schema exactly (all keys required, no extra keys):\n" + JSON.stringify(schema);
+    const maxBytes = (backend.caps && backend.caps.maxPromptBytes) || 65536;
+    if (utf8Bytes(text) > maxBytes - 512) throw new Error("보낼 내용이 너무 길어요. 대화 앞부분을 정리하거나 스크린샷 수를 줄여 주세요.");
     try {
       return await backend.sample.json(text, opts);
     } catch (e) {
@@ -831,6 +861,7 @@ async function askJSON({ prompt, images, schema, tier }) {
   if (backend.kind === "api") return callApi({ prompt, images, schema });
   throw new Error(backend.reason || "Claude에 연결되지 않았어요.");
 }
+function utf8Bytes(str) { try { return new TextEncoder().encode(str).length; } catch (e) { return str.length * 3; } }
 function sampleErrorText(e) {
   const code = e && e.code;
   const map = {
@@ -845,7 +876,7 @@ function sampleErrorText(e) {
     cancelled: "취소됐어요.",
     upstream_error: "잠시 연결 문제가 있었어요. 다시 시도해 주세요.",
   };
-  return map[code] || (e && e.message) || "알 수 없는 오류";
+  return map[code] || ("Claude 호출에 실패했어요" + (code ? " (" + code + ")" : "") + ". 잠시 후 다시 시도해 주세요.");
 }
 async function callApi({ prompt, images, schema }) {
   const key = getKey();
@@ -858,8 +889,8 @@ async function callApi({ prompt, images, schema }) {
   content.push({ type: "text", text: prompt });
   const body = {
     model: S.settings.model || "claude-opus-5",
-    max_tokens: 16000,
-    output_config: { effort: S.settings.effort || "medium", format: { type: "json_schema", schema } },
+    max_tokens: 32000,
+    output_config: { effort: S.settings.effort || "high", format: { type: "json_schema", schema } },
     messages: [{ role: "user", content }],
   };
   const headers = {
@@ -895,25 +926,39 @@ async function post(headers, body, beta) {
 }
 
 /* ====================== intake ====================== */
-async function addFiles(fileList) {
+async function storeFiles(item, files) {
+  let failed = 0;
+  const ids = [];
+  for (const f of files) {
+    const id = uid();
+    let stored = f;
+    try { stored = await resize(f, 1400, 0.82); } catch (e) {}
+    memImages.set(id, stored);
+    if (!(await idb.put(id, stored))) failed++;
+    item.imageIds.push(id);
+    item.imageTimes = item.imageTimes || [];
+    item.imageTimes.push(f.lastModified || Date.now());
+    ids.push(id);
+  }
+  if (failed) toast("스크린샷 " + failed + "장을 브라우저에 저장하지 못했어요 (저장 공간). 이번 분석에는 쓰이지만 새로고침 후에는 사라져요.");
+  return ids;
+}
+function intakeFiles(fileList) {
   const files = Array.from(fileList || []).filter(f => f && f.type && f.type.startsWith("image/"));
-  if (!files.length) { toast("이미지 파일만 넣을 수 있어요"); return; }
-  if (backend.kind === "none") { toast(backend.reason || "Claude 연결이 필요해요"); openSettings(); return; }
+  if (!files.length) { toast("이미지 파일만 넣을 수 있어요"); return null; }
+  if (backend.kind === "none") { toast(backend.reason || "Claude 연결이 필요해요"); openSettings(); return null; }
   files.sort((a, b) => (a.lastModified - b.lastModified) || a.name.localeCompare(b.name));
+  return files;
+}
+async function addFiles(fileList) {
+  const files = intakeFiles(fileList); if (!files) return;
   const groups = $("#splitEach").checked ? files.map(f => [f]) : [files];
   if (S.items.length === 1 && S.items[0].example) removeItem("example", true);
   for (const group of groups) {
-    const item = { id: uid(), createdAt: Date.now(), status: "queued", done: false, note: "", replies: [], imageIds: [], analysis: null, error: "", fresh: true };
-    for (const f of group) {
-      const id = uid();
-      let stored = f;
-      try { stored = await resize(f, 1400, 0.82); } catch (e) {}
-      memImages.set(id, stored);
-      idb.put(id, stored);
-      item.imageIds.push(id);
-    }
+    const item = { id: uid(), createdAt: Date.now(), status: "queued", done: false, note: "", replies: [], imageIds: [], imageTimes: [], analysis: null, error: "", fresh: true };
+    await storeFiles(item, group);
     S.items.unshift(item);
-    queue.push(item.id);
+    enqueue(item.id);
   }
   currentId = S.items[0].id;
   save();
@@ -921,6 +966,7 @@ async function addFiles(fileList) {
   setView("detail");
   pump();
 }
+function enqueue(id) { if (!queue.includes(id)) queue.push(id); }
 async function pump() {
   if (running) return;
   running = true;
@@ -932,101 +978,146 @@ async function pump() {
   }
   running = false;
 }
+function renderFor(item) { if (item.id === currentId) render(); else renderList(); }
 const MAX_IMAGES_API = 20;
+// Reads the screenshots (all of them, or only the new ones when a digest of the earlier part exists),
+// in chunks of at most `cap` images, carrying a text digest of what was already read into the next call.
 async function analyze(item) {
   item.status = "analyzing"; item.error = "";
   const gen = item.gen = (item.gen || 0) + 1;
-  render();
+  const newIds = item.newImageIds ? item.newImageIds.slice() : null;
+  renderFor(item);
   try {
-    let blobs = await getBlobs(item);
-    if (!blobs.length) throw new Error("스크린샷을 찾을 수 없어요. 다시 넣어 주세요.");
-    // Too many screenshots for one call: send the latest ones and pass the earlier part as text.
+    const all = await getBlobs(item);
+    if (!all.length) throw new Error("스크린샷을 찾을 수 없어요. 다시 넣어 주세요.");
+    if (all.length < item.imageIds.length) throw new Error("스크린샷 " + item.imageIds.length + "장 중 " + (item.imageIds.length - all.length) + "장을 브라우저 저장소에서 찾을 수 없어요. 빠진 장을 다시 넣거나, 남은 장으로 보려면 삭제 후 다시 넣어 주세요.");
     const cap = backend.kind === "sample" ? (backend.caps.images.maxCount || 1) : MAX_IMAGES_API;
-    let earlierText = "";
-    if (blobs.length > cap) {
-      const prev = item.prevAnalysis || item.analysis;
-      earlierText = prev ? transcriptText(prev) : "";
-      blobs = blobs.slice(-cap);
+    let prev = item.prevAnalysis || null;
+    let todo = all;
+    if (prev && newIds && newIds.length) todo = all.filter(x => newIds.includes(x.id)); // incremental append
+    else prev = null; // full read
+    if (!todo.length) todo = all;
+    for (let i = 0; i < todo.length; i += cap) {
+      const chunk = todo.slice(i, i + cap);
+      const captured = chunk.map(x => dateOnly((item.imageTimes || [])[item.imageIds.indexOf(x.id)]));
+      const prompt = analysisPrompt({ earlierText: prev ? digestText(prev) : "", note: item.note, captured });
+      const raw = await askJSON({ prompt, images: chunk.map(x => x.blob), schema: ANALYSIS_SCHEMA, tier: "default" });
+      if (item.gen !== gen) return; // superseded (e.g. the merge was undone while running)
+      prev = normalize(raw);
     }
-    const raw = await askJSON({ prompt: analysisPrompt(earlierText), images: blobs, schema: ANALYSIS_SCHEMA, tier: "default" });
-    if (item.gen !== gen) return; // superseded (e.g. the merge was undone while running)
-    item.analysis = normalize(raw);
+    item.analysis = prev;
     item.status = "done";
     delete item.prevAnalysis;
+    if (newIds) item.newImageIds = (item.newImageIds || []).filter(id => !newIds.includes(id));
+    if (!item.newImageIds || !item.newImageIds.length) delete item.newImageIds;
   } catch (e) {
     if (item.gen !== gen) return;
     item.status = "error";
     item.error = (e && e.message) || String(e);
   }
+  const wasFresh = item.fresh; delete item.fresh;
   save();
-  if (item.status === "done" && item.fresh) { delete item.fresh; if (autoMerge(item)) return; }
-  render();
+  if (item.status === "done" && wasFresh && !item.noMerge) { if (await autoMerge(item)) return; }
+  renderFor(item);
 }
 function transcriptText(a) {
   return (a.transcript || []).map(m => (m.when ? "[" + m.when + "] " : "") + (m.sender === "artist" ? "Artist" : m.sender === "customer" ? "Customer" : "Unknown") + ": " + m.original).join("\n");
+}
+function digestText(a) {
+  const det = DETAIL_LABELS.filter(([k]) => a.details && a.details[k]).map(([k, l]) => l + ": " + a.details[k]).join("\n");
+  return [
+    "Customer: " + (a.customer_name || "") + (a.customer_handle ? " (@" + a.customer_handle + ")" : "") + " · platform: " + (a.platform || "") + " · stage so far: " + (a.stage || ""),
+    "Transcript so far:\n" + transcriptText(a),
+    det ? "Details so far (current state):\n" + det : "",
+    (a.changes_ko || []).length ? "Changes so far:\n" + a.changes_ko.join("\n") : "",
+    (a.confirmed_ko || []).length ? "Confirmed so far:\n" + a.confirmed_ko.join("\n") : "",
+    (a.pending_ko || []).length ? "Pending so far:\n" + a.pending_ko.join("\n") : "",
+  ].filter(Boolean).join("\n");
 }
 const normName = n => String(n || "").toLowerCase().replace(/[^\p{L}\p{N}]/gu, "");
 function namesMatch(a, b) {
   if (!a || !b || a.length < 2 || b.length < 2) return false;
   return a === b || a.includes(b) || b.includes(a);
 }
+// Exact handle match → merge without asking. Name-only match → ask first. No name → nothing.
 function findMatch(item) {
   const a = item.analysis; if (!a) return null;
   const n = normName(a.customer_name);
   const h = normName(a.customer_handle);
   const others = S.items.filter(o => o !== item && !o.example && o.analysis && o.status === "done" && o.analysis.platform === a.platform);
-  if (h) { const byHandle = others.find(o => normName(o.analysis.customer_handle) === h); if (byHandle) return byHandle; }
+  if (h) { const byHandle = others.find(o => normName(o.analysis.customer_handle) === h); if (byHandle) return { target: byHandle, sure: true }; }
   if (!n || a.customer_name === "이름 없음") return null;
-  // name match only when neither side has a conflicting handle
-  return others.find(o => namesMatch(normName(o.analysis.customer_name), n) && (!h || !normName(o.analysis.customer_handle))) || null;
+  const byName = others.filter(o => namesMatch(normName(o.analysis.customer_name), n) && (!h || !normName(o.analysis.customer_handle)));
+  byName.sort((x, y) => (x.noMerge ? 1 : 0) - (y.noMerge ? 1 : 0));
+  return byName.length ? { target: byName[0], sure: false } : null;
 }
-// A new screenshot of a chat we already track: append it to that conversation and re-read the whole thing.
-function autoMerge(item) {
-  const target = findMatch(item);
-  if (!target) return false;
-  const undo = { id: item.id, imageIds: item.imageIds.slice(), analysis: item.analysis, createdAt: item.createdAt, replies: item.replies, note: item.note };
-  target.prevAnalysis = target.analysis;
+// A new screenshot of a chat we already track: append it to that conversation and read on from where we left off.
+async function autoMerge(item) {
+  const m = findMatch(item);
+  if (!m) return false;
+  if (!m.sure) {
+    renderFor(item);
+    const who = m.target.analysis.customer_name + (m.target.analysis.customer_handle ? " (@" + m.target.analysis.customer_handle + ")" : "");
+    if (!confirm("같은 손님 같아요: " + who + "\n기존 대화에 이어 붙일까요?\n(취소하면 따로 둡니다)")) { item.noMerge = true; save(); return false; }
+  }
+  mergeInto(m.target, item);
+  return true;
+}
+function mergeInto(target, item) {
+  const undo = { id: item.id, imageIds: item.imageIds.slice(), imageTimes: (item.imageTimes || []).slice(), analysis: item.analysis, createdAt: item.createdAt, replies: item.replies, note: item.note, targetAnalysis: target.analysis, targetDone: target.done, targetNewImageIds: target.newImageIds ? target.newImageIds.slice() : null };
+  target.prevAnalysis = target.prevAnalysis || target.analysis;
+  target.newImageIds = (target.newImageIds || []).concat(item.imageIds);
   target.imageIds = target.imageIds.concat(item.imageIds);
+  target.imageTimes = (target.imageTimes || []).concat(item.imageTimes || []);
   target.done = false;
   target.lastMerge = undo;
   removeItem(item.id, true, true);
   currentId = target.id;
   save();
-  queue.push(target.id); pump();
+  enqueue(target.id); pump();
   toast((target.analysis ? target.analysis.customer_name : "기존") + " 대화에 이어 붙였어요", "따로 두기", () => unmerge(target));
-  return true;
+  setTimeout(() => { if (target.lastMerge === undo) delete target.lastMerge; }, 7500);
 }
 function unmerge(target) {
   const u = target.lastMerge; if (!u) return;
   delete target.lastMerge;
   target.gen = (target.gen || 0) + 1; // cancel a running re-analysis
   target.imageIds = target.imageIds.filter(id => !u.imageIds.includes(id));
-  if (target.prevAnalysis) { target.analysis = target.prevAnalysis; delete target.prevAnalysis; }
+  target.imageTimes = (target.imageTimes || []).filter((t, i) => true).slice(0, target.imageIds.length);
+  target.analysis = u.targetAnalysis; target.done = u.targetDone;
+  if (u.targetNewImageIds && u.targetNewImageIds.length) target.newImageIds = u.targetNewImageIds; else delete target.newImageIds;
+  delete target.prevAnalysis;
   target.status = target.analysis ? "done" : "error";
   const idx = queue.indexOf(target.id); if (idx >= 0) queue.splice(idx, 1);
-  const item = { id: u.id, createdAt: u.createdAt, status: "done", done: false, note: u.note || "", replies: u.replies || [], imageIds: u.imageIds, analysis: u.analysis, error: "", noMerge: true };
+  const item = { id: u.id, createdAt: u.createdAt, status: "done", done: false, note: u.note || "", replies: u.replies || [], imageIds: u.imageIds, imageTimes: u.imageTimes, analysis: u.analysis, error: "", noMerge: true };
   S.items.unshift(item);
   currentId = item.id;
   save(); render();
   toast("따로 두었어요");
 }
 async function appendTo(item, fileList) {
-  const files = Array.from(fileList || []).filter(f => f && f.type && f.type.startsWith("image/"));
-  if (!files.length) { toast("이미지 파일만 넣을 수 있어요"); return; }
-  if (backend.kind === "none") { toast(backend.reason || "Claude 연결이 필요해요"); openSettings(); return; }
-  files.sort((a, b) => (a.lastModified - b.lastModified) || a.name.localeCompare(b.name));
-  for (const f of files) {
-    const id = uid();
-    let stored = f;
-    try { stored = await resize(f, 1400, 0.82); } catch (e) {}
-    memImages.set(id, stored); idb.put(id, stored);
-    item.imageIds.push(id);
-  }
-  if (item.analysis) item.prevAnalysis = item.analysis;
+  if (item.example) { toast("예시 항목에는 붙일 수 없어요. 위 상자에 새로 넣어 주세요."); return; }
+  const files = intakeFiles(fileList); if (!files) return;
+  const ids = await storeFiles(item, files);
+  if (item.analysis) { item.prevAnalysis = item.prevAnalysis || item.analysis; item.newImageIds = (item.newImageIds || []).concat(ids); }
   item.done = false; delete item.lastMerge;
   currentId = item.id;
   save(); render(); setView("detail");
-  queue.push(item.id); pump();
+  enqueue(item.id); pump();
+}
+// Full re-read of every screenshot (no digest carried in).
+function reanalyze(item) {
+  delete item.prevAnalysis; delete item.newImageIds;
+  enqueue(item.id); pump();
+}
+// Manual "붙이기": move this item's screenshots into another conversation.
+function openMergePicker(item) {
+  const others = S.items.filter(o => o !== item && !o.example && o.analysis && o.status === "done");
+  if (!others.length) { toast("붙일 수 있는 다른 대화가 없어요"); return; }
+  const dlg = $("#mergeDlg");
+  $("#mergeList").innerHTML = others.map(o => `<button type="button" class="pick" data-id="${o.id}"><b>${esc(o.analysis.customer_name)}</b>${o.analysis.customer_handle ? ` <span class="mono">@${esc(o.analysis.customer_handle)}</span>` : ""}<span class="chip ${(STAGES[o.analysis.stage] || STAGES.inquiry)[1]}">${esc((STAGES[o.analysis.stage] || STAGES.inquiry)[0])}</span><span class="sub">${esc(o.analysis.summary_ko.slice(0, 60))}</span></button>`).join("");
+  dlg.dataset.source = item.id;
+  dlg.showModal();
 }
 function normalize(a) {
   a = a && typeof a === "object" ? a : {};
@@ -1109,7 +1200,7 @@ function renderList() {
     const sum = a ? a.summary_ko : (it.status === "error" ? it.error : "스크린샷을 읽고 있어요");
     const chips = a ? `${stageChip(a)}${chip(PLATFORMS[a.platform] || "기타", "")}${intentChip(a)}${urgencyChip(a)}${it.imageIds.length > 1 ? chip(it.imageIds.length + "장", "") : ""}${it.example ? chip("예시", "warn") : ""}` : (it.status === "analyzing" ? `<span class="chip"><span class="spin" style="margin:0"></span></span>` : it.status === "error" ? chip("오류", "danger") : chip("대기", ""));
     const thumb = it.imageIds.length ? `<div class="thumb" data-img="${it.imageIds[0]}"><img alt="" /></div>` : `<div class="thumb">${it.imageIds.length ? "" : "IG"}</div>`;
-    return `<li class="item ${it.done ? "done" : ""} urg-${a ? a.urgency : "normal"}" data-id="${it.id}" aria-current="${it.id === currentId}">
+    return `<li class="item ${it.done ? "done" : ""} urg-${a ? a.urgency : "normal"}" data-id="${it.id}" aria-current="${it.id === currentId}" tabindex="0" role="button">
       <div class="stripe"></div>${thumb}
       <div class="body">
         <div class="row"><span class="name">${esc(name)}</span><span class="time">${fmtTime(it.createdAt)}</span></div>
@@ -1174,7 +1265,7 @@ function renderDetail() {
         <div class="meta">${stageChip(a)}${chip(PLATFORMS[a.platform] || "기타")}${a.customer_language_ko ? chip(a.customer_language_ko) : ""}${intentChip(a)}${urgencyChip(a)}${it.example ? chip("예시 데이터", "warn") : ""}<span class="chip mono" style="font-family:var(--mono)">${esc(fmtTime(it.createdAt))}</span></div>
         <div class="acts">
           <button class="btn small ${it.done ? "" : "primary"}" id="doneBtn">${it.done ? "미처리로 되돌리기" : "처리 완료"}</button>
-          <button class="btn small" id="addShotBtn" title="이 대화의 이어지는 스크린샷 추가">스크린샷 추가</button>
+          ${it.example ? "" : `<button class="btn small" id="addShotBtn" title="이 대화의 이어지는 스크린샷 추가">스크린샷 추가</button><button class="btn small" id="mergeBtn" title="이 대화를 다른 손님 대화에 이어 붙이기">다른 대화에 붙이기</button>`}
           <button class="btn small" id="reanalyzeBtn" ${it.imageIds.length ? "" : "disabled"}>다시 분석</button>
           <button class="btn small danger" id="delBtn">삭제</button>
         </div>
@@ -1211,13 +1302,13 @@ function renderDetail() {
     <div class="d-grid">
       <section class="sec reply">
         <header><h2>답장 초안</h2><span class="hint">${esc(a.customer_language_ko || "손님 언어")} · 고쳐 쓴 뒤 복사</span><div class="right"><button class="btn ghost small" data-copy="draft">복사</button>${canShare ? `<button class="btn ghost small" data-share="draft">공유</button>` : ""}</div></header>
-        <textarea id="draft" spellcheck="false">${esc(a.reply_draft.in_customer_language)}</textarea>
+        <textarea id="draft" aria-label="답장 초안" spellcheck="false">${esc(a.reply_draft.in_customer_language)}</textarea>
         <div class="ko">${esc(a.reply_draft.ko)}</div>
       </section>
       <section class="sec reply">
         <header><h2>내 답장 번역</h2><span class="hint">한국어로 쓰면 ${esc(a.customer_language_ko || "손님 언어")}로</span></header>
-        <textarea id="koReply" placeholder="예: 10일 오후 2시 가능해요. 예약금 10만원 보내주시면 확정할게요.">${esc(lastReply ? lastReply.ko : "")}</textarea>
-        <div class="bar"><button class="btn primary small" id="translateBtn">번역하기</button><span class="status" id="trStatus"></span><span style="margin-left:auto"><button class="btn ghost small" data-copy="translated" ${lastReply ? "" : "disabled"}>복사</button>${canShare && lastReply ? `<button class="btn ghost small" data-share="translated">공유</button>` : ""}</span></div>
+        <textarea id="koReply" aria-label="한국어 답장" placeholder="예: 10일 오후 2시 가능해요. 예약금 10만원 보내주시면 확정할게요.">${esc(it.koDraft != null ? it.koDraft : (lastReply ? lastReply.ko : ""))}</textarea>
+        <div class="bar"><button class="btn primary small" id="translateBtn" ${it.translating ? "disabled" : ""}>번역하기</button><span class="status" id="trStatus"></span><span style="margin-left:auto"><button class="btn ghost small" data-copy="translated" ${lastReply ? "" : "disabled"}>복사</button>${canShare && lastReply ? `<button class="btn ghost small" data-share="translated">공유</button>` : ""}</span></div>
         <div class="out ${lastReply ? "" : "empty"}" id="translated">${lastReply ? esc(lastReply.out) : "번역 결과가 여기에 나와요"}</div>
         ${lastReply && lastReply.back_ko ? `<div class="ko">확인용 역번역: ${esc(lastReply.back_ko)}</div>` : ""}
       </section>
@@ -1225,10 +1316,10 @@ function renderDetail() {
 
     <section class="sec reply">
       <header><h2>예약 상세 안내</h2><span class="hint">내 양식에 대화 내용을 채워서</span><div class="right">${it.booking ? `<button class="btn ghost small" data-copy="booking">복사</button>${canShare ? `<button class="btn ghost small" data-share="booking">공유</button>` : ""}` : ""}</div></header>
-      ${it.booking ? `<textarea id="bookingMsg" spellcheck="false">${esc(it.booking.message)}</textarea>
+      ${it.booking ? `<textarea id="bookingMsg" aria-label="예약 상세 안내" spellcheck="false">${esc(it.booking.message)}</textarea>
       ${it.booking.missing_ko.length ? `<div class="note">아직 못 채운 항목: ${it.booking.missing_ko.map(esc).join(" · ")}</div>` : ""}
       <div class="ko">${esc(it.booking.ko)}</div>` : ""}
-      <div class="bar"><button class="btn ${it.booking ? "" : "primary"} small" id="bookingBtn">${it.booking ? "다시 만들기" : "양식으로 만들기"}</button><span class="status" id="bookingStatus"></span></div>
+      <div class="bar"><button class="btn ${it.booking ? "" : "primary"} small" id="bookingBtn" ${it.bookingBusy ? "disabled" : ""}>${it.booking ? "다시 만들기" : "양식으로 만들기"}</button><span class="status" id="bookingStatus"></span></div>
     </section>
 
     <section class="sec">
@@ -1238,7 +1329,7 @@ function renderDetail() {
 
     <section class="sec">
       <header><h2>메모</h2><span class="hint">나만 보는 기록</span></header>
-      <textarea class="memo" id="memo" placeholder="예: 도안 보냄, 예약금 확인 대기">${esc(it.note)}</textarea>
+      <textarea class="memo" id="memo" aria-label="메모" placeholder="예: 도안 보냄, 예약금 확인 대기">${esc(it.note)}</textarea>
     </section>
   </div>`;
   hydrateImages(box);
@@ -1271,16 +1362,18 @@ async function translateReply() {
   const it = current(); if (!it || !it.analysis) return;
   const ko = $("#koReply").value.trim();
   if (!ko) { toast("먼저 한국어 답장을 써 주세요"); return; }
+  if (it.translating) return;
   const btn = $("#translateBtn"), st = $("#trStatus");
-  btn.disabled = true; st.innerHTML = `<span class="spin"></span>번역 중`;
+  it.translating = true; btn.disabled = true; st.innerHTML = `<span class="spin"></span>번역 중`;
   try {
     const r = await askJSON({ prompt: translatePrompt(it, ko), images: null, schema: TRANSLATE_SCHEMA, tier: "default" });
     it.replies.push({ ko, out: String(r.out || "").trim(), back_ko: String(r.back_ko || "").trim(), at: Date.now() });
     if (it.replies.length > 10) it.replies.shift();
-    save(); renderDetail();
+    delete it.koDraft; delete it.translating;
+    save(); if (currentId === it.id) renderDetail();
   } catch (e) {
-    st.textContent = (e && e.message) || "번역 실패";
-    btn.disabled = false;
+    delete it.translating;
+    if (currentId === it.id) { const st2 = $("#trStatus"), b2 = $("#translateBtn"); if (st2) st2.textContent = (e && e.message) || "번역 실패"; if (b2) b2.disabled = false; }
   }
 }
 function exportAll() {
@@ -1300,7 +1393,7 @@ async function saveFile(name, text) {
     let dl = null;
     try { dl = await window.claude.use("downloads"); } catch (e) {}
     if (dl) {
-      try { await dl.save({ filename: name, data: text }); toast("저장했어요"); } catch (e) { if (!e || e.code !== "cancelled") await copyText(text); }
+      try { await dl.save({ filename: name, data: text }); toast("저장했어요"); } catch (e) { if (!e || (e.code !== "cancelled" && e.code !== "declined")) await copyText(text); }
       return;
     }
     await copyText(text); return;
@@ -1356,14 +1449,22 @@ document.addEventListener("drop", e => {
   else addFiles(e.dataTransfer.files);
 });
 document.body.insertAdjacentHTML("beforeend", '<input type="file" id="addInput" multiple accept="image/*" hidden />');
-$("#addInput").addEventListener("change", e => { const it = current(); if (it) appendTo(it, e.target.files); e.target.value = ""; });
+$("#addInput").addEventListener("change", e => { const it = current(); if (it && it.status === "done" && !it.example) appendTo(it, e.target.files); else toast("분석이 끝난 대화에만 붙일 수 있어요"); e.target.value = ""; });
+document.body.insertAdjacentHTML("beforeend", `<dialog id="mergeDlg"><div class="dlg"><h2>어느 대화에 붙일까요?</h2><div id="mergeList" class="picklist"></div><div class="row end"><button type="button" class="btn" id="mergeCancel">닫기</button></div></div></dialog>`);
+$("#mergeCancel").addEventListener("click", () => $("#mergeDlg").close());
+$("#mergeList").addEventListener("click", e => {
+  const b = e.target.closest(".pick"); if (!b) return;
+  const dlg = $("#mergeDlg"); const src = S.items.find(i => i.id === dlg.dataset.source); const target = S.items.find(i => i.id === b.dataset.id);
+  dlg.close();
+  if (src && target && src !== target) mergeInto(target, src);
+});
+$("#list").addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { const li = e.target.closest(".item"); if (li) { e.preventDefault(); select(li.dataset.id); } } });
 document.addEventListener("paste", e => {
   if (e.target && (e.target.tagName === "TEXTAREA" || e.target.tagName === "INPUT")) return;
   const files = Array.from((e.clipboardData && e.clipboardData.files) || []);
   if (files.length) { e.preventDefault(); addFiles(files); }
 });
 drop.addEventListener("click", e => { if (e.target.closest("label,input,button")) return; $("#fileInput").click(); });
-drop.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); $("#fileInput").click(); } });
 $("#pickBtn").addEventListener("click", () => $("#fileInput").click());
 $("#fileInput").addEventListener("change", e => { addFiles(e.target.files); e.target.value = ""; });
 
@@ -1381,8 +1482,10 @@ $("#detail").addEventListener("click", async e => {
   if (t.id === "backBtn") return setView("list");
   if (!it) return;
   if (t.id === "delBtn") { removeItem(it.id); setView("list"); return; }
-  if (t.id === "retryBtn" || t.id === "reanalyzeBtn") { queue.push(it.id); pump(); return; }
+  if (t.id === "retryBtn") { enqueue(it.id); pump(); return; }
+  if (t.id === "reanalyzeBtn") { reanalyze(it); return; }
   if (t.id === "addShotBtn") { $("#addInput").click(); return; }
+  if (t.id === "mergeBtn") { openMergePicker(it); return; }
   if (t.id === "doneBtn") { it.done = !it.done; save(); render(); toast(it.done ? "처리 완료" : "미처리로 되돌렸어요"); return; }
   if (t.id === "translateBtn") return translateReply();
   if (t.id === "bookingBtn") return makeBooking();
@@ -1403,9 +1506,10 @@ $("#detail").addEventListener("change", e => {
 });
 $("#detail").addEventListener("input", e => {
   const it = current(); if (!it) return;
-  if (e.target.id === "memo") { it.note = e.target.value; save(); }
-  if (e.target.id === "draft" && it.analysis) { it.analysis.reply_draft.in_customer_language = e.target.value; save(); }
-  if (e.target.id === "bookingMsg" && it.booking) { it.booking.message = e.target.value; save(); }
+  if (e.target.id === "memo") { it.note = e.target.value; saveSoon(); }
+  if (e.target.id === "draft" && it.analysis) { it.analysis.reply_draft.in_customer_language = e.target.value; saveSoon(); }
+  if (e.target.id === "bookingMsg" && it.booking) { it.booking.message = e.target.value; saveSoon(); }
+  if (e.target.id === "koReply") { it.koDraft = e.target.value; saveSoon(); }
 });
 $("#lightbox").addEventListener("click", () => $("#lightbox").close());
 
@@ -1427,13 +1531,14 @@ async function pickupShared() {
       const r = await cache.match(k);
       if (!r) continue;
       const blob = await r.blob();
-      if (blob.type.startsWith("image/")) files.push(new File([blob], r.headers.get("x-name") || "screenshot.jpg", { type: blob.type, lastModified: Number(r.headers.get("x-time")) || Date.now() }));
+      if (blob.type.startsWith("image/")) files.push(new File([blob], safeDecode(r.headers.get("x-name")) || "screenshot.jpg", { type: blob.type, lastModified: Number(r.headers.get("x-time")) || Date.now() }));
       await cache.delete(k);
     }
     history.replaceState(null, "", location.pathname);
     if (files.length) { await waitForBackend(); addFiles(files); }
   } catch (e) {}
 }
+function safeDecode(v) { try { return decodeURIComponent(v || ""); } catch (e) { return v || ""; } }
 function waitForBackend() { return new Promise(res => { const t = setInterval(() => { if (backend.kind !== "none" || backend.reason) { clearInterval(t); res(); } }, 100); setTimeout(() => { clearInterval(t); res(); }, 5000); }); }
 render();
 detectBackend().then(pickupShared);

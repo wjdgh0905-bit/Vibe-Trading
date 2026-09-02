@@ -1,5 +1,5 @@
 // Offline shell + Android share target. API calls are never cached.
-const CACHE = "melange-inbox-v2";
+const CACHE = "melange-inbox-v3";
 const SHARE_CACHE = "melange-inbox-share";
 const SHELL = ["./", "./index.html", "./icon.svg", "./site.webmanifest"];
 self.addEventListener("install", e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting())); });
@@ -15,13 +15,30 @@ self.addEventListener("fetch", e => {
         const files = fd.getAll("screenshots").filter(f => f && f.type && f.type.startsWith("image/"));
         const cache = await caches.open(SHARE_CACHE);
         const base = new URL("./", url).href;
-        await Promise.all(files.map((f, i) => cache.put(new Request(base + "__share/" + Date.now() + "-" + i),
-          new Response(f, { headers: { "content-type": f.type, "x-name": f.name || "screenshot.jpg", "x-time": String(f.lastModified || Date.now()) } }))));
+        for (let i = 0; i < files.length; i++) {
+          const f = files[i];
+          try {
+            // header values must be ByteStrings: encode non-Latin filenames (한글, emoji)
+            await cache.put(new Request(base + "__share/" + Date.now() + "-" + i),
+              new Response(f, { headers: { "content-type": f.type, "x-name": encodeURIComponent(f.name || "screenshot.jpg"), "x-time": String(f.lastModified || Date.now()) } }));
+          } catch (err) {}
+        }
       } catch (err) {}
       return Response.redirect(new URL("./?share=1", url).href, 303);
     })());
     return;
   }
   if (e.request.method !== "GET" || url.pathname.includes("__share/")) return;
+  // App shell: serve the cached copy at once, refresh it in the background (stale-while-revalidate),
+  // so a deploy reaches installed phones on the next open without hanging on a slow network.
+  if (e.request.mode === "navigate" || url.pathname.endsWith("/index.html")) {
+    e.respondWith((async () => {
+      const cache = await caches.open(CACHE);
+      const cached = await cache.match("./index.html") || await cache.match(e.request);
+      const refresh = fetch(e.request).then(r => { if (r && r.ok) cache.put("./index.html", r.clone()); return r; }).catch(() => null);
+      return cached || (await refresh) || Response.error();
+    })());
+    return;
+  }
   e.respondWith(caches.match(e.request).then(hit => hit || fetch(e.request)));
 });

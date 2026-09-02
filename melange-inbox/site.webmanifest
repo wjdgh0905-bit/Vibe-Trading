@@ -7,5 +7,29 @@
   "background_color": "#141412",
   "theme_color": "#141412",
   "lang": "ko",
-  "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml" }]
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "share_target": {
+    "action": "./share",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "files": [
+        {
+          "name": "screenshots",
+          "accept": [
+            "image/*"
+          ]
+        }
+      ]
+    }
+  }
 }

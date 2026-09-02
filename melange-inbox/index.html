@@ -178,6 +178,12 @@ textarea { resize: vertical; }
 .drop .check { display: inline-flex; align-items: center; gap: 6px; margin-top: 10px; font-size: 12px; color: var(--muted); cursor: pointer; }
 .drop .check input { accent-color: var(--blue); }
 .drop.disabled { opacity: 0.55; }
+.drop .touch { display: none; }
+@media (hover: none) and (pointer: coarse) {
+  .drop .pointer { display: none; }
+  .drop .touch { display: block; }
+  .drop { padding: 22px 16px; }
+}
 
 /* ---------- list ---------- */
 .list-tools { padding: 0 14px 10px; display: flex; flex-direction: column; gap: 8px; }
@@ -341,6 +347,10 @@ dialog::backdrop { background: rgba(0, 0, 0, 0.55); }
 }
 @media (max-width: 600px) {
   .top { padding: 0 12px; }
+  textarea, input.search, .dlg input, .dlg select, .dlg textarea, .memo { font-size: 16px; } /* keeps iOS from zooming into fields */
+  .d-head .title { flex-wrap: wrap; }
+  .d-head .acts { margin-left: 0; width: 100%; flex-wrap: wrap; }
+  .d-head h1 { font-size: 20px; }
   #backendLabel { display: none; }
   #backendChip { padding: 2px 5px; }
 }
@@ -365,7 +375,8 @@ dialog::backdrop { background: rgba(0, 0, 0, 0.55); }
     <div id="drop" class="drop" tabindex="0" role="button" aria-label="스크린샷 추가">
       <input type="file" id="fileInput" multiple accept="image/*" hidden />
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 15l5-5 4 4 3-3 6 6"/><circle cx="16" cy="9" r="1.6"/></svg>
-      <p><b>스크린샷을 여기에 끌어다 놓기</b><br />붙여넣기 (Ctrl / ⌘ + V) 또는 <button class="linkbtn" id="pickBtn" type="button">파일 선택</button></p>
+      <p class="pointer"><b>스크린샷을 여기에 끌어다 놓기</b><br />붙여넣기 (Ctrl / ⌘ + V) 또는 <button class="linkbtn" id="pickBtn" type="button">파일 선택</button></p>
+      <p class="touch"><b>탭해서 스크린샷 선택</b><br />사진 앱에서 여러 장을 한 번에 골라도 돼요</p>
       <label class="check"><input type="checkbox" id="splitEach" /> 여러 장을 각각 따로 분석</label>
     </div>
     <div class="list-tools">
@@ -413,6 +424,11 @@ dialog::backdrop { background: rgba(0, 0, 0, 0.55); }
     <div class="f">
       <label for="myName">내 이름 / 계정 (스크린샷에서 내 메시지 구분용)</label>
       <input type="text" id="myName" placeholder="예: melange, Melange Tattoo" />
+    </div>
+    <div class="f">
+      <label for="bookingTemplate">예약 상세 안내 양식 (내가 손님에게 보내는 그대로 붙여넣기)</label>
+      <textarea id="bookingTemplate" rows="8" spellcheck="false"></textarea>
+      <p class="help">채워 넣을 자리는 <span class="mono">{날짜}</span> <span class="mono">{시간}</span> <span class="mono">{예약금}</span>처럼 중괄호로 적어 두면 대화에서 찾아 채워요. 못 찾은 항목은 <span class="mono">[확인 필요]</span>로 남겨요. 한국어로 써도 손님 언어로 옮겨 보내요.</p>
     </div>
     <div class="f">
       <label for="context">답장 참고 메모 (예약금 정책, 게스트 일정, 자주 하는 안내)</label>
@@ -491,6 +507,25 @@ const ANALYSIS_SCHEMA = {
     confidence_note_ko: { type: "string" },
   },
 };
+// Example only. The artist replaces this with the exact text they send (설정 > 예약 상세 안내 양식).
+const DEFAULT_TEMPLATE = `Hi {손님 이름}! Here are your booking details:
+
+Date & time: {날짜} {시간}
+Location: {스튜디오 / 게스트 장소}
+Design: {디자인} on {부위}, about {크기}
+Session: around {예상 소요 시간}
+Deposit: {예약금} (deducted from the total, non-refundable)
+Estimated total: {예상 총액}
+
+To confirm your slot please send the deposit to:
+{송금 정보}
+
+Before the session: eat well, avoid alcohol the night before, and bring your ID.
+Reply here if anything changes. See you soon!`;
+const BOOKING_SCHEMA = {
+  type: "object", additionalProperties: false, required: ["message", "ko", "missing_ko"],
+  properties: { message: { type: "string" }, ko: { type: "string" }, missing_ko: { type: "array", items: { type: "string" } } },
+};
 const TRANSLATE_SCHEMA = {
   type: "object", additionalProperties: false, required: ["out", "back_ko"],
   properties: { out: { type: "string" }, back_ko: { type: "string" } },
@@ -512,7 +547,7 @@ function load() {
   let data = null;
   try { data = JSON.parse(localStorage.getItem(STORE_KEY) || "null"); } catch (e) {}
   if (!data || !Array.isArray(data.items)) data = { items: [], settings: {} };
-  data.settings = Object.assign({ model: "claude-opus-5", effort: "high", myName: "", context: "" }, data.settings || {});
+  data.settings = Object.assign({ model: "claude-opus-5", effort: "high", myName: "", context: "", bookingTemplate: DEFAULT_TEMPLATE }, data.settings || {});
   if (data.items.length === 0 && !data.seenExample) {
     data.items.push(exampleItem());
     data.seenExample = true;
@@ -689,6 +724,7 @@ function analysisPrompt(earlierText) {
     "6. intent: booking_inquiry | quote | schedule_change | cancellation | design_consult | aftercare | followup | general | other. urgency: high (needs a reply today, e.g. appointment within days, cancellation, upset customer), normal, or low.",
     "7. reply_draft.in_customer_language: the artist's next reply in the customer's language, first person, warm and concise, professional; answer what can be answered from the conversation and ask for what is missing. Do not promise specific availability or prices unless the artist already stated them. reply_draft.ko: the same reply in Korean.",
     s.context ? "Artist notes to respect when drafting the reply: " + s.context : "",
+    s.bookingTemplate ? "If the conversation has reached the point of confirming a booking (date/time being settled, deposit stage), write reply_draft.in_customer_language following the artist's booking-details template below: keep its structure and wording, fill each {placeholder} from the conversation or the notes, and write [확인 필요] where a value is unknown. Otherwise write a normal reply.\nTemplate:\n" + s.bookingTemplate : "",
     "8. confidence_note_ko: anything unreadable, cut off or uncertain, in Korean; \"\" if everything was clear.",
     "",
     "Everything except transcript[].original and reply_draft.in_customer_language must be in Korean.",
@@ -707,6 +743,41 @@ function translatePrompt(item, ko) {
     "",
     "Return out (the translated reply) and back_ko (a faithful Korean back-translation of out, so the artist can check it).",
   ].filter(Boolean).join("\n");
+}
+
+function bookingPrompt(item) {
+  const a = item.analysis || {};
+  const lang = a.customer_language_ko || a.customer_language || "the customer's language";
+  const det = DETAIL_LABELS.filter(([k]) => a.details && a.details[k]).map(([k, l]) => l + ": " + a.details[k]).join("\n");
+  return [
+    "Fill in a Korean tattoo artist's booking-details message for a customer, using the artist's own template. Keep the template's structure, order, line breaks and wording; replace every {placeholder} with the value from the conversation, the extracted details or the artist's notes. Where a value is unknown write [확인 필요] in its place and list that item in missing_ko (Korean, short). Never invent dates, prices or addresses.",
+    "Write message in " + lang + " (" + (a.customer_language || "") + "); if the template is in another language translate it naturally, keeping the tone. ko: the same message in Korean so the artist can check it.",
+    "",
+    "Template:\n" + (S.settings.bookingTemplate || DEFAULT_TEMPLATE),
+    "",
+    S.settings.context ? "Artist notes:\n" + S.settings.context : "",
+    "Customer: " + (a.customer_name || ""),
+    det ? "Extracted details (current state):\n" + det : "",
+    (a.confirmed_ko || []).length ? "Confirmed:\n" + a.confirmed_ko.join("\n") : "",
+    "Conversation:\n" + transcriptText(a),
+  ].filter(Boolean).join("\n");
+}
+async function makeBooking() {
+  const it = current(); if (!it || !it.analysis) return;
+  const btn = $("#bookingBtn"), st = $("#bookingStatus");
+  btn.disabled = true; st.innerHTML = `<span class="spin"></span>양식 채우는 중`;
+  try {
+    const r = await askJSON({ prompt: bookingPrompt(it), images: null, schema: BOOKING_SCHEMA, tier: "default" });
+    it.booking = { message: String(r.message || "").trim(), ko: String(r.ko || "").trim(), missing_ko: Array.isArray(r.missing_ko) ? r.missing_ko.map(String) : [], at: Date.now() };
+    save(); renderDetail();
+  } catch (e) {
+    st.textContent = (e && e.message) || "실패";
+    btn.disabled = false;
+  }
+}
+async function shareText(text) {
+  if (!text) return;
+  try { await navigator.share({ text }); } catch (e) { if (!e || e.name !== "AbortError") copyText(text); }
 }
 
 /* ====================== Claude calls ====================== */
@@ -1050,6 +1121,7 @@ function renderDetail() {
       ${showOriginal && m.ko && m.ko !== m.original ? `<div class="tr">${esc(m.ko)}</div>` : ""}
     </div>`).join("");
   const lastReply = it.replies[it.replies.length - 1];
+  const canShare = typeof navigator.share === "function";
   box.innerHTML = `<div class="d-wrap">
     <div class="d-head">
       ${back}
@@ -1094,18 +1166,26 @@ function renderDetail() {
 
     <div class="d-grid">
       <section class="sec reply">
-        <header><h2>답장 초안</h2><span class="hint">${esc(a.customer_language_ko || "손님 언어")} · 고쳐 쓴 뒤 복사</span><div class="right"><button class="btn ghost small" data-copy="draft">복사</button></div></header>
+        <header><h2>답장 초안</h2><span class="hint">${esc(a.customer_language_ko || "손님 언어")} · 고쳐 쓴 뒤 복사</span><div class="right"><button class="btn ghost small" data-copy="draft">복사</button>${canShare ? `<button class="btn ghost small" data-share="draft">공유</button>` : ""}</div></header>
         <textarea id="draft" spellcheck="false">${esc(a.reply_draft.in_customer_language)}</textarea>
         <div class="ko">${esc(a.reply_draft.ko)}</div>
       </section>
       <section class="sec reply">
         <header><h2>내 답장 번역</h2><span class="hint">한국어로 쓰면 ${esc(a.customer_language_ko || "손님 언어")}로</span></header>
         <textarea id="koReply" placeholder="예: 10일 오후 2시 가능해요. 예약금 10만원 보내주시면 확정할게요.">${esc(lastReply ? lastReply.ko : "")}</textarea>
-        <div class="bar"><button class="btn primary small" id="translateBtn">번역하기</button><span class="status" id="trStatus"></span><span style="margin-left:auto"><button class="btn ghost small" data-copy="translated" ${lastReply ? "" : "disabled"}>복사</button></span></div>
+        <div class="bar"><button class="btn primary small" id="translateBtn">번역하기</button><span class="status" id="trStatus"></span><span style="margin-left:auto"><button class="btn ghost small" data-copy="translated" ${lastReply ? "" : "disabled"}>복사</button>${canShare && lastReply ? `<button class="btn ghost small" data-share="translated">공유</button>` : ""}</span></div>
         <div class="out ${lastReply ? "" : "empty"}" id="translated">${lastReply ? esc(lastReply.out) : "번역 결과가 여기에 나와요"}</div>
         ${lastReply && lastReply.back_ko ? `<div class="ko">확인용 역번역: ${esc(lastReply.back_ko)}</div>` : ""}
       </section>
     </div>
+
+    <section class="sec reply">
+      <header><h2>예약 상세 안내</h2><span class="hint">내 양식에 대화 내용을 채워서</span><div class="right">${it.booking ? `<button class="btn ghost small" data-copy="booking">복사</button>${canShare ? `<button class="btn ghost small" data-share="booking">공유</button>` : ""}` : ""}</div></header>
+      ${it.booking ? `<textarea id="bookingMsg" spellcheck="false">${esc(it.booking.message)}</textarea>
+      ${it.booking.missing_ko.length ? `<div class="note">아직 못 채운 항목: ${it.booking.missing_ko.map(esc).join(" · ")}</div>` : ""}
+      <div class="ko">${esc(it.booking.ko)}</div>` : ""}
+      <div class="bar"><button class="btn ${it.booking ? "" : "primary"} small" id="bookingBtn">${it.booking ? "다시 만들기" : "양식으로 만들기"}</button><span class="status" id="bookingStatus"></span></div>
+    </section>
 
     <section class="sec">
       <header><h2>대화 원문</h2><span class="hint">${a.transcript.length}개 메시지</span><div class="right"><label class="toggle"><input type="checkbox" id="origToggle" ${showOriginal ? "checked" : ""} /> 원문과 번역 함께 보기</label></div></header>
@@ -1193,7 +1273,7 @@ function openSettings() {
   const dlg = $("#settings"), s = S.settings;
   $("#apiKey").value = getKey();
   $("#model").value = s.model; $("#effort").value = s.effort;
-  $("#myName").value = s.myName; $("#context").value = s.context;
+  $("#myName").value = s.myName; $("#context").value = s.context; $("#bookingTemplate").value = s.bookingTemplate || "";
   const inArtifact = !!(window.claude && typeof window.claude.use === "function");
   $("#keyField").hidden = inArtifact; $("#modelFields").hidden = inArtifact;
   const box = $("#connBox");
@@ -1204,7 +1284,7 @@ function openSettings() {
 function saveSettings() {
   const s = S.settings;
   s.model = $("#model").value; s.effort = $("#effort").value;
-  s.myName = $("#myName").value.trim(); s.context = $("#context").value.trim();
+  s.myName = $("#myName").value.trim(); s.context = $("#context").value.trim(); s.bookingTemplate = $("#bookingTemplate").value.trim();
   setKey($("#apiKey").value.trim());
   save();
   detectBackend();
@@ -1261,10 +1341,16 @@ $("#detail").addEventListener("click", async e => {
   if (t.id === "addShotBtn") { $("#addInput").click(); return; }
   if (t.id === "doneBtn") { it.done = !it.done; save(); render(); toast(it.done ? "처리 완료" : "미처리로 되돌렸어요"); return; }
   if (t.id === "translateBtn") return translateReply();
+  if (t.id === "bookingBtn") return makeBooking();
+  if (t.dataset.share) {
+    const a = it.analysis;
+    const map = { draft: $("#draft") ? $("#draft").value : "", translated: (it.replies[it.replies.length - 1] || {}).out || "", booking: $("#bookingMsg") ? $("#bookingMsg").value : "" };
+    return shareText(map[t.dataset.share] || "");
+  }
   if (t.dataset.open) { const url = await imageUrl(t.dataset.open); if (url) { $("#lightboxImg").src = url; $("#lightbox").showModal(); } return; }
   if (t.dataset.copy) {
     const a = it.analysis;
-    const map = { summary: a.summary_ko, draft: $("#draft") ? $("#draft").value : "", translated: (it.replies[it.replies.length - 1] || {}).out || "" };
+    const map = { summary: a.summary_ko, draft: $("#draft") ? $("#draft").value : "", translated: (it.replies[it.replies.length - 1] || {}).out || "", booking: $("#bookingMsg") ? $("#bookingMsg").value : "" };
     return copyText(map[t.dataset.copy] || "");
   }
 });
@@ -1275,6 +1361,7 @@ $("#detail").addEventListener("input", e => {
   const it = current(); if (!it) return;
   if (e.target.id === "memo") { it.note = e.target.value; save(); }
   if (e.target.id === "draft" && it.analysis) { it.analysis.reply_draft.in_customer_language = e.target.value; save(); }
+  if (e.target.id === "bookingMsg" && it.booking) { it.booking.message = e.target.value; save(); }
 });
 $("#lightbox").addEventListener("click", () => $("#lightbox").close());
 
@@ -1285,8 +1372,27 @@ $("#settingsForm").addEventListener("submit", saveSettings);
 $("#wipeBtn").addEventListener("click", wipeAll);
 
 /* ====================== boot ====================== */
+// Android "share to app": the service worker parks shared screenshots in a cache and redirects here with ?share=1.
+async function pickupShared() {
+  if (!new URLSearchParams(location.search).has("share") || !("caches" in window)) return;
+  try {
+    const cache = await caches.open("melange-inbox-share");
+    const keys = await cache.keys();
+    const files = [];
+    for (const k of keys) {
+      const r = await cache.match(k);
+      if (!r) continue;
+      const blob = await r.blob();
+      if (blob.type.startsWith("image/")) files.push(new File([blob], r.headers.get("x-name") || "screenshot.jpg", { type: blob.type, lastModified: Number(r.headers.get("x-time")) || Date.now() }));
+      await cache.delete(k);
+    }
+    history.replaceState(null, "", location.pathname);
+    if (files.length) { await waitForBackend(); addFiles(files); }
+  } catch (e) {}
+}
+function waitForBackend() { return new Promise(res => { const t = setInterval(() => { if (backend.kind !== "none" || backend.reason) { clearInterval(t); res(); } }, 100); setTimeout(() => { clearInterval(t); res(); }, 5000); }); }
 render();
-detectBackend();
+detectBackend().then(pickupShared);
 if ("serviceWorker" in navigator && location.protocol.startsWith("http") && !window.claude) {
   navigator.serviceWorker.register("./sw.js").catch(() => {});
 }

@@ -580,13 +580,15 @@
      ------------------------------------------------------------ */
   const grid = document.getElementById("galleryGrid");
   const galleryMoreBtn = document.getElementById("galleryMore");
-  const GALLERY_PAGE_SIZE = 12;
-  let galleryVisibleCount = GALLERY_PAGE_SIZE;
-  // The "show 12, then See more" pagination exists to keep the dense
-  // 6-column mobile grid from dumping the whole portfolio in one
-  // scroll — it isn't meant to also cap the desktop/tablet masonry,
-  // which has room to show everything at once.
+  // Mobile's dense 6-col grid pages in smaller batches (12 = two full
+  // rows) than the desktop/tablet masonry (24 = about six rows in the
+  // 4-col layout) — both exist so "Selected Work" doesn't dump the
+  // entire portfolio into one long scroll on first load.
+  const GALLERY_PAGE_SIZE_MOBILE = 12;
+  const GALLERY_PAGE_SIZE_DESKTOP = 24;
   const mobileGalleryQuery = window.matchMedia("(max-width: 520px)");
+  const galleryPageSize = () => (mobileGalleryQuery.matches ? GALLERY_PAGE_SIZE_MOBILE : GALLERY_PAGE_SIZE_DESKTOP);
+  let galleryVisibleCount = galleryPageSize();
 
   function tileMedia(entry, angle) {
     if (entry.src) {
@@ -609,9 +611,7 @@
 
   function renderGallery() {
     grid.innerHTML = "";
-    const isMobileGrid = mobileGalleryQuery.matches;
-    const visible = isMobileGrid ? GALLERY.slice(0, galleryVisibleCount) : GALLERY;
-    visible.forEach((entry, i) => {
+    GALLERY.slice(0, galleryVisibleCount).forEach((entry, i) => {
       const angle = ANGLES[i % ANGLES.length];
       const item = document.createElement("button");
       item.type = "button";
@@ -630,14 +630,20 @@
       item.append(tileMedia(entry, angle), plus, label);
       grid.appendChild(item);
     });
-    galleryMoreBtn.hidden = !isMobileGrid || galleryVisibleCount >= GALLERY.length;
+    galleryMoreBtn.hidden = galleryVisibleCount >= GALLERY.length;
   }
 
   galleryMoreBtn.addEventListener("click", () => {
-    galleryVisibleCount += GALLERY_PAGE_SIZE;
+    galleryVisibleCount += galleryPageSize();
     renderGallery();
   });
-  mobileGalleryQuery.addEventListener("change", renderGallery);
+  // Crossing the mobile breakpoint (resize, rotation) resets to that
+  // mode's first page rather than leaving whatever count was reached
+  // in the other mode.
+  mobileGalleryQuery.addEventListener("change", () => {
+    galleryVisibleCount = galleryPageSize();
+    renderGallery();
+  });
 
   /* ------------------------------------------------------------
      Shared dialog helpers (lightbox + inquiry modal)

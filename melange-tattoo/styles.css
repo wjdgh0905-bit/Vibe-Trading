@@ -569,6 +569,10 @@ h3 {
   letter-spacing: normal;
   text-transform: none;
 }
+.hero-accent {
+  font-style: normal;
+  color: var(--blue-text);
+}
 .hero-sub {
   margin: 26px 0 36px;
   max-width: 46ch;

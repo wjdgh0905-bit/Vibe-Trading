@@ -254,8 +254,9 @@
       "nav.booking": "Booking",
       "nav.faq": "FAQ",
       "nav.book": "Inquire",
-      "hero.title1": "Tattoo built on",
-      "hero.title2": "wave motion and blue.",
+      "hero.title1": "Ink that moves",
+      "hero.title2": "like ",
+      "hero.titleAccent": "tide.",
       "hero.sub":
         "Dragon, koi, phoenix, and more — each redrawn in Melange's own line and color to fit the body.",
       "hero.ctaWork": "View Work",
@@ -370,8 +371,9 @@
       "nav.booking": "예약",
       "nav.faq": "FAQ",
       "nav.book": "문의하기",
-      "hero.title1": "파도와 블루로",
-      "hero.title2": "완성하는 타투.",
+      "hero.title1": "물결처럼 흐르는",
+      "hero.title2": "",
+      "hero.titleAccent": "잉크.",
       "hero.sub":
         "용, 뱀, 불사조, 잉어, 고래, 꽃, 구름, 번개, 패턴을 각각 멜란지만의 선과 색으로 다시 그려 몸의 형태에 맞춥니다.",
       "hero.ctaWork": "작업 보기",
@@ -479,7 +481,14 @@
   let lang = localStorage.getItem(STORAGE_KEY) || "en";
   if (!I18N[lang]) lang = "en";
 
-  const t = (key) => (I18N[lang] && I18N[lang][key]) || key;
+  // Deliberately not `||` — a translation can legitimately be an empty
+  // string (e.g. hero.title2 in Korean, where the line has no prefix
+  // before the accented word), and `||` would treat that falsy ""
+  // as "missing" and fall through to printing the raw key.
+  const t = (key) => {
+    const value = I18N[lang] && I18N[lang][key];
+    return value !== undefined ? value : key;
+  };
   const tTag = (key) => (TAGS[lang] && TAGS[lang][key]) || key;
   const entryLabel = (entry) => (entry.desc && (entry.desc[lang] || entry.desc.en)) || tTag(entry.tagKey);
   const tRegion = (key) => (REGIONS[lang] && REGIONS[lang][key]) || key;

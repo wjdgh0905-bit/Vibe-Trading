@@ -1,0 +1,1296 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Melange Inbox</title>
+<meta name="description" content="손님 DM 스크린샷을 끌어다 놓으면 대화를 읽고, 한국어로 번역·요약하고, 예약 정보와 답장 초안까지 정리해 주는 Melange Tattoo 작업 도구." />
+<meta name="theme-color" content="#141412" />
+<link rel="icon" href="./icon.svg" type="image/svg+xml" />
+<link rel="manifest" href="./site.webmanifest" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" />
+<style>
+/* ---------- tokens: dark is the studio default; light follows an explicit choice ---------- */
+:root {
+  color-scheme: dark;
+  --bg: #141412;
+  --bg-soft: #1b1a17;
+  --card: #1e1d19;
+  --card-2: #24221d;
+  --ink: #f2efe6;
+  --muted: #a7a49a;
+  --muted-2: #7d7a71;
+  --line: #322f28;
+  --line-strong: #46423a;
+  --blue: #4f68e3;
+  --blue-hover: #3452c4;
+  --blue-text: #a9b6ff;
+  --blue-soft: #1c2143;
+  --good: #7cc29a;
+  --good-soft: #17301f;
+  --warn: #d9a441;
+  --warn-soft: #3a2c10;
+  --danger: #e2776a;
+  --danger-soft: #3d1d18;
+  --shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+  --font: "Inter", "Noto Sans KR", system-ui, -apple-system, "Apple SD Gothic Neo", sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --radius: 4px;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    color-scheme: light;
+    --bg: #faf9f6;
+    --bg-soft: #f2efe7;
+    --card: #ffffff;
+    --card-2: #f6f4ee;
+    --ink: #16181c;
+    --muted: #5f6068;
+    --muted-2: #8a8b92;
+    --line: #e4e1d8;
+    --line-strong: #cfcbc0;
+    --blue: #3452c4;
+    --blue-hover: #2a43a3;
+    --blue-text: #2e47b8;
+    --blue-soft: #e7ebff;
+    --good: #2f8a55;
+    --good-soft: #e3f3e8;
+    --warn: #9a6b0f;
+    --warn-soft: #fbf0d6;
+    --danger: #c2483a;
+    --danger-soft: #fbe3df;
+    --shadow: 0 18px 40px rgba(20, 20, 18, 0.14);
+  }
+}
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg: #faf9f6;
+  --bg-soft: #f2efe7;
+  --card: #ffffff;
+  --card-2: #f6f4ee;
+  --ink: #16181c;
+  --muted: #5f6068;
+  --muted-2: #8a8b92;
+  --line: #e4e1d8;
+  --line-strong: #cfcbc0;
+  --blue: #3452c4;
+  --blue-hover: #2a43a3;
+  --blue-text: #2e47b8;
+  --blue-soft: #e7ebff;
+  --good: #2f8a55;
+  --good-soft: #e3f3e8;
+  --warn: #9a6b0f;
+  --warn-soft: #fbf0d6;
+  --danger: #c2483a;
+  --danger-soft: #fbe3df;
+  --shadow: 0 18px 40px rgba(20, 20, 18, 0.14);
+}
+
+/* ---------- base ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: 14px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+button, input, textarea, select { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+[hidden] { display: none !important; }
+a { color: var(--blue-text); }
+h1, h2, h3, h4 { margin: 0; font-weight: 600; text-wrap: balance; }
+p { margin: 0; }
+ul { margin: 0; padding: 0; list-style: none; }
+textarea { resize: vertical; }
+.mono { font-family: var(--mono); font-size: 12.5px; }
+.eyebrow {
+  font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--muted); font-weight: 600;
+}
+
+/* ---------- shell ---------- */
+.top {
+  height: 52px; display: flex; align-items: center; justify-content: space-between;
+  padding: 0 16px; border-bottom: 1px solid var(--line); background: var(--bg);
+  position: sticky; top: 0; z-index: 5; gap: 12px;
+}
+.brand { font-weight: 700; letter-spacing: 0.16em; font-size: 13px; white-space: nowrap; }
+.brand span { color: var(--blue-text); margin-left: 6px; }
+.top-actions { display: flex; align-items: center; gap: 8px; }
+.app {
+  display: grid; grid-template-columns: 380px minmax(0, 1fr);
+  height: calc(100vh - 52px); height: calc(100dvh - 52px);
+}
+.rail {
+  border-right: 1px solid var(--line); display: flex; flex-direction: column; min-height: 0;
+  background: var(--bg-soft);
+}
+.detail { min-width: 0; overflow: auto; }
+
+/* ---------- buttons & chips ---------- */
+.btn {
+  border: 1px solid var(--line-strong); background: var(--card); color: var(--ink);
+  border-radius: var(--radius); padding: 7px 12px; font-size: 13px; font-weight: 500;
+  display: inline-flex; align-items: center; gap: 6px; line-height: 1.2; white-space: nowrap;
+  transition: background 0.15s var(--ease), border-color 0.15s var(--ease);
+}
+.btn:hover { border-color: var(--muted-2); background: var(--card-2); }
+.btn.primary { background: var(--blue); border-color: var(--blue); color: #fff; }
+.btn.primary:hover { background: var(--blue-hover); border-color: var(--blue-hover); }
+.btn.danger { color: var(--danger); }
+.btn.danger:hover { border-color: var(--danger); }
+.btn.small { padding: 5px 9px; font-size: 12px; }
+.btn.ghost { background: transparent; border-color: transparent; color: var(--muted); }
+.btn.ghost:hover { color: var(--ink); background: var(--card-2); border-color: transparent; }
+.btn:disabled { opacity: 0.5; cursor: default; }
+.linkbtn { background: none; border: 0; padding: 0; color: var(--blue-text); text-decoration: underline; text-underline-offset: 3px; }
+.chip {
+  display: inline-flex; align-items: center; gap: 5px; padding: 2px 8px; border-radius: 999px;
+  font-size: 11.5px; font-weight: 500; border: 1px solid var(--line-strong); color: var(--muted);
+  white-space: nowrap; line-height: 1.5;
+}
+.chip.blue { background: var(--blue-soft); color: var(--blue-text); border-color: transparent; }
+.chip.good { background: var(--good-soft); color: var(--good); border-color: transparent; }
+.chip.warn { background: var(--warn-soft); color: var(--warn); border-color: transparent; }
+.chip.danger { background: var(--danger-soft); color: var(--danger); border-color: transparent; }
+.chip .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.chip.filter { cursor: pointer; }
+.chip.filter[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+
+/* ---------- drop zone ---------- */
+.drop {
+  margin: 14px 14px 10px; border: 1.5px dashed var(--line-strong); border-radius: 6px;
+  background: var(--card); padding: 18px 16px; text-align: center;
+  transition: border-color 0.15s var(--ease), background 0.15s var(--ease);
+}
+.drop.over { border-color: var(--blue); background: var(--blue-soft); }
+.drop svg { width: 26px; height: 26px; color: var(--blue-text); margin-bottom: 6px; }
+.drop p { color: var(--muted); font-size: 13px; }
+.drop p b { color: var(--ink); font-weight: 600; }
+.drop .check { display: inline-flex; align-items: center; gap: 6px; margin-top: 10px; font-size: 12px; color: var(--muted); cursor: pointer; }
+.drop .check input { accent-color: var(--blue); }
+.drop.disabled { opacity: 0.55; }
+
+/* ---------- list ---------- */
+.list-tools { padding: 0 14px 10px; display: flex; flex-direction: column; gap: 8px; }
+.search {
+  width: 100%; border: 1px solid var(--line); background: var(--card); border-radius: var(--radius);
+  padding: 8px 10px; font-size: 13px;
+}
+.search::placeholder { color: var(--muted-2); }
+.filters { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.filters .count { margin-left: auto; font-size: 12px; color: var(--muted-2); font-variant-numeric: tabular-nums; }
+.list { overflow: auto; flex: 1; min-height: 0; border-top: 1px solid var(--line); }
+.item {
+  display: grid; grid-template-columns: 4px 56px minmax(0, 1fr); gap: 0 12px; align-items: stretch;
+  padding: 0 14px 0 0; border-bottom: 1px solid var(--line); cursor: pointer;
+  background: transparent; transition: background 0.12s var(--ease);
+}
+.item:hover { background: var(--card); }
+.item[aria-current="true"] { background: var(--card); box-shadow: inset 3px 0 0 var(--blue); }
+.item .stripe { background: transparent; }
+.item.urg-high .stripe { background: var(--danger); }
+.item.urg-normal .stripe { background: transparent; }
+.item .thumb {
+  width: 56px; height: 72px; margin: 12px 0; border-radius: 3px; overflow: hidden;
+  background: var(--card-2); border: 1px solid var(--line); display: grid; place-items: center;
+  color: var(--muted-2); font-family: var(--mono); font-size: 11px;
+}
+.item .thumb img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; }
+.item .body { padding: 12px 0; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.item .row { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.item .name { font-weight: 600; font-size: 13.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.item .time { margin-left: auto; color: var(--muted-2); font-size: 11.5px; font-family: var(--mono); white-space: nowrap; }
+.item .sum {
+  color: var(--muted); font-size: 12.5px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.item.done .name { color: var(--muted); text-decoration: line-through; text-decoration-color: var(--muted-2); }
+.item.done .thumb img { opacity: 0.55; }
+.item .chips { display: flex; gap: 5px; flex-wrap: wrap; }
+.empty { padding: 40px 24px; color: var(--muted); text-align: center; font-size: 13px; }
+.empty b { color: var(--ink); display: block; margin-bottom: 4px; }
+
+/* ---------- detail ---------- */
+.d-wrap { max-width: 980px; padding: 22px 28px 60px; display: flex; flex-direction: column; gap: 22px; }
+.d-head { display: flex; flex-direction: column; gap: 10px; }
+.d-head .title { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.d-head h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.01em; }
+.d-head .meta { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.d-head .acts { display: flex; gap: 8px; margin-left: auto; }
+.d-thumbs { display: flex; gap: 8px; flex-wrap: wrap; }
+.d-thumbs .hint-drop { align-self: center; color: var(--muted-2); font-size: 12px; margin-left: 4px; }
+.status-line { display: flex; gap: 10px; align-items: baseline; font-size: 14px; color: var(--ink); }
+.d-grid.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.bul.chg li::before { background: var(--warn); border-radius: 1px; width: 8px; height: 3px; margin-top: 10px; }
+.bul.ok li::before { background: var(--good); }
+.d-thumbs button { border: 1px solid var(--line); background: var(--card-2); padding: 0; border-radius: 3px; overflow: hidden; width: 64px; height: 92px; }
+.d-thumbs img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; }
+.d-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 22px; align-items: start; }
+.sec { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.sec > header { display: flex; align-items: baseline; gap: 10px; }
+.sec > header h2 { font-size: 13px; font-weight: 600; }
+.sec > header .hint { color: var(--muted-2); font-size: 12px; }
+.sec > header .right { margin-left: auto; display: flex; gap: 6px; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 6px; padding: 14px 16px; }
+.summary { font-size: 15px; line-height: 1.65; max-width: 62ch; }
+.note { border-left: 3px solid var(--warn); background: var(--warn-soft); color: var(--ink); padding: 8px 12px; border-radius: 0 4px 4px 0; font-size: 12.5px; }
+.kv { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 8px 16px; }
+.kv dt { color: var(--muted); font-size: 12.5px; padding-top: 1px; }
+.kv dd { margin: 0; font-size: 13.5px; overflow-wrap: anywhere; }
+.kv dd.mono { font-family: var(--mono); font-size: 12.5px; }
+.kv dd.blank { color: var(--muted-2); }
+.bul li { display: flex; gap: 10px; padding: 6px 0; border-top: 1px solid var(--line); font-size: 13.5px; }
+.bul li:first-child { border-top: 0; padding-top: 0; }
+.bul li::before { content: ""; flex: none; width: 6px; height: 6px; border-radius: 50%; background: var(--blue); margin-top: 8px; }
+.bul.q li::before { background: var(--warn); }
+.bul li.none::before { display: none; }
+.bul li.none { color: var(--muted-2); }
+
+.reply textarea {
+  width: 100%; min-height: 128px; border: 1px solid var(--line); background: var(--bg-soft);
+  border-radius: var(--radius); padding: 10px 12px; font-size: 14px; line-height: 1.6;
+}
+.reply textarea:focus { border-color: var(--blue); outline: none; }
+.reply .ko { color: var(--muted); font-size: 13px; line-height: 1.6; white-space: pre-wrap; padding: 10px 12px; border-left: 2px solid var(--line-strong); }
+.reply .bar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.reply .bar .status { color: var(--muted-2); font-size: 12px; }
+.out { background: var(--bg-soft); border: 1px solid var(--line); border-radius: var(--radius); padding: 10px 12px; white-space: pre-wrap; font-size: 14px; line-height: 1.6; min-height: 44px; }
+.out.empty { color: var(--muted-2); }
+
+.chat { display: flex; flex-direction: column; gap: 10px; }
+.msg { display: flex; flex-direction: column; gap: 4px; max-width: 78%; }
+.msg.customer { align-self: flex-start; }
+.msg.artist { align-self: flex-end; align-items: flex-end; }
+.msg.unknown { align-self: center; }
+.msg .who { font-size: 11px; color: var(--muted-2); letter-spacing: 0.06em; text-transform: uppercase; }
+.msg .bub { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; font-size: 13.5px; white-space: pre-wrap; overflow-wrap: anywhere; }
+.msg.artist .bub { background: var(--blue-soft); border-color: transparent; }
+.msg .tr { font-size: 12.5px; color: var(--muted); white-space: pre-wrap; padding: 0 4px; overflow-wrap: anywhere; }
+.msg .tr.same { display: none; }
+.toggle { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); cursor: pointer; }
+.toggle input { accent-color: var(--blue); }
+.memo { width: 100%; min-height: 64px; border: 1px solid var(--line); background: var(--bg-soft); border-radius: var(--radius); padding: 8px 10px; font-size: 13px; }
+
+.state { padding: 60px 28px; color: var(--muted); display: flex; flex-direction: column; gap: 12px; align-items: flex-start; max-width: 60ch; }
+.state h2 { font-size: 18px; color: var(--ink); font-weight: 600; }
+.state .thumbs { display: flex; gap: 8px; }
+.state .thumbs img { width: 72px; height: 104px; object-fit: cover; object-position: top; border-radius: 3px; border: 1px solid var(--line); }
+.spin { width: 16px; height: 16px; border: 2px solid var(--line-strong); border-top-color: var(--blue); border-radius: 50%; animation: spin 0.9s linear infinite; display: inline-block; vertical-align: -3px; margin-right: 6px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.steps { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-top: 8px; width: 100%; }
+.steps div { border: 1px solid var(--line); border-radius: 6px; padding: 12px; font-size: 12.5px; color: var(--muted); background: var(--card); }
+.steps b { display: block; color: var(--ink); margin-bottom: 4px; font-size: 13px; }
+.err { border-left: 3px solid var(--danger); background: var(--danger-soft); padding: 10px 12px; border-radius: 0 4px 4px 0; font-size: 13px; white-space: pre-wrap; }
+
+/* ---------- dialogs ---------- */
+dialog {
+  border: 1px solid var(--line-strong); background: var(--card); color: var(--ink); border-radius: 8px;
+  padding: 0; width: min(560px, calc(100vw - 32px)); box-shadow: var(--shadow);
+}
+dialog::backdrop { background: rgba(0, 0, 0, 0.55); }
+.dlg { padding: 20px 22px 22px; display: flex; flex-direction: column; gap: 16px; }
+.dlg h2 { font-size: 16px; }
+.dlg .f { display: flex; flex-direction: column; gap: 5px; }
+.dlg label { font-size: 12.5px; color: var(--muted); font-weight: 500; }
+.dlg input[type="text"], .dlg input[type="password"], .dlg select, .dlg textarea {
+  width: 100%; border: 1px solid var(--line-strong); background: var(--bg-soft); border-radius: var(--radius); padding: 8px 10px; font-size: 13.5px;
+}
+.dlg .help { font-size: 12px; color: var(--muted-2); line-height: 1.5; }
+.dlg .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.dlg .row.end { justify-content: flex-end; }
+.dlg .two { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.conn { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-radius: var(--radius); background: var(--bg-soft); border: 1px solid var(--line); font-size: 13px; }
+.conn .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted-2); flex: none; }
+.conn.on .dot { background: var(--good); }
+.conn.off .dot { background: var(--danger); }
+#lightbox { width: auto; max-width: calc(100vw - 32px); background: transparent; border: 0; box-shadow: none; }
+#lightbox img { max-width: calc(100vw - 32px); max-height: calc(100vh - 32px); display: block; border-radius: 6px; }
+
+/* ---------- toast ---------- */
+#toast {
+  position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%) translateY(12px);
+  background: var(--ink); color: var(--bg); padding: 9px 14px; border-radius: 999px; font-size: 13px;
+  opacity: 0; pointer-events: none; transition: opacity 0.2s var(--ease), transform 0.2s var(--ease); z-index: 50;
+}
+#toast.show { opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: auto; }
+.toast-act { margin-left: 10px; background: transparent; border: 0; color: var(--blue-text); font-weight: 600; padding: 0; text-decoration: underline; text-underline-offset: 3px; }
+:root[data-theme="light"] .toast-act, :root:not([data-theme="dark"]) .toast-act { color: inherit; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .toast-act { color: var(--blue); } }
+:root[data-theme="dark"] .toast-act { color: var(--blue); }
+
+/* ---------- responsive ---------- */
+.back { display: none; }
+@media (max-width: 900px) {
+  .app { grid-template-columns: 1fr; }
+  .rail { border-right: 0; }
+  body[data-view="detail"] .rail { display: none; }
+  body[data-view="list"] .detail { display: none; }
+  .d-wrap { padding: 16px 16px 60px; }
+  .d-grid, .d-grid.three { grid-template-columns: 1fr; }
+  .msg { max-width: 92%; }
+  .steps { grid-template-columns: 1fr; }
+  .back { display: inline-flex; }
+}
+@media (max-width: 600px) {
+  .top { padding: 0 12px; }
+  #backendLabel { display: none; }
+  #backendChip { padding: 2px 5px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation-duration: 0.01ms !important; }
+}
+</style>
+</head>
+<body data-view="list">
+
+<header class="top">
+  <div class="brand">MELANGE <span>INBOX</span></div>
+  <div class="top-actions">
+    <span id="backendChip" class="chip"><span class="dot"></span><span id="backendLabel">연결 확인 중</span></span>
+    <button class="btn small" id="exportBtn" title="전체 내보내기">내보내기</button>
+    <button class="btn small" id="settingsBtn">설정</button>
+  </div>
+</header>
+
+<main class="app">
+  <aside class="rail">
+    <div id="drop" class="drop" tabindex="0" role="button" aria-label="스크린샷 추가">
+      <input type="file" id="fileInput" multiple accept="image/*" hidden />
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 15l5-5 4 4 3-3 6 6"/><circle cx="16" cy="9" r="1.6"/></svg>
+      <p><b>스크린샷을 여기에 끌어다 놓기</b><br />붙여넣기 (Ctrl / ⌘ + V) 또는 <button class="linkbtn" id="pickBtn" type="button">파일 선택</button></p>
+      <label class="check"><input type="checkbox" id="splitEach" /> 여러 장을 각각 따로 분석</label>
+    </div>
+    <div class="list-tools">
+      <input class="search" id="search" type="search" placeholder="이름, 내용, 디자인 검색" autocomplete="off" />
+      <div class="filters">
+        <button class="chip filter" data-f="all" aria-pressed="true">전체</button>
+        <button class="chip filter" data-f="open" aria-pressed="false">미처리</button>
+        <button class="chip filter" data-f="high" aria-pressed="false">급함</button>
+        <button class="chip filter" data-f="done" aria-pressed="false">완료</button>
+        <span class="count" id="count"></span>
+      </div>
+    </div>
+    <ul id="list" class="list"></ul>
+  </aside>
+  <section id="detail" class="detail" aria-live="polite"></section>
+</main>
+
+<dialog id="settings">
+  <form method="dialog" class="dlg" id="settingsForm">
+    <h2>설정</h2>
+    <div class="conn" id="connBox"><span class="dot"></span><span id="connText"></span></div>
+    <div class="f" id="keyField">
+      <label for="apiKey">Anthropic API 키</label>
+      <input type="password" id="apiKey" autocomplete="off" placeholder="sk-ant-..." />
+      <p class="help">이 브라우저에만 저장되고 Anthropic API로만 전송됩니다. 콘솔에서 발급: console.anthropic.com</p>
+    </div>
+    <div class="two" id="modelFields">
+      <div class="f">
+        <label for="model">모델</label>
+        <select id="model">
+          <option value="claude-opus-5">Claude Opus 5 (기본)</option>
+          <option value="claude-sonnet-5">Claude Sonnet 5</option>
+          <option value="claude-haiku-4-5">Claude Haiku 4.5</option>
+        </select>
+      </div>
+      <div class="f">
+        <label for="effort">정밀도</label>
+        <select id="effort">
+          <option value="low">낮음 (빠름)</option>
+          <option value="medium">보통</option>
+          <option value="high" selected>높음 (기본)</option>
+        </select>
+      </div>
+    </div>
+    <div class="f">
+      <label for="myName">내 이름 / 계정 (스크린샷에서 내 메시지 구분용)</label>
+      <input type="text" id="myName" placeholder="예: melange, Melange Tattoo" />
+    </div>
+    <div class="f">
+      <label for="context">답장 참고 메모 (예약금 정책, 게스트 일정, 자주 하는 안내)</label>
+      <textarea id="context" rows="4" placeholder="예: 예약금 100,000원 (환불 불가), 도안은 시술 전날 공유, 10월 시드니 게스트"></textarea>
+    </div>
+    <div class="row">
+      <button type="button" class="btn danger small" id="wipeBtn">저장된 데이터 전부 삭제</button>
+      <span class="row end" style="margin-left:auto">
+        <button type="button" class="btn" id="cancelSettings">닫기</button>
+        <button type="submit" class="btn primary">저장</button>
+      </span>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="lightbox"><img id="lightboxImg" alt="스크린샷 원본" /></dialog>
+<div id="toast" role="status"></div>
+
+<script>
+(() => {
+"use strict";
+
+/* ====================== constants ====================== */
+const STORE_KEY = "melange.inbox.v1";
+const KEY_KEY = "melange.inbox.apikey";
+const API_URL = "https://api.anthropic.com/v1/messages";
+const API_VERSION = "2023-06-01";
+const FALLBACK_BETA = "server-side-fallback-2026-07-01";
+
+const PLATFORMS = { instagram: "인스타그램", whatsapp: "왓츠앱", kakao: "카카오톡", line: "라인", email: "이메일", sms: "문자", telegram: "텔레그램", other: "기타" };
+const INTENTS = {
+  booking_inquiry: ["예약 문의", "blue"], quote: ["견적", "blue"], schedule_change: ["일정 변경", "warn"],
+  cancellation: ["취소", "danger"], design_consult: ["디자인 상담", "blue"], aftercare: ["애프터케어", "good"],
+  followup: ["후속 연락", ""], general: ["일반", ""], other: ["기타", ""],
+};
+const URGENCY = { high: ["급함", "danger"], normal: ["보통", ""], low: ["여유", "good"] };
+const DETAIL_LABELS = [
+  ["design", "디자인"], ["placement", "부위"], ["size", "크기"], ["style", "스타일"], ["dates", "희망 일정"],
+  ["location", "지역 / 게스트"], ["budget", "예산"], ["references", "레퍼런스"], ["other", "기타"],
+];
+const MONO_FIELDS = new Set(["size", "dates", "budget"]);
+
+const ANALYSIS_SCHEMA = {
+  type: "object", additionalProperties: false,
+  required: ["platform", "customer_name", "customer_language", "customer_language_ko", "intent", "urgency", "summary_ko", "status_ko", "details", "changes_ko", "confirmed_ko", "pending_ko", "questions_ko", "action_items_ko", "transcript", "reply_draft", "confidence_note_ko"],
+  properties: {
+    platform: { type: "string", enum: Object.keys(PLATFORMS) },
+    customer_name: { type: "string" },
+    customer_language: { type: "string" },
+    customer_language_ko: { type: "string" },
+    intent: { type: "string", enum: Object.keys(INTENTS) },
+    urgency: { type: "string", enum: Object.keys(URGENCY) },
+    summary_ko: { type: "string" },
+    status_ko: { type: "string" },
+    details: {
+      type: "object", additionalProperties: false,
+      required: DETAIL_LABELS.map(d => d[0]),
+      properties: Object.fromEntries(DETAIL_LABELS.map(d => [d[0], { type: "string" }])),
+    },
+    changes_ko: { type: "array", items: { type: "string" } },
+    confirmed_ko: { type: "array", items: { type: "string" } },
+    pending_ko: { type: "array", items: { type: "string" } },
+    questions_ko: { type: "array", items: { type: "string" } },
+    action_items_ko: { type: "array", items: { type: "string" } },
+    transcript: {
+      type: "array",
+      items: {
+        type: "object", additionalProperties: false, required: ["sender", "original", "ko"],
+        properties: { sender: { type: "string", enum: ["customer", "artist", "unknown"] }, original: { type: "string" }, ko: { type: "string" } },
+      },
+    },
+    reply_draft: {
+      type: "object", additionalProperties: false, required: ["in_customer_language", "ko"],
+      properties: { in_customer_language: { type: "string" }, ko: { type: "string" } },
+    },
+    confidence_note_ko: { type: "string" },
+  },
+};
+const TRANSLATE_SCHEMA = {
+  type: "object", additionalProperties: false, required: ["out", "back_ko"],
+  properties: { out: { type: "string" }, back_ko: { type: "string" } },
+};
+
+/* ====================== state ====================== */
+const S = load();
+let currentId = S.items[0] ? S.items[0].id : null;
+let filter = "all";
+let query = "";
+let showOriginal = true;
+const backend = { kind: "none", sample: null, caps: null, reason: "" };
+const memImages = new Map(); // id -> Blob (session cache; IndexedDB is the durable copy)
+const objectUrls = new Map(); // id -> object URL
+const queue = [];
+let running = false;
+
+function load() {
+  let data = null;
+  try { data = JSON.parse(localStorage.getItem(STORE_KEY) || "null"); } catch (e) {}
+  if (!data || !Array.isArray(data.items)) data = { items: [], settings: {} };
+  data.settings = Object.assign({ model: "claude-opus-5", effort: "high", myName: "", context: "" }, data.settings || {});
+  if (data.items.length === 0 && !data.seenExample) {
+    data.items.push(exampleItem());
+    data.seenExample = true;
+  }
+  // an analysis interrupted by a reload is shown as an error with a retry
+  for (const it of data.items) if (it.status === "analyzing" || it.status === "queued") { it.status = "error"; it.error = "페이지가 새로고침되어 분석이 중단됐어요. 다시 시도해 주세요."; }
+  return data;
+}
+function save() {
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(S)); }
+  catch (e) { toast("저장 공간이 부족해요. 오래된 항목을 삭제해 주세요."); }
+}
+function getKey() { try { return localStorage.getItem(KEY_KEY) || ""; } catch (e) { return ""; } }
+function setKey(v) { try { v ? localStorage.setItem(KEY_KEY, v) : localStorage.removeItem(KEY_KEY); } catch (e) {} }
+
+function exampleItem() {
+  return {
+    id: "example", example: true, createdAt: Date.now() - 1000 * 60 * 47, status: "done", done: false, note: "", replies: [], imageIds: [],
+    analysis: {
+      platform: "instagram", customer_name: "Hannah M.", customer_language: "en", customer_language_ko: "영어",
+      intent: "booking_inquiry", urgency: "normal",
+      summary_ko: "10월 시드니 게스트 기간에 팔 안쪽으로 파도 모티프 블루 타투를 받고 싶어 하는 손님. 처음엔 손목 8cm를 생각했다가 대화 중 팔 안쪽 약 12cm로 바꿨고, 예산은 AUD 600~800이에요. 지금은 10월 10일 또는 11일 오후 가능 여부와 예약금 안내를 기다리는 상태예요.",
+      status_ko: "날짜(10/10 또는 10/11 오후)와 예약금 안내를 내가 답해야 하는 차례",
+      changes_ko: ["부위: 손목 → 왼팔 안쪽 (손님이 두 번째 메시지에서 변경)", "크기: 8cm → 약 12cm (부위를 바꾸면서 함께 변경)"],
+      confirmed_ko: ["시드니 게스트 기간(10/8-15) 중 진행", "파도 모티프, 블루 스타일"],
+      pending_ko: ["정확한 날짜 (10일 vs 11일)", "예약금 금액과 송금 방법", "레퍼런스 이미지 수령"],
+      details: { design: "파도 모티프, 블루 톤 라인+그라데이션", placement: "왼팔 안쪽 (forearm)", size: "약 12cm", style: "파인라인 + 블루 워시", dates: "10월 둘째 주 주말 (10/10-10/11)", location: "시드니 게스트", budget: "AUD 600-800", references: "인스타 게시물 2개 언급 (dragon-01, custom-041)", other: "" },
+      questions_ko: ["10월 10일이나 11일 오후에 자리가 있는지", "예약금은 얼마이고 어떻게 보내면 되는지"],
+      action_items_ko: ["시드니 게스트 일정표에서 10/10-11 오후 가능 여부 확인", "예약금 금액과 송금 방법 안내", "레퍼런스 이미지 받은 뒤 도안 방향 확인"],
+      transcript: [
+        { sender: "customer", original: "Hi! I saw you're doing a guest spot in Sydney in October. Would love to get a small wave piece on my wrist, maybe 8cm, in your blue style.", ko: "안녕하세요! 10월에 시드니에서 게스트 작업하신다는 걸 봤어요. 손목에 8cm 정도 작은 파도 타투를 블루 스타일로 받고 싶어요." },
+        { sender: "artist", original: "Hi Hannah, thank you! Yes, I'll be in Sydney Oct 8-15. Wrist works, though the wave flows better a bit bigger. Do you have dates in mind?", ko: "안녕하세요 Hannah, 감사해요! 네, 10월 8일부터 15일까지 시드니에 있어요. 손목도 되지만 파도는 조금 더 크게 하면 흐름이 더 예뻐요. 생각하시는 날짜가 있나요?" },
+        { sender: "customer", original: "Oh good point. Let's do inner forearm instead then, around 12cm.", ko: "아 좋은 지적이에요. 그럼 팔 안쪽으로 할게요, 12cm 정도로요." },
+        { sender: "customer", original: "Either the 10th or 11th afternoon would be perfect. Budget is around 600-800 AUD. How does the deposit work?", ko: "10일이나 11일 오후면 딱 좋아요. 예산은 600~800 호주달러 정도예요. 예약금은 어떻게 진행되나요?" },
+      ],
+      reply_draft: {
+        in_customer_language: "Hi Hannah! Both the 10th and 11th afternoon are open right now, so just let me know which you prefer. A 12cm wave on the inner forearm fits well within your budget. To lock in the slot I take a deposit, which comes off the final price. I'll send the payment details once you confirm the date. Could you also send the two reference posts you mentioned?",
+        ko: "안녕하세요 Hannah! 지금 10일과 11일 오후 모두 비어 있으니 편한 날을 알려주세요. 팔 안쪽 12cm 파도 작업은 말씀하신 예산 안에서 충분히 가능해요. 자리를 확정하려면 예약금을 받고 있고, 최종 금액에서 차감돼요. 날짜 확정해 주시면 송금 정보를 보내드릴게요. 말씀하신 레퍼런스 게시물 두 개도 보내주실 수 있을까요?",
+      },
+      confidence_note_ko: "",
+    },
+  };
+}
+
+/* ====================== IndexedDB (screenshots) ====================== */
+const idb = {
+  db: null,
+  open() {
+    if (this.db) return Promise.resolve(this.db);
+    return new Promise((res, rej) => {
+      let req;
+      try { req = indexedDB.open("melange-inbox", 1); } catch (e) { return rej(e); }
+      req.onupgradeneeded = () => req.result.createObjectStore("images", { keyPath: "id" });
+      req.onsuccess = () => { this.db = req.result; res(this.db); };
+      req.onerror = () => rej(req.error);
+    });
+  },
+  async put(id, blob) {
+    try { const db = await this.open(); await tx(db, "readwrite", st => st.put({ id, blob })); } catch (e) {}
+  },
+  async get(id) {
+    try { const db = await this.open(); const r = await tx(db, "readonly", st => st.get(id)); return r ? r.blob : null; } catch (e) { return null; }
+  },
+  async del(id) {
+    try { const db = await this.open(); await tx(db, "readwrite", st => st.delete(id)); } catch (e) {}
+  },
+  async clear() {
+    try { const db = await this.open(); await tx(db, "readwrite", st => st.clear()); } catch (e) {}
+  },
+};
+function tx(db, mode, fn) {
+  return new Promise((res, rej) => {
+    const t = db.transaction("images", mode);
+    const req = fn(t.objectStore("images"));
+    req.onsuccess = () => res(req.result);
+    req.onerror = () => rej(req.error);
+  });
+}
+async function imageUrl(id) {
+  if (objectUrls.has(id)) return objectUrls.get(id);
+  let blob = memImages.get(id) || (await idb.get(id));
+  if (!blob) return null;
+  memImages.set(id, blob);
+  const url = URL.createObjectURL(blob);
+  objectUrls.set(id, url);
+  return url;
+}
+async function getBlobs(item) {
+  const out = [];
+  for (const id of item.imageIds) {
+    const b = memImages.get(id) || (await idb.get(id));
+    if (b) { memImages.set(id, b); out.push(b); }
+  }
+  return out;
+}
+
+/* ====================== image prep ====================== */
+function loadImage(blob) {
+  return new Promise((res, rej) => {
+    const url = URL.createObjectURL(blob);
+    const img = new Image();
+    img.onload = () => { URL.revokeObjectURL(url); res(img); };
+    img.onerror = () => { URL.revokeObjectURL(url); rej(new Error("이미지를 읽을 수 없어요")); };
+    img.src = url;
+  });
+}
+async function resize(blob, maxEdge, quality) {
+  const img = await loadImage(blob);
+  const scale = Math.min(1, maxEdge / Math.max(img.naturalWidth, img.naturalHeight));
+  const w = Math.max(1, Math.round(img.naturalWidth * scale));
+  const h = Math.max(1, Math.round(img.naturalHeight * scale));
+  const c = document.createElement("canvas");
+  c.width = w; c.height = h;
+  c.getContext("2d").drawImage(img, 0, 0, w, h);
+  return new Promise(res => c.toBlob(b => res(b), "image/jpeg", quality));
+}
+function blobToBase64(blob) {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = () => res(String(r.result).split(",")[1]);
+    r.onerror = () => rej(r.error);
+    r.readAsDataURL(blob);
+  });
+}
+
+/* ====================== backend detection ====================== */
+async function detectBackend() {
+  if (window.claude && typeof window.claude.use === "function") {
+    // Published as a claude.ai artifact: the viewer's own Claude answers, no key needed.
+    let sample = null;
+    try { sample = await window.claude.use("sample"); } catch (e) {}
+    if (sample) {
+      let caps = null;
+      try { caps = await sample.limits(); } catch (e) {}
+      if (caps && caps.images) {
+        Object.assign(backend, { kind: "sample", sample, caps, reason: "" });
+      } else {
+        Object.assign(backend, { kind: "none", reason: "이 화면에서는 Claude에 이미지를 보낼 수 없어요. claude.ai 앱에서 열어 주세요." });
+      }
+    } else {
+      Object.assign(backend, { kind: "none", reason: "이 아티팩트에 Claude 사용 권한이 없어요. 페이지 상단의 권한 요청을 허용해 주세요." });
+    }
+  } else if (getKey()) {
+    Object.assign(backend, { kind: "api", reason: "" });
+  } else {
+    Object.assign(backend, { kind: "none", reason: "설정에서 Anthropic API 키를 넣어 주세요." });
+  }
+  renderBackend();
+}
+function renderBackend() {
+  const chip = $("#backendChip"), label = $("#backendLabel");
+  chip.className = "chip " + (backend.kind === "none" ? "danger" : "good");
+  chip.title = backend.kind === "none" ? (backend.reason || "Claude 연결 안 됨") : "Claude 연결됨";
+  label.textContent = backend.kind === "sample" ? "Claude 연결됨 (claude.ai)" : backend.kind === "api" ? "Claude 연결됨 (API 키)" : "Claude 연결 안 됨";
+  $("#drop").classList.toggle("disabled", backend.kind === "none");
+}
+
+/* ====================== prompts ====================== */
+function analysisPrompt(earlierText) {
+  const s = S.settings;
+  return [
+    "You help a Korean tattoo artist (studio: Melange Tattoo, based in Korea with guest spots in Australia, the US, the UK and Europe) handle customer messages. The artist reads Korean; customers write in many languages.",
+    "The attached screenshots show one chat conversation (Instagram DM, WhatsApp, KakaoTalk, LINE, email or SMS). They are in chronological order and may overlap; de-duplicate overlapping messages. Read every message carefully and in order.",
+    "Conversations evolve: the customer asks, the artist answers, and plans change along the way (size, placement, design, dates, budget). Always distinguish what was said first from what is CURRENT. Base everything strictly on what is visible; never invent.",
+    earlierText ? "Earlier part of this same conversation, already transcribed (the screenshots show the later part). Treat it as messages that came before the screenshots and include them in the transcript:\n" + earlierText : "",
+    "",
+    "Tasks:",
+    "1. Transcribe every message in order. For each decide the sender: \"customer\" or \"artist\" (outgoing/right-aligned bubbles are usually the artist" + (s.myName ? "; the artist's name or handle is \"" + s.myName + "\"" : "") + "). Keep the original text exactly as written, and give a natural Korean translation (if the original is already Korean, repeat it in ko).",
+    "2. Detect the platform, the customer's display name, and the customer's main language (BCP-47 code in customer_language, Korean language name in customer_language_ko, e.g. \"영어\").",
+    "3. Write summary_ko: 3-5 Korean sentences covering the whole conversation: what the customer first asked for, what changed along the way, where things stand now, and what happens next. status_ko: one short Korean line on the current state and whose turn it is (e.g. \"내가 날짜와 예약금을 답해야 하는 차례\").",
+    "4. Fill details in Korean with the CURRENT state only (the latest thing agreed or requested; keep proper nouns, prices, dates and units as written): design, placement, size, style, dates, location (city / guest spot), budget, references, other. Use \"\" when not mentioned.",
+    "4b. changes_ko: every change of mind or plan, one per line as \"항목: 이전 → 현재 (누가, 어느 시점)\"; empty if nothing changed. confirmed_ko: things both sides have clearly agreed. pending_ko: things still undecided or waiting on someone.",
+    "5. questions_ko: the customer's open questions, in Korean. action_items_ko: concrete next steps for the artist, in Korean.",
+    "6. intent: booking_inquiry | quote | schedule_change | cancellation | design_consult | aftercare | followup | general | other. urgency: high (needs a reply today, e.g. appointment within days, cancellation, upset customer), normal, or low.",
+    "7. reply_draft.in_customer_language: the artist's next reply in the customer's language, first person, warm and concise, professional; answer what can be answered from the conversation and ask for what is missing. Do not promise specific availability or prices unless the artist already stated them. reply_draft.ko: the same reply in Korean.",
+    s.context ? "Artist notes to respect when drafting the reply: " + s.context : "",
+    "8. confidence_note_ko: anything unreadable, cut off or uncertain, in Korean; \"\" if everything was clear.",
+    "",
+    "Everything except transcript[].original and reply_draft.in_customer_language must be in Korean.",
+  ].filter(Boolean).join("\n");
+}
+function translatePrompt(item, ko) {
+  const a = item.analysis || {};
+  const lang = a.customer_language_ko || a.customer_language || "the customer's language";
+  const recent = (a.transcript || []).slice(-6).map(m => (m.sender === "artist" ? "Artist" : "Customer") + ": " + m.original).join("\n");
+  return [
+    "You translate a Korean tattoo artist's reply into " + lang + " (" + (a.customer_language || "") + ") for a customer chat. Keep the artist's tone: warm, concise, professional, first person. Keep names, prices, dates and units exactly. Do not add information.",
+    S.settings.context ? "Artist notes: " + S.settings.context : "",
+    recent ? "Recent conversation for context:\n" + recent : "",
+    "",
+    "Korean reply to translate:\n" + ko,
+    "",
+    "Return out (the translated reply) and back_ko (a faithful Korean back-translation of out, so the artist can check it).",
+  ].filter(Boolean).join("\n");
+}
+
+/* ====================== Claude calls ====================== */
+async function askJSON({ prompt, images, schema, tier }) {
+  if (backend.kind === "sample") {
+    const maxN = backend.caps.images.maxCount || 1;
+    const opts = { modelTier: tier || "default", cache: false };
+    if (images && images.length) opts.images = images.slice(0, maxN);
+    const text = prompt + "\n\nReply with only one JSON object that matches this JSON Schema exactly (all keys required, no extra keys):\n" + JSON.stringify(schema);
+    try {
+      return await backend.sample.json(text, opts);
+    } catch (e) {
+      throw new Error(sampleErrorText(e));
+    }
+  }
+  if (backend.kind === "api") return callApi({ prompt, images, schema });
+  throw new Error(backend.reason || "Claude에 연결되지 않았어요.");
+}
+function sampleErrorText(e) {
+  const code = e && e.code;
+  const map = {
+    not_granted: "이 아티팩트에 Claude 사용 권한이 없어요. 권한을 허용한 뒤 다시 시도해 주세요.",
+    rate_limited: "지금은 사용량 한도에 걸렸어요. 잠시 후 다시 시도해 주세요.",
+    session_expired: "claude.ai 로그인이 만료됐어요. 다시 로그인해 주세요.",
+    image_rejected: "이미지를 보낼 수 없었어요. 다른 파일(JPEG/PNG)로 시도해 주세요.",
+    images_unavailable: "이 화면에서는 이미지를 보낼 수 없어요.",
+    refused: "Claude가 이 내용의 처리를 거절했어요. 다른 스크린샷으로 시도해 주세요.",
+    invalid_json: "응답을 정리하는 데 실패했어요. 다시 시도해 주세요.",
+    prompt_too_large: "내용이 너무 길어요. 스크린샷 수를 줄여 주세요.",
+    cancelled: "취소됐어요.",
+    upstream_error: "잠시 연결 문제가 있었어요. 다시 시도해 주세요.",
+  };
+  return map[code] || (e && e.message) || "알 수 없는 오류";
+}
+async function callApi({ prompt, images, schema }) {
+  const key = getKey();
+  if (!key) throw new Error("설정에서 Anthropic API 키를 넣어 주세요.");
+  const content = [];
+  for (const blob of images || []) {
+    const small = await resize(blob, 1568, 0.85);
+    content.push({ type: "image", source: { type: "base64", media_type: "image/jpeg", data: await blobToBase64(small) } });
+  }
+  content.push({ type: "text", text: prompt });
+  const body = {
+    model: S.settings.model || "claude-opus-5",
+    max_tokens: 16000,
+    output_config: { effort: S.settings.effort || "medium", format: { type: "json_schema", schema } },
+    messages: [{ role: "user", content }],
+  };
+  const headers = {
+    "content-type": "application/json",
+    "x-api-key": key,
+    "anthropic-version": API_VERSION,
+    "anthropic-dangerous-direct-browser-access": "true",
+  };
+  // Server-side refusal fallback: if the primary model declines, the API re-runs on a fallback model.
+  let res = await post(headers, Object.assign({ fallbacks: "default" }, body), FALLBACK_BETA);
+  if (res.status === 400 && /fallback|beta/i.test(res.text)) res = await post(headers, body, null);
+  if (!res.ok) {
+    let msg = res.text;
+    try { msg = JSON.parse(res.text).error.message || msg; } catch (e) {}
+    if (res.status === 401) msg = "API 키가 올바르지 않아요. 설정에서 확인해 주세요.";
+    if (res.status === 429) msg = "요청이 너무 많아요. 잠시 후 다시 시도해 주세요.";
+    throw new Error(msg);
+  }
+  const data = JSON.parse(res.text);
+  if (data.stop_reason === "refusal") throw new Error("Claude가 이 내용의 처리를 거절했어요." + (data.stop_details && data.stop_details.explanation ? " " + data.stop_details.explanation : ""));
+  if (data.stop_reason === "max_tokens") throw new Error("응답이 너무 길어 잘렸어요. 스크린샷 수를 줄여 주세요.");
+  const textBlock = (data.content || []).find(b => b.type === "text");
+  if (!textBlock) throw new Error("응답에 내용이 없어요.");
+  return JSON.parse(textBlock.text);
+}
+async function post(headers, body, beta) {
+  const h = Object.assign({}, headers);
+  if (beta) h["anthropic-beta"] = beta;
+  let r;
+  try { r = await fetch(API_URL, { method: "POST", headers: h, body: JSON.stringify(body) }); }
+  catch (e) { throw new Error("네트워크 오류로 Anthropic API에 연결하지 못했어요."); }
+  return { ok: r.ok, status: r.status, text: await r.text() };
+}
+
+/* ====================== intake ====================== */
+async function addFiles(fileList) {
+  const files = Array.from(fileList || []).filter(f => f && f.type && f.type.startsWith("image/"));
+  if (!files.length) { toast("이미지 파일만 넣을 수 있어요"); return; }
+  if (backend.kind === "none") { toast(backend.reason || "Claude 연결이 필요해요"); openSettings(); return; }
+  files.sort((a, b) => (a.lastModified - b.lastModified) || a.name.localeCompare(b.name));
+  const groups = $("#splitEach").checked ? files.map(f => [f]) : [files];
+  if (S.items.length === 1 && S.items[0].example) removeItem("example", true);
+  for (const group of groups) {
+    const item = { id: uid(), createdAt: Date.now(), status: "queued", done: false, note: "", replies: [], imageIds: [], analysis: null, error: "", fresh: true };
+    for (const f of group) {
+      const id = uid();
+      let stored = f;
+      try { stored = await resize(f, 1400, 0.82); } catch (e) {}
+      memImages.set(id, stored);
+      idb.put(id, stored);
+      item.imageIds.push(id);
+    }
+    S.items.unshift(item);
+    queue.push(item.id);
+  }
+  currentId = S.items[0].id;
+  save();
+  render();
+  setView("detail");
+  pump();
+}
+async function pump() {
+  if (running) return;
+  running = true;
+  while (queue.length) {
+    const id = queue.shift();
+    const item = S.items.find(i => i.id === id);
+    if (!item) continue;
+    await analyze(item);
+  }
+  running = false;
+}
+const MAX_IMAGES_API = 20;
+async function analyze(item) {
+  item.status = "analyzing"; item.error = "";
+  const gen = item.gen = (item.gen || 0) + 1;
+  render();
+  try {
+    let blobs = await getBlobs(item);
+    if (!blobs.length) throw new Error("스크린샷을 찾을 수 없어요. 다시 넣어 주세요.");
+    // Too many screenshots for one call: send the latest ones and pass the earlier part as text.
+    const cap = backend.kind === "sample" ? (backend.caps.images.maxCount || 1) : MAX_IMAGES_API;
+    let earlierText = "";
+    if (blobs.length > cap) {
+      const prev = item.prevAnalysis || item.analysis;
+      earlierText = prev ? transcriptText(prev) : "";
+      blobs = blobs.slice(-cap);
+    }
+    const raw = await askJSON({ prompt: analysisPrompt(earlierText), images: blobs, schema: ANALYSIS_SCHEMA, tier: "default" });
+    if (item.gen !== gen) return; // superseded (e.g. the merge was undone while running)
+    item.analysis = normalize(raw);
+    item.status = "done";
+    delete item.prevAnalysis;
+  } catch (e) {
+    if (item.gen !== gen) return;
+    item.status = "error";
+    item.error = (e && e.message) || String(e);
+  }
+  save();
+  if (item.status === "done" && item.fresh) { delete item.fresh; if (autoMerge(item)) return; }
+  render();
+}
+function transcriptText(a) {
+  return (a.transcript || []).map(m => (m.sender === "artist" ? "Artist" : m.sender === "customer" ? "Customer" : "Unknown") + ": " + m.original).join("\n");
+}
+const normName = n => String(n || "").toLowerCase().replace(/[^\p{L}\p{N}]/gu, "");
+function namesMatch(a, b) {
+  if (!a || !b || a.length < 2 || b.length < 2) return false;
+  return a === b || a.includes(b) || b.includes(a);
+}
+function findMatch(item) {
+  const a = item.analysis; if (!a) return null;
+  const n = normName(a.customer_name);
+  if (!n || a.customer_name === "이름 없음") return null;
+  return S.items.find(o => o !== item && !o.example && o.analysis && o.status === "done" && o.analysis.platform === a.platform && namesMatch(normName(o.analysis.customer_name), n)) || null;
+}
+// A new screenshot of a chat we already track: append it to that conversation and re-read the whole thing.
+function autoMerge(item) {
+  const target = findMatch(item);
+  if (!target) return false;
+  const undo = { id: item.id, imageIds: item.imageIds.slice(), analysis: item.analysis, createdAt: item.createdAt, replies: item.replies, note: item.note };
+  target.prevAnalysis = target.analysis;
+  target.imageIds = target.imageIds.concat(item.imageIds);
+  target.done = false;
+  target.lastMerge = undo;
+  removeItem(item.id, true, true);
+  currentId = target.id;
+  save();
+  queue.push(target.id); pump();
+  toast((target.analysis ? target.analysis.customer_name : "기존") + " 대화에 이어 붙였어요", "따로 두기", () => unmerge(target));
+  return true;
+}
+function unmerge(target) {
+  const u = target.lastMerge; if (!u) return;
+  delete target.lastMerge;
+  target.gen = (target.gen || 0) + 1; // cancel a running re-analysis
+  target.imageIds = target.imageIds.filter(id => !u.imageIds.includes(id));
+  if (target.prevAnalysis) { target.analysis = target.prevAnalysis; delete target.prevAnalysis; }
+  target.status = target.analysis ? "done" : "error";
+  const idx = queue.indexOf(target.id); if (idx >= 0) queue.splice(idx, 1);
+  const item = { id: u.id, createdAt: u.createdAt, status: "done", done: false, note: u.note || "", replies: u.replies || [], imageIds: u.imageIds, analysis: u.analysis, error: "", noMerge: true };
+  S.items.unshift(item);
+  currentId = item.id;
+  save(); render();
+  toast("따로 두었어요");
+}
+async function appendTo(item, fileList) {
+  const files = Array.from(fileList || []).filter(f => f && f.type && f.type.startsWith("image/"));
+  if (!files.length) { toast("이미지 파일만 넣을 수 있어요"); return; }
+  if (backend.kind === "none") { toast(backend.reason || "Claude 연결이 필요해요"); openSettings(); return; }
+  files.sort((a, b) => (a.lastModified - b.lastModified) || a.name.localeCompare(b.name));
+  for (const f of files) {
+    const id = uid();
+    let stored = f;
+    try { stored = await resize(f, 1400, 0.82); } catch (e) {}
+    memImages.set(id, stored); idb.put(id, stored);
+    item.imageIds.push(id);
+  }
+  if (item.analysis) item.prevAnalysis = item.analysis;
+  item.done = false; delete item.lastMerge;
+  currentId = item.id;
+  save(); render(); setView("detail");
+  queue.push(item.id); pump();
+}
+function normalize(a) {
+  a = a && typeof a === "object" ? a : {};
+  const str = v => (v == null ? "" : String(v)).trim();
+  const arr = v => Array.isArray(v) ? v.map(str).filter(Boolean) : [];
+  const d = a.details && typeof a.details === "object" ? a.details : {};
+  return {
+    platform: PLATFORMS[a.platform] ? a.platform : "other",
+    customer_name: str(a.customer_name) || "이름 없음",
+    customer_language: str(a.customer_language),
+    customer_language_ko: str(a.customer_language_ko),
+    intent: INTENTS[a.intent] ? a.intent : "other",
+    urgency: URGENCY[a.urgency] ? a.urgency : "normal",
+    summary_ko: str(a.summary_ko),
+    status_ko: str(a.status_ko),
+    details: Object.fromEntries(DETAIL_LABELS.map(([k]) => [k, str(d[k])])),
+    changes_ko: arr(a.changes_ko),
+    confirmed_ko: arr(a.confirmed_ko),
+    pending_ko: arr(a.pending_ko),
+    questions_ko: arr(a.questions_ko),
+    action_items_ko: arr(a.action_items_ko),
+    transcript: Array.isArray(a.transcript) ? a.transcript.map(m => ({ sender: ["customer", "artist"].includes(m && m.sender) ? m.sender : "unknown", original: str(m && m.original), ko: str(m && m.ko) })).filter(m => m.original || m.ko) : [],
+    reply_draft: { in_customer_language: str(a.reply_draft && a.reply_draft.in_customer_language), ko: str(a.reply_draft && a.reply_draft.ko) },
+    confidence_note_ko: str(a.confidence_note_ko),
+  };
+}
+function removeItem(id, silent, keepImages) {
+  const idx = S.items.findIndex(i => i.id === id);
+  if (idx < 0) return;
+  const [it] = S.items.splice(idx, 1);
+  if (!keepImages) for (const img of it.imageIds || []) { idb.del(img); memImages.delete(img); const u = objectUrls.get(img); if (u) { URL.revokeObjectURL(u); objectUrls.delete(img); } }
+  if (currentId === id) currentId = S.items[0] ? S.items[0].id : null;
+  save();
+  if (!silent) { render(); toast("삭제했어요"); }
+}
+
+/* ====================== rendering ====================== */
+const $ = s => document.querySelector(s);
+const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+function fmtTime(t) {
+  const d = new Date(t), now = new Date();
+  const same = d.toDateString() === now.toDateString();
+  const hh = String(d.getHours()).padStart(2, "0") + ":" + String(d.getMinutes()).padStart(2, "0");
+  return same ? hh : (d.getMonth() + 1) + "/" + d.getDate() + " " + hh;
+}
+function chip(label, tone, extra) { return `<span class="chip ${tone || ""} ${extra || ""}">${esc(label)}</span>`; }
+function intentChip(a) { const [l, t] = INTENTS[a.intent] || INTENTS.other; return chip(l, t); }
+function urgencyChip(a) { const [l, t] = URGENCY[a.urgency] || URGENCY.normal; return a.urgency === "normal" ? "" : chip(l, t); }
+
+function visibleItems() {
+  const q = query.trim().toLowerCase();
+  return S.items.filter(it => {
+    if (filter === "open" && it.done) return false;
+    if (filter === "done" && !it.done) return false;
+    if (filter === "high" && !(it.analysis && it.analysis.urgency === "high")) return false;
+    if (!q) return true;
+    const a = it.analysis;
+    const hay = [a && a.customer_name, a && a.summary_ko, it.note, a && Object.values(a.details || {}).join(" "), a && (a.transcript || []).map(m => m.original + " " + m.ko).join(" ")].join(" ").toLowerCase();
+    return hay.includes(q);
+  });
+}
+function render() { renderList(); renderDetail(); }
+function renderList() {
+  const items = visibleItems();
+  const list = $("#list");
+  $("#count").textContent = items.length + " / " + S.items.length;
+  if (!items.length) {
+    list.innerHTML = `<li class="empty"><b>${S.items.length ? "검색 결과가 없어요" : "아직 항목이 없어요"}</b>${S.items.length ? "다른 검색어나 필터를 써 보세요." : "손님 대화 스크린샷을 위 상자에 끌어다 놓으면 시작돼요."}</li>`;
+    return;
+  }
+  list.innerHTML = items.map(it => {
+    const a = it.analysis;
+    const name = a ? a.customer_name : (it.status === "analyzing" ? "분석 중" : it.status === "error" ? "분석 실패" : "대기 중");
+    const sum = a ? a.summary_ko : (it.status === "error" ? it.error : "스크린샷을 읽고 있어요");
+    const chips = a ? `${chip(PLATFORMS[a.platform] || "기타", "")}${intentChip(a)}${urgencyChip(a)}${it.imageIds.length > 1 ? chip(it.imageIds.length + "장", "") : ""}${it.example ? chip("예시", "warn") : ""}` : (it.status === "analyzing" ? `<span class="chip"><span class="spin" style="margin:0"></span></span>` : it.status === "error" ? chip("오류", "danger") : chip("대기", ""));
+    const thumb = it.imageIds.length ? `<div class="thumb" data-img="${it.imageIds[0]}"><img alt="" /></div>` : `<div class="thumb">${it.imageIds.length ? "" : "IG"}</div>`;
+    return `<li class="item ${it.done ? "done" : ""} urg-${a ? a.urgency : "normal"}" data-id="${it.id}" aria-current="${it.id === currentId}">
+      <div class="stripe"></div>${thumb}
+      <div class="body">
+        <div class="row"><span class="name">${esc(name)}</span><span class="time">${fmtTime(it.createdAt)}</span></div>
+        <div class="chips">${chips}</div>
+        <div class="sum">${esc(sum)}</div>
+      </div></li>`;
+  }).join("");
+  hydrateImages(list);
+}
+function hydrateImages(root) {
+  root.querySelectorAll("[data-img]").forEach(async el => {
+    const url = await imageUrl(el.dataset.img);
+    const img = el.querySelector("img");
+    if (url && img) img.src = url; else if (img) el.textContent = "IMG";
+  });
+}
+function renderDetail() {
+  const box = $("#detail");
+  const it = S.items.find(i => i.id === currentId);
+  if (!it) {
+    box.innerHTML = `<div class="state">
+      <h2>스크린샷을 넣으면 여기서 정리돼요</h2>
+      <p>인스타그램 DM, 왓츠앱, 카카오톡, 라인, 이메일 화면을 캡처해서 왼쪽 상자에 끌어다 놓거나 붙여넣으세요. 대화가 길면 여러 장을 한 번에 넣어도 하나로 묶어 읽어요.</p>
+      <div class="steps">
+        <div><b>1. 읽기</b>메시지를 순서대로 옮겨 적고 손님 / 나를 구분해요.</div>
+        <div><b>2. 번역 · 요약</b>한국어 번역과 2~4문장 요약, 예약 정보(디자인, 부위, 크기, 일정, 예산)를 뽑아요.</div>
+        <div><b>3. 답장</b>손님 언어로 답장 초안을 만들고, 내가 쓴 한국어 답장도 번역해 줘요.</div>
+      </div>
+    </div>`;
+    return;
+  }
+  const back = `<button class="btn ghost small back" id="backBtn">← 목록</button>`;
+  if (it.status !== "done" || !it.analysis) {
+    const thumbs = it.imageIds.map(id => `<span data-img="${id}"><img alt="" /></span>`).join("");
+    box.innerHTML = `<div class="state">${back}
+      ${it.status === "analyzing" ? `<h2><span class="spin"></span>스크린샷을 읽고 있어요</h2><p>메시지 옮겨 적기, 번역, 요약, 답장 초안까지 한 번에 만들어요. 보통 20~60초 걸려요.</p>` : ""}
+      ${it.status === "queued" ? `<h2>대기 중</h2><p>앞 항목 분석이 끝나면 바로 시작돼요.</p>` : ""}
+      ${it.status === "error" ? `<h2>분석하지 못했어요</h2><div class="err">${esc(it.error)}</div><div style="display:flex;gap:8px"><button class="btn primary" id="retryBtn">다시 시도</button><button class="btn danger" id="delBtn">삭제</button></div>` : ""}
+      <div class="thumbs">${thumbs}</div>
+    </div>`;
+    hydrateImages(box);
+    return;
+  }
+  const a = it.analysis;
+  const details = DETAIL_LABELS.map(([k, label]) => {
+    const v = a.details[k];
+    return `<dt>${label}</dt><dd class="${MONO_FIELDS.has(k) && v ? "mono" : ""} ${v ? "" : "blank"}">${v ? esc(v) : "언급 없음"}</dd>`;
+  }).join("");
+  const li = (arr, cls) => arr.length ? arr.map(x => `<li>${esc(x)}</li>`).join("") : `<li class="none">없음</li>`;
+  const transcript = a.transcript.map(m => `<div class="msg ${m.sender}">
+      <span class="who">${m.sender === "artist" ? "나" : m.sender === "customer" ? "손님" : "?"}</span>
+      <div class="bub">${esc(showOriginal ? m.original || m.ko : m.ko || m.original)}</div>
+      ${showOriginal && m.ko && m.ko !== m.original ? `<div class="tr">${esc(m.ko)}</div>` : ""}
+    </div>`).join("");
+  const lastReply = it.replies[it.replies.length - 1];
+  box.innerHTML = `<div class="d-wrap">
+    <div class="d-head">
+      ${back}
+      <div class="title">
+        <h1>${esc(a.customer_name)}</h1>
+        <div class="meta">${chip(PLATFORMS[a.platform] || "기타")}${a.customer_language_ko ? chip(a.customer_language_ko) : ""}${intentChip(a)}${urgencyChip(a)}${it.example ? chip("예시 데이터", "warn") : ""}<span class="chip mono" style="font-family:var(--mono)">${esc(fmtTime(it.createdAt))}</span></div>
+        <div class="acts">
+          <button class="btn small ${it.done ? "" : "primary"}" id="doneBtn">${it.done ? "미처리로 되돌리기" : "처리 완료"}</button>
+          <button class="btn small" id="addShotBtn" title="이 대화의 이어지는 스크린샷 추가">스크린샷 추가</button>
+          <button class="btn small" id="reanalyzeBtn" ${it.imageIds.length ? "" : "disabled"}>다시 분석</button>
+          <button class="btn small danger" id="delBtn">삭제</button>
+        </div>
+      </div>
+      ${it.imageIds.length ? `<div class="d-thumbs">${it.imageIds.map(id => `<button type="button" data-open="${id}" title="원본 보기"><span data-img="${id}"><img alt="스크린샷" /></span></button>`).join("")}<span class="hint-drop">이어지는 스크린샷은 이 화면에 바로 끌어다 놓아도 돼요</span></div>` : ""}
+    </div>
+
+    <section class="sec">
+      <header><h2>요약</h2><div class="right"><button class="btn ghost small" data-copy="summary">복사</button></div></header>
+      <p class="summary">${esc(a.summary_ko)}</p>
+      ${a.status_ko ? `<div class="status-line"><span class="eyebrow">지금</span>${esc(a.status_ko)}</div>` : ""}
+      ${a.confidence_note_ko ? `<div class="note">${esc(a.confidence_note_ko)}</div>` : ""}
+    </section>
+
+    ${(a.changes_ko.length || a.confirmed_ko.length || a.pending_ko.length) ? `<div class="d-grid three">
+      <section class="sec"><header><h2>바뀐 내용</h2><span class="hint">이전 → 현재</span></header><div class="card"><ul class="bul chg">${li(a.changes_ko)}</ul></div></section>
+      <section class="sec"><header><h2>확정</h2></header><div class="card"><ul class="bul ok">${li(a.confirmed_ko)}</ul></div></section>
+      <section class="sec"><header><h2>아직 미정</h2></header><div class="card"><ul class="bul q">${li(a.pending_ko)}</ul></div></section>
+    </div>` : ""}
+
+    <div class="d-grid">
+      <section class="sec">
+        <header><h2>예약 정보</h2></header>
+        <div class="card"><dl class="kv">${details}</dl></div>
+      </section>
+      <section class="sec">
+        <header><h2>손님 질문</h2></header>
+        <div class="card"><ul class="bul q">${li(a.questions_ko)}</ul></div>
+        <header><h2>내가 할 일</h2></header>
+        <div class="card"><ul class="bul">${li(a.action_items_ko)}</ul></div>
+      </section>
+    </div>
+
+    <div class="d-grid">
+      <section class="sec reply">
+        <header><h2>답장 초안</h2><span class="hint">${esc(a.customer_language_ko || "손님 언어")} · 고쳐 쓴 뒤 복사</span><div class="right"><button class="btn ghost small" data-copy="draft">복사</button></div></header>
+        <textarea id="draft" spellcheck="false">${esc(a.reply_draft.in_customer_language)}</textarea>
+        <div class="ko">${esc(a.reply_draft.ko)}</div>
+      </section>
+      <section class="sec reply">
+        <header><h2>내 답장 번역</h2><span class="hint">한국어로 쓰면 ${esc(a.customer_language_ko || "손님 언어")}로</span></header>
+        <textarea id="koReply" placeholder="예: 10일 오후 2시 가능해요. 예약금 10만원 보내주시면 확정할게요.">${esc(lastReply ? lastReply.ko : "")}</textarea>
+        <div class="bar"><button class="btn primary small" id="translateBtn">번역하기</button><span class="status" id="trStatus"></span><span style="margin-left:auto"><button class="btn ghost small" data-copy="translated" ${lastReply ? "" : "disabled"}>복사</button></span></div>
+        <div class="out ${lastReply ? "" : "empty"}" id="translated">${lastReply ? esc(lastReply.out) : "번역 결과가 여기에 나와요"}</div>
+        ${lastReply && lastReply.back_ko ? `<div class="ko">확인용 역번역: ${esc(lastReply.back_ko)}</div>` : ""}
+      </section>
+    </div>
+
+    <section class="sec">
+      <header><h2>대화 원문</h2><span class="hint">${a.transcript.length}개 메시지</span><div class="right"><label class="toggle"><input type="checkbox" id="origToggle" ${showOriginal ? "checked" : ""} /> 원문과 번역 함께 보기</label></div></header>
+      <div class="card chat">${transcript || `<p class="empty" style="padding:8px">읽어낸 메시지가 없어요</p>`}</div>
+    </section>
+
+    <section class="sec">
+      <header><h2>메모</h2><span class="hint">나만 보는 기록</span></header>
+      <textarea class="memo" id="memo" placeholder="예: 도안 보냄, 예약금 확인 대기">${esc(it.note)}</textarea>
+    </section>
+  </div>`;
+  hydrateImages(box);
+}
+
+/* ====================== actions ====================== */
+function setView(v) { document.body.dataset.view = v; }
+function select(id) { currentId = id; render(); setView("detail"); }
+function current() { return S.items.find(i => i.id === currentId); }
+function toast(msg, actionLabel, action) {
+  const t = $("#toast");
+  t.textContent = msg;
+  if (actionLabel) {
+    const b = document.createElement("button"); b.type = "button"; b.className = "toast-act"; b.textContent = actionLabel;
+    b.addEventListener("click", () => { t.classList.remove("show"); action(); });
+    t.append(b);
+  }
+  t.classList.add("show");
+  clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.remove("show"), actionLabel ? 7000 : 2200);
+}
+async function copyText(text) {
+  try { await navigator.clipboard.writeText(text); toast("복사했어요"); }
+  catch (e) {
+    const ta = document.createElement("textarea"); ta.value = text; document.body.appendChild(ta); ta.select();
+    try { document.execCommand("copy"); toast("복사했어요"); } catch (e2) { toast("복사하지 못했어요"); }
+    ta.remove();
+  }
+}
+async function translateReply() {
+  const it = current(); if (!it || !it.analysis) return;
+  const ko = $("#koReply").value.trim();
+  if (!ko) { toast("먼저 한국어 답장을 써 주세요"); return; }
+  const btn = $("#translateBtn"), st = $("#trStatus");
+  btn.disabled = true; st.innerHTML = `<span class="spin"></span>번역 중`;
+  try {
+    const r = await askJSON({ prompt: translatePrompt(it, ko), images: null, schema: TRANSLATE_SCHEMA, tier: "default" });
+    it.replies.push({ ko, out: String(r.out || "").trim(), back_ko: String(r.back_ko || "").trim(), at: Date.now() });
+    if (it.replies.length > 10) it.replies.shift();
+    save(); renderDetail();
+  } catch (e) {
+    st.textContent = (e && e.message) || "번역 실패";
+    btn.disabled = false;
+  }
+}
+function exportAll() {
+  const items = visibleItems().filter(i => i.analysis);
+  if (!items.length) { toast("내보낼 항목이 없어요"); return; }
+  const md = items.map(it => {
+    const a = it.analysis;
+    const d = DETAIL_LABELS.filter(([k]) => a.details[k]).map(([k, l]) => `- ${l}: ${a.details[k]}`).join("\n");
+    return `## ${a.customer_name} · ${PLATFORMS[a.platform] || "기타"} · ${(INTENTS[a.intent] || INTENTS.other)[0]}${it.done ? " · 완료" : ""}\n${new Date(it.createdAt).toLocaleString("ko-KR")}\n\n${a.summary_ko}${a.status_ko ? "\n\n지금: " + a.status_ko : ""}\n\n${(a.changes_ko || []).length ? "### 바뀐 내용\n" + a.changes_ko.map(q => "- " + q).join("\n") + "\n\n" : ""}${(a.confirmed_ko || []).length ? "### 확정\n" + a.confirmed_ko.map(q => "- " + q).join("\n") + "\n\n" : ""}${(a.pending_ko || []).length ? "### 미정\n" + a.pending_ko.map(q => "- " + q).join("\n") + "\n\n" : ""}${d ? "### 예약 정보\n" + d + "\n\n" : ""}${a.questions_ko.length ? "### 손님 질문\n" + a.questions_ko.map(q => "- " + q).join("\n") + "\n\n" : ""}${a.action_items_ko.length ? "### 할 일\n" + a.action_items_ko.map(q => "- [ ] " + q).join("\n") + "\n\n" : ""}### 답장 초안\n${a.reply_draft.in_customer_language}\n\n> ${a.reply_draft.ko}\n\n### 대화\n${a.transcript.map(m => `- **${m.sender === "artist" ? "나" : "손님"}**: ${m.original}${m.ko && m.ko !== m.original ? `\n  - ${m.ko}` : ""}`).join("\n")}${it.note ? "\n\n### 메모\n" + it.note : ""}\n`;
+  }).join("\n---\n\n");
+  const text = `# Melange Inbox 내보내기 (${new Date().toLocaleString("ko-KR")})\n\n` + md;
+  const name = "melange-inbox-" + new Date().toISOString().slice(0, 10) + ".md";
+  saveFile(name, text);
+}
+async function saveFile(name, text) {
+  if (window.claude && typeof window.claude.use === "function") {
+    let dl = null;
+    try { dl = await window.claude.use("downloads"); } catch (e) {}
+    if (dl) {
+      try { await dl.save({ filename: name, data: text }); toast("저장했어요"); } catch (e) { if (!e || e.code !== "cancelled") await copyText(text); }
+      return;
+    }
+    await copyText(text); return;
+  }
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([text], { type: "text/markdown" }));
+  a.download = name; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+  toast("내보냈어요");
+}
+
+/* ====================== settings ====================== */
+function openSettings() {
+  const dlg = $("#settings"), s = S.settings;
+  $("#apiKey").value = getKey();
+  $("#model").value = s.model; $("#effort").value = s.effort;
+  $("#myName").value = s.myName; $("#context").value = s.context;
+  const inArtifact = !!(window.claude && typeof window.claude.use === "function");
+  $("#keyField").hidden = inArtifact; $("#modelFields").hidden = inArtifact;
+  const box = $("#connBox");
+  box.className = "conn " + (backend.kind === "none" ? "off" : "on");
+  $("#connText").textContent = backend.kind === "sample" ? "claude.ai에 로그인된 계정으로 Claude를 사용해요. API 키가 필요 없어요." : backend.kind === "api" ? "API 키로 Anthropic에 직접 연결돼 있어요." : backend.reason;
+  dlg.showModal();
+}
+function saveSettings() {
+  const s = S.settings;
+  s.model = $("#model").value; s.effort = $("#effort").value;
+  s.myName = $("#myName").value.trim(); s.context = $("#context").value.trim();
+  setKey($("#apiKey").value.trim());
+  save();
+  detectBackend();
+  toast("저장했어요");
+}
+async function wipeAll() {
+  if (!confirm("저장된 항목과 스크린샷을 모두 삭제할까요? 되돌릴 수 없어요.")) return;
+  S.items = []; S.seenExample = true; currentId = null;
+  await idb.clear(); memImages.clear();
+  for (const u of objectUrls.values()) URL.revokeObjectURL(u);
+  objectUrls.clear();
+  save(); render(); $("#settings").close(); toast("모두 삭제했어요");
+}
+
+/* ====================== events ====================== */
+const drop = $("#drop");
+["dragenter", "dragover"].forEach(ev => document.addEventListener(ev, e => { e.preventDefault(); drop.classList.add("over"); }));
+["dragleave", "drop"].forEach(ev => document.addEventListener(ev, e => { if (ev === "drop" || e.target === document.documentElement || !e.relatedTarget) drop.classList.remove("over"); }));
+document.addEventListener("drop", e => {
+  e.preventDefault();
+  if (!(e.dataTransfer && e.dataTransfer.files.length)) return;
+  const it = current();
+  // Dropped onto an open conversation: it's the next part of that chat.
+  if (e.target.closest && e.target.closest("#detail") && it && it.status === "done" && !it.example) appendTo(it, e.dataTransfer.files);
+  else addFiles(e.dataTransfer.files);
+});
+document.body.insertAdjacentHTML("beforeend", '<input type="file" id="addInput" multiple accept="image/*" hidden />');
+$("#addInput").addEventListener("change", e => { const it = current(); if (it) appendTo(it, e.target.files); e.target.value = ""; });
+document.addEventListener("paste", e => {
+  if (e.target && (e.target.tagName === "TEXTAREA" || e.target.tagName === "INPUT")) return;
+  const files = Array.from((e.clipboardData && e.clipboardData.files) || []);
+  if (files.length) { e.preventDefault(); addFiles(files); }
+});
+drop.addEventListener("click", e => { if (e.target.closest("label,input,button")) return; $("#fileInput").click(); });
+drop.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); $("#fileInput").click(); } });
+$("#pickBtn").addEventListener("click", () => $("#fileInput").click());
+$("#fileInput").addEventListener("change", e => { addFiles(e.target.files); e.target.value = ""; });
+
+$("#search").addEventListener("input", e => { query = e.target.value; renderList(); });
+document.querySelectorAll(".chip.filter").forEach(b => b.addEventListener("click", () => {
+  filter = b.dataset.f;
+  document.querySelectorAll(".chip.filter").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+  renderList();
+}));
+$("#list").addEventListener("click", e => { const li = e.target.closest(".item"); if (li) select(li.dataset.id); });
+
+$("#detail").addEventListener("click", async e => {
+  const t = e.target.closest("button"); if (!t) return;
+  const it = current();
+  if (t.id === "backBtn") return setView("list");
+  if (!it) return;
+  if (t.id === "delBtn") { removeItem(it.id); setView("list"); return; }
+  if (t.id === "retryBtn" || t.id === "reanalyzeBtn") { queue.push(it.id); pump(); return; }
+  if (t.id === "addShotBtn") { $("#addInput").click(); return; }
+  if (t.id === "doneBtn") { it.done = !it.done; save(); render(); toast(it.done ? "처리 완료" : "미처리로 되돌렸어요"); return; }
+  if (t.id === "translateBtn") return translateReply();
+  if (t.dataset.open) { const url = await imageUrl(t.dataset.open); if (url) { $("#lightboxImg").src = url; $("#lightbox").showModal(); } return; }
+  if (t.dataset.copy) {
+    const a = it.analysis;
+    const map = { summary: a.summary_ko, draft: $("#draft") ? $("#draft").value : "", translated: (it.replies[it.replies.length - 1] || {}).out || "" };
+    return copyText(map[t.dataset.copy] || "");
+  }
+});
+$("#detail").addEventListener("change", e => {
+  if (e.target.id === "origToggle") { showOriginal = e.target.checked; renderDetail(); }
+});
+$("#detail").addEventListener("input", e => {
+  const it = current(); if (!it) return;
+  if (e.target.id === "memo") { it.note = e.target.value; save(); }
+  if (e.target.id === "draft" && it.analysis) { it.analysis.reply_draft.in_customer_language = e.target.value; save(); }
+});
+$("#lightbox").addEventListener("click", () => $("#lightbox").close());
+
+$("#settingsBtn").addEventListener("click", openSettings);
+$("#exportBtn").addEventListener("click", exportAll);
+$("#cancelSettings").addEventListener("click", () => $("#settings").close());
+$("#settingsForm").addEventListener("submit", saveSettings);
+$("#wipeBtn").addEventListener("click", wipeAll);
+
+/* ====================== boot ====================== */
+render();
+detectBackend();
+if ("serviceWorker" in navigator && location.protocol.startsWith("http") && !window.claude) {
+  navigator.serviceWorker.register("./sw.js").catch(() => {});
+}
+})();
+</script>
+</body>
+</html>

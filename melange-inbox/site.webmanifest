@@ -1,0 +1,11 @@
+{
+  "name": "Melange Inbox",
+  "short_name": "Inbox",
+  "description": "손님 DM 스크린샷을 번역·요약·정리하는 Melange Tattoo 작업 도구",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#141412",
+  "theme_color": "#141412",
+  "lang": "ko",
+  "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml" }]
+}

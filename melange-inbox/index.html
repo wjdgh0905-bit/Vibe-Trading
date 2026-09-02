@@ -467,9 +467,9 @@ const INTENTS = {
 const URGENCY = { high: ["급함", "danger"], normal: ["보통", ""], low: ["여유", "good"] };
 const DETAIL_LABELS = [
   ["design", "디자인"], ["placement", "부위"], ["size", "크기"], ["style", "스타일"], ["dates", "희망 일정"],
-  ["location", "지역 / 게스트"], ["budget", "예산"], ["references", "레퍼런스"], ["other", "기타"],
+  ["location", "지역 / 게스트"], ["budget", "예산"], ["references", "레퍼런스"], ["contact", "연락처 / 나이"], ["other", "기타"],
 ];
-const MONO_FIELDS = new Set(["size", "dates", "budget"]);
+const MONO_FIELDS = new Set(["size", "dates", "budget", "contact"]);
 
 const ANALYSIS_SCHEMA = {
   type: "object", additionalProperties: false,
@@ -577,7 +577,7 @@ function exampleItem() {
       changes_ko: ["부위: 손목 → 왼팔 안쪽 (손님이 두 번째 메시지에서 변경)", "크기: 8cm → 약 12cm (부위를 바꾸면서 함께 변경)"],
       confirmed_ko: ["시드니 게스트 기간(10/8-15) 중 진행", "파도 모티프, 블루 스타일"],
       pending_ko: ["정확한 날짜 (10일 vs 11일)", "예약금 금액과 송금 방법", "레퍼런스 이미지 수령"],
-      details: { design: "파도 모티프, 블루 톤 라인+그라데이션", placement: "왼팔 안쪽 (forearm)", size: "약 12cm", style: "파인라인 + 블루 워시", dates: "10월 둘째 주 주말 (10/10-10/11)", location: "시드니 게스트", budget: "AUD 600-800", references: "인스타 게시물 2개 언급 (dragon-01, custom-041)", other: "" },
+      details: { design: "파도 모티프, 블루 톤 라인+그라데이션", placement: "왼팔 안쪽 (forearm)", size: "약 12cm", style: "파인라인 + 블루 워시", dates: "10월 둘째 주 주말 (10/10-10/11)", location: "시드니 게스트", budget: "AUD 600-800", references: "인스타 게시물 2개 언급 (dragon-01, custom-041)", contact: "", other: "" },
       questions_ko: ["10월 10일이나 11일 오후에 자리가 있는지", "예약금은 얼마이고 어떻게 보내면 되는지"],
       action_items_ko: ["시드니 게스트 일정표에서 10/10-11 오후 가능 여부 확인", "예약금 금액과 송금 방법 안내", "레퍼런스 이미지 받은 뒤 도안 방향 확인"],
       transcript: [
@@ -721,7 +721,7 @@ function analysisPrompt(earlierText) {
     "1. Transcribe every message in order. For each decide the sender: \"customer\" or \"artist\" (outgoing/right-aligned bubbles are usually the artist" + (s.myName ? "; the artist's name or handle is \"" + s.myName + "\"" : "") + "). Keep the original text exactly as written, and give a natural Korean translation (if the original is already Korean, repeat it in ko).",
     "2. Detect the platform, the customer's display name, and the customer's main language (BCP-47 code in customer_language, Korean language name in customer_language_ko, e.g. \"영어\").",
     "3. Write summary_ko: 3-5 Korean sentences covering the whole conversation: what the customer first asked for, what changed along the way, where things stand now, and what happens next. status_ko: one short Korean line on the current state and whose turn it is (e.g. \"내가 날짜와 예약금을 답해야 하는 차례\").",
-    "4. Fill details in Korean with the CURRENT state only (the latest thing agreed or requested; keep proper nouns, prices, dates and units as written): design, placement, size, style, dates, location (city / guest spot), budget, references, other. Use \"\" when not mentioned.",
+    "4. Fill details in Korean with the CURRENT state only (the latest thing agreed or requested; keep proper nouns, prices, dates and units as written): design, placement, size, style, dates, location (city / guest spot / studio), budget, references, contact (the customer's full name, age and phone/email exactly as they gave them, e.g. from a shared contact card), other. Use \"\" when not mentioned.",
     "4b. changes_ko: every change of mind or plan, one per line as \"항목: 이전 → 현재 (누가, 어느 시점)\"; empty if nothing changed. confirmed_ko: things both sides have clearly agreed. pending_ko: things still undecided or waiting on someone.",
     "5. questions_ko: the customer's open questions, in Korean. action_items_ko: concrete next steps for the artist, in Korean.",
     "6. intent: booking_inquiry | quote | schedule_change | cancellation | design_consult | aftercare | followup | general | other. urgency: high (needs a reply today, e.g. appointment within days, cancellation, upset customer), normal, or low.",

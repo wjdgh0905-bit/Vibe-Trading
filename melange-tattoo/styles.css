@@ -180,6 +180,36 @@ h3 {
   opacity: 1;
   transform: none;
 }
+/* Cascading reveal for a list's direct children — pair with .reveal
+   on each child. Selector is generic (not tied to one list class) so
+   it works the same for <li>, <details>, whatever the list is made
+   of. */
+.reveal-stagger > .reveal:nth-child(1) { transition-delay: 0ms; }
+.reveal-stagger > .reveal:nth-child(2) { transition-delay: 60ms; }
+.reveal-stagger > .reveal:nth-child(3) { transition-delay: 120ms; }
+.reveal-stagger > .reveal:nth-child(4) { transition-delay: 180ms; }
+.reveal-stagger > .reveal:nth-child(5) { transition-delay: 240ms; }
+.reveal-stagger > .reveal:nth-child(6) { transition-delay: 300ms; }
+.reveal-stagger > .reveal:nth-child(7) { transition-delay: 360ms; }
+.reveal-stagger > .reveal:nth-child(8) { transition-delay: 420ms; }
+
+/* One-time entrance for JS-rendered cards (gallery tiles, guest-spot
+   cards) — a CSS animation rather than the .reveal/IntersectionObserver
+   pattern above, since these elements get torn down and recreated on
+   every re-render (language switch, "See more") and re-observing them
+   each time would be brittle. --i (set inline per element) staggers
+   the batch. prefers-reduced-motion is handled globally (animation
+   durations collapse to ~0 for everyone, see the reset above). */
+@keyframes card-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
 
 .skip-link {
   position: absolute;
@@ -237,6 +267,10 @@ h3 {
 .brand-mark {
   color: var(--blue);
   flex: none;
+  transition: transform 0.4s var(--ease);
+}
+.brand:hover .brand-mark {
+  transform: rotate(90deg);
 }
 .brand-text {
   font-size: 0.98rem;
@@ -389,7 +423,10 @@ h3 {
   letter-spacing: 0.03em;
   border: 1px solid transparent;
   transition: transform 0.2s var(--ease), background 0.2s var(--ease),
-    color 0.2s var(--ease), border-color 0.2s var(--ease);
+    color 0.2s var(--ease), border-color 0.2s var(--ease), box-shadow 0.2s var(--ease);
+}
+.btn:hover {
+  transform: translateY(-2px);
 }
 .btn:active {
   transform: translateY(1px);
@@ -400,6 +437,7 @@ h3 {
 }
 .btn-primary:hover {
   background: var(--btn-primary-hover);
+  box-shadow: 0 16px 28px -16px rgba(22, 24, 28, 0.45);
 }
 .btn-ghost {
   border-color: var(--ink);
@@ -408,6 +446,7 @@ h3 {
 .btn-ghost:hover {
   border-color: var(--blue);
   color: var(--blue-text);
+  box-shadow: 0 16px 28px -18px rgba(22, 24, 28, 0.3);
 }
 .btn-block {
   width: 100%;
@@ -545,8 +584,9 @@ h3 {
    Gallery (Selected Work)
    ============================================================ */
 .gallery-grid {
-  column-count: 4;
-  column-gap: clamp(8px, 1.4vw, 16px);
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: clamp(8px, 1.4vw, 16px);
 }
 .gallery-item {
   position: relative;
@@ -557,8 +597,6 @@ h3 {
   background: none;
   border-radius: var(--radius);
   overflow: hidden;
-  break-inside: avoid;
-  margin-bottom: clamp(8px, 1.4vw, 16px);
   outline-offset: -2px;
   transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease), z-index 0s;
 }
@@ -569,10 +607,22 @@ h3 {
 .gallery-item:focus-visible {
   z-index: 2;
 }
+.gallery-item img,
+.gallery-item .ph {
+  transition: transform 0.6s var(--ease);
+}
+.gallery-item:hover img,
+.gallery-item:focus-visible img,
+.gallery-item:hover .ph,
+.gallery-item:focus-visible .ph {
+  transform: scale(1.08);
+}
 .gallery-item img {
   display: block;
   width: 100%;
-  height: auto;
+  height: 100%;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
 }
 .gallery-item .ph {
   display: block;
@@ -736,10 +786,11 @@ h3 {
   flex: none;
   width: var(--reel-card-w);
   scroll-snap-align: start;
-  transition: transform 0.25s var(--ease);
+  transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
 }
 .reels-row > *:hover {
-  transform: translateY(-4px);
+  transform: translateY(-6px) scale(1.03);
+  box-shadow: 0 22px 36px -20px rgba(22, 24, 28, 0.4);
 }
 .reel-nav {
   position: absolute;
@@ -823,6 +874,13 @@ blockquote.instagram-media a:hover {
   padding: 26px 22px;
   outline: 1px solid var(--line);
   outline-offset: -1px;
+  transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
+  animation: card-in 0.6s var(--ease) both;
+  animation-delay: calc(var(--i, 0) * 70ms);
+}
+.spot-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 20px 36px -22px rgba(22, 24, 28, 0.4);
 }
 .spot-region {
   font-weight: 700;
@@ -1316,7 +1374,7 @@ blockquote.instagram-media a:hover {
     grid-template-columns: 1fr;
   }
   .gallery-grid {
-    column-count: 3;
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 
@@ -1379,12 +1437,8 @@ blockquote.instagram-media a:hover {
     height: 42px;
   }
   .gallery-grid {
-    display: grid;
     grid-template-columns: repeat(6, 1fr);
     gap: 3px;
-  }
-  .gallery-item {
-    margin-bottom: 0;
   }
   .gallery-item img,
   .gallery-item .ph {

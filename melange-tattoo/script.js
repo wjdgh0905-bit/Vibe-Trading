@@ -795,9 +795,10 @@
     spotsGrid.innerHTML = "";
     spotsGrid.hidden = GUEST_SPOTS.length === 0;
     spotsEmptyNote.hidden = GUEST_SPOTS.length > 0;
-    GUEST_SPOTS.forEach((spot) => {
+    GUEST_SPOTS.forEach((spot, i) => {
       const card = document.createElement("div");
       card.className = "spot-card";
+      card.style.setProperty("--i", i);
 
       const region = document.createElement("p");
       region.className = "spot-region";

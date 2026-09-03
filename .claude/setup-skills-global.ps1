@@ -56,7 +56,7 @@ foreach ($p in $plugins) {
     claude plugin install $p --scope user -y | Out-Null
 }
 
-Write-Host "==> 4/4 고급 기능 전역 적용 (모든 프로젝트 공통)"
+Write-Host "==> 4/5 고급 기능 전역 적용 (모든 프로젝트 공통)"
 $globalSettingsPath = Join-Path $env:USERPROFILE ".claude\settings.json"
 $advanced = @{
     enableWorkflows            = $true
@@ -90,6 +90,44 @@ if (-not ($settings.PSObject.Properties.Name -contains "permissions")) {
     Set-JsonProperty $settings "permissions" (New-Object PSObject)
 }
 Set-JsonProperty $settings.permissions "defaultMode" "auto"
+
+Write-Host "==> 5/5 토큰 절약: 잘 안 쓰는 스킬 80개 설명 축소 (name-only)"
+$trimToNameOnly = @(
+    "marketing-skills:ab-testing","marketing-skills:ad-creative","marketing-skills:ads",
+    "marketing-skills:ai-seo","marketing-skills:analytics","marketing-skills:aso",
+    "marketing-skills:attribution","marketing-skills:churn-prevention","marketing-skills:co-marketing",
+    "marketing-skills:cold-email","marketing-skills:community-marketing","marketing-skills:competitor-profiling",
+    "marketing-skills:competitors","marketing-skills:content-strategy","marketing-skills:copy-editing",
+    "marketing-skills:copywriting","marketing-skills:cro","marketing-skills:customer-research",
+    "marketing-skills:directory-submissions","marketing-skills:emails","marketing-skills:events",
+    "marketing-skills:free-tools","marketing-skills:image","marketing-skills:influencer-marketing",
+    "marketing-skills:launch","marketing-skills:lead-magnets","marketing-skills:marketing-council",
+    "marketing-skills:marketing-ideas","marketing-skills:marketing-loops","marketing-skills:marketing-plan",
+    "marketing-skills:marketing-psychology","marketing-skills:offers","marketing-skills:onboarding",
+    "marketing-skills:paywalls","marketing-skills:popups","marketing-skills:pricing",
+    "marketing-skills:product-marketing","marketing-skills:programmatic-seo","marketing-skills:prospecting",
+    "marketing-skills:public-relations","marketing-skills:referrals","marketing-skills:revops",
+    "marketing-skills:sales-enablement","marketing-skills:schema","marketing-skills:seo-audit",
+    "marketing-skills:signup","marketing-skills:site-architecture","marketing-skills:sms",
+    "marketing-skills:social","marketing-skills:video",
+    "ui-ux-pro-max:banner-design","ui-ux-pro-max:brand","ui-ux-pro-max:design",
+    "ui-ux-pro-max:design-system","ui-ux-pro-max:slides","ui-ux-pro-max:ui-styling",
+    "ui-ux-pro-max:ui-ux-pro-max",
+    "taste-skill:brandkit","taste-skill:brutalist-skill","taste-skill:gpt-tasteskill",
+    "taste-skill:image-to-code-skill","taste-skill:imagegen-frontend-mobile","taste-skill:imagegen-frontend-web",
+    "taste-skill:minimalist-skill","taste-skill:output-skill","taste-skill:redesign-skill",
+    "taste-skill:soft-skill","taste-skill:stitch-skill","taste-skill:taste-skill-v1",
+    "remotion-captions","remotion-create","remotion-docs","remotion-interactivity",
+    "remotion-maps","remotion-markup","remotion-multimedia","remotion-render",
+    "remotion-saas","remotion-studio","remotion-upgrade"
+)
+if (-not ($settings.PSObject.Properties.Name -contains "skillOverrides")) {
+    Set-JsonProperty $settings "skillOverrides" (New-Object PSObject)
+}
+foreach ($name in $trimToNameOnly) {
+    Set-JsonProperty $settings.skillOverrides $name "name-only"
+}
+Write-Host "  ok ($($trimToNameOnly.Count)개)"
 
 New-Item -ItemType Directory -Force -Path (Split-Path $globalSettingsPath) | Out-Null
 $settings | ConvertTo-Json -Depth 20 | Set-Content -Path $globalSettingsPath -Encoding utf8

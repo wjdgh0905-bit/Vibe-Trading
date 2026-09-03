@@ -26,6 +26,15 @@
 1. **claude.ai 아티팩트로 게시** — 로그인된 계정의 Claude가 답하므로 API 키가 필요 없다. (`capabilities: {sample: {}, downloads: true}` 로 게시)
 2. **직접 호스팅 (Netlify, 로컬 등)** — 설정에서 Anthropic API 키를 넣으면 브라우저에서 Anthropic API로 직접 호출한다. 키는 이 브라우저의 localStorage에만 저장된다.
 
+> 폰의 claude.ai(앱·모바일 웹)에서 연 아티팩트는 아직 Claude에 이미지를 보내지 못한다. 폰에서 쓰려면 아래처럼 직접 호스팅하고 API 키를 넣는다. PC 브라우저의 claude.ai에서는 아티팩트 그대로 쓴다.
+
+### 폰에서 쓰기 (Netlify 직접 호스팅)
+
+1. [Netlify](https://app.netlify.com) → **Add new site → Import an existing project** → 이 저장소 선택.
+2. **Base directory** `melange-inbox`, **Publish directory** `melange-inbox` (또는 `.`), Build command 비움. `melange-inbox/netlify.toml`이 헤더를 잡아 준다.
+3. 배포된 주소를 폰 브라우저로 열고 **설정 → Anthropic API 키** 입력 (console.anthropic.com 에서 발급, 사용량만큼 과금). 키는 그 폰의 브라우저에만 저장된다.
+4. **홈 화면에 추가**하면 앱처럼 열린다. 안드로이드는 스크린샷을 이 앱으로 바로 `공유`할 수 있고, 아이폰은 앱 안의 `스크린샷 추가`로 사진을 고른다.
+
 ```bash
 python3 -m http.server 8010 -d melange-inbox
 # → http://localhost:8010

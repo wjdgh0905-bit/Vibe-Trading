@@ -725,7 +725,7 @@ async function detectBackend() {
       if (caps && caps.images) {
         Object.assign(backend, { kind: "sample", sample, caps, reason: "" });
       } else {
-        Object.assign(backend, { kind: "none", reason: "이 화면에서는 Claude에 이미지를 보낼 수 없어요. claude.ai 앱에서 열어 주세요." });
+        Object.assign(backend, { kind: "none", reason: "폰의 claude.ai 화면에서는 아직 Claude에 이미지를 보낼 수 없어요. PC 브라우저의 claude.ai에서 열거나, 직접 호스팅한 주소(README 참고)에서 API 키로 사용해 주세요." });
       }
     } else {
       Object.assign(backend, { kind: "none", reason: "이 아티팩트에 Claude 사용 권한이 없어요. 페이지 상단의 권한 요청을 허용해 주세요." });

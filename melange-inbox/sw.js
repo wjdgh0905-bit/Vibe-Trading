@@ -1,7 +1,7 @@
 // Offline shell + Android share target. API calls are never cached.
-const CACHE = "melange-inbox-v4";
+const CACHE = "melange-inbox-v5";
 const SHARE_CACHE = "melange-inbox-share";
-const SHELL = ["./", "./index.html", "./icon.svg", "./site.webmanifest"];
+const SHELL = ["./", "./index.html", "./icon.svg", "./icon-192.png", "./site.webmanifest"];
 self.addEventListener("install", e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting())); });
 self.addEventListener("activate", e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE && k !== SHARE_CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())); });
 self.addEventListener("fetch", e => {

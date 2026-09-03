@@ -25,7 +25,7 @@ if ($robocopyExit -ge 8) {
 }
 Write-Host "  ok"
 
-Write-Host "==> 3/3 플러그인 8개 전역 동기화"
+Write-Host "==> 3/3 플러그인 9개 전역 동기화"
 $marketplaces = @(
     "obra/superpowers-marketplace",
     "coreyhaines31/marketingskills",
@@ -34,7 +34,8 @@ $marketplaces = @(
     "Leonxlnx/taste-skill",
     "pbakaus/impeccable",
     "anthropics/claude-plugins-official",
-    "chopratejas/headroom"
+    "chopratejas/headroom",
+    "DietrichGebert/ponytail"
 )
 foreach ($m in $marketplaces) {
     Write-Host "  marketplace: $m"
@@ -49,7 +50,8 @@ $plugins = @(
     "taste-skill@taste-skill",
     "impeccable@impeccable",
     "claude-code-setup@claude-plugins-official",
-    "headroom@headroom-marketplace"
+    "headroom@headroom-marketplace",
+    "ponytail@ponytail"
 )
 foreach ($p in $plugins) {
     Write-Host "  plugin: $p"
@@ -90,6 +92,11 @@ if (-not ($settings.PSObject.Properties.Name -contains "permissions")) {
     Set-JsonProperty $settings "permissions" (New-Object PSObject)
 }
 Set-JsonProperty $settings.permissions "defaultMode" "auto"
+
+if (-not ($settings.PSObject.Properties.Name -contains "env")) {
+    Set-JsonProperty $settings "env" (New-Object PSObject)
+}
+Set-JsonProperty $settings.env "PONYTAIL_DEFAULT_MODE" "full"
 
 Write-Host "==> 5/5 토큰 절약: 잘 안 쓰는 스킬 80개 설명 축소 (name-only)"
 $trimToNameOnly = @(

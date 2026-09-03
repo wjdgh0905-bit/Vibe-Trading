@@ -1,73 +1,7 @@
 {
-  "enabledPlugins": {
-    "superpowers@superpowers-marketplace": true,
-    "marketing-skills@marketingskills": true,
-    "ui-ux-pro-max@ui-ux-pro-max-skill": true,
-    "claude-mem@thedotmack": true,
-    "taste-skill@taste-skill": true,
-    "impeccable@impeccable": true,
-    "claude-code-setup@claude-plugins-official": true,
-    "headroom@headroom-marketplace": true
+  "env": {
+    "PONYTAIL_DEFAULT_MODE": "full"
   },
-  "extraKnownMarketplaces": {
-    "superpowers-marketplace": {
-      "source": {
-        "source": "github",
-        "repo": "obra/superpowers-marketplace"
-      }
-    },
-    "marketingskills": {
-      "source": {
-        "source": "github",
-        "repo": "coreyhaines31/marketingskills"
-      }
-    },
-    "ui-ux-pro-max-skill": {
-      "source": {
-        "source": "github",
-        "repo": "nextlevelbuilder/ui-ux-pro-max-skill"
-      }
-    },
-    "thedotmack": {
-      "source": {
-        "source": "github",
-        "repo": "thedotmack/claude-mem"
-      }
-    },
-    "taste-skill": {
-      "source": {
-        "source": "github",
-        "repo": "Leonxlnx/taste-skill"
-      }
-    },
-    "impeccable": {
-      "source": {
-        "source": "github",
-        "repo": "pbakaus/impeccable"
-      }
-    },
-    "claude-plugins-official": {
-      "source": {
-        "source": "github",
-        "repo": "anthropics/claude-plugins-official"
-      }
-    },
-    "headroom-marketplace": {
-      "source": {
-        "source": "github",
-        "repo": "chopratejas/headroom"
-      }
-    }
-  },
-  "enableWorkflows": true,
-  "enableArtifact": true,
-  "alwaysThinkingEnabled": true,
-  "autoCompactEnabled": true,
-  "precomputeCompactionEnabled": true,
-  "fastMode": true,
-  "promptCacheTtl": "1h",
-  "ultracode": true,
-  "workflowSizeGuideline": "large",
   "permissions": {
     "defaultMode": "auto"
   },
@@ -152,5 +86,81 @@
     "remotion-saas": "name-only",
     "remotion-studio": "name-only",
     "remotion-upgrade": "name-only"
-  }
+  },
+  "enableArtifact": true,
+  "enableWorkflows": true,
+  "workflowSizeGuideline": "large",
+  "enabledPlugins": {
+    "superpowers@superpowers-marketplace": true,
+    "marketing-skills@marketingskills": true,
+    "ui-ux-pro-max@ui-ux-pro-max-skill": true,
+    "claude-mem@thedotmack": true,
+    "taste-skill@taste-skill": true,
+    "impeccable@impeccable": true,
+    "claude-code-setup@claude-plugins-official": true,
+    "headroom@headroom-marketplace": true,
+    "ponytail@ponytail": true
+  },
+  "extraKnownMarketplaces": {
+    "superpowers-marketplace": {
+      "source": {
+        "source": "github",
+        "repo": "obra/superpowers-marketplace"
+      }
+    },
+    "marketingskills": {
+      "source": {
+        "source": "github",
+        "repo": "coreyhaines31/marketingskills"
+      }
+    },
+    "ui-ux-pro-max-skill": {
+      "source": {
+        "source": "github",
+        "repo": "nextlevelbuilder/ui-ux-pro-max-skill"
+      }
+    },
+    "thedotmack": {
+      "source": {
+        "source": "github",
+        "repo": "thedotmack/claude-mem"
+      }
+    },
+    "taste-skill": {
+      "source": {
+        "source": "github",
+        "repo": "Leonxlnx/taste-skill"
+      }
+    },
+    "impeccable": {
+      "source": {
+        "source": "github",
+        "repo": "pbakaus/impeccable"
+      }
+    },
+    "claude-plugins-official": {
+      "source": {
+        "source": "github",
+        "repo": "anthropics/claude-plugins-official"
+      }
+    },
+    "headroom-marketplace": {
+      "source": {
+        "source": "github",
+        "repo": "chopratejas/headroom"
+      }
+    },
+    "ponytail": {
+      "source": {
+        "source": "github",
+        "repo": "DietrichGebert/ponytail"
+      }
+    }
+  },
+  "promptCacheTtl": "1h",
+  "alwaysThinkingEnabled": true,
+  "ultracode": true,
+  "fastMode": true,
+  "autoCompactEnabled": true,
+  "precomputeCompactionEnabled": true
 }

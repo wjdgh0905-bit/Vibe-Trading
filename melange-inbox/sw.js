@@ -1,5 +1,5 @@
 // Offline shell + Android share target. API calls are never cached.
-const CACHE = "melange-inbox-v3";
+const CACHE = "melange-inbox-v4";
 const SHARE_CACHE = "melange-inbox-share";
 const SHELL = ["./", "./index.html", "./icon.svg", "./site.webmanifest"];
 self.addEventListener("install", e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).then(() => self.skipWaiting())); });
@@ -32,10 +32,16 @@ self.addEventListener("fetch", e => {
   // App shell: serve the cached copy at once, refresh it in the background (stale-while-revalidate),
   // so a deploy reaches installed phones on the next open without hanging on a slow network.
   if (e.request.mode === "navigate" || url.pathname.endsWith("/index.html")) {
+    const scopePath = new URL("./", self.registration.scope).pathname;
+    const isIndex = url.pathname === scopePath || url.pathname === scopePath + "index.html";
+    const refresh = fetch(e.request).then(r => {
+      if (r && r.ok && isIndex) caches.open(CACHE).then(c => c.put("./index.html", r.clone()));
+      return r;
+    }).catch(() => null);
+    e.waitUntil(refresh);
     e.respondWith((async () => {
       const cache = await caches.open(CACHE);
-      const cached = await cache.match("./index.html") || await cache.match(e.request);
-      const refresh = fetch(e.request).then(r => { if (r && r.ok) cache.put("./index.html", r.clone()); return r; }).catch(() => null);
+      const cached = isIndex ? await cache.match("./index.html") : await cache.match(e.request);
       return cached || (await refresh) || Response.error();
     })());
     return;

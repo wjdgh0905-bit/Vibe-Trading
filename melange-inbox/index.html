@@ -588,7 +588,10 @@ function load() {
   for (const it of data.items) {
     if (it.status === "analyzing" || it.status === "queued") { it.status = "error"; it.error = "페이지가 새로고침되어 분석이 중단됐어요. 다시 시도해 주세요."; }
     if (it.status === "done") delete it.fresh;
-    delete it.lastMerge;
+    delete it.lastMerge; delete it.translating; delete it.bookingBusy;
+    it.imageIds = Array.isArray(it.imageIds) ? it.imageIds : [];
+    const times = Array.isArray(it.imageTimes) ? it.imageTimes : [];
+    it.imageTimes = it.imageIds.map((id, i) => times[i] || it.createdAt || Date.now());
   }
   return data;
 }
@@ -758,12 +761,12 @@ function analysisPrompt({ earlierText = "", note = "", captured = [] } = {}) {
     "- Sender: on Instagram, right-aligned bubbles in the purple/blue gradient with no avatar are the artist" + (s.myName ? " (" + s.myName + ")" : "") + "; left-aligned grey bubbles are the customer. The customer's avatar is shown only next to the LAST bubble of a run, so grey bubbles above it are still the customer. The gradient shade drifts down the screen; different shades are not different senders. A shared post or photo belongs to whichever side it sits on, even when the post is from the artist's own account. Use \"unknown\" only when neither the side nor the colour of a bubble can be seen.",
     "- The header shows the customer's display name and handle (e.g. \"Ivanna\" / i.vxnna). Ignore app chrome: status bar, header buttons, the \"↓\" button, the input bar, read receipts (…에 읽음), activity status (…전에 활동), ad banners (광고 응답 · 보기), system lines like \"… replied to an ad\", 프로필 보기, and the \"Liked by … and others\" line or like/comment counts on a shared post (those accounts are not the poster).",
     "- Small emoji bubbles (❤️ 💙 👍) overlapping the edge of a bubble are reactions by the other party, not messages: never add them to the transcript and never treat one as agreement on its own. An emoji inside the bubble text is part of the message.",
-    "- Date separators (absolute like \"8월 14일 오후 2:29\" or relative like \"(화) 오전 7:30\", \"어제 오전 3:24\") apply to the messages below them. Copy them as written into transcript[].when of the first message under each; never convert a relative date into an absolute one inside `when`. If a separator is blurred or unreadable, use \"\" and mention it in confidence_note_ko instead of guessing.",
-    "- Non-text messages are messages too, one transcript entry per image even when Instagram stacks them. In original write a bracketed English tag with any text printed on the card exactly as shown (poster handle, location, date, caption fragment, a \"1/3\" badge); in ko describe what the artist needs to see: subject, style and colours, body part and side, existing tattoos, and whether it is the customer's own photo, a design mock-up, or someone else's tattoo. Cover: a shared post or reel, a photo, a story reply (회원님의 스토리에 답장을 보냈습니다), a story highlight (@…님의 스토리 하이라이트를 보냈습니다), a contact card (전화번호 + WhatsApp/전화 걸기: transcribe the number), a location card (place name · rating · goo.gl), a voice message. A view-once photo (a \"▶ 사진\" pill) is not visible: write [Photo (view once, not visible)] / [사진 (한 번 보기, 내용 확인 불가)]. When the poster is the artist's own account, say so (멜랑주 본인 게시물).",
-    "- \"수정됨\" = the message was edited; \"자신에게 답장을 보냈습니다\" / \"…에게 답장\" with a preview = a quoted reply. Mark them inside ko as [수정됨] or [↩ …에 답장]. When a message says \"this\" / \"like this\", add what it points to as a separate bracket after the translation, e.g. [→ 바로 위 게시물], never inside the translated words themselves.",
+    "- Date separators (absolute like \"8월 14일 오후 2:29\" or relative like \"(화) 오전 7:30\", \"어제 오전 3:24\") apply to the messages below them. Copy them as written into transcript[].when of the first message under each; never convert a relative date into an absolute one anywhere in the output, including confidence_note_ko — say only that it is relative to the capture date. A blurred or unreadable separator always yields when \"\"; put a tentative reading only in confidence_note_ko.",
+    "- Non-text messages are messages too, one transcript entry per image even when Instagram stacks them. In original write a bracketed English tag with the text printed on the card exactly as shown — only the poster handle, location, date, caption fragment and a badge like \"1/3\" when it is actually printed (never invent numbering; never copy like/comment/share counts); for stacked photos write [Photo] / [사진] and tell them apart in ko by content (도안 합성본 / 원본). In ko state the medium first, then what the artist needs to see: a drawing on white paper is a design mock-up ([Design on paper] / 종이 위 도안) and a body photo only when skin, hair or body contour is visible; subject, style and colours, body part and side (a mirror selfie is left-right reversed, so give one side with (거울 셀카 기준) rather than a hedge), existing tattoos, and whether it is the customer's own photo, a design mock-up, or someone else's tattoo. When the customer forwards the artist's own flash sheet or post, label it 멜랑주 본인 플래시/게시물 consistently in ko, details.references and details.design. Cover: a shared post or reel, a photo, a story reply (회원님의 스토리에 답장을 보냈습니다), a story highlight (@…님의 스토리 하이라이트를 보냈습니다), a contact card (전화번호 + WhatsApp/전화 걸기: transcribe the number), a location card (place name · rating · goo.gl), a voice message. A view-once photo (a \"▶ 사진\" pill) is not visible: write [Photo (view once, not visible)] / [사진 (한 번 보기, 내용 확인 불가)]. When the poster is the artist's own account, say so (멜랑주 본인 게시물).",
+    "- \"수정됨\" = the message was edited; the label is printed directly BELOW the edited bubble, so when a shared post or photo sits between a text bubble and the label, the label belongs to the text bubble above it. \"자신에게 답장을 보냈습니다\" / \"…에게 답장\" with a preview = a quoted reply. Mark them inside ko as [수정됨] or [↩ …에 답장]. Append [표준 문의 양식] to the ko of the artist's own numbered inquiry message when it appears. When a message says \"this\" / \"like this\", add what it points to as a separate bracket after the translation, e.g. [→ 바로 위 게시물], never inside the translated words themselves.",
     "- Translate only the words in the bubble. Do not insert reference names, handles or explanations into the ko translation; clarifications go in a bracket after it.",
-    "- A bubble cut off at the very top or bottom of a screenshot with no complete copy elsewhere: transcribe only the readable lines, end its ko with \"(이하 잘림)\", and say so in confidence_note_ko. If the last screenshot ends on a cut-off bubble or shows the \"↓\" button, note that later messages may exist.",
-    "Working out the CURRENT state: walk the thread in order and let each later message overwrite the earlier value of the same item. The customer decides design, placement, size and colour; the artist decides price, availability and deposit terms. A question-phrased proposal (\"12pm is okay?\", \"how about the 9th?\") sets nothing until the other side accepts it in words; a ❤️ reaction is not acceptance. The artist's price & deposit message is authoritative at the moment it is sent, but any later message by either side that changes a date, time or price supersedes it (an artist-initiated move is intent schedule_change). A customer's \"Just sent!!\" / \"Sent it\" means the deposit was reported sent, not received; only an artist message like \"I got it\" / \"I checked\" means received. When a message is ambiguous (\"Could we do 1?\" = October 1 or 1 PM), use the later clarification if there is one; otherwise record both readings in confidence_note_ko and put nothing in details.dates. Typos in dates/times stay verbatim in original and are normalised in ko and details (\"11st\" → 11일). Base everything strictly on what is visible: never invent prices, dates, addresses or names.",
+    "- A bubble cut off at the very top or bottom of a screenshot with no complete copy elsewhere: transcribe only the readable lines, end its ko with \"(이하 잘림)\", and say so in confidence_note_ko; if nothing in it is readable, do not create a transcript entry at all. If the last screenshot ends on a cut-off bubble or shows the \"↓\" button, note that later messages may exist.",
+    "Working out the CURRENT state: walk the thread in order and let each later message overwrite the earlier value of the same item. The customer decides design, placement, size and colour; the artist decides price, availability and deposit terms. A question-phrased proposal (\"12pm is okay?\", \"how about the 9th?\") sets nothing until the other side accepts it in words; a ❤️ reaction is not acceptance. The artist's price & deposit message is authoritative at the moment it is sent, but any later message by either side that changes a date, time or price supersedes it (an artist-initiated move is intent schedule_change). A customer's \"Just sent!!\" / \"Sent it\" means the deposit was reported sent, not received; only an artist message like \"I got it\" / \"I checked\" means received. When a message is ambiguous (\"Could we do 1?\" = October 1 or 1 PM), use the later clarification if there is one; otherwise record both readings in confidence_note_ko and put nothing in details.dates. Typos in dates/times stay verbatim in original and are normalised in ko and details (\"11st\" → 11일). Base everything strictly on what is visible: never invent prices, dates, addresses or names, and never compute amounts (remaining balance, totals, fees) — use only figures typed in the thread; if a balance matters write \"잔금: 총액에서 예약금 차감 (금액 미기재)\".",
     "Today is " + todayStr() + ".",
     capLine,
     note ? "The artist's private notes on this thread (facts not visible in the screenshots; treat them as true): " + note : "",
@@ -772,16 +775,16 @@ function analysisPrompt({ earlierText = "", note = "", captured = [] } = {}) {
     "Tasks:",
     "1. transcript: every message in order, de-duplicated, with sender, when (the date separator text in force, \"\" if none is shown right above), original (the exact text as written, typos included; a bracketed description for non-text), ko (a natural Korean translation in 해요체; if the original is already Korean, repeat it).",
     "2. platform; customer_name (the display name as shown, without decorative emoji); customer_handle (the account handle without '@', \"\" if not shown); customer_language (BCP-47 code) and customer_language_ko (Korean language name, e.g. \"영어\").",
-    "3. summary_ko: 3-5 short Korean sentences (at most about 40 words each, one idea per sentence) in this order: what the customer first asked for and when; what changed along the way; where it stands now; what happens next and by whom. If the start of the thread is not visible (the first bubble answers something off-screen), say so instead of stating who reached out first. status_ko: one short line: \"[현재 단계] — [누구] 차례: [무엇]\" (e.g. \"예약금 대기 — 나: 입금 확인하고 12시 시간 확정 답하기\").",
-    "4. details, CURRENT state only, in Korean (keep names, prices, currencies, dates, units and handles exactly as written): design (the accumulated spec of what will be tattooed, including decided style points like 흑백/블루 포인트 and excluded colours), placement (with the side 왼쪽/오른쪽 when a photo shows it, and existing tattoos nearby), size (relative if no cm was given, e.g. \"레퍼런스보다 작게\"), style, dates (the agreed date and time marked 확정, or candidates/window marked 희망 with the guest window), location (city / guest spot / studio), budget (the customer's own stated budget, \"\" if none), price (the artist's quote or the agreed total plus the deposit, e.g. \"총 USD 2,000 · 예약금 USD 300 (F&F 불가 시 330)\"; a superseded quote goes to changes_ko, not here), references (every shared post and photo in thread order as \"@handle/설명 — 참고 용도\" stating which aspect the customer wants from each: 스타일 / 위치·크기 / 포즈 / 배경 / 색감, including exclusions like \"스타일은 원하지 않음\"; include the customer's own body photo), contact (the customer's full name, age and phone/email exactly as given, including remarks like 생일), other. Use \"\" when not mentioned.",
-    "5. changes_ko: every change of plan, one per line as \"항목: 이전 → 현재 (누가, 언제)\", including a proposal that was declined (\"제안 → 거절/유지\") and explicit deviations from a reference (\"레퍼런스 → 손님 요청: 더 작게\"); exclude first-time specs and mere restatements; empty if nothing changed. confirmed_ko: things both sides have clearly agreed, plus the artist's own final terms. pending_ko: only things someone was actually asked to do or that are objectively required to proceed, each prefixed \"손님:\" or \"나:\"; stage-implied items not yet mentioned get \"(대화에 아직 없음)\"; never anything already answered, never invented acknowledgements.",
-    "6. questions_ko: the customer's questions that are still unanswered at the end (empty if all were answered; the artist's own numbered inquiry message is not a customer question). action_items_ko: the artist's concrete next steps from here (never steps already done).",
-    "7. stage (where this customer stands right now): inquiry (first contact, key info still missing) | consulting (design/size/placement/price being discussed) | scheduling (date/time being settled) | deposit_pending (booking message sent, deposit not yet confirmed by the artist) | confirmed (the artist confirmed the deposit or the booking) | completed (the session happened) | lost (customer declined or went silent after a quote) | cancelled. intent: booking_inquiry | quote | schedule_change | cancellation | design_consult | aftercare | followup | general | other. urgency: high (must act today: appointment within days judged from the separators and today's date, a cancellation, an upset or long-waiting customer), normal (a reply is expected from the artist), low (nothing needed, the ball is with the customer, or the thread ended).",
-    "8. reply_draft.in_customer_language: the artist's next message in the customer's language, first person, matching the artist's own register visible in the thread (short, upbeat, light emoji when the artist uses them). Answer only what is open; never re-ask what was already answered, never state a different price or date than the agreed one, never promise availability or prices the artist did not state, and never thank the customer again for things the artist already replied to. Never leave [확인 필요] or Korean text inside this reply: if a value is unknown, drop that line and list the gap in pending_ko / action_items_ko instead. If the customer declined, the thread ended on thanks, or the ball is with the customer, write one short optional line and start reply_draft.ko with \"(답장 필수 아님) \" — never re-quote or re-offer dates. reply_draft.ko: the same message in Korean.",
+    "3. summary_ko: 3-5 short Korean sentences, hard cap 5, each carrying exactly one event in at most ~25 어절 (split a sentence that would chain two events with -고/-며; price negotiation, the booking message, contact info and studio location are separate events) in this order: what the customer first asked for and when; what changed along the way; where it stands now; what happens next and by whom. Relative-date glosses go only to confidence_note_ko. If the start of the thread is not visible (the first bubble answers something off-screen), say so instead of stating who reached out first. status_ko: one short line: \"[현재 단계] — 내 차례 / 손님 차례 / 둘 다 아님: [무엇]\" (e.g. \"예약금 대기 — 내 차례: 입금 확인하고 12시 시간 확정 답하기\").",
+    "4. details, CURRENT state only, in Korean (keep names, prices, currencies, dates, units and handles exactly as written): design (the accumulated spec of what will be tattooed, including decided style points like 흑백/블루 포인트 and excluded colours), placement (with the side 왼쪽/오른쪽 when a photo shows it, and existing tattoos nearby), size (relative if no cm was given, e.g. \"레퍼런스보다 작게\"), style, dates (the agreed date and time marked 확정, or candidates/window marked 희망 with the guest window), location (city / guest spot / studio), budget (the customer's own stated budget, \"\" if none), price (the artist's quote or the agreed total plus the deposit, e.g. \"총 USD 2,000 · 예약금 USD 300 (F&F 불가 시 330)\"; a superseded quote goes to changes_ko, not here), references (every shared post and photo in thread order as \"@handle/설명 — 참고 용도\" stating which aspect the customer wants from each: 스타일 / 위치·크기 / 포즈 / 배경 / 색감, including exclusions like \"스타일은 원하지 않음\"; include the customer's own body photo), contact (the customer's full name, age and phone/email exactly as given, including remarks like 생일), other. Use \"\" when not mentioned. Keep each field under ~60 Korean words; provenance notes go to other or confidence_note_ko; never record read receipts, activity status or ad banners. When the artist's quote names a placement for a design, record it per design (\"디자인 1: 허벅지 (내 견적 기준) / 디자인 2: 미정\").",
+    "5. changes_ko: every change of plan, one per line as \"항목: 이전 → 현재 (누가, 언제)\", including a proposal that was declined (\"제안 → 거절/유지\"), explicit deviations from a reference (\"레퍼런스 → 손님 요청: 더 작게\"), an either/or question the customer answered (\"항목: A vs B? → B (손님)\") and a deposit reported and then confirmed (\"예약금: 미입금 → 입금 완료 (손님 송금 → 내가 확인, 언제)\"); exclude first-time specs, mere restatements and the closure of a thread; empty if nothing changed. confirmed_ko: stated facts only, no hedges like 보임/추정 — things both sides clearly agreed plus the artist's own final terms; if the deposit is only inferred from an artist message like \"I got it\", write \"예약금 수령 (내 'I got it' 기준, 입금 메시지 없음)\" or move it to pending_ko. pending_ko: only things someone was actually asked to do or that are objectively required to proceed, each prefixed \"손님:\" or \"나:\"; stage-implied items not yet mentioned get \"(대화에 아직 없음)\"; never anything already answered, never invented acknowledgements. For a lost or cancelled thread, confirmed_ko holds at most the artist's final quote, pending_ko is empty, and changes_ko lists the declined proposal once.",
+    "6. questions_ko: the customer's questions that are still unanswered at the end (empty if all were answered; the artist's own numbered inquiry message is not a customer question). action_items_ko: the artist's concrete next steps that follow from a message in the thread (never steps already done, no generic admin steps like calendar entries, no speculative offers); when nothing is needed write exactly one line like \"없음 — 손님 재문의 대기\".",
+    "7. stage (where this customer stands right now): inquiry (first contact, key info still missing) | consulting (design/size/placement/price being discussed) | scheduling (date/time being settled) | deposit_pending (booking message sent, deposit not yet confirmed by the artist) | confirmed (the artist confirmed the deposit or the booking) | completed (the session happened) | lost (customer declined or went silent after a quote) | cancelled. intent: booking_inquiry | quote | schedule_change | cancellation | design_consult | aftercare | followup | general | other — quote whenever the customer asks about price or availability for specific dates, booking_inquiry only for a first contact that does not ask for a price, schedule_change only while a date/time move is still being negotiated (once the new date is accepted and the thread ends on thanks, followup). urgency: high (must act today: appointment within days judged from the separators and today's date, a cancellation, an upset or long-waiting customer), normal (a reply is expected from the artist), low (nothing needed, the ball is with the customer, or the thread ended).",
+    "8. reply_draft.in_customer_language: the artist's next message in the customer's language, first person, matching the artist's own register visible in the thread (short, upbeat, light emoji when the artist uses them). Answer only what is open; never re-ask what was already answered, never state a different price or date than the agreed one, never promise availability or prices the artist did not state, and never thank the customer again for things the artist already replied to. Never leave [확인 필요] or Korean text inside this reply: if a value is unknown, drop that line and list the gap in pending_ko / action_items_ko instead. If the customer declined, the thread ended on thanks, or the ball is with the customer, write one short optional line and start reply_draft.ko with \"(답장 필수 아님) \" — never re-quote or re-offer dates; such an optional line must contain no new request (missing info like name, age or contact goes to pending_ko / action_items_ko), and if you do need to ask for something, omit the prefix. After a date or time change in the thread, restate the final date and time once. Proofread the reply as a native speaker would send it. reply_draft.ko: the same message in Korean.",
     s.inquiryTemplate ? "For a first inquiry that still lacks design/size/placement/city/date, base reply_draft on the artist's standard inquiry message below (keep its numbered list, adapt the greeting):\n" + s.inquiryTemplate : "",
     s.bookingTemplate ? "Booking message rule: when the customer has just accepted the price (or date and price are settled) AND the artist has not yet sent a price/deposit/booking message in this thread, reply_draft = a one-line lead-in plus the artist's booking message below with the amounts filled in from the artist's own messages or notes (never from the customer's budget), then one line asking for the customer's name, age and contact number, and a time proposal if the time is not set. Keep the template's structure and wording. If the artist ALREADY sent such a message in the thread, do not repeat it: write a short follow-up (slot held once the deposit arrives, design and studio details will follow).\nTemplate:\n" + s.bookingTemplate : "",
     s.context ? "Artist notes to respect when drafting: " + s.context : "",
-    "9. confidence_note_ko: one or two short sentences on anything unreadable, cut off, ambiguous (a message that could mean two things, relative dates) or uncertain; \"\" if everything was clear.",
+    "9. confidence_note_ko: at most two sentences of about 30 words each, only about what is unreadable, cut off or ambiguous (a message that could mean two things, relative dates) — not things the thread states; state each uncertainty once here and do not repeat it in other, pending_ko or action_items_ko; \"\" if everything was clear.",
     "",
     "Everything except transcript[].original, transcript[].when and reply_draft.in_customer_language must be in Korean: 해요체 for sentences, 개조식 noun phrases for lists and details, refer to the artist as 나/내 and the customer as 손님, and use the terms Korean tattoo artists use (도안, 시술, 부위, 예약금, 잔금, 게스트, 레퍼런스, 블랙앤그레이, 윗팔). Keep names and handles in their original script and amounts as typed.",
   ].filter(Boolean).join("\n");
@@ -874,6 +877,10 @@ function sampleErrorText(e) {
     invalid_json: "응답을 정리하는 데 실패했어요. 다시 시도해 주세요.",
     prompt_too_large: "내용이 너무 길어요. 스크린샷 수를 줄여 주세요.",
     cancelled: "취소됐어요.",
+    sampling_disabled: "이 계정에서는 Claude를 쓸 수 없어요.",
+    not_declared: "이 페이지 설정에 Claude 권한이 빠져 있어요. 다시 게시해야 해요.",
+    capability_disabled: "이 화면에서는 Claude를 쓸 수 없어요. claude.ai 앱에서 열어 주세요.",
+    capability_removed: "앱 버전이 오래됐어요. 페이지를 새로고침해 주세요.",
     upstream_error: "잠시 연결 문제가 있었어요. 다시 시도해 주세요.",
   };
   return map[code] || ("Claude 호출에 실패했어요" + (code ? " (" + code + ")" : "") + ". 잠시 후 다시 시도해 주세요.");
@@ -890,7 +897,7 @@ async function callApi({ prompt, images, schema }) {
   const body = {
     model: S.settings.model || "claude-opus-5",
     max_tokens: 32000,
-    output_config: { effort: S.settings.effort || "high", format: { type: "json_schema", schema } },
+    output_config: /haiku/i.test(S.settings.model || "") ? { format: { type: "json_schema", schema } } : { effort: S.settings.effort || "high", format: { type: "json_schema", schema } },
     messages: [{ role: "user", content }],
   };
   const headers = {
@@ -970,13 +977,14 @@ function enqueue(id) { if (!queue.includes(id)) queue.push(id); }
 async function pump() {
   if (running) return;
   running = true;
-  while (queue.length) {
-    const id = queue.shift();
-    const item = S.items.find(i => i.id === id);
-    if (!item) continue;
-    await analyze(item);
-  }
-  running = false;
+  try {
+    while (queue.length) {
+      const id = queue.shift();
+      const item = S.items.find(i => i.id === id);
+      if (!item) continue;
+      await analyze(item);
+    }
+  } finally { running = false; }
 }
 function renderFor(item) { if (item.id === currentId) render(); else renderList(); }
 const MAX_IMAGES_API = 20;
@@ -1044,7 +1052,7 @@ function findMatch(item) {
   const a = item.analysis; if (!a) return null;
   const n = normName(a.customer_name);
   const h = normName(a.customer_handle);
-  const others = S.items.filter(o => o !== item && !o.example && o.analysis && o.status === "done" && o.analysis.platform === a.platform);
+  const others = S.items.filter(o => o !== item && !o.example && o.analysis && (o.status === "done" || o.status === "queued") && o.analysis.platform === a.platform);
   if (h) { const byHandle = others.find(o => normName(o.analysis.customer_handle) === h); if (byHandle) return { target: byHandle, sure: true }; }
   if (!n || a.customer_name === "이름 없음") return null;
   const byName = others.filter(o => namesMatch(normName(o.analysis.customer_name), n) && (!h || !normName(o.analysis.customer_handle)));
@@ -1064,16 +1072,18 @@ async function autoMerge(item) {
   return true;
 }
 function mergeInto(target, item) {
-  const undo = { id: item.id, imageIds: item.imageIds.slice(), imageTimes: (item.imageTimes || []).slice(), analysis: item.analysis, createdAt: item.createdAt, replies: item.replies, note: item.note, targetAnalysis: target.analysis, targetDone: target.done, targetNewImageIds: target.newImageIds ? target.newImageIds.slice() : null };
+  const undo = { id: item.id, imageIds: item.imageIds.slice(), imageTimes: (item.imageTimes || []).slice(), analysis: item.analysis, createdAt: item.createdAt, replies: item.replies, note: item.note, booking: item.booking, koDraft: item.koDraft, done: item.done, targetAnalysis: target.analysis, targetDone: target.done, targetPrevAnalysis: target.prevAnalysis || null, targetNewImageIds: target.newImageIds ? target.newImageIds.slice() : null };
   target.prevAnalysis = target.prevAnalysis || target.analysis;
   target.newImageIds = (target.newImageIds || []).concat(item.imageIds);
   target.imageIds = target.imageIds.concat(item.imageIds);
   target.imageTimes = (target.imageTimes || []).concat(item.imageTimes || []);
   target.done = false;
+  if (target.status === "done") target.status = "queued";
   target.lastMerge = undo;
   removeItem(item.id, true, true);
   currentId = target.id;
   save();
+  render();
   enqueue(target.id); pump();
   toast((target.analysis ? target.analysis.customer_name : "기존") + " 대화에 이어 붙였어요", "따로 두기", () => unmerge(target));
   setTimeout(() => { if (target.lastMerge === undo) delete target.lastMerge; }, 7500);
@@ -1082,17 +1092,28 @@ function unmerge(target) {
   const u = target.lastMerge; if (!u) return;
   delete target.lastMerge;
   target.gen = (target.gen || 0) + 1; // cancel a running re-analysis
-  target.imageIds = target.imageIds.filter(id => !u.imageIds.includes(id));
-  target.imageTimes = (target.imageTimes || []).filter((t, i) => true).slice(0, target.imageIds.length);
+  const keep = target.imageIds.map((id, i) => !u.imageIds.includes(id));
+  target.imageIds = target.imageIds.filter((id, i) => keep[i]);
+  target.imageTimes = (target.imageTimes || []).filter((t, i) => keep[i]);
   target.analysis = u.targetAnalysis; target.done = u.targetDone;
-  if (u.targetNewImageIds && u.targetNewImageIds.length) target.newImageIds = u.targetNewImageIds; else delete target.newImageIds;
-  delete target.prevAnalysis;
-  target.status = target.analysis ? "done" : "error";
   const idx = queue.indexOf(target.id); if (idx >= 0) queue.splice(idx, 1);
-  const item = { id: u.id, createdAt: u.createdAt, status: "done", done: false, note: u.note || "", replies: u.replies || [], imageIds: u.imageIds, imageTimes: u.imageTimes, analysis: u.analysis, error: "", noMerge: true };
+  if (u.targetNewImageIds && u.targetNewImageIds.length) {
+    // screenshots appended before the merge were still waiting to be read: read them now
+    target.newImageIds = u.targetNewImageIds;
+    target.prevAnalysis = u.targetPrevAnalysis || u.targetAnalysis;
+    target.status = "queued";
+    enqueue(target.id);
+  } else {
+    delete target.newImageIds; delete target.prevAnalysis;
+    target.status = target.analysis ? "done" : "error";
+  }
+  const item = { id: u.id, createdAt: u.createdAt, status: "done", done: !!u.done, note: u.note || "", replies: u.replies || [], imageIds: u.imageIds, imageTimes: u.imageTimes, analysis: u.analysis, error: "", noMerge: true };
+  if (u.booking) item.booking = u.booking;
+  if (u.koDraft != null) item.koDraft = u.koDraft;
   S.items.unshift(item);
   currentId = item.id;
   save(); render();
+  if (target.status === "queued") pump();
   toast("따로 두었어요");
 }
 async function appendTo(item, fileList) {
@@ -1101,6 +1122,7 @@ async function appendTo(item, fileList) {
   const ids = await storeFiles(item, files);
   if (item.analysis) { item.prevAnalysis = item.prevAnalysis || item.analysis; item.newImageIds = (item.newImageIds || []).concat(ids); }
   item.done = false; delete item.lastMerge;
+  if (item.status === "done" || item.status === "error") item.status = "queued";
   currentId = item.id;
   save(); render(); setView("detail");
   enqueue(item.id); pump();
@@ -1532,10 +1554,12 @@ async function pickupShared() {
       if (!r) continue;
       const blob = await r.blob();
       if (blob.type.startsWith("image/")) files.push(new File([blob], safeDecode(r.headers.get("x-name")) || "screenshot.jpg", { type: blob.type, lastModified: Number(r.headers.get("x-time")) || Date.now() }));
-      await cache.delete(k);
     }
+    await waitForBackend();
+    if (backend.kind === "none" && files.length) { toast("Claude 연결 뒤 이 페이지를 다시 열면 공유한 스크린샷을 이어서 넣어요"); return; } // keep them parked
+    for (const k of keys) await cache.delete(k);
     history.replaceState(null, "", location.pathname);
-    if (files.length) { await waitForBackend(); addFiles(files); }
+    if (files.length) await addFiles(files);
   } catch (e) {}
 }
 function safeDecode(v) { try { return decodeURIComponent(v || ""); } catch (e) { return v || ""; } }

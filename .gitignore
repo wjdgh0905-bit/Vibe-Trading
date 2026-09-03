@@ -19,6 +19,12 @@ agent/.env
 
 .claude/*
 !.claude/hooks.json
+# Shared agent-skill setup (see .claude/SKILLS.md)
+!.claude/settings.json
+!.claude/SKILLS.md
+!.claude/setup-skills.sh
+!.claude/setup-skills-global.ps1
+!.claude/skills/
 CLAUDE.md
 .vscode/
 learn-claude-code-main/

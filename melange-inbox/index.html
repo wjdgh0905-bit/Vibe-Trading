@@ -594,6 +594,9 @@ function load() {
     it.imageIds = Array.isArray(it.imageIds) ? it.imageIds : [];
     const times = Array.isArray(it.imageTimes) ? it.imageTimes : [];
     it.imageTimes = it.imageIds.map((id, i) => times[i] || it.createdAt || Date.now());
+    if (it.analysis) it.analysis = normalize(it.analysis);
+    if (it.prevAnalysis) it.prevAnalysis = normalize(it.prevAnalysis);
+    if (!Array.isArray(it.replies)) it.replies = [];
   }
   return data;
 }
@@ -818,7 +821,7 @@ function bookingPrompt(item) {
     "Write message in " + lang + " (" + (a.customer_language || "") + "); if the template is in another language translate it naturally, keeping the tone. ko: the same message in Korean so the artist can check it.",
     alreadySent ? "The artist already sent a price/deposit message in this thread. If the amounts have not changed since, do not produce the template again: write a short follow-up instead (slot held once the deposit arrives, design and studio details will follow) and put \"이미 보낸 안내 메시지가 대화에 있음\" in missing_ko. If the price changed after that message, fill the template with the new amounts." : "",
     "",
-    "Template:\n" + (S.settings.bookingTemplate || DEFAULT_TEMPLATE),
+    "Template:\n" + S.settings.bookingTemplate,
     "",
     S.settings.context ? "Artist notes:\n" + S.settings.context : "",
     item.note ? "Artist's private notes on this thread (treat as true):\n" + item.note : "",
@@ -831,6 +834,7 @@ function bookingPrompt(item) {
 async function makeBooking() {
   const it = current(); if (!it || !it.analysis) return;
   if (it.bookingBusy) return;
+  if (!S.settings.bookingTemplate) { toast("설정에서 예약 상세 안내 양식을 먼저 넣어 주세요"); openSettings(); return; }
   const btn = $("#bookingBtn"), st = $("#bookingStatus");
   it.bookingBusy = true; btn.disabled = true; st.innerHTML = `<span class="spin"></span>양식 채우는 중`;
   try {
@@ -913,16 +917,17 @@ async function callApi({ prompt, images, schema }) {
   if (res.status === 400 && /fallback|beta/i.test(res.text)) res = await post(headers, body, null);
   if (!res.ok) {
     let msg = res.text;
-    try { msg = JSON.parse(res.text).error.message || msg; } catch (e) {}
+    try { msg = apiErrorText(JSON.parse(res.text).error); } catch (e) {}
     if (res.status === 401) msg = "API 키가 올바르지 않아요. 설정에서 확인해 주세요.";
     if (res.status === 429) msg = "요청이 너무 많아요. 잠시 후 다시 시도해 주세요.";
+    if (res.status === 529 || res.status === 503) msg = "지금 Claude 서버가 붐벼요. 잠시 후 다시 시도해 주세요.";
     throw new Error(msg);
   }
   const data = JSON.parse(res.text);
   if (data.stop_reason === "refusal") throw new Error("Claude가 이 내용의 처리를 거절했어요." + (data.stop_details && data.stop_details.explanation ? " " + data.stop_details.explanation : ""));
   if (data.stop_reason === "max_tokens") throw new Error("응답이 너무 길어 잘렸어요. 스크린샷 수를 줄여 주세요.");
-  const textBlock = (data.content || []).find(b => b.type === "text");
-  if (!textBlock) throw new Error("응답에 내용이 없어요.");
+  const textBlock = (data.content || []).find(b => b.type === "text" && b.text);
+  if (!textBlock) throw new Error("응답에 내용이 없어요. 다시 시도해 주세요.");
   return JSON.parse(textBlock.text);
 }
 const NET_ERR = "네트워크 오류로 Anthropic API에 연결하지 못했어요. 분석 중에는 앱을 열어 둔 채 기다려 주세요.";
@@ -962,11 +967,18 @@ async function readStream(stream) {
       const t = d.type || evName;
       if (t === "content_block_delta") { if (d.delta && typeof d.delta.text === "string") text += d.delta.text; }
       else if (t === "message_delta" && d.delta) { stop = d.delta.stop_reason || stop; details = d.delta.stop_details || details; }
-      else if (t === "error") throw new Error((d.error && d.error.message) || "Claude 호출 중 오류가 났어요. 다시 시도해 주세요.");
+      else if (t === "error") throw new Error(apiErrorText(d.error));
     }
   }
-  if (!text) throw new Error(stop ? "응답에 내용이 없어요." : "응답을 받는 중 연결이 끊겼어요. 다시 시도해 주세요.");
+  if (!text && !stop) throw new Error("응답을 받는 중 연결이 끊겼어요. 다시 시도해 주세요.");
   return { stop_reason: stop, stop_details: details, content: [{ type: "text", text }] };
+}
+function apiErrorText(err) {
+  const type = err && err.type, msg = err && err.message;
+  if (type === "overloaded_error") return "지금 Claude 서버가 붐벼요. 잠시 후 다시 시도해 주세요.";
+  if (type === "rate_limit_error") return "요청이 너무 많아요. 잠시 후 다시 시도해 주세요.";
+  if (type === "authentication_error") return "API 키가 올바르지 않아요. 설정에서 확인해 주세요.";
+  return msg || "Claude 호출 중 오류가 났어요. 다시 시도해 주세요.";
 }
 
 /* ====================== intake ====================== */
@@ -1034,6 +1046,7 @@ async function analyze(item) {
   renderFor(item);
   try {
     const all = await getBlobs(item);
+    if (!S.items.includes(item)) return; // deleted while loading
     if (!all.length) throw new Error("스크린샷을 찾을 수 없어요. 다시 넣어 주세요.");
     if (all.length < item.imageIds.length) throw new Error("스크린샷 " + item.imageIds.length + "장 중 " + (item.imageIds.length - all.length) + "장을 브라우저 저장소에서 찾을 수 없어요. 빠진 장을 다시 넣거나, 남은 장으로 보려면 삭제 후 다시 넣어 주세요.");
     const cap = backend.kind === "sample" ? (backend.caps.images.maxCount || 1) : MAX_IMAGES_API;
@@ -1047,7 +1060,7 @@ async function analyze(item) {
       const captured = chunk.map(x => dateOnly((item.imageTimes || [])[item.imageIds.indexOf(x.id)]));
       const prompt = analysisPrompt({ earlierText: prev ? digestText(prev) : "", note: item.note, captured });
       const raw = await askJSON({ prompt, images: chunk.map(x => x.blob), schema: ANALYSIS_SCHEMA, tier: "default" });
-      if (item.gen !== gen) return; // superseded (e.g. the merge was undone while running)
+      if (item.gen !== gen || !S.items.includes(item)) return; // superseded (merge undone) or deleted while running
       prev = normalize(raw);
     }
     item.analysis = prev;
@@ -1056,7 +1069,7 @@ async function analyze(item) {
     if (newIds) item.newImageIds = (item.newImageIds || []).filter(id => !newIds.includes(id));
     if (!item.newImageIds || !item.newImageIds.length) delete item.newImageIds;
   } catch (e) {
-    if (item.gen !== gen) return;
+    if (item.gen !== gen || !S.items.includes(item)) return;
     item.status = "error";
     item.error = (e && e.message) || String(e);
   }
@@ -1103,7 +1116,7 @@ async function autoMerge(item) {
   if (!m.sure) {
     renderFor(item);
     const who = m.target.analysis.customer_name + (m.target.analysis.customer_handle ? " (@" + m.target.analysis.customer_handle + ")" : "");
-    if (!confirm("같은 손님 같아요: " + who + "\n기존 대화에 이어 붙일까요?\n(취소하면 따로 둡니다)")) { item.noMerge = true; save(); return false; }
+    if (!(await ask("같은 손님 같아요: " + who + "\n기존 대화에 이어 붙일까요?\n(취소하면 따로 둡니다)", "이어 붙이기"))) { item.noMerge = true; save(); return false; }
   }
   mergeInto(m.target, item);
   return true;
@@ -1487,7 +1500,7 @@ function saveSettings() {
   toast("저장했어요");
 }
 async function wipeAll() {
-  if (!confirm("저장된 항목과 스크린샷을 모두 삭제할까요? 되돌릴 수 없어요.")) return;
+  if (!(await ask("저장된 항목과 스크린샷을 모두 삭제할까요? 되돌릴 수 없어요.", "모두 삭제"))) return;
   S.items = []; S.seenExample = true; currentId = null;
   await idb.clear(); memImages.clear();
   for (const u of objectUrls.values()) URL.revokeObjectURL(u);
@@ -1511,6 +1524,18 @@ document.body.insertAdjacentHTML("beforeend", '<input type="file" id="addInput" 
 $("#addInput").addEventListener("change", e => { const it = current(); if (it && it.status === "done" && !it.example) appendTo(it, e.target.files); else toast("분석이 끝난 대화에만 붙일 수 있어요"); e.target.value = ""; });
 document.body.insertAdjacentHTML("beforeend", `<dialog id="mergeDlg"><div class="dlg"><h2>어느 대화에 붙일까요?</h2><div id="mergeList" class="picklist"></div><div class="row end"><button type="button" class="btn" id="mergeCancel">닫기</button></div></div></dialog>`);
 $("#mergeCancel").addEventListener("click", () => $("#mergeDlg").close());
+document.body.insertAdjacentHTML("beforeend", `<dialog id="askDlg"><div class="dlg"><p id="askMsg" style="white-space:pre-line;line-height:1.5"></p><div class="row end"><button type="button" class="btn" id="askNo">취소</button><button type="button" class="btn primary" id="askOk">확인</button></div></div></dialog>`);
+function ask(msg, okLabel) {
+  return new Promise(res => {
+    const d = $("#askDlg"); $("#askMsg").textContent = msg; $("#askOk").textContent = okLabel || "확인";
+    let answered = false;
+    const finish = v => { if (answered) return; answered = true; res(v); };
+    $("#askOk").onclick = () => { finish(true); d.close(); };
+    $("#askNo").onclick = () => { finish(false); d.close(); };
+    d.addEventListener("close", () => finish(false), { once: true });
+    d.showModal();
+  });
+}
 $("#mergeList").addEventListener("click", e => {
   const b = e.target.closest(".pick"); if (!b) return;
   const dlg = $("#mergeDlg"); const src = S.items.find(i => i.id === dlg.dataset.source); const target = S.items.find(i => i.id === b.dataset.id);
@@ -1540,7 +1565,7 @@ $("#detail").addEventListener("click", async e => {
   const it = current();
   if (t.id === "backBtn") return setView("list");
   if (!it) return;
-  if (t.id === "delBtn") { removeItem(it.id); setView("list"); return; }
+  if (t.id === "delBtn") { if (await ask("이 대화를 삭제할까요? 되돌릴 수 없어요.", "삭제")) { removeItem(it.id); setView("list"); } return; }
   if (t.id === "retryBtn") { enqueue(it.id); pump(); return; }
   if (t.id === "reanalyzeBtn") { reanalyze(it); return; }
   if (t.id === "addShotBtn") { $("#addInput").click(); return; }
@@ -1581,10 +1606,13 @@ $("#wipeBtn").addEventListener("click", wipeAll);
 /* ====================== boot ====================== */
 // Android "share to app": the service worker parks shared screenshots in a cache and redirects here with ?share=1.
 async function pickupShared() {
-  if (!new URLSearchParams(location.search).has("share") || !("caches" in window)) return;
+  if (!("caches" in window)) return;
+  const flagged = new URLSearchParams(location.search).has("share");
   try {
+    if (!flagged && !(await caches.has("melange-inbox-share"))) return;
     const cache = await caches.open("melange-inbox-share");
     const keys = await cache.keys();
+    if (!flagged && !keys.length) return;
     const files = [];
     for (const k of keys) {
       const r = await cache.match(k);
@@ -1595,7 +1623,7 @@ async function pickupShared() {
     await waitForBackend();
     if (backend.kind === "none" && files.length) { toast("Claude 연결 뒤 이 페이지를 다시 열면 공유한 스크린샷을 이어서 넣어요"); return; } // keep them parked
     for (const k of keys) await cache.delete(k);
-    history.replaceState(null, "", location.pathname);
+    if (flagged) history.replaceState(null, "", location.pathname);
     if (files.length) await addFiles(files);
   } catch (e) {}
 }

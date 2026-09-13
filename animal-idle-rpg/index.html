@@ -1,0 +1,763 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>야생의 전설 — 방치형 동물 RPG</title>
+<meta name="description" content="동물 동료를 모아 무한히 이어지는 야생 존을 정복하는 방치형 RPG. 보스, 환생, 오프라인 보상 지원." />
+<style>
+:root{
+  --bg:#0b1410; --bg2:#0f1d17; --panel:#132621; --panel2:#18302a;
+  --line:#26443b; --line2:#31564a;
+  --txt:#e6f2ec; --dim:#8fae a3; --dim:#8faea3; --gold:#f5c451; --soul:#a98bff;
+  --hp:#e2565b; --hp2:#ff8a5c; --xp:#5ad6a0; --boss:#ff6b4a;
+  --shadow:0 10px 30px rgba(0,0,0,.45);
+  --r:14px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:
+    radial-gradient(1200px 600px at 50% -10%, #1b3a2d 0%, transparent 60%),
+    linear-gradient(180deg,#0b1410 0%, #09110e 100%);
+  min-height:100vh; color:var(--txt);
+  font-family:"Pretendard","Apple SD Gothic Neo","Noto Sans KR",system-ui,-apple-system,"Segoe UI",sans-serif;
+  -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:1080px;margin:0 auto;padding:14px 16px 120px}
+h1,h2,h3{margin:0}
+button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:none}
+.mono{font-variant-numeric:tabular-nums}
+
+/* ── top bar ── */
+.top{
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+  background:linear-gradient(180deg,var(--panel),var(--bg2));
+  border:1px solid var(--line);border-radius:var(--r);padding:10px 12px;box-shadow:var(--shadow);
+}
+.brand{display:flex;align-items:center;gap:8px;font-weight:800;letter-spacing:-.02em;font-size:15px}
+.brand .logo{font-size:20px;filter:drop-shadow(0 2px 6px rgba(0,0,0,.5))}
+.stats{display:flex;gap:8px;flex-wrap:wrap;margin-left:auto}
+.stat{background:#0e1c17;border:1px solid var(--line);border-radius:10px;padding:5px 10px;font-size:12px;line-height:1.35}
+.stat b{display:block;font-size:14px;font-weight:800}
+.stat .k{color:#8faea3;font-size:10px;letter-spacing:.06em}
+.g{color:var(--gold)} .s{color:var(--soul)} .d{color:#6fe3b0}
+
+/* ── layout ── */
+.grid{display:grid;grid-template-columns:1.15fr .85fr;gap:14px;margin-top:14px}
+@media (max-width:860px){ .grid{grid-template-columns:1fr} }
+.card{background:linear-gradient(180deg,var(--panel),var(--bg2));border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
+
+/* ── stage ── */
+.stage{padding:14px;position:relative;overflow:hidden}
+.stage.bossmode{border-color:#6b2f22;box-shadow:0 0 0 1px #6b2f22, 0 10px 30px rgba(0,0,0,.5)}
+.zonebar{display:flex;align-items:center;gap:8px;justify-content:space-between}
+.zonename{font-size:13px;color:#9fc4b5}
+.zonename b{color:#fff;font-size:15px}
+.zctl{display:flex;gap:6px;align-items:center}
+.pill{font-size:11px;border:1px solid var(--line2);background:#0e1c17;padding:4px 9px;border-radius:999px;color:#bfe0d2}
+.pill.on{background:#1d4b3a;border-color:#2f7a5d;color:#c8ffe6}
+.waves{display:flex;gap:4px;margin-top:10px}
+.wdot{flex:1;height:5px;border-radius:3px;background:#1e3a32}
+.wdot.done{background:#3fa77c}
+.wdot.cur{background:#8ef0c0}
+.wdot.boss{background:#5b2a20}
+.wdot.boss.done{background:#ff7a55}
+
+.arena{display:flex;flex-direction:column;align-items:center;gap:6px;padding:16px 0 8px;position:relative}
+.enemy{font-size:76px;line-height:1;filter:drop-shadow(0 8px 16px rgba(0,0,0,.55));transition:transform .08s;user-select:none}
+.enemy.hit{transform:scale(.9) rotate(-4deg)}
+.enemy.boss{font-size:96px;animation:bob 2.2s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.ename{font-weight:800;font-size:16px}
+.ename .tier{font-size:11px;color:#9fc4b5;font-weight:600}
+.hpwrap{width:100%;max-width:460px;margin-top:6px}
+.hpbar{height:20px;border-radius:10px;background:#0d1b16;border:1px solid var(--line);overflow:hidden;position:relative}
+.hpfill{height:100%;width:100%;background:linear-gradient(90deg,var(--hp),var(--hp2));transition:width .1s linear}
+.hptxt{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;text-shadow:0 1px 3px #000}
+.bosstimer{margin-top:8px;height:8px;border-radius:6px;background:#0d1b16;border:1px solid #5a2a1f;overflow:hidden;max-width:460px;width:100%}
+.bosstimer i{display:block;height:100%;background:linear-gradient(90deg,#ff6b4a,#ffd36b)}
+.arena{cursor:crosshair}
+.tapzone{position:absolute;inset:0}
+.dmgpop{position:absolute;font-weight:800;font-size:14px;pointer-events:none;animation:pop .7s ease-out forwards;text-shadow:0 2px 6px #000}
+@keyframes pop{0%{opacity:1;transform:translateY(0) scale(.9)}100%{opacity:0;transform:translateY(-46px) scale(1.15)}}
+.crit{color:#ffd36b;font-size:18px}
+
+.skills{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.skill{flex:1;min-width:96px;border:1px solid var(--line2);background:#0e1c17;border-radius:12px;padding:8px 6px;text-align:center;position:relative;overflow:hidden}
+.skill .ic{font-size:20px}
+.skill .nm{font-size:11px;font-weight:700;margin-top:2px}
+.skill .cd{font-size:10px;color:#8faea3}
+.skill:disabled{opacity:.45;cursor:not-allowed}
+.skill.active{border-color:#ffd36b;box-shadow:0 0 0 1px #ffd36b inset}
+.skill .fill{position:absolute;left:0;bottom:0;height:3px;background:#6fe3b0}
+.strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(88px,1fr));gap:6px;margin-top:10px}
+.strip div{background:#0e1c17;border:1px solid var(--line);border-radius:10px;padding:6px 8px;font-size:10px;color:#8faea3;letter-spacing:.03em}
+.strip b{display:block;color:#e6f2ec;font-size:12.5px;font-weight:800;margin-top:2px}
+
+/* ── tabs ── */
+.tabs{display:flex;gap:6px;padding:10px 10px 0}
+.tab{flex:1;padding:9px 6px;border-radius:10px 10px 0 0;font-size:12px;font-weight:700;color:#9fc4b5;background:#0e1c17;border:1px solid var(--line);border-bottom:none}
+.tab.on{background:var(--panel2);color:#fff}
+.tabbody{padding:10px;max-height:min(60vh,560px);overflow-y:auto}
+@media (max-width:860px){ .tabbody{max-height:none} }
+
+.row{display:flex;gap:10px;align-items:center;border:1px solid var(--line);background:#0e1c17;border-radius:12px;padding:9px 10px;margin-bottom:8px}
+.row.locked{opacity:.5}
+.row .ic{font-size:26px;width:34px;text-align:center;flex:none}
+.row .info{flex:1;min-width:0}
+.row .nm{font-weight:800;font-size:13px;display:flex;align-items:center;gap:6px}
+.lv{font-size:10px;background:#1d4b3a;color:#c8ffe6;border-radius:999px;padding:1px 7px;font-weight:700}
+.row .sub{font-size:11px;color:#9fc4b5;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.buy{flex:none;border:1px solid var(--line2);background:#17362c;border-radius:10px;padding:7px 10px;text-align:center;min-width:92px}
+.buy .c{font-size:12px;font-weight:800;color:var(--gold)}
+.buy .q{font-size:10px;color:#9fc4b5}
+.buy:disabled{opacity:.4;cursor:not-allowed}
+.buy.ok{background:#1e5a44;border-color:#39936f}
+.mstone{height:4px;border-radius:3px;background:#1e3a32;margin-top:5px;overflow:hidden}
+.mstone i{display:block;height:100%;background:#8ef0c0}
+
+.qbar{display:flex;gap:6px;margin-bottom:10px;align-items:center}
+.qbar .lbl{font-size:11px;color:#9fc4b5;margin-right:auto}
+.qb{font-size:11px;font-weight:700;padding:5px 10px;border-radius:8px;background:#0e1c17;border:1px solid var(--line)}
+.qb.on{background:#1d4b3a;border-color:#39936f;color:#c8ffe6}
+
+.note{font-size:11px;color:#9fc4b5;line-height:1.6;background:#0e1c17;border:1px dashed var(--line2);border-radius:10px;padding:9px 10px;margin-bottom:10px}
+.big{width:100%;padding:12px;border-radius:12px;font-weight:800;font-size:14px;background:linear-gradient(180deg,#6a4bd0,#4d32a8);border:1px solid #8b6ef0;color:#fff;margin-top:4px}
+.big:disabled{opacity:.45;cursor:not-allowed;background:#2a2440;border-color:#443a63}
+.danger{background:linear-gradient(180deg,#8a2f2a,#6a2320);border-color:#b2554d}
+.kv{display:flex;justify-content:space-between;font-size:12px;padding:5px 2px;border-bottom:1px dashed #1e3a32}
+.kv b{font-weight:800}
+
+/* ── log ── */
+.log{position:fixed;left:0;right:0;bottom:0;background:linear-gradient(180deg,rgba(11,20,16,0),rgba(11,20,16,.96) 40%);padding:26px 16px 10px;pointer-events:none;z-index:5}
+.loginner{max-width:1080px;margin:0 auto;display:flex;flex-direction:column;gap:4px}
+.line{font-size:11.5px;color:#a8ccbd;background:rgba(14,28,23,.85);border:1px solid var(--line);border-radius:8px;padding:4px 9px;align-self:flex-start;max-width:100%}
+.line.good{color:#8ef0c0;border-color:#2f7a5d}
+.line.bad{color:#ffb0a0;border-color:#6b2f22}
+.line.gold{color:var(--gold);border-color:#6b5a22}
+
+/* ── modal ── */
+.modal{position:fixed;inset:0;background:rgba(5,10,8,.72);display:flex;align-items:center;justify-content:center;padding:18px;z-index:20;backdrop-filter:blur(3px)}
+.modal[hidden]{display:none}
+.mbox{max-width:420px;width:100%;background:linear-gradient(180deg,var(--panel2),var(--bg2));border:1px solid var(--line2);border-radius:16px;padding:18px;box-shadow:var(--shadow)}
+.mbox h3{font-size:17px;margin-bottom:10px}
+.mbox p{font-size:13px;color:#bfe0d2;line-height:1.7;margin:0 0 12px}
+.mrow{display:flex;gap:8px}
+.mrow .big{margin-top:0}
+.foot{text-align:center;font-size:11px;color:#5f7d71;margin-top:14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="top">
+    <div class="brand"><span class="logo">🐾</span><span>야생의 전설</span></div>
+    <div class="stats">
+      <div class="stat"><span class="k">발자국</span><b class="g mono" id="ui-gold">0</b></div>
+      <div class="stat"><span class="k">초당 피해</span><b class="d mono" id="ui-dps">0</b></div>
+      <div class="stat"><span class="k">야생혼</span><b class="s mono" id="ui-souls">0</b></div>
+      <div class="stat"><span class="k">최고 존</span><b class="mono" id="ui-best">1</b></div>
+    </div>
+  </div>
+
+  <div class="grid">
+    <!-- 전투 -->
+    <div class="card stage" id="stage">
+      <div class="zonebar">
+        <div class="zonename"><b id="ui-zone">존 1</b> · <span id="ui-biome">이끼 낀 숲</span></div>
+        <div class="zctl">
+          <button class="pill" id="btn-auto">자동 진행: 켬</button>
+          <span class="pill mono" id="ui-wave">1 / 10</span>
+        </div>
+      </div>
+      <div class="waves" id="ui-waves"></div>
+
+      <div class="arena" id="arena">
+        <div class="tapzone" id="tapzone"></div>
+        <div class="enemy" id="ui-emoji">🐜</div>
+        <div class="ename"><span id="ui-ename">숲개미</span> <span class="tier" id="ui-etier"></span></div>
+        <div class="hpwrap">
+          <div class="hpbar"><div class="hpfill" id="ui-hpfill"></div><div class="hptxt mono" id="ui-hptxt"></div></div>
+          <div class="bosstimer" id="ui-btwrap" hidden><i id="ui-bt"></i></div>
+        </div>
+      </div>
+
+      <div class="skills" id="ui-skills"></div>
+      <div class="strip" id="ui-strip"></div>
+    </div>
+
+    <!-- 탭 -->
+    <div class="card">
+      <div class="tabs" id="tabs">
+        <button class="tab on" data-t="pets">🐾 동료</button>
+        <button class="tab" data-t="up">⚒️ 강화</button>
+        <button class="tab" data-t="asc">🌀 환생</button>
+        <button class="tab" data-t="info">📖 기록</button>
+      </div>
+      <div class="tabbody" id="tabbody"></div>
+    </div>
+  </div>
+
+  <div class="foot">진행 상황은 이 브라우저에 자동 저장됩니다 · 오프라인 중에도 동료들이 사냥합니다</div>
+</div>
+
+<div class="log"><div class="loginner" id="ui-log"></div></div>
+
+<div class="modal" id="modal" hidden><div class="mbox" id="mbox"></div></div>
+
+<script>
+(() => {
+"use strict";
+
+/* ══════════ 유틸 ══════════ */
+const $ = s => document.querySelector(s);
+const SUF = ['','K','M','B','T','Qa','Qi','Sx','Sp','Oc','No','Dc'];
+const AA = 'abcdefghijklmnopqrstuvwxyz';
+function fmt(n){
+  if(n === Infinity) return '∞';
+  if(!isFinite(n) || isNaN(n)) return '0';
+  if(n < 0) return '-' + fmt(-n);
+  if(n < 1000) return n < 10 ? (Math.round(n*10)/10).toString() : Math.floor(n).toString();
+  const t = Math.floor(Math.log10(n)/3);
+  const v = n / Math.pow(1000, t);
+  let suf;
+  if(t < SUF.length) suf = SUF[t];
+  else { const i = t - SUF.length; suf = AA[Math.floor(i/26)%26] + AA[i%26]; }
+  return (v < 10 ? v.toFixed(2) : v < 100 ? v.toFixed(1) : Math.floor(v)) + suf;
+}
+const clamp = (v,a,b) => Math.max(a, Math.min(b, v));
+function time(s){
+  s = Math.max(0, Math.floor(s));
+  const h = Math.floor(s/3600), m = Math.floor(s%3600/60), x = s%60;
+  return h ? `${h}시간 ${m}분` : m ? `${m}분 ${x}초` : `${x}초`;
+}
+
+/* ══════════ 콘텐츠 데이터 ══════════ */
+const BIOMES = [
+  {n:'이끼 낀 숲', mobs:[['🐜','숲개미'],['🐌','달팽이'],['🐛','애벌레'],['🐸','청개구리'],['🦔','고슴도치']], boss:['🐗','멧돼지 우두머리']},
+  {n:'바람의 초원', mobs:[['🐇','들토끼'],['🦊','붉은여우'],['🐑','뿔양'],['🦡','오소리'],['🐿️','다람쥐']], boss:['🦌','초원의 큰뿔사슴']},
+  {n:'서리 설원',  mobs:[['🐧','황제펭귄'],['🦭','물범'],['🦌','순록'],['🐺','설원늑대'],['🦉','흰올빼미']], boss:['🐻‍❄️','빙하의 백곰']},
+  {n:'모래 사막',  mobs:[['🦂','전갈'],['🐍','사막뱀'],['🦎','도마뱀'],['🐪','쌍봉낙타'],['🦤','모래새']], boss:['🐫','사막의 폭군']},
+  {n:'심해 해구',  mobs:[['🐟','비늘물고기'],['🦀','집게발'],['🦑','오징어'],['🐡','복어'],['🪼','해파리']], boss:['🐙','심해의 크라켄']},
+  {n:'울창한 정글',mobs:[['🦜','앵무새'],['🐒','원숭이'],['🐍','보아뱀'],['🦥','나무늘보'],['🦋','독나비']], boss:['🦍','정글의 실버백']},
+  {n:'화산 지대',  mobs:[['🦂','용암전갈'],['🦇','화염박쥐'],['🐊','마그마악어'],['🦎','불도마뱀'],['🕷️','재거미']], boss:['🦖','화산의 티라노']},
+  {n:'하늘 절벽',  mobs:[['🕊️','바람비둘기'],['🦅','매'],['🦢','백조'],['🦩','홍학'],['🦇','절벽박쥐']], boss:['🦅','창공의 대독수리']},
+  {n:'고대 습지',  mobs:[['🐊','악어'],['🐢','늪거북'],['🪰','늪파리'],['🐸','독개구리'],['🦫','비버']], boss:['🦛','습지의 하마왕']},
+  {n:'별빛 심연',  mobs:[['🦈','심연상어'],['🐋','고래'],['🦣','그림자매머드'],['🐉','새끼용'],['🦄','환수']], boss:['🐲','별을 삼킨 용']},
+];
+const PREFIX = ['','거친 ','굶주린 ','사나운 ','단단한 ','고대의 ','광폭한 ','전설의 ','심연의 ','초월한 ','신화의 '];
+
+const PETS = [
+  {ic:'🐹', n:'햄찌',       d:'볼주머니에 도토리를 숨긴다'},
+  {ic:'🐰', n:'토깽이',     d:'뒷발차기가 매섭다'},
+  {ic:'🦊', n:'여우 루',    d:'약점을 정확히 문다'},
+  {ic:'🐺', n:'늑대 카이',  d:'무리를 이끌어 공격한다'},
+  {ic:'🦅', n:'매 하늘',    d:'급강하로 내리꽂는다'},
+  {ic:'🐻', n:'곰 바우',    d:'한 방이 묵직하다'},
+  {ic:'🐯', n:'호랑이 범',  d:'산의 왕, 발톱이 갈린다'},
+  {ic:'🦏', n:'코뿔소 탱',  d:'돌진으로 전열을 부순다'},
+  {ic:'🐘', n:'코끼리 우르',d:'대지를 울리는 발걸음'},
+  {ic:'🦈', n:'상어 지느',  d:'피 냄새를 놓치지 않는다'},
+  {ic:'🦣', n:'매머드 설',  d:'고대의 힘을 품었다'},
+  {ic:'🐉', n:'비룡 아르',  d:'전설이 깨어난다'},
+].map((p,i) => ({...p, i, cost: 10 * Math.pow(8.8, i), dps: 0.8 * Math.pow(9.2, i)}));
+
+const MILESTONES = [10,25,50,100,200,400,800,1600,3200,6400,12800];
+const petMult = lv => Math.pow(2, MILESTONES.filter(m => lv >= m).length);
+const nextMs  = lv => MILESTONES.find(m => lv < m) || null;
+
+const UPS = [
+  {k:'claw',  ic:'🖐️', n:'조련사 훈련', d:'터치 피해 +35%',        c:60,   g:2.15},
+  {k:'gold',  ic:'💰', n:'사냥 본능',   d:'발자국 획득 +12%',      c:250,  g:2.30},
+  {k:'bless', ic:'🌿', n:'야생의 축복', d:'모든 동료 피해 +8%',    c:700,  g:2.45},
+  {k:'fang',  ic:'🦷', n:'맹수의 이빨', d:'보스에게 주는 피해 +18%',c:1500, g:2.60},
+  {k:'luck',  ic:'🍀', n:'행운의 발톱', d:'치명타 확률 +2% (최대 60%)', c:1200, g:2.85},
+];
+const SOULS = [
+  {k:'rage',  ic:'🔥', n:'야수의 분노', d:'모든 피해 +30%',            c:3,  g:1.35},
+  {k:'heart', ic:'💛', n:'황금 심장',   d:'발자국 획득 +25%',          c:4,  g:1.35},
+  {k:'time',  ic:'⏳', n:'시간의 주인', d:'오프라인 보상 최대 +2시간', c:6,  g:1.60},
+  {k:'hunt',  ic:'🎯', n:'보스 사냥꾼', d:'보스 제한시간 +4초',        c:5,  g:1.55},
+  {k:'echo',  ic:'💠', n:'영혼 공명',   d:'야생혼 획득 +15%',          c:12, g:1.85},
+  {k:'path',  ic:'🧭', n:'개척자',      d:'환생 후 시작 존 +4',        c:20, g:2.10},
+];
+const SKILLS = [
+  {k:'roar',  ic:'🗣️', n:'포효',      d:'12초간 모든 피해 ×6',        dur:12, cd:75,  zone:5},
+  {k:'rush',  ic:'🪙', n:'황금 사냥', d:'20초간 발자국 ×5',           dur:20, cd:130, zone:15},
+  {k:'warp',  ic:'⚡', n:'시간 압축', d:'30초치 피해를 즉시 폭발시킨다', dur:0, cd:200, zone:30},
+];
+
+/* ══════════ 상태 ══════════ */
+const NEW = () => ({
+  v:1, zone:1, wave:1, gold:15, souls:0, best:1, runBest:1,
+  pets: PETS.map(() => 0),
+  ups: Object.fromEntries(UPS.map(u => [u.k, 0])),
+  sls: Object.fromEntries(SOULS.map(u => [u.k, 0])),
+  cds: Object.fromEntries(SKILLS.map(s => [s.k, 0])),
+  auto: true, kills:0, bossKills:0, ascs:0, played:0, started:Date.now(), last:Date.now(),
+  hp:0, buff:{roar:0, rush:0}, bt:0, qty:1, tab:'pets',
+});
+let S = NEW();
+const KEY = 'wild-legend-save-v1';
+
+/* ══════════ 수식 ══════════ */
+const hpCache = [0, 10];
+function zoneHP(z){
+  if(hpCache[z] !== undefined) return hpCache[z];
+  let hp = hpCache[hpCache.length-1];
+  for(let i = hpCache.length; i <= z; i++){
+    hp *= 1.42 + Math.min(0.26, i * 0.0012);
+    hpCache[i] = hp;
+  }
+  return hpCache[z];
+}
+const isBoss = (w = S.wave) => w === 10;
+function enemyMaxHP(z = S.zone, w = S.wave){
+  return Math.min(1e300, zoneHP(z) * (1 + (w-1) * 0.12) * (isBoss(w) ? 5.5 : 1));
+}
+function goldReward(z = S.zone, w = S.wave){
+  return Math.min(1e300, zoneHP(z) * 0.09 * (isBoss(w) ? 9 : 1) * goldMult());
+}
+function goldMult(){
+  return (1 + 0.12 * S.ups.gold) * (1 + 0.25 * S.sls.heart) * (S.buff.rush > 0 ? 5 : 1);
+}
+function petDps(i){
+  const lv = S.pets[i];
+  return lv ? PETS[i].dps * lv * petMult(lv) : 0;
+}
+function globalMult(){
+  return (1 + 0.08 * S.ups.bless) * (1 + 0.30 * S.sls.rage) * Math.pow(1.09, S.souls)
+       * (S.buff.roar > 0 ? 6 : 1);
+}
+function totalDps(){
+  let base = 0;
+  for(let i = 0; i < PETS.length; i++) base += petDps(i);
+  const v = base * globalMult();
+  return isFinite(v) ? v : 1e300;
+}
+function clickDmg(){
+  return (totalDps() * 0.18 + 8) * (1 + 0.35 * S.ups.claw);
+}
+const critChance = () => Math.min(0.6, 0.02 * S.ups.luck);
+const bossMult  = () => 1 + 0.18 * S.ups.fang;
+const bossTime  = () => 30 + 4 * S.sls.hunt;
+const maxOffline = () => (2 + 2 * S.sls.time) * 3600;
+function soulGain(){
+  const b = S.runBest;
+  if(b < 26) return 0;
+  return Math.floor(Math.pow((b - 20) / 5, 1.55) * (1 + 0.15 * S.sls.echo));
+}
+const geoCost = (base, g, lv, n) => base * Math.pow(g, lv) * (Math.pow(g, n) - 1) / (g - 1);
+function maxBuy(base, g, lv, gold){
+  const n = Math.floor(Math.log(gold * (g-1) / (base * Math.pow(g, lv)) + 1) / Math.log(g));
+  return Math.max(0, n);
+}
+function qtyFor(base, g, lv){
+  if(S.qty === 'M') return Math.max(1, maxBuy(base, g, lv, S.gold));
+  return S.qty;
+}
+
+/* ══════════ 적 / 전투 ══════════ */
+function biome(z){ return BIOMES[(Math.floor((z-1)/5)) % BIOMES.length]; }
+function enemy(z = S.zone, w = S.wave){
+  const b = biome(z);
+  const px = PREFIX[Math.min(PREFIX.length-1, Math.floor((z-1)/18))];
+  if(isBoss(w)) return {ic:b.boss[0], n:px + b.boss[1], boss:true};
+  const m = b.mobs[(z*7 + w*3) % b.mobs.length];
+  return {ic:m[0], n:px + m[1], boss:false};
+}
+function spawn(){
+  S.hp = enemyMaxHP();
+  S.bt = isBoss() ? bossTime() : 0;
+  renderStage(true);
+}
+function damage(amount, crit){
+  if(S.hp <= 0) return;
+  const amt = amount * (isBoss() ? bossMult() : 1);
+  S.hp = isFinite(S.hp - amt) ? S.hp - amt : 0;
+  if(crit !== undefined) pop(amt, crit);
+  if(S.hp <= 0) kill();
+}
+function kill(){
+  const g = goldReward();
+  S.gold += g; S.kills++;
+  const wasBoss = isBoss();
+  if(wasBoss){
+    S.bossKills++;
+    log(`👑 ${enemy().n} 격파! +${fmt(g)} 발자국`, 'gold');
+    if(S.auto){
+      S.zone++; S.wave = 1;
+      S.best = Math.max(S.best, S.zone);
+      S.runBest = Math.max(S.runBest, S.zone);
+      if(S.zone % 5 === 1) log(`🗺️ 새로운 지역: ${biome(S.zone).n}`, 'good');
+      SKILLS.forEach(s => { if(s.zone === S.zone) log(`✨ 스킬 해금: ${s.n}`, 'good'); });
+    }
+  } else if(S.auto){
+    S.wave++;
+  }
+  spawn();
+}
+function bossFail(){
+  log(`💀 보스 토벌 실패… 존 ${S.zone} 1웨이브부터 다시!`, 'bad');
+  S.wave = 1; spawn();
+}
+function tick(dt){
+  S.played += dt;
+  for(const k in S.buff) if(S.buff[k] > 0) S.buff[k] = Math.max(0, S.buff[k] - dt);
+  for(const k in S.cds)  if(S.cds[k]  > 0) S.cds[k]  = Math.max(0, S.cds[k] - dt);
+  if(S.hp > 0) damage(totalDps() * dt);
+  if(isBoss() && S.bt > 0){
+    S.bt -= dt;
+    if(S.bt <= 0 && S.hp > 0) bossFail();
+  }
+}
+
+/* ══════════ 행동 ══════════ */
+function tap(x, y){
+  const crit = Math.random() < critChance();
+  const dmg = clickDmg() * (crit ? 5 : 1);
+  damage(dmg, crit);
+  if(x !== undefined) popAt(dmg, crit, x, y);
+}
+function buyPet(i){
+  const p = PETS[i], lv = S.pets[i];
+  const n = qtyFor(p.cost, 1.07, lv);
+  const c = geoCost(p.cost, 1.07, lv, n);
+  if(n < 1 || c > S.gold) return;
+  S.gold -= c; S.pets[i] += n;
+  if(lv === 0) log(`🐾 ${p.n}이(가) 무리에 합류했다!`, 'good');
+  const ms = MILESTONES.filter(m => m > lv && m <= S.pets[i]);
+  if(ms.length) log(`⭐ ${p.n} ${ms[ms.length-1]}레벨 돌파 — 피해 ×${Math.pow(2, ms.length)}`, 'good');
+  render();
+}
+function buyUp(k){
+  const u = UPS.find(x => x.k === k), lv = S.ups[k];
+  const n = qtyFor(u.c, u.g, lv);
+  const c = geoCost(u.c, u.g, lv, n);
+  if(n < 1 || c > S.gold) return;
+  S.gold -= c; S.ups[k] += n; render();
+}
+function buySoul(k){
+  const u = SOULS.find(x => x.k === k), lv = S.sls[k];
+  const c = u.c * Math.pow(u.g, lv);
+  if(c > S.souls) return;
+  S.souls -= c; S.sls[k]++;
+  log(`💠 ${u.n} 강화 (Lv.${S.sls[k]})`, 'good');
+  render();
+}
+function useSkill(k){
+  if(S.cds[k] > 0) return;
+  const s = SKILLS.find(x => x.k === k);
+  if(S.zone < s.zone && S.best < s.zone) return;
+  S.cds[k] = s.cd;
+  if(k === 'warp'){
+    const d = totalDps() * 30;
+    damage(d, false); log(`⚡ 시간 압축! ${fmt(d)} 피해 폭발`, 'good');
+  } else {
+    S.buff[k] = s.dur; log(`${s.ic} ${s.n} 발동!`, 'good');
+  }
+  render();
+}
+function ascend(){
+  const gain = soulGain();
+  if(gain < 1) return;
+  const keep = {souls:S.souls + gain, sls:S.sls, best:S.best, ascs:S.ascs + 1,
+                kills:S.kills, bossKills:S.bossKills, played:S.played, started:S.started};
+  S = Object.assign(NEW(), keep);
+  S.zone = 1 + 4 * S.sls.path;
+  S.best = Math.max(S.best, S.zone);
+  S.runBest = S.zone;
+  closeModal(); spawn(); render();
+  log(`🌀 환생 #${S.ascs} — 야생혼 +${fmt(gain)} 획득!`, 'gold');
+}
+
+/* ══════════ 렌더 ══════════ */
+function pop(amount, crit){ popAt(amount, crit); }
+function popAt(amount, crit, x, y){
+  const a = $('#arena'), r = a.getBoundingClientRect();
+  const el = document.createElement('div');
+  el.className = 'dmgpop' + (crit ? ' crit' : '');
+  el.textContent = (crit ? '✦ ' : '') + fmt(amount);
+  el.style.left = ((x !== undefined ? x - r.left : r.width/2 + (Math.random()*70-35)) - 14) + 'px';
+  el.style.top  = ((y !== undefined ? y - r.top  : r.height/2 - 20)) + 'px';
+  a.appendChild(el);
+  setTimeout(() => el.remove(), 700);
+}
+function log(msg, cls){
+  const box = $('#ui-log');
+  const el = document.createElement('div');
+  el.className = 'line' + (cls ? ' ' + cls : '');
+  el.textContent = msg;
+  box.appendChild(el);
+  while(box.children.length > 4) box.firstChild.remove();
+  setTimeout(() => { el.style.transition = 'opacity .5s'; el.style.opacity = '0';
+                     setTimeout(() => el.remove(), 500); }, 6000);
+}
+let lastEmoji = '';
+function renderStage(flash){
+  const e = enemy(), max = enemyMaxHP(), pct = clamp(S.hp / max * 100, 0, 100);
+  $('#ui-zone').textContent = '존 ' + S.zone;
+  $('#ui-biome').textContent = biome(S.zone).n;
+  $('#ui-wave').textContent = S.wave + ' / 10';
+  $('#ui-ename').textContent = e.n;
+  $('#ui-etier').textContent = e.boss ? 'BOSS' : '';
+  const em = $('#ui-emoji');
+  if(em.textContent !== e.ic){ em.textContent = e.ic; }
+  em.className = 'enemy' + (e.boss ? ' boss' : '');
+  $('#stage').classList.toggle('bossmode', e.boss);
+  $('#ui-hpfill').style.width = pct + '%';
+  $('#ui-hptxt').textContent = fmt(Math.max(0, S.hp)) + ' / ' + fmt(max);
+  $('#ui-btwrap').hidden = !e.boss;
+  if(e.boss) $('#ui-bt').style.width = clamp(S.bt / bossTime() * 100, 0, 100) + '%';
+  if(flash){ em.classList.add('hit'); setTimeout(() => em.classList.remove('hit'), 90); }
+
+  const w = $('#ui-waves');
+  if(w.children.length !== 10){ w.innerHTML = Array.from({length:10}, () => '<i class="wdot"></i>').join(''); }
+  [...w.children].forEach((d, i) => {
+    const n = i + 1;
+    d.className = 'wdot' + (n === 10 ? ' boss' : '') + (n < S.wave ? ' done' : n === S.wave ? ' cur' : '');
+  });
+  $('#btn-auto').textContent = '자동 진행: ' + (S.auto ? '켬' : '끔');
+  $('#btn-auto').classList.toggle('on', S.auto);
+}
+function renderStrip(){
+  const el = $('#ui-strip');
+  const cells = [
+    ['터치 피해', fmt(clickDmg())],
+    ['치명타', (critChance()*100).toFixed(0) + '%'],
+    ['발자국 배율', '×' + goldMult().toFixed(2)],
+    ['보스 특화', '+' + ((bossMult()-1)*100).toFixed(0) + '%'],
+    ['누적 처치', fmt(S.kills)],
+    ['보스 처치', fmt(S.bossKills)],
+  ];
+  if(el.children.length !== cells.length) el.innerHTML = cells.map(() => '<div><span></span><b></b></div>').join('');
+  cells.forEach((c, i) => {
+    const d = el.children[i];
+    d.firstChild.textContent = c[0];
+    d.lastChild.textContent = c[1];
+  });
+}
+function renderTop(){
+  $('#ui-gold').textContent  = fmt(S.gold);
+  $('#ui-dps').textContent   = fmt(totalDps());
+  $('#ui-souls').textContent = fmt(S.souls);
+  $('#ui-best').textContent  = S.best;
+}
+function renderSkills(){
+  const box = $('#ui-skills');
+  if(box.children.length !== SKILLS.length){
+    box.innerHTML = SKILLS.map(s => `<button class="skill" data-s="${s.k}">
+      <div class="ic">${s.ic}</div><div class="nm">${s.n}</div><div class="cd"></div>
+      <div class="fill" style="width:0"></div></button>`).join('');
+    box.querySelectorAll('.skill').forEach(b => b.onclick = () => useSkill(b.dataset.s));
+  }
+  SKILLS.forEach((s, i) => {
+    const el = box.children[i], locked = S.best < s.zone;
+    const cd = S.cds[s.k], act = S.buff[s.k] > 0;
+    el.disabled = locked || cd > 0;
+    el.classList.toggle('active', act);
+    el.querySelector('.nm').textContent = locked ? '???' : s.n;
+    el.querySelector('.cd').textContent = locked ? `존 ${s.zone} 해금`
+      : act ? Math.ceil(S.buff[s.k]) + '초'
+      : cd > 0 ? Math.ceil(cd) + '초' : '준비 완료';
+    el.querySelector('.fill').style.width = cd > 0 ? (100 - cd / s.cd * 100) + '%' : '100%';
+  });
+}
+function qtyBar(){
+  return `<div class="qbar"><span class="lbl">구매 수량</span>` +
+    [1,10,100,'M'].map(q => `<button class="qb ${S.qty===q?'on':''}" data-q="${q}">${q==='M'?'MAX':'×'+q}</button>`).join('') +
+    `</div>`;
+}
+function tabPets(){
+  let h = qtyBar();
+  const dps = totalDps() || 1;
+  let top = 0;
+  PETS.forEach((p, i) => { if(S.pets[i] > 0 || S.gold >= p.cost * 0.2) top = i; });
+  const limit = Math.min(PETS.length - 1, top + 2);
+  PETS.forEach((p, i) => {
+    if(i > limit) return;
+    const lv = S.pets[i];
+    const n = qtyFor(p.cost, 1.07, lv);
+    const c = geoCost(p.cost, 1.07, lv, Math.max(1, n));
+    const afford = c <= S.gold && n >= 1;
+    const hidden = lv === 0 && S.gold < p.cost * 0.2 && i > 0;
+    const my = petDps(i) * globalMult();
+    const ms = nextMs(lv);
+    h += `<div class="row ${hidden?'locked':''}">
+      <div class="ic">${hidden ? '❔' : p.ic}</div>
+      <div class="info">
+        <div class="nm">${hidden ? '???' : p.n} ${lv?`<span class="lv">Lv.${lv}</span>`:''}
+          ${petMult(lv)>1?`<span class="lv">×${petMult(lv)}</span>`:''}</div>
+        <div class="sub">${lv ? `피해 ${fmt(my)}/초 · 비중 ${my/dps*100 >= 0.1 ? (my/dps*100).toFixed(1) + '%' : '0.1% 미만'}` : (hidden ? '더 많은 발자국이 필요하다' : p.d)}</div>
+        ${ms ? `<div class="mstone"><i style="width:${clamp(lv/ms*100,0,100)}%"></i></div>` : ''}
+      </div>
+      <button class="buy ${afford?'ok':''}" data-p="${i}" ${afford?'':'disabled'}>
+        <div class="c">${fmt(c)}</div><div class="q">${lv?`+${Math.max(1,n)} 레벨`:'영입하기'}</div>
+      </button></div>`;
+  });
+  return h;
+}
+function tabUp(){
+  let h = qtyBar() + `<div class="note">터치 피해 <b>${fmt(clickDmg())}</b> · 치명타 <b>${(critChance()*100).toFixed(0)}%</b> (×5) · 보스 피해 <b>+${((bossMult()-1)*100).toFixed(0)}%</b></div>`;
+  UPS.forEach(u => {
+    const lv = S.ups[u.k];
+    const n = qtyFor(u.c, u.g, lv);
+    const c = geoCost(u.c, u.g, lv, Math.max(1, n));
+    const afford = c <= S.gold && n >= 1;
+    h += `<div class="row">
+      <div class="ic">${u.ic}</div>
+      <div class="info"><div class="nm">${u.n} <span class="lv">Lv.${lv}</span></div>
+        <div class="sub">${u.d}</div></div>
+      <button class="buy ${afford?'ok':''}" data-u="${u.k}" ${afford?'':'disabled'}>
+        <div class="c">${fmt(c)}</div><div class="q">+${Math.max(1,n)} 레벨</div></button></div>`;
+  });
+  return h;
+}
+function tabAsc(){
+  const gain = soulGain();
+  let h = `<div class="note">환생하면 <b>존·발자국·동료</b>가 초기화되지만, <b class="s">야생혼</b>과 영혼 강화는 영원히 남습니다.
+    야생혼 1개당 모든 피해 <b>+9%</b>(복리로 누적).<br>이번 생 최고 존 <b>${S.runBest}</b> → 획득 예정 <b class="s">${fmt(gain)} 야생혼</b>
+    ${gain < 1 ? '<br><span style="color:#ffb0a0">존 26 이상 도달해야 환생할 수 있습니다.</span>' : ''}</div>
+    <button class="big" id="btn-asc" ${gain<1?'disabled':''}>🌀 환생하기 (+${fmt(gain)} 야생혼)</button>
+    <div style="height:12px"></div>`;
+  SOULS.forEach(u => {
+    const lv = S.sls[u.k], c = u.c * Math.pow(u.g, lv), afford = c <= S.souls;
+    h += `<div class="row">
+      <div class="ic">${u.ic}</div>
+      <div class="info"><div class="nm">${u.n} <span class="lv">Lv.${lv}</span></div>
+        <div class="sub">${u.d}</div></div>
+      <button class="buy ${afford?'ok':''}" data-sl="${u.k}" ${afford?'':'disabled'}>
+        <div class="c s">${fmt(Math.ceil(c))}</div><div class="q">야생혼</div></button></div>`;
+  });
+  return h;
+}
+function tabInfo(){
+  const rows = [
+    ['현재 존 / 웨이브', `${S.zone} · ${S.wave}/10`],
+    ['최고 도달 존', S.best],
+    ['이번 생 최고 존', S.runBest],
+    ['초당 피해(DPS)', fmt(totalDps())],
+    ['터치 피해', fmt(clickDmg())],
+    ['발자국 배율', '×' + goldMult().toFixed(2)],
+    ['누적 처치', fmt(S.kills)],
+    ['보스 처치', fmt(S.bossKills)],
+    ['환생 횟수', S.ascs],
+    ['오프라인 최대 보상', time(maxOffline())],
+    ['총 플레이 시간', time(S.played)],
+  ];
+  return `<div class="note">현재 지역 <b>${biome(S.zone).n}</b> · 다음 지역까지 <b>${5 - ((S.zone-1)%5)}</b>개 존<br>
+    존은 무한히 이어지며, 존마다 적 체력이 <b>1.42 → 1.68배</b>로 점점 가파르게 증가합니다. 10웨이브마다 <b>보스</b>가 등장하고 제한시간(${bossTime().toFixed(0)}초) 안에 잡지 못하면 해당 존 1웨이브로 돌아갑니다.</div>
+    ${rows.map(r => `<div class="kv"><span>${r[0]}</span><b class="mono">${r[1]}</b></div>`).join('')}
+    <div style="height:14px"></div>
+    <button class="big danger" id="btn-reset">⚠️ 처음부터 다시 시작</button>`;
+}
+function renderTab(){
+  const b = $('#tabbody');
+  b.innerHTML = S.tab === 'pets' ? tabPets() : S.tab === 'up' ? tabUp() : S.tab === 'asc' ? tabAsc() : tabInfo();
+  b.querySelectorAll('[data-q]').forEach(x => x.onclick = () => { S.qty = x.dataset.q === 'M' ? 'M' : +x.dataset.q; renderTab(); });
+  b.querySelectorAll('[data-p]').forEach(x => x.onclick = () => buyPet(+x.dataset.p));
+  b.querySelectorAll('[data-u]').forEach(x => x.onclick = () => buyUp(x.dataset.u));
+  b.querySelectorAll('[data-sl]').forEach(x => x.onclick = () => buySoul(x.dataset.sl));
+  const a = b.querySelector('#btn-asc'); if(a) a.onclick = confirmAscend;
+  const r = b.querySelector('#btn-reset'); if(r) r.onclick = confirmReset;
+  [...$('#tabs').children].forEach(t => t.classList.toggle('on', t.dataset.t === S.tab));
+}
+function render(){ renderTop(); renderStage(); renderSkills(); renderStrip(); renderTab(); }
+
+/* ══════════ 모달 ══════════ */
+function openModal(html){ $('#mbox').innerHTML = html; $('#modal').hidden = false; }
+function closeModal(){ $('#modal').hidden = true; }
+function confirmAscend(){
+  const gain = soulGain();
+  openModal(`<h3>🌀 환생하시겠습니까?</h3>
+    <p>존·발자국·동료 레벨이 초기화됩니다.<br>
+    획득: <b class="s">${fmt(gain)} 야생혼</b> (총 ${fmt(S.souls + gain)})<br>
+    시작 존: <b>${1 + 4 * S.sls.path}</b></p>
+    <div class="mrow"><button class="big" id="m-ok">환생</button>
+    <button class="big danger" id="m-no">취소</button></div>`);
+  $('#m-ok').onclick = ascend; $('#m-no').onclick = closeModal;
+}
+function confirmReset(){
+  openModal(`<h3>⚠️ 전체 초기화</h3><p>야생혼과 모든 기록이 사라집니다. 되돌릴 수 없습니다.</p>
+    <div class="mrow"><button class="big danger" id="m-ok">초기화</button>
+    <button class="big" id="m-no">취소</button></div>`);
+  $('#m-ok').onclick = () => { localStorage.removeItem(KEY); S = NEW(); spawn(); render(); closeModal(); };
+  $('#m-no').onclick = closeModal;
+}
+
+/* ══════════ 저장 / 오프라인 ══════════ */
+function save(){ S.last = Date.now(); try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
+function load(){
+  try{
+    const raw = localStorage.getItem(KEY);
+    if(!raw) return false;
+    const d = JSON.parse(raw);
+    S = Object.assign(NEW(), d);
+    S.ups = Object.assign(Object.fromEntries(UPS.map(u => [u.k, 0])), d.ups || {});
+    S.sls = Object.assign(Object.fromEntries(SOULS.map(u => [u.k, 0])), d.sls || {});
+    S.cds = Object.assign(Object.fromEntries(SKILLS.map(s => [s.k, 0])), d.cds || {});
+    S.buff = Object.assign({roar:0, rush:0}, d.buff || {});
+    if(!Array.isArray(S.pets) || S.pets.length !== PETS.length) S.pets = PETS.map((_, i) => (d.pets && d.pets[i]) || 0);
+    return true;
+  }catch(e){ return false; }
+}
+function offline(){
+  const dt = Math.min(maxOffline(), (Date.now() - (S.last || Date.now())) / 1000);
+  if(dt < 60) return;
+  const dps = totalDps();
+  if(dps <= 0) return;
+  const hp = enemyMaxHP(S.zone, 1);
+  const per = Math.max(0.35, hp / dps);
+  const kills = Math.floor(dt / per * 0.6);
+  if(kills < 1) return;
+  const g = kills * goldReward(S.zone, 1) / (S.buff.rush > 0 ? 5 : 1);
+  S.gold += g; S.kills += kills; S.played += dt;
+  openModal(`<h3>🌙 동료들이 사냥하고 있었습니다</h3>
+    <p>자리를 비운 시간: <b>${time(dt)}</b><br>
+    처치: <b>${fmt(kills)}</b>마리<br>
+    획득: <b class="g">${fmt(g)} 발자국</b></p>
+    <button class="big" id="m-ok">받기</button>`);
+  $('#m-ok').onclick = closeModal;
+}
+
+/* ══════════ 입력 ══════════ */
+$('#arena').addEventListener('pointerdown', e => {
+  if(e.button !== undefined && e.button !== 0) return;
+  e.preventDefault(); tap(e.clientX, e.clientY);
+});
+$('#btn-auto').onclick = () => { S.auto = !S.auto; renderStage(); };
+$('#tabs').onclick = e => { const t = e.target.closest('.tab'); if(t){ S.tab = t.dataset.t; renderTab(); } };
+$('#modal').onclick = e => { if(e.target.id === 'modal') closeModal(); };
+addEventListener('keydown', e => {
+  if(e.code === 'Space'){ e.preventDefault(); tap(); }
+  if(e.key === '1') useSkill('roar');
+  if(e.key === '2') useSkill('rush');
+  if(e.key === '3') useSkill('warp');
+});
+addEventListener('visibilitychange', () => { if(document.hidden) save(); });
+addEventListener('beforeunload', save);
+
+/* ══════════ 루프 ══════════ */
+load();
+if(!S.hp || S.hp > enemyMaxHP()) spawn(); else renderStage();
+offline();
+render();
+log('🐾 야생의 전설에 오신 것을 환영합니다. 적을 터치해 사냥을 시작하세요!', 'good');
+
+let prev = performance.now();
+setInterval(() => {
+  const now = performance.now();
+  const dt = Math.min(0.5, (now - prev) / 1000);
+  prev = now;
+  tick(dt);
+}, 100);
+setInterval(() => { renderTop(); renderStage(); renderSkills(); }, 120);
+setInterval(renderStrip, 400);
+setInterval(renderTab, 500);
+setInterval(save, 10000);
+
+})();
+</script>
+</body>
+</html>

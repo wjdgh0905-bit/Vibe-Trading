@@ -1551,12 +1551,14 @@ function Stage(host, opts) {
 
   /* ─────────────────── 10. 공개 메서드 ─────────────────── */
   S.mount = function () { return S; };
-  S.setBiome = function (i) {
+  S.setBiome = function (i, o) {
     i = clamp(i | 0, 0, BIOMES.length - 1);
     if (BIOMES[i] === BB && xf >= 1) return S;
     BA = BB; geoA = geoB;                               /* 진행 중이던 전환은 즉시 확정 */
     BB = BIOMES[i]; geoB = buildGeo(BB, (seed ^ (i * 2654435761)) >>> 0);
     bi = i; xf = 0;
+    /* 절약 모드·즉시 옵션: 크로스페이드 없이 바로 새 지역 */
+    if ((o && o.instant) || qual < 2) { xf = 1; BA = BB; geoA = geoB; skyKey = ''; }
     for (var j = 0; j < PN; j++) { parts[j].g = 1; parts[j].sw = Math.random() * 0.82; }
     return S;
   };

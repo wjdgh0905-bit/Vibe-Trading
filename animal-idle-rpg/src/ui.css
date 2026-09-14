@@ -20,7 +20,7 @@
   --body:"IBM Plex Sans KR",'Apple SD Gothic Neo','Malgun Gothic',sans-serif;
   --num:"IBM Plex Mono","IBM Plex Sans KR",'Malgun Gothic',ui-monospace,monospace;
   /* 치수 */
-  --gut:14px; --bar:calc(56px + env(safe-area-inset-bottom));
+  --gut:14px; --bar:0px;
   --r:12px; --r-sm:8px;
   --spring:cubic-bezier(.2,.9,.28,1);
 }
@@ -41,8 +41,10 @@ svg{display:block}
 .num,.v,.c{font-family:var(--num);font-variant-numeric:tabular-nums}
 .soul{color:var(--soulfire)} .warm{color:var(--ember)}
 
-.app{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;
-  padding-bottom:calc(var(--bar) + 6px)}
+.app{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;padding-bottom:24px}
+/* 모바일: 스트립 → 무대 → 스킬 → 탭 → 장부 순서로 흐른다 */
+.grid{display:contents}
+.strip{order:0} .col-stage{order:1} .tabs{order:2} .ledger{order:3}
 
 /* ══ 상단 재화 : 유리 위에 얹힌 한 줄 ══════════════════════════════════ */
 .strip{
@@ -59,7 +61,7 @@ svg{display:block}
 .res.soul .v{color:var(--soulfire)}
 
 /* ══ 레이아웃 ══════════════════════════════════════════════════════════ */
-.grid{flex:1;display:flex;flex-direction:column;min-width:0}
+.grid{display:contents}
 .col-stage{min-width:0}
 
 /* ══ 무대 ══════════════════════════════════════════════════════════════ */
@@ -226,14 +228,15 @@ svg{display:block}
 
 /* ══ 하단 탭바 ═════════════════════════════════════════════════════════ */
 .tabs{
-  position:fixed;left:0;right:0;bottom:0;z-index:35;display:flex;
-  padding:6px 4px calc(env(safe-area-inset-bottom) + 6px);
+  position:sticky;top:0;z-index:25;display:flex;
+  padding:4px 6px 0;margin:0;
   background:rgba(11,14,21,.97);
-  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);
 }
-.tab{flex:1;min-width:0;min-height:44px;display:flex;flex-direction:column;align-items:center;
-  justify-content:center;gap:3px;padding:4px 2px;color:var(--label);border-radius:var(--r-sm);
-  transition:color .18s ease}
+.tab{flex:1;min-width:0;min-height:46px;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:3px;padding:4px 2px 6px;color:var(--label);
+  border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .18s ease}
+.tab.on{border-bottom-color:var(--ember)}
 .tab svg{width:19px;height:19px;fill:currentColor;stroke:currentColor;stroke-width:0}
 .tab svg [fill="none"]{fill:none}
 .tab span{font-size:9.5px;letter-spacing:.02em;font-weight:500}
@@ -279,11 +282,10 @@ textarea{width:100%;height:110px;background:#0B0E15;color:var(--ink);border:1px 
     background:linear-gradient(180deg,var(--night) 62%,rgba(11,14,21,.86));border-bottom:1px solid var(--line)}
   .res{flex:0 0 auto;min-width:104px}
   .res .v{font-size:15px}
-  .grid{display:contents}
   .col-stage{grid-area:stage;margin-top:16px}
   .stage{aspect-ratio:16/9;max-height:none;border:1px solid var(--line);border-radius:var(--r)}
   .skills{padding:10px 0 0;border-bottom:none;background:none;overflow:visible}
-  .tabs{grid-area:tabs;position:sticky;top:74px;z-index:20;margin-top:16px;
+  .tabs{grid-area:tabs;position:sticky;top:74px;z-index:20;margin-top:16px;order:0;
     background:rgba(20,26,38,.7);
     border:1px solid var(--line);border-bottom:none;border-radius:var(--r) var(--r) 0 0;padding:2px 4px 0}
   .tab{flex-direction:row;gap:6px;min-height:40px;border-radius:0;
@@ -323,6 +325,11 @@ textarea{width:100%;height:110px;background:#0B0E15;color:var(--ink);border:1px 
 @media (prefers-reduced-motion:reduce){
   *{animation-duration:.01ms !important;transition-duration:.01ms !important}
 }
+
+/* WebKit 보호: clip-path 애니메이션은 iOS GPU 프로세스를 죽인다 → 투명도/이동만 쓴다 */
+.wl-fx-rib,.wl-fx-boss,.wl-fx-boss *,.wl-fx-tag{clip-path:none !important;-webkit-clip-path:none !important}
+.wl-fx-rib{animation:wlRibSafe 3.6s ease-out both !important}
+@keyframes wlRibSafe{0%{opacity:0;transform:translateY(-9px) scale(.96)}9%{opacity:1;transform:none}84%{opacity:1;transform:none}100%{opacity:0;transform:translateY(-5px)}}
 
 /* 배너가 적 이름을 덮지 않게 — 좁은 화면에서는 아래로 내린다 */
 .wl-fx-ribs{top:86px !important}

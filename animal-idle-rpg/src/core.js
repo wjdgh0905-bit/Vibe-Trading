@@ -45,6 +45,8 @@ function plainPassive(i) {
   var line = (C && C.passiveLine) ? C.passiveLine(i) : '';
   return line.replace(/^[^\uAC00-\uD7A3A-Za-z0-9]+/, '').trim();
 }
+/* 빵부스러기 — 브라우저가 페이지를 죽였을 때 마지막으로 하던 일을 다음 부팅에서 보여준다 */
+function crumb(k) { try { sessionStorage.setItem('wl-crumb', k + '@' + Date.now()); } catch (e) {} }
 function haptic(ms) { try { if (navigator.vibrate && isPhone()) navigator.vibrate(ms); } catch (e) {} }
 var el = function (tag, cls, html) { var e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; };
 
@@ -225,7 +227,7 @@ function kill() {
         var reg = D.regionReward(S.zone, { tier: S.tier, seed: seedOf(), snackBonus: p.snackAdd });
         S.snack += reg.snack || 0;
         ribbon((C ? C.biomeFor(S.zone).n : '') + '에 들어섰다 · 간식 +' + fmt(reg.snack || 0), 'zone');
-        if (Sc && Sc.setBiome) Sc.setBiome(C ? C.biomeFor(S.zone).i : 0);
+        crumb('setBiome'); if (Sc && Sc.setBiome) Sc.setBiome(C ? C.biomeFor(S.zone).i : 0, { instant: isPhone() }); crumb('ok');
       }
     } else if (S.auto) S.wave++;
   }
@@ -439,6 +441,7 @@ var Stage = (function () {
   }
 
   function enemy(c) {
+    crumb('spawn:' + (c.info.archetype || '?'));
     measure();
     if (foe) { foe.h.dispose(); foe.wrap.remove(); foe = null; }
     var info = c.info;
@@ -461,10 +464,11 @@ var Stage = (function () {
     place();
     if (info.boss && FX && FX.bossIntro && Date.now() - _lastIntro > 7000) {
       _lastIntro = Date.now();
-      FX.bossIntro(info.name, info.kind === 'overlord' ? '대군주' : '보스');
+      crumb('bossIntro'); FX.bossIntro(info.name, info.kind === 'overlord' ? '대군주' : '보스'); crumb('ok');
     }
     if (scene) scene.setMood(info.boss ? 'boss' : 'normal');
     if (info.boss) chatterSome('boss');
+    crumb('ok');
   }
 
   function foePos() {
@@ -485,9 +489,11 @@ var Stage = (function () {
   }
   function die(rw) {
     var p = foePos();
+    crumb('die');
     if (foe && foe.h.play) foe.h.play('die');
     if (FX && FX.poof) FX.poof(p.x, p.y, cur && cur.info.palette);
     if (FX && FX.coins) FX.coins(p.x, p.y, $('#r-gold'), clamp(Math.round(Math.log10(Math.max(10, rw.gold))), 3, 12));
+    crumb('ok');
     if (scene) scene.shake(cur && cur.info.boss ? 0.8 : 0.15);
   }
   function cheer() { for (var id in pets) if (pets[id].h.play) pets[id].h.play('cheer'); }
@@ -1199,10 +1205,11 @@ function boot() {
 /* ── 안전 부팅 ─────────────────────────────────────────────────────────
    같은 세션에서 두 번 연속 살아남지 못했다면(브라우저가 탭을 죽였다면)
    무거운 레이어(야경·이펙트)를 끄고 켠다. 8초를 버티면 카운터를 되돌린다. */
-var SAFE = false;
+var SAFE = false, LASTCRUMB = '';
 try {
   var bc = +(sessionStorage.getItem('wl-boot') || 0);
   SAFE = bc >= 2;
+  if (bc >= 1) LASTCRUMB = sessionStorage.getItem('wl-crumb') || '';
   sessionStorage.setItem('wl-boot', String(bc + 1));
 } catch (e) {}
 var LITE = false;
@@ -1219,7 +1226,8 @@ function safeBoot() {
   try { boot(); }
   catch (e) { errbar((e && e.stack) || e); return; }
   setTimeout(function () { try { sessionStorage.setItem('wl-boot', '0'); } catch (x) {} }, 8000);
-  if (SAFE) setTimeout(function () { ribbon('지난번에 화면이 멈춰서 절약 모드로 열었어요 — 연출 버튼으로 다시 켤 수 있어요', 'bad'); }, 3600);
+  if (LASTCRUMB && LASTCRUMB.indexOf('ok@') !== 0) errbar('지난번 멈춘 지점: ' + LASTCRUMB.split('@')[0] + (SAFE ? '\n절약 모드로 열었습니다.' : ''));
+  else if (SAFE) setTimeout(function () { ribbon('지난번에 화면이 멈춰서 절약 모드로 열었어요 — 연출 버튼으로 다시 켤 수 있어요', 'bad'); }, 3600);
 }
 if (document.readyState === 'loading') addEventListener('DOMContentLoaded', safeBoot);
 else safeBoot();

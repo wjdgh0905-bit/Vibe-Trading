@@ -190,32 +190,32 @@ function build(svg, sp, o) {
   if (sp.extras.indexOf('longneck') >= 0) E('rect', { x: hx - 12, y: hy + 8, width: 20, height: 22, rx: 8, fill: fur, stroke: line, 'stroke-width': lineW }, hd);
   /* 얼굴 */
   E('circle', { cx: hx, cy: hy, r: headR, fill: fur, stroke: line, 'stroke-width': lineW }, hd);
-  if (K !== 'bird') E('ellipse', { cx: hx + 9, cy: hy + 7, rx: 11, ry: 8, fill: belly }, hd);          /* 주둥이 밝은 부분 */
+  if (K !== 'bird') E('ellipse', { cx: hx + 12, cy: hy + 9, rx: 10, ry: 7, fill: belly }, hd);         /* 주둥이 밝은 부분 */
   if (sp.extras.indexOf('snout') >= 0) E('rect', { x: hx + 6, y: hy, width: 26, height: 12, rx: 6, fill: fur, stroke: line, 'stroke-width': lineW }, hd);
   if (sp.extras.indexOf('trunk') >= 0) E('path', { d: 'M' + (hx + 16) + ' ' + (hy + 4) + ' C' + (hx + 28) + ' ' + (hy + 14) + ' ' + (hx + 26) + ' ' + (hy + 30) + ' ' + (hx + 18) + ' ' + (hy + 34), fill: 'none', stroke: line, 'stroke-width': 11, 'stroke-linecap': 'round' }, hd),
     E('path', { d: 'M' + (hx + 16) + ' ' + (hy + 4) + ' C' + (hx + 28) + ' ' + (hy + 14) + ' ' + (hx + 26) + ' ' + (hy + 30) + ' ' + (hx + 18) + ' ' + (hy + 34), fill: 'none', stroke: fur, 'stroke-width': 7.5, 'stroke-linecap': 'round' }, hd);
   if (sp.extras.indexOf('tusk') >= 0) E('path', { d: 'M' + (hx + 10) + ' ' + (hy + 12) + ' q10 8 14 2', fill: 'none', stroke: '#F3ECDC', 'stroke-width': 4, 'stroke-linecap': 'round' }, hd);
-  if (sp.extras.indexOf('beak') >= 0) E('path', { d: 'M' + (hx + 14) + ' ' + (hy + 2) + ' L' + (hx + 32) + ' ' + (hy + 8) + ' L' + (hx + 14) + ' ' + (hy + 12) + 'Z', fill: '#F2B341', stroke: line, 'stroke-width': lineW, 'stroke-linejoin': 'round' }, hd);
+  if (sp.extras.indexOf('beak') >= 0) E('path', { d: 'M' + (hx + 14) + ' ' + (hy + 3) + ' L' + (hx + 32) + ' ' + (hy + 9) + ' L' + (hx + 14) + ' ' + (hy + 13) + 'Z', fill: '#F2B341', stroke: line, 'stroke-width': lineW, 'stroke-linejoin': 'round' }, hd);
   if (sp.extras.indexOf('ruff') >= 0) E('ellipse', { cx: hx - 2, cy: hy + 20, rx: 18, ry: 6, fill: belly, stroke: line, 'stroke-width': lineW }, hd);
   if (sp.extras.indexOf('frill') >= 0) E('path', { d: 'M' + (hx - 22) + ' ' + hy + ' q-8 -14 4 -22 q6 12 10 -2', fill: shade(fur, 0.1), stroke: line, 'stroke-width': lineW, 'stroke-linejoin': 'round' }, hd);
   if (sp.extras.indexOf('antenna') >= 0) E('path', { d: 'M' + (hx - 4) + ' ' + (hy - 20) + ' q-6 -12 -12 -10 M' + (hx + 8) + ' ' + (hy - 20) + ' q2 -14 10 -12', fill: 'none', stroke: line, 'stroke-width': 2.4, 'stroke-linecap': 'round' }, hd);
-  if (sp.extras.indexOf('cheek') >= 0) E('circle', { cx: hx + 6, cy: hy + 10, r: 9, fill: belly, stroke: line, 'stroke-width': 1.6 }, hd);
+  if (sp.extras.indexOf('cheek') >= 0) E('circle', { cx: hx + 4, cy: hy + 12, r: 8, fill: belly, stroke: line, 'stroke-width': 1.6 }, hd);
   if (sp.extras.indexOf('blow') >= 0) E('path', { d: 'M' + (hx - 6) + ' ' + (hy - 22) + ' q-4 -10 2 -14 M' + (hx - 2) + ' ' + (hy - 22) + ' q2 -12 8 -14', fill: 'none', stroke: '#BFE3F5', 'stroke-width': 3, 'stroke-linecap': 'round' }, hd);
   /* 눈 — 크고 반짝이게 */
-  var eyeR = baby ? 5.6 : 4.8, ex = hx + 8, ey = hy - 2, ex2 = hx - 8;
+  var eyeR = baby ? 5.2 : 4.4, ex = hx + 9, ey = hy - 6, ex2 = hx - 6;
   var fierce = o.mood === 'fierce';
-  [[ex, ey, 1], [ex2, ey + 0.5, 0.86]].forEach(function (p) {
+  [[ex, ey, 1], [ex2, ey + 0.8, 0.82]].forEach(function (p) {
     var eg = E('g', { 'class': 'ey' }, hd);
     E('circle', { cx: p[0], cy: p[1], r: eyeR * p[2] + 1.6, fill: '#fff' }, eg);
     E('circle', { cx: p[0] + 0.6, cy: p[1] + 0.4, r: eyeR * p[2], fill: '#2B1E14' }, eg);
     E('circle', { cx: p[0] + 2.2, cy: p[1] - 1.8, r: eyeR * p[2] * 0.42, fill: '#fff' }, eg);
     if (fierce) E('path', { d: 'M' + (p[0] - 7) + ' ' + (p[1] - 9) + ' L' + (p[0] + 6) + ' ' + (p[1] - 5), stroke: line, 'stroke-width': 3, 'stroke-linecap': 'round' }, eg);
   });
-  if (K !== 'bird') { E('ellipse', { cx: hx + 15, cy: hy + 5, rx: 3.2, ry: 2.4, fill: dark }, hd);
-    E('path', { d: 'M' + (hx + 11) + ' ' + (hy + 10) + ' q4 4 8 0', fill: 'none', stroke: dark, 'stroke-width': 1.8, 'stroke-linecap': 'round' }, hd); }
-  if (sp.extras.indexOf('fang') >= 0) E('path', { d: 'M' + (hx + 12) + ' ' + (hy + 11) + ' l2 5 l2 -5 M' + (hx + 18) + ' ' + (hy + 11) + ' l2 5 l2 -5', fill: '#fff', stroke: line, 'stroke-width': 1 }, hd);
-  E('circle', { cx: hx + 3, cy: hy + 9, r: 3.6, fill: '#F08A8A', opacity: .45 }, hd);   /* 볼터치 */
-  E('circle', { cx: hx - 13, cy: hy + 8, r: 3, fill: '#F08A8A', opacity: .35 }, hd);
+  if (K !== 'bird') { E('ellipse', { cx: hx + 19, cy: hy + 6, rx: 3, ry: 2.2, fill: dark }, hd);
+    E('path', { d: 'M' + (hx + 14) + ' ' + (hy + 12) + ' q5 4 10 0', fill: 'none', stroke: dark, 'stroke-width': 1.8, 'stroke-linecap': 'round' }, hd); }
+  if (sp.extras.indexOf('fang') >= 0) E('path', { d: 'M' + (hx + 15) + ' ' + (hy + 13) + ' l2 5 l2 -5 M' + (hx + 21) + ' ' + (hy + 13) + ' l2 5 l2 -5', fill: '#fff', stroke: line, 'stroke-width': 1 }, hd);
+  E('circle', { cx: hx - 13, cy: hy + 4, r: 3.4, fill: '#F08A8A', opacity: .42 }, hd);   /* 볼터치 — 먼 쪽 뺨 */
+  E('circle', { cx: hx + 1, cy: hy + 5, r: 2.6, fill: '#F08A8A', opacity: .3 }, hd);
   /* 성장 장식 — 동료에게만 (적은 목줄·훈장·왕관 없음) */
   if (st >= 1 && !o.cold) E('path', { d: 'M' + (hx - 14) + ' ' + (hy + 16) + ' q14 10 28 0', fill: 'none', stroke: elite ? '#E14E3D' : '#5B8ED8', 'stroke-width': 3.6, 'stroke-linecap': 'round' }, hd);
   if (elite && !o.cold) E('circle', { cx: hx, cy: hy + 21, r: 2.6, fill: '#FFD36B', stroke: line, 'stroke-width': 1 }, hd);

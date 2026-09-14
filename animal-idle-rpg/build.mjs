@@ -17,16 +17,27 @@ const root = dirname(fileURLToPath(import.meta.url));
 const src = join(root, 'src');
 const manifest = JSON.parse(readFileSync(join(src, 'manifest.json'), 'utf8'));
 
-const read = (rel) => {
+const missing = [];
+const read = (rel, optional = false) => {
   const p = join(src, rel);
-  if (!existsSync(p)) throw new Error(`빠진 파일: src/${rel}`);
+  if (!existsSync(p)) {
+    if (optional) { missing.push(rel); return null; }
+    throw new Error(`빠진 파일: src/${rel}`);
+  }
   return readFileSync(p, 'utf8').trim();
 };
 
-const css = manifest.css.map((f) => `/* ── ${f} ── */\n${read(f)}`).join('\n\n');
-const js = manifest.js
-  .map((f) => `/* ══ ${f} ══ */\n${read(f)}`)
-  .join('\n\n');
+const pack = (list, wrap) =>
+  list
+    .map((f) => {
+      const body = read(f, !manifest.required || !manifest.required.includes(f));
+      return body === null ? null : wrap(f, body);
+    })
+    .filter(Boolean)
+    .join('\n\n');
+
+const css = pack(manifest.css, (f, b) => `/* ── ${f} ── */\n${b}`);
+const js = pack(manifest.js, (f, b) => `/* ══ ${f} ══ */\n${b}`);
 
 let out = read(manifest.shell);
 out = out.replace('<!--INLINE:css-->', `<style>\n${css}\n</style>`);
@@ -35,4 +46,5 @@ out = out.replace('<!--INLINE:js-->', `<script>\n${js}\n</script>`);
 const target = join(root, 'index.html');
 writeFileSync(target, out);
 const kb = (Buffer.byteLength(out) / 1024).toFixed(1);
-console.log(`index.html 생성 완료 — ${kb}KB (css ${manifest.css.length}개, js ${manifest.js.length}개)`);
+console.log(`index.html 생성 완료 — ${kb}KB`);
+if (missing.length) console.log(`  (선택 모듈 없음: ${missing.join(', ')})`);

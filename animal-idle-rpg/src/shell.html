@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>모닥불 무리 — 방치형 동물 RPG</title>
+<meta name="description" content="밤의 야영지에서 동물 무리를 키워 무한히 이어지는 야생을 정복하는 방치형 RPG." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hahmlet:wght@500;700&family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans+KR:wght@300;400;600&display=swap" />
+<!--INLINE:css-->
+</head>
+<body>
+<div class="wrap">
+
+  <div class="strip">
+    <div class="mark">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12 3.2c1.9 2.6 3 4.6 3 6.6a3 3 0 0 1-6 0c0-2 1.1-4 3-6.6Z" fill="#FF9333"/>
+        <path d="M12 8.4c1 1.5 1.6 2.6 1.6 3.7a1.6 1.6 0 0 1-3.2 0c0-1.1.6-2.2 1.6-3.7Z" fill="#FFE2A6"/>
+        <path d="M4.5 20.4 12 16l7.5 4.4" stroke="#2B3346" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+      </svg>
+      <b>모닥불 무리</b>
+    </div>
+    <div class="res gold"><span class="lbl">발자국</span><span class="v" id="r-gold">0</span></div>
+    <div class="res snack"><span class="lbl">간식</span><span class="v" id="r-snack">0</span></div>
+    <div class="res"><span class="lbl">초당 피해</span><span class="v" id="r-dps">0</span></div>
+    <div class="res soul"><span class="lbl">야생혼</span><span class="v" id="r-soul">0</span></div>
+    <div class="res"><span class="lbl">최고 존</span><span class="v" id="r-best">1</span></div>
+  </div>
+
+  <div class="grid">
+    <div>
+      <div class="stage" id="stage">
+        <canvas id="scene"></canvas>
+        <div class="field" id="field"></div>
+        <div class="tapcatch" id="tap"></div>
+        <div class="fuse" id="fuse" style="width:0"></div>
+        <div class="ribbons" id="ribbons"></div>
+
+        <div class="ov ov-zone">
+          <span class="zname" id="o-zone">존 1</span>
+          <span class="bname" id="o-biome">이끼 낀 숲</span>
+          <span class="grade" id="o-grade">쾌속</span>
+          <span class="tierbadge" id="o-tier">🍃 산책</span>
+        </div>
+
+        <div class="ov ov-enemy">
+          <div class="ename" id="o-ename">숲개미</div>
+          <div class="hp"><i id="o-hpfill"></i><b id="o-hpedge" hidden></b></div>
+          <div class="hptxt" id="o-hptxt"></div>
+        </div>
+
+        <div class="ov ov-waves" id="o-waves"></div>
+        <div class="ov ov-ctl">
+          <button class="ghost on" id="b-auto">자동 진행</button>
+          <button class="ghost" id="b-quality" title="연출 강도">연출 강</button>
+        </div>
+      </div>
+      <div class="skills" id="skillbar"></div>
+    </div>
+
+    <div class="ledger">
+      <div class="tabs" id="tabs">
+        <button class="tab on" data-t="pets">무리</button>
+        <button class="tab" data-t="up">강화</button>
+        <button class="tab" data-t="diff">시련</button>
+        <button class="tab" data-t="asc">환생</button>
+        <button class="tab" data-t="log">기록</button>
+      </div>
+      <div class="body" id="tabbody"></div>
+    </div>
+  </div>
+
+  <div class="foot">진행은 이 브라우저에 자동 저장됩니다 · 자리를 비운 동안에도 무리는 사냥합니다</div>
+</div>
+
+<div class="modal" id="modal" hidden><div class="mbox" id="mbox"></div></div>
+<!--INLINE:js-->
+</body>
+</html>

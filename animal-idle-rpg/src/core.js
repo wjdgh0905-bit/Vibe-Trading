@@ -77,7 +77,7 @@ function blank() {
     ups: {}, sls: {},
     auto: true, quality: (innerWidth < 720 || LOWEND) ? 1 : 2, qty: 1, tab: 'pets', open: -1,
     kills: 0, bossKills: 0, ascs: 0, played: 0, started: Date.now(), last: Date.now(),
-    hp: 0, bt: 0, seen: {}, skills: null, nurture: null,
+    hp: 0, bt: 0, seen: {}, skills: null, nurture: null, lite: false,
   };
   UPS.forEach(function (u) { s.ups[u.k] = 0; });
   SOULS.forEach(function (u) { s.sls[u.k] = 0; });
@@ -238,7 +238,7 @@ function bossFail() {
   S.wave = 1; spawn();
 }
 function tapScaled(n, power) {
-  n = Math.max(1, n | 0);
+  n = clamp(n | 0, 1, 400);
   power = (typeof power === 'number' && isFinite(power)) ? clamp(power, 0, 1) : 1;
   var p = passives(), crit = false, dmg = 0;
   var reps = Math.min(n, 24);
@@ -251,7 +251,7 @@ function tapScaled(n, power) {
   hurt(dmg, { tap: true, crit: crit, auto: true, n: n });
 }
 function tap(n, opts) {
-  n = n || 1;
+  n = clamp((n | 0) || 1, 1, 400);
   var p = passives(), dmg = 0, crit = false;
   for (var i = 0; i < Math.min(n, 40); i++) {
     var c = Math.random() < p.critChance;
@@ -662,7 +662,7 @@ function paintStage() {
     setStyle(fuse, 'width', (Math.round(left * 400) / 4) + '%');
     fuse.classList.toggle('warn', left < 0.25);
     if (Sc && Sc.setFire) Sc.setFire(0.45 + 0.55 * left);
-  } else { setStyle(fuse, 'width', '0'); fuse.classList.remove('warn'); if (Sc && Sc.setFire) Sc.setFire(-1); }
+  } else { setStyle(fuse, 'width', '0'); fuse.classList.remove('warn'); if (Sc && Sc.setFire) Sc.setFire(null); }
 
   var wb = $('#o-waves');
   if (wb.children.length !== 10) {
@@ -950,6 +950,7 @@ function tabLog() {
   ];
   return '<div class="note">불은 꺼지지 않는다. 자리를 비워도 무리는 사냥을 계속한다.</div>' +
     rows.map(function (r) { return '<div class="kv"><span>' + r[0] + '</span><b>' + r[1] + '</b></div>'; }).join('') +
+    '<button class="big" id="b-lite">' + (S.lite ? '야경·이펙트 다시 켜기' : '저사양 모드 (야경·이펙트 끄기)') + '</button>' +
     '<button class="big" id="b-export">저장 내보내기</button>' +
     '<button class="big" id="b-import">저장 불러오기</button>' +
     '<button class="big danger" id="b-reset">처음부터 다시</button>';
@@ -976,6 +977,11 @@ function renderTab() {
   var a = body.querySelector('#b-asc'); if (a) a.onclick = confirmAscend;
   var rs = body.querySelector('#b-reset'); if (rs) rs.onclick = confirmReset;
   var ex = body.querySelector('#b-export'); if (ex) ex.onclick = doExport;
+  var lt = body.querySelector('#b-lite'); if (lt) lt.onclick = function () {
+    S.lite = !S.lite; save();
+    try { sessionStorage.setItem('wl-boot', '0'); } catch (x) {}
+    location.reload();
+  };
   var im = body.querySelector('#b-import'); if (im) im.onclick = doImport;
 }
 function buyUp(k) {
@@ -1085,6 +1091,7 @@ function bindInput() {
   });
   $('#b-auto').onclick = function () { S.auto = !S.auto; paintStage(); };
   $('#b-quality').onclick = function () {
+    if (SAFE) { try { sessionStorage.setItem('wl-boot', '0'); } catch (x) {} save(); location.reload(); return; }
     S.quality = (S.quality + 2) % 3;
     var names = ['연출 끔', '연출 약', '연출 강'];
     $('#b-quality').textContent = names[S.quality];
@@ -1189,6 +1196,31 @@ function boot() {
   setInterval(save, 10000);
 }
 
-if (document.readyState === 'loading') addEventListener('DOMContentLoaded', boot);
-else boot();
+/* ── 안전 부팅 ─────────────────────────────────────────────────────────
+   같은 세션에서 두 번 연속 살아남지 못했다면(브라우저가 탭을 죽였다면)
+   무거운 레이어(야경·이펙트)를 끄고 켠다. 8초를 버티면 카운터를 되돌린다. */
+var SAFE = false;
+try {
+  var bc = +(sessionStorage.getItem('wl-boot') || 0);
+  SAFE = bc >= 2;
+  sessionStorage.setItem('wl-boot', String(bc + 1));
+} catch (e) {}
+var LITE = false;
+try { LITE = /lite/.test(location.hash) || /"lite":true/.test(localStorage.getItem(KEY) || ''); } catch (e) {}
+if (SAFE || LITE) { Sc = null; FX = null; }
+function errbar(msg) {
+  var b = document.getElementById('errbar');
+  if (!b) { b = el('div', 'errbar'); b.id = 'errbar'; document.body.appendChild(b); }
+  b.innerHTML = '<b>문제가 생겼습니다 — 이 내용을 알려주세요</b>' + String(msg).replace(/</g, '&lt;');
+}
+addEventListener('error', function (e) { errbar((e.message || e) + (e.filename ? '\n' + e.filename.split('/').pop() + ':' + e.lineno : '')); });
+addEventListener('unhandledrejection', function (e) { errbar('promise: ' + (e.reason && e.reason.message || e.reason)); });
+function safeBoot() {
+  try { boot(); }
+  catch (e) { errbar((e && e.stack) || e); return; }
+  setTimeout(function () { try { sessionStorage.setItem('wl-boot', '0'); } catch (x) {} }, 8000);
+  if (SAFE) setTimeout(function () { ribbon('지난번에 화면이 멈춰서 절약 모드로 열었어요 — 연출 버튼으로 다시 켤 수 있어요', 'bad'); }, 3600);
+}
+if (document.readyState === 'loading') addEventListener('DOMContentLoaded', safeBoot);
+else safeBoot();
 })();

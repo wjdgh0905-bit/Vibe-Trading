@@ -2,35 +2,30 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#0E1119" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <title>모닥불 무리 — 방치형 동물 RPG</title>
 <meta name="description" content="밤의 야영지에서 동물 무리를 키워 무한히 이어지는 야생을 정복하는 방치형 RPG." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hahmlet:wght@500;700&family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans+KR:wght@300;400;600&display=swap" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hahmlet:wght@500;700&family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans+KR:wght@300;400;500;600&display=swap" />
 <!--INLINE:css-->
 </head>
 <body>
-<div class="wrap">
+<div class="app">
 
-  <div class="strip">
-    <div class="mark">
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M12 3.2c1.9 2.6 3 4.6 3 6.6a3 3 0 0 1-6 0c0-2 1.1-4 3-6.6Z" fill="#FF9333"/>
-        <path d="M12 8.4c1 1.5 1.6 2.6 1.6 3.7a1.6 1.6 0 0 1-3.2 0c0-1.1.6-2.2 1.6-3.7Z" fill="#FFE2A6"/>
-        <path d="M4.5 20.4 12 16l7.5 4.4" stroke="#2B3346" stroke-width="1.6" fill="none" stroke-linecap="round"/>
-      </svg>
-      <b>모닥불 무리</b>
-    </div>
+  <header class="strip">
     <div class="res gold"><span class="lbl">발자국</span><span class="v" id="r-gold">0</span></div>
     <div class="res snack"><span class="lbl">간식</span><span class="v" id="r-snack">0</span></div>
     <div class="res"><span class="lbl">초당 피해</span><span class="v" id="r-dps">0</span></div>
     <div class="res soul"><span class="lbl">야생혼</span><span class="v" id="r-soul">0</span></div>
-    <div class="res"><span class="lbl">최고 존</span><span class="v" id="r-best">1</span></div>
-  </div>
+    <div class="res"><span class="lbl">최고</span><span class="v" id="r-best">1</span></div>
+  </header>
 
-  <div class="grid">
-    <div>
+  <main class="grid">
+    <section class="col-stage">
       <div class="stage" id="stage">
         <div class="field" id="field"></div>
         <div class="tapcatch" id="tap"></div>
@@ -40,8 +35,8 @@
         <div class="ov ov-zone">
           <span class="zname" id="o-zone">존 1</span>
           <span class="bname" id="o-biome">이끼 낀 숲</span>
-          <span class="grade" id="o-grade">쾌속</span>
-          <span class="tierbadge" id="o-tier">🍃 산책</span>
+          <span class="grade" id="o-grade">무풍</span>
+          <span class="tierbadge" id="o-tier">산책</span>
         </div>
 
         <div class="ov ov-enemy">
@@ -53,26 +48,43 @@
         <div class="ov ov-waves" id="o-waves"></div>
         <div class="ov ov-ctl">
           <button class="ghost on" id="b-auto">자동 진행</button>
-          <button class="ghost" id="b-quality" title="연출 강도">연출 강</button>
+          <button class="ghost" id="b-quality">연출 강</button>
         </div>
       </div>
       <div class="skills" id="skillbar"></div>
-    </div>
+    </section>
 
-    <div class="ledger">
-      <div class="tabs" id="tabs">
-        <button class="tab on" data-t="pets">무리</button>
-        <button class="tab" data-t="skill">스킬</button>
-        <button class="tab" data-t="up">강화</button>
-        <button class="tab" data-t="diff">시련</button>
-        <button class="tab" data-t="asc">환생</button>
-        <button class="tab" data-t="log">기록</button>
-      </div>
+    <section class="ledger">
       <div class="body" id="tabbody"></div>
-    </div>
-  </div>
+    </section>
+  </main>
 
-  <div class="foot">진행은 이 브라우저에 자동 저장됩니다 · 자리를 비운 동안에도 무리는 사냥합니다</div>
+  <nav class="tabs" id="tabs" aria-label="메뉴">
+    <button class="tab on" data-t="pets">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8.5" cy="7.5" r="2.4"/><circle cx="15.5" cy="7.5" r="2.4"/><circle cx="5" cy="13" r="1.9"/><circle cx="19" cy="13" r="1.9"/><path d="M12 12.6c3 0 5.2 2.3 5.2 4.6 0 1.7-1.4 2.6-3 2.6-1 0-1.6-.4-2.2-.4s-1.2.4-2.2.4c-1.6 0-3-.9-3-2.6 0-2.3 2.2-4.6 5.2-4.6Z"/></svg>
+      <span>무리</span>
+    </button>
+    <button class="tab" data-t="skill">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.5 2.5 5 13.2h5.2L9.4 21.5 19 10.4h-5.4l-.1-7.9Z"/></svg>
+      <span>스킬</span>
+    </button>
+    <button class="tab" data-t="up">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20v-6M10 20V9M16 20v-9M22 20V4" stroke-width="2.1" fill="none" stroke-linecap="round"/></svg>
+      <span>강화</span>
+    </button>
+    <button class="tab" data-t="diff">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 18.5 9 8.5l4 5.2 3-4 5.5 8.8H2.5Z" /><circle cx="17.5" cy="5.5" r="2.2"/></svg>
+      <span>시련</span>
+    </button>
+    <button class="tab" data-t="asc">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.4c3 3.7 4.6 6.4 4.6 8.8a4.6 4.6 0 1 1-9.2 0c0-2.4 1.6-5.1 4.6-8.8Z"/><path d="M12 20.6v-4" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>
+      <span>환생</span>
+    </button>
+    <button class="tab" data-t="log">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3.5h9.5L19 8v12.5H5V3.5Z" fill="none" stroke-width="1.9" stroke-linejoin="round"/><path d="M8.5 12h7M8.5 16h4.5" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>
+      <span>기록</span>
+    </button>
+  </nav>
 </div>
 
 <div class="modal" id="modal" hidden><div class="mbox" id="mbox"></div></div>

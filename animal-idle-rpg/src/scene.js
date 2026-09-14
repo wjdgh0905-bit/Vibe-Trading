@@ -724,6 +724,8 @@ function Stage(host, opts) {
   var nz = makeNoise(seed), nz2 = makeNoise(seed ^ 0x5bf03635);
   var Wd = 0, Ht = 0, dpr = 1, dprF = 1, gY = 0, farY = 0, fireX = 0;
   var t = 0, lastTS = 0, raf = 0, paused = false, dead = false, everDrawn = false;
+  /* 품질 티어 — 2 최대 / 1 모바일 기본 / 0 절약. DPR·파티클·프레임 상한을 함께 내린다 */
+  var qual = 2, fpsMin = 0;
   var mql = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
   var reduced = opts.reduced != null ? !!opts.reduced : !!(mql && mql.matches);
 
@@ -764,7 +766,11 @@ function Stage(host, opts) {
 
   function allocPools() {
     var r = rng(seed ^ 0x2545f491), i;
-    PN = reduced ? 34 : 86;  FN = reduced ? 6 : 14;  EN = reduced ? 14 : 42;  SN = reduced ? 6 : 16;
+    var lite = reduced || qual <= 1, bare = qual <= 0;
+    PN = bare ? 18 : lite ? 34 : 86;
+    FN = bare ? 4  : lite ? 6  : 14;
+    EN = bare ? 10 : lite ? 16 : 42;
+    SN = bare ? 3  : lite ? 6  : 16;
     parts.length = 0; flies.length = 0; embs.length = 0; smks.length = 0;
     for (i = 0; i < PN; i++) parts.push({ x: r(), y: r(), vx: 0, vy: 0, sz: 1, ph: r() * TAU, a: 1, g: 1, sw: r() * 0.82, rot: r() * TAU, rv: 0, on: false });
     for (i = 0; i < FN; i++) flies.push({ x: r(), y: r(), ph: r() * TAU, ph2: r() * TAU, sp: 0.1 + r() * 0.22, bl: r() * TAU, blS: 0.5 + r() * 1.1, rx: 0.03 + r() * 0.10, ry: 0.02 + r() * 0.06 });
@@ -814,8 +820,10 @@ function Stage(host, opts) {
     var rect = host.getBoundingClientRect();
     var w = max(1, Math.round(rect.width));
     var h = max(1, Math.round(rect.height || w * 0.56));
-    var mobile = w < 560;
-    var d = min(window.devicePixelRatio || 1, mobile ? 1.5 : 2);
+    var mobile = w < 620;
+    /* 채움률이 프레임을 정한다 — 품질을 내리면 해상도부터 내린다(밤 화면이라 티가 덜 난다) */
+    var dcap = qual >= 2 ? (mobile ? 1.5 : 2) : qual === 1 ? (mobile ? 0.75 : 1.15) : 0.55;
+    var d = min(window.devicePixelRatio || 1, dcap);
     if (w === Wd && h === Ht && d === dpr) return;
     Wd = w; Ht = h; dpr = d;
     /* 전면 캔버스는 비네트와 무른 파티클뿐이다. 풀 DPR 로 래스터할 이유가 없고,
@@ -1476,26 +1484,38 @@ function Stage(host, opts) {
     updEmbers(dt); updSmoke(dt); updParts(dt);
   }
 
+  var prof = null;
+  function P(name, fn, a, bb) {
+    if (!prof) { fn(a, bb); return; }
+    var t0 = performance.now();
+    fn(a, bb);
+    prof[name] = (prof[name] || 0) + (performance.now() - t0);
+  }
   function draw() {
     var c = cb;
     c.clearRect(0, 0, Wd, Ht);
-    drawSky(c);
-    drawRidges(c);
-    drawSmoke(c);                                       /* 연기는 하늘에 걸린다 */
-    drawGround(c);
-    drawProps(c);                                       /* 지면 fill 뒤에 와야 안 덮인다 */
-    drawParts(c, false);                                /* 무리 뒤 파티클 */
-    drawFlies(c, false);
-    drawShadows(c);
-    drawFire(c);
-    drawEmbers(c);
+    P('sky', drawSky, c);
+    P('ridges', drawRidges, c);
+    P('smoke', drawSmoke, c);                           /* 연기는 하늘에 걸린다 */
+    P('ground', drawGround, c);
+    P('props', drawProps, c);                           /* 지면 fill 뒤에 와야 안 덮인다 */
+    P('parts', drawParts, c, false);                    /* 무리 뒤 파티클 */
+    P('flies', drawFlies, c, false);
+    P('shadows', drawShadows, c);
+    P('fire', drawFire, c);
+    P('embers', drawEmbers, c);
 
-    var f = cf;
-    f.clearRect(0, 0, Wd, Ht);
-    drawDark(f);                                        /* 빛이 닿는 만큼만 존재한다 */
-    drawFore(f);                                        /* 코앞의 검은 실루엣이 화면을 잡아 준다 */
-    drawParts(f, true);
-    drawFlies(f, true);
+    if (qual >= 2) {
+      var f = cf;
+      f.clearRect(0, 0, Wd, Ht);
+      P('dark', drawDark, f);                           /* 빛이 닿는 만큼만 존재한다 */
+      P('fore', drawFore, f);                           /* 코앞의 검은 실루엣이 화면을 잡아 준다 */
+      P('partsF', drawParts, f, true);
+      P('fliesF', drawFlies, f, true);
+    } else {
+      /* 절약 모드 — 앞 파티클은 뒤 레이어에 합류하고 비네트는 CSS 가 그린다 */
+      P('parts2', drawParts, c, true);
+    }
 
     /* 무리 레이어는 지면과 같은 시차로 함께 흔들린다 */
     mob.style.transform = 'translate3d(' + r3(camX * 0.60) + 'px,' + r3(camY * 0.60) + 'px,0)';
@@ -1506,13 +1526,15 @@ function Stage(host, opts) {
 
   var lastT = 0;
   function frame(ts) {
-    raf = 0;
+    raf = requestAnimationFrame(frame);
     if (dead) return;
     var dt = lastT ? (ts - lastT) / 1000 : 0.0166;
+    /* 프레임 상한 — 폰에서는 30fps 로도 불은 충분히 흔들린다 */
+    if (fpsMin && lastT && dt < fpsMin - 0.002) return;
     lastT = ts;
     if (dt > 0.1) dt = 0.1;                             /* 탭 복귀 시 점프 방지 */
     step(dt); draw();
-    raf = requestAnimationFrame(frame);
+    if (prof) prof._n++;
   }
   function start() { if (!raf && !dead && !paused && !doc.hidden) { lastT = 0; raf = requestAnimationFrame(frame); } }
   function stop() { if (raf) { cancelAnimationFrame(raf); raf = 0; } }
@@ -1580,6 +1602,23 @@ function Stage(host, opts) {
     }
     return out;
   };
+  S.profile = function (on) {
+    if (on) { prof = {}; prof._n = 0; return null; }
+    var r = prof; prof = null; return r;
+  };
+  S.quality = function (n) {
+    if (n === undefined) return qual;
+    var q = clamp(n | 0, 0, 2);
+    if (q === qual) return S;
+    qual = q;
+    fpsMin = qual >= 2 ? 0 : qual === 1 ? 1 / 32 : 1 / 22;
+    fg.style.display = qual >= 2 ? '' : 'none';
+    host.classList.toggle('wl-lite', qual < 2);
+    resize();
+    allocPools();
+    seedParticles(partSpec());
+    return S;
+  };
   S.pause = function (b) { paused = !!b; if (paused) stop(); else start(); return S; };
   S.dispose = function () {
     dead = true; stop();
@@ -1644,6 +1683,8 @@ W.Scene = {
   size:        function () { return ACTIVE ? ACTIVE.size() : { w: 0, h: 0 }; },
   biome:       function () { return ACTIVE ? ACTIVE.biome() : { i: 0, name: BIOMES[0].name }; },
   slots:       function (n, row) { return ACTIVE ? ACTIVE.slots(n, row) : []; },
+  quality:     function (n) { return ACTIVE ? ACTIVE.quality(n) : (n === undefined ? 2 : null); },
+  profile:     function (on) { return ACTIVE ? ACTIVE.profile(on) : null; },
   pause:       proxy('pause'),
   dispose:     function () { if (ACTIVE) ACTIVE.dispose(); },
   active:      function () { return ACTIVE; }

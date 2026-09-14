@@ -29,10 +29,23 @@ function time(s) {
   return h ? h + '시간 ' + m + '분' : m ? m + '분 ' + x + '초' : x + '초';
 }
 var clamp = function (v, a, b) { return Math.max(a, Math.min(b, v)); };
+var isPhone = function () { return innerWidth < 720; };
+var LOWEND = (navigator.deviceMemory && navigator.deviceMemory <= 4) ||
+             (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4);
+/* DOM 쓰기는 값이 바뀐 프레임에만 — 모바일에서 이게 프레임을 지킨다 */
+var _txt = new WeakMap();
+function setText(node, v) { if (node && _txt.get(node) !== v) { _txt.set(node, v); node.textContent = v; } }
+function setHtml(node, v) { if (node && _txt.get(node) !== v) { _txt.set(node, v); node.innerHTML = v; } }
+function setStyle(node, prop, v) {
+  if (!node) return;
+  var k = '_s' + prop;
+  if (node[k] !== v) { node[k] = v; node.style[prop] = v; }
+}
 function plainPassive(i) {
   var line = (C && C.passiveLine) ? C.passiveLine(i) : '';
   return line.replace(/^[^\uAC00-\uD7A3A-Za-z0-9]+/, '').trim();
 }
+function haptic(ms) { try { if (navigator.vibrate && isPhone()) navigator.vibrate(ms); } catch (e) {} }
 var el = function (tag, cls, html) { var e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; };
 
 /* ══ 상태 ══════════════════════════════════════════════════════════════ */
@@ -62,7 +75,7 @@ function blank() {
     v: 2, zone: 1, wave: 1, gold: 15, souls: 0, best: 1, runBest: 1,
     pets: new Array(PET_N).fill(0),
     ups: {}, sls: {},
-    auto: true, quality: 2, qty: 1, tab: 'pets', open: -1,
+    auto: true, quality: (innerWidth < 720 || LOWEND) ? 1 : 2, qty: 1, tab: 'pets', open: -1,
     kills: 0, bossKills: 0, ascs: 0, played: 0, started: Date.now(), last: Date.now(),
     hp: 0, bt: 0, seen: {}, skills: null, nurture: null,
   };
@@ -200,6 +213,7 @@ function kill() {
     if (D) D.recordBest(S, S.zone, kind);
     ribbon(info.name + ' 격파 · 발자국 +' + fmt(rw.gold), 'gold');
     Stage.cheer();
+    haptic([16, 50, 26]);
     if (FX && FX.bossWarn) FX.bossWarn(0);
     chatterSome('win');
   }
@@ -219,6 +233,7 @@ function kill() {
 }
 function bossFail() {
   if (D) D.recordBossFail(S, S.zone);
+  haptic([30, 60, 30]);
   ribbon((cur ? cur.info.name : '보스') + ' 토벌 실패 — 존 ' + S.zone + ' 1웨이브로', 'bad');
   S.wave = 1; spawn();
 }
@@ -300,7 +315,11 @@ var _lastIntro = 0;
 var Stage = (function () {
   var field, scene = null, pets = {}, foe = null, atk = {}, W0 = 0, H0 = 0, lastSlots = {};
 
-  function measure() {
+  var _measured = 0;
+  function measure(force) {
+    var now = performance.now();
+    if (!force && now - _measured < 400 && W0) return;   /* 매 프레임 리플로우 금지 */
+    _measured = now;
     var r = (scene ? scene.host : field).getBoundingClientRect();
     W0 = r.width; H0 = r.height;
   }
@@ -314,28 +333,41 @@ var Stage = (function () {
     return { el: d, play: function () {}, setStage: function () {}, dispose: function () { d.remove(); } };
   }
 
-  /* 보유 동료를 줄별로 묶는다 — 줄 안 순서는 인덱스 순(약한 쪽이 안쪽) */
+  /* 보유 동료를 줄별로 묶는다. 매 프레임 도는 함수라 결과를 캐시한다 */
+  var _rows = { front: [], back: [], air: [] }, _rowsKey = '';
   function rows() {
-    var out = { front: [], back: [], air: [] };
-    ownedList().forEach(function (i) { out[rowOf(C.PETS[i].species)].push(i); });
-    return out;
+    var list = visibleList(), key = list.join(',');
+    if (key !== _rowsKey) {
+      _rowsKey = key;
+      _rows.front.length = 0; _rows.back.length = 0; _rows.air.length = 0;
+      for (var k = 0; k < list.length; k++) _rows[rowOf(C.PETS[list[k]].species)].push(list[k]);
+    }
+    return _rows;
+  }
+  /* 화면에 세우는 동료 수 상한 — 강한 쪽부터. 모바일에서 프레임을 지키는 첫 번째 방어선 */
+  function actorCap() { return isPhone() ? 5 : LOWEND ? 10 : 14; }
+  function visibleList() {
+    var all = ownedList(), cap = actorCap();
+    return all.length <= cap ? all : all.slice(all.length - cap);
   }
   /* 무리가 늘수록 카메라가 뒤로 물러난다 — 5마리까지는 그대로, 이후 서서히 */
   function camZoom() {
     var n = ownedList().length;
     /* 좁은 화면에서는 너무 멀리 물러나면 아무것도 안 보인다 */
-    var floor = (typeof innerWidth === 'number' && innerWidth < 620) ? 0.60 : 0.46;
+    var floor = isPhone() ? 0.52 : 0.46;
     return clamp(1 - Math.max(0, n - 5) * 0.052, floor, 1);
   }
   function slotSize(slot, i, cam) {
     var base = slot && slot.size ? slot.size : H0 * 0.19;
-    return clamp(base * (0.88 + 0.028 * i) * cam, 16, H0 * 0.50);
+    /* 폰에서는 무대가 좁다 — 몸집을 한 단계 줄여야 무리가 무대를 잡아먹지 않는다 */
+    var v = base * (0.88 + 0.028 * i) * cam * (isPhone() ? 0.74 : 1);
+    return clamp(v, 14, H0 * (isPhone() ? 0.34 : 0.50));
   }
 
   function sync() {
     if (!field) return;
     measure();
-    var list = ownedList();
+    var list = visibleList();
     for (var id in pets) if (list.indexOf(+id) < 0) { pets[id].h.dispose(); pets[id].wrap.remove(); delete pets[id]; }
     list.forEach(function (i) {
       var lv = S.pets[i], st = Nu ? Nu.stageOf(lv) : 2, row = C.PETS[i], rec = pets[i];
@@ -358,6 +390,7 @@ var Stage = (function () {
     var g = rows(), cam = camZoom();
     /* 카메라가 물러난 만큼 줄을 옆으로 벌린다 — 같은 프레임에 더 넓은 땅이 들어온다 */
     var spread = 1.42 + (1 - cam) * 2.2;
+    var maxX = W0 * (isPhone() ? 0.58 : 0.72), minX = W0 * (isPhone() ? 0.07 : 0.06);
     ['front', 'back', 'air'].forEach(function (rw) {
       var ids = g[rw];
       if (!ids.length) return;
@@ -365,20 +398,29 @@ var Stage = (function () {
       var mid = 0;
       if (sl && sl.length) { for (var q = 0; q < sl.length; q++) mid += sl[q].x; mid /= sl.length; }
       else mid = W0 * 0.45;
+      /* 줄에 들어갈 자리가 모자라면 몸집을 줄여서라도 서로 밟지 않게 한다 */
+      var band = maxX - minX;
+      var want = 0;
+      var pack = isPhone() ? 2.6 : 1.5;   /* 실루엣의 가로 폭은 키의 2~3배다 */   /* 네발짐승의 가로 폭은 키보다 넓다 */
+      for (var q2 = 0; q2 < ids.length; q2++) want += slotSize(sl && sl[q2], ids[q2], cam) * pack;
+      var fit = want > band ? band / want : 1;
+      var cell = band / Math.max(1, ids.length);
       ids.forEach(function (i, k) {
         var rec = pets[i]; if (!rec) return;
         var s = sl && sl[k];
         var x = s ? s.x : W0 * (0.30 + 0.30 * (k / Math.max(1, ids.length - 1)));
         var y = s ? s.y : ground() - (rw === 'air' ? H0 * 0.26 : rw === 'back' ? H0 * 0.06 : 0);
-        x = clamp(mid + (x - mid) * spread, W0 * 0.07, W0 * 0.72);
+        /* 폰: 띠를 칸으로 나눠 고르게 세운다. 데스크톱: 씬이 준 자리를 벌려 쓴다 */
+        x = isPhone() ? (minX + cell * (k + 0.5) + ((i * 37) % 11 - 5) * 0.6)
+                      : clamp(mid + (x - mid) * spread, minX, maxX);
         /* 일직선으로 서지 않도록 앞뒤로 살짝 어긋나게 — 깊이가 생긴다 */
         /* 줄 사이를 벌리고, 같은 줄 안에서도 앞뒤로 어긋나게 — 깊이가 생긴다 */
         if (rw === 'back') y -= H0 * 0.035;
         if (rw !== 'air') y += (k % 2 ? 1 : -1) * H0 * 0.018 * (0.5 + (1 - cam) * 1.8);
     var size = slotSize(s, i, cam) * (rw === 'back' ? 0.88 : 1);
         if (rec.size !== size) { rec.size = size; if (rec.h.setSize) rec.h.setSize(size); }
-        rec.wrap.style.transform = 'translate(' + x + 'px,' + y + 'px) translate(-50%,-100%)';
-        rec.wrap.style.zIndex = Math.round((s ? s.z : (rw === 'front' ? 100 : rw === 'back' ? 40 : 20)) + y * 0.1);
+        setStyle(rec.wrap, 'transform', 'translate(' + (x | 0) + 'px,' + (y | 0) + 'px) translate(-50%,-100%)');
+        setStyle(rec.wrap, 'zIndex', String(Math.round((s ? s.z : (rw === 'front' ? 100 : rw === 'back' ? 40 : 20)) + y * 0.1)));
       });
     });
     if (foe) {
@@ -390,8 +432,8 @@ var Stage = (function () {
       }
       var fs = scene ? scene.slots(1, 'foe')[0] : null;
       var fx = fs ? fs.x : W0 * 0.80, fy = fs ? fs.y : ground();
-      foe.wrap.style.transform = 'translate(' + fx + 'px,' + fy + 'px) translate(-50%,-100%)';
-      foe.wrap.style.zIndex = 12;
+      setStyle(foe.wrap, 'transform', 'translate(' + (fx | 0) + 'px,' + (fy | 0) + 'px) translate(-50%,-100%)');
+      setStyle(foe.wrap, 'zIndex', '120');
       foe.pos = { x: fx, y: fy };
     }
   }
@@ -403,7 +445,8 @@ var Stage = (function () {
     var fs = scene ? scene.slots(1, 'foe')[0] : null;
     var base = fs && fs.size ? fs.size : H0 * 0.24;
     var cam = camZoom();
-    var size = clamp(base * (info.sizeMul || 1) * 1.25 * (0.62 + 0.38 * cam), 30, H0 * 0.58);
+    var size = clamp(base * (info.sizeMul || 1) * (isPhone() ? 1.1 : 1.25) * (0.62 + 0.38 * cam),
+                     28, H0 * (isPhone() ? 0.44 : 0.58));
     var pal = { rim: 'cold', amt: 0.55 };
     if (info.palette && info.palette.base) pal.tint = info.palette.base;
     if (!pal.tint && info.biome && info.biome.tint) pal.tint = info.biome.tint;
@@ -453,7 +496,7 @@ var Stage = (function () {
   function beat(dt) {
     place();
     if (scene && cur) scene.setProgress((S.wave - 1 + (1 - clamp(S.hp / cur.max, 0, 1))) / 10);
-    var list = ownedList();
+    var list = visibleList();
     if (!list.length) return;
     var tot = baseDps() || 1;
     list.forEach(function (i) {
@@ -482,6 +525,7 @@ var Stage = (function () {
     if (Sc && Sc.mount) {
       try {
         scene = Sc.mount(host, { biome: C ? C.biomeFor(S.zone).i : 0 });
+        if (scene && scene.quality) scene.quality(S.quality);
         if (scene && scene.mob) { field.remove(); field = scene.mob; }
       } catch (e) { scene = null; }
     }
@@ -574,49 +618,51 @@ if (!Sk) {
 }
 
 /* ══ 화면 ══════════════════════════════════════════════════════════════ */
+var TOP = {};
 function renderTop() {
-  $('#r-gold').textContent = fmt(S.gold);
-  $('#r-snack').textContent = fmt(S.snack || 0);
-  $('#r-dps').textContent = fmt(totalDps());
-  $('#r-soul').textContent = fmt(S.souls);
-  $('#r-best').textContent = S.best;
+  if (!TOP.gold) { TOP.gold = $('#r-gold'); TOP.snack = $('#r-snack'); TOP.dps = $('#r-dps'); TOP.soul = $('#r-soul'); TOP.best = $('#r-best'); }
+  setText(TOP.gold, fmt(S.gold));
+  setText(TOP.snack, fmt(S.snack || 0));
+  setText(TOP.dps, fmt(totalDps()));
+  setText(TOP.soul, fmt(S.souls));
+  setText(TOP.best, String(S.best));
 }
 function paintStage() {
   if (!cur) return;
   var info = cur.info, pct = clamp(S.hp / cur.max, 0, 1);
-  $('#o-zone').textContent = '존 ' + S.zone;
-  $('#o-biome').textContent = C ? C.biomeFor(S.zone).n : '';
+  setText($('#o-zone'), '존 ' + S.zone);
+  setText($('#o-biome'), C ? C.biomeFor(S.zone).n : '');
   var tier = D ? D.tierOf(S.tier) : { n: '산책', c: '#7fd4a0' };
   var tb = $('#o-tier');
-  tb.textContent = tier.n;
-  tb.style.color = tier.c;
+  setText(tb, tier.n);
+  setStyle(tb, 'color', tier.c);
   if (D) {
     var p = passives();
     var r = D.ratingOf(S.zone, totalDps(), { tier: S.tier, seed: seedOf(), bossMult: bossMultiplier(), hunt: S.sls.hunt, petHunt: p.huntAdd });
     var g = $('#o-grade');
-    g.textContent = r.name || (r.grade && r.grade.n) || '';
-    g.style.color = r.color || 'var(--moon)';
+    setText(g, r.name || (r.grade && r.grade.n) || '');
+    setStyle(g, 'color', r.color || 'var(--moon)');
   }
   var tag = info.kind === 'overlord' ? '<span class="etag ov">대군주</span>'
           : info.boss ? '<span class="etag bs">BOSS</span>'
           : info.elite ? '<span class="etag el">정예</span>' : '';
   var cnt = (cur.mod.count > 1) ? ' <span class="rank">×' + cur.mod.count + '</span>' : '';
-  $('#o-ename').innerHTML = (info.rankName ? '<span class="rank">' + info.rankName + '</span> ' : '') +
-    (info.baseName || info.name) + (info.title ? ' 〈' + info.title + '〉' : '') + cnt + tag;
-  $('#o-hpfill').style.transform = 'scaleX(' + pct + ')';
+  setHtml($('#o-ename'), (info.rankName ? '<span class="rank">' + info.rankName + '</span> ' : '') +
+    (info.baseName || info.name) + (info.title ? ' 〈' + info.title + '〉' : '') + cnt + tag);
+  setStyle($('#o-hpfill'), 'transform', 'scaleX(' + (Math.round(pct * 400) / 400) + ')');
   var edge = $('#o-hpedge');
   edge.hidden = pct <= 0 || pct >= 1;
-  edge.style.left = 'calc(' + (pct * 100) + '% - 1px)';
-  $('#o-hptxt').textContent = fmt(Math.max(0, S.hp)) + ' / ' + fmt(cur.max);
+  setStyle(edge, 'left', 'calc(' + (Math.round(pct * 400) / 4) + '% - 1px)');
+  setText($('#o-hptxt'), fmt(Math.max(0, S.hp)) + ' / ' + fmt(cur.max));
   $('#stage').classList.toggle('boss', !!info.boss);
 
   var fuse = $('#fuse'), lim = cur.mod.timeLimit || 0;
   if (info.boss && lim > 0) {
     var left = clamp(S.bt / lim, 0, 1);
-    fuse.style.width = (left * 100) + '%';
+    setStyle(fuse, 'width', (Math.round(left * 400) / 4) + '%');
     fuse.classList.toggle('warn', left < 0.25);
     if (Sc && Sc.setFire) Sc.setFire(0.45 + 0.55 * left);
-  } else { fuse.style.width = '0'; fuse.classList.remove('warn'); if (Sc && Sc.setFire) Sc.setFire(-1); }
+  } else { setStyle(fuse, 'width', '0'); fuse.classList.remove('warn'); if (Sc && Sc.setFire) Sc.setFire(-1); }
 
   var wb = $('#o-waves');
   if (wb.children.length !== 10) {
@@ -632,7 +678,7 @@ function paintStage() {
     d.classList.toggle('cur', n === S.wave);
   }
   $('#b-auto').classList.toggle('on', S.auto);
-  $('#b-auto').textContent = S.auto ? '자동 진행' : '파밍 고정';
+  setText($('#b-auto'), S.auto ? '자동 진행' : '파밍 고정');
 }
 function renderSkills() {
   var bar = $('#skillbar');
@@ -661,7 +707,7 @@ function renderSkills() {
 }
 
 /* ══ 탭 : 무리 ═════════════════════════════════════════════════════════ */
-var petRows = {}, petLimit = -1, portraits = {};
+var petRows = {}, petLimit = -1, portraits = {}, petIO = null;
 function visibleLimit() {
   var top = 0;
   for (var i = 0; i < PET_N; i++) if (S.pets[i] > 0 || S.gold >= petCost(i, 0) * 0.2) top = i;
@@ -670,7 +716,17 @@ function visibleLimit() {
 function buildPets() {
   var body = $('#tabbody');
   body.innerHTML = '';
+  for (var pk in portraits) portraits[pk].h.dispose();
   petRows = {}; portraits = {};
+  if (petIO) petIO.disconnect();
+  petIO = ('IntersectionObserver' in window) ? new IntersectionObserver(function (ents) {
+    for (var e = 0; e < ents.length; e++) {
+      var idx = +ents[e].target.dataset.i, rec = petRows[idx];
+      if (!rec) continue;
+      rec.vis = ents[e].isIntersecting;
+      if (!rec.vis && portraits[idx]) { portraits[idx].h.dispose(); delete portraits[idx]; rec.row.querySelector('.por').innerHTML = ''; }
+    }
+  }, { rootMargin: '160px 0px' }) : null;
   var qb = el('div', 'qbar', '<span class="lbl">구매 수량</span>');
   [[1, '×1'], [10, '×10'], [100, '×100'], ['N', '다음 단계'], ['M', 'MAX']].forEach(function (q) {
     var b = el('button', 'qb' + (S.qty === q[0] ? ' on' : ''), q[1]);
@@ -698,7 +754,9 @@ function buildPets() {
     row.onclick = function () { S.open = (S.open === i ? -1 : i); updatePets(); };
     care.querySelector('.pet').onclick = function (e) { e.stopPropagation(); doPet(i); };
     care.querySelector('.feed').onclick = function (e) { e.stopPropagation(); doFeed(i); };
-    petRows[i] = { row: row, care: care, name: row0.n };
+    row.dataset.i = i;
+    petRows[i] = { row: row, care: care, name: row0.n, vis: !petIO };
+    if (petIO) petIO.observe(row);
   })(i);
   updatePets();
 }
@@ -732,7 +790,7 @@ function updatePets() {
     r.row.classList.toggle('open', S.open === i && lv > 0);
 
     var por = r.row.querySelector('.por');
-    var h = portraitFor(i);
+    var h = r.vis ? portraitFor(i) : null;
     if (h && por.firstChild !== h.el) { por.innerHTML = ''; por.classList.remove('emoji'); por.appendChild(h.el); }
     else if (!h) { por.classList.add('emoji'); por.textContent = hidden ? '·' : d.ic; }
 
@@ -791,6 +849,7 @@ function buyPet(i) {
   var lv = S.pets[i], n = qtyFor(petCost(i, 0), 1.07, lv), cost = geoCost(petCost(i, 0), 1.07, lv, n);
   if (n < 1 || cost > S.gold) return;
   S.gold -= cost; S.pets[i] += n;
+  haptic(lv === 0 ? [12, 40, 18] : 8);
   if (lv === 0) {
     ribbon(C.PETS[i].n + ' 이(가) 불가에 앉았다', 'good');
     if (C.PETS[i].passive) ribbon(plainPassive(i), 'good');
@@ -939,6 +998,14 @@ function setTier(t) {
   spawn(); renderTab(); paintStage();
 }
 
+function panelVisible() {
+  if (document.hidden) return false;
+  var b = $('#tabbody');
+  if (!b) return false;
+  var r = b.getBoundingClientRect();
+  return r.bottom > 0 && r.top < innerHeight;
+}
+
 /* ══ 모달 ══════════════════════════════════════════════════════════════ */
 function openModal(html) { $('#mbox').innerHTML = html; $('#modal').hidden = false; }
 function closeModal() { $('#modal').hidden = true; }
@@ -1023,6 +1090,7 @@ function bindInput() {
     $('#b-quality').textContent = names[S.quality];
     if (Cr && Cr.quality) Cr.quality(S.quality);
     if (Sc && Sc.quality) Sc.quality(S.quality);
+    if (navigator.vibrate) navigator.vibrate(8);
   };
   $('#tabs').onclick = function (e) {
     var t = e.target.closest('.tab');
@@ -1083,6 +1151,7 @@ function boot() {
   spawn(true);
   Stage.sync();
   if (Cr && Cr.quality) Cr.quality(S.quality);
+  if (Cr && Cr.autoQuality) Cr.autoQuality(true);
   var off = had ? offline() : null;
   renderTop(); renderTab(); paintStage(); renderSkills();
   if (off) {
@@ -1102,14 +1171,21 @@ function boot() {
     logic(dt);
   }, 100);
 
-  var vprev = performance.now();
+  var vprev = performance.now(), accHud = 0, accSk = 0, accPlace = 0, accTab = 0;
+  var placeStep = (isPhone() || LOWEND) ? 1 / 30 : 0;      /* 폰은 30fps 배치로 충분하다 */
   (function frame(t) {
-    var dt = Math.min(0.25, (t - vprev) / 1000); vprev = t;
-    if (!document.hidden) { Stage.beat(dt); paintStage(); renderTop(); renderSkills(); }
     requestAnimationFrame(frame);
+    var dt = Math.min(0.25, (t - vprev) / 1000); vprev = t;
+    if (document.hidden) return;
+    accPlace += dt;
+    if (accPlace >= placeStep) { Stage.beat(accPlace); accPlace = 0; }
+    accHud += dt;
+    if (accHud >= 0.1) { accHud = 0; paintStage(); renderTop(); }      /* 10fps — 사람 눈엔 충분 */
+    accSk += dt;
+    if (accSk >= 0.2) { accSk = 0; renderSkills(); }
+    accTab += dt;
+    if (accTab >= 0.5) { accTab = 0; if (panelVisible()) renderTab(); }
   })(performance.now());
-
-  setInterval(function () { if (!document.hidden) renderTab(); }, 600);
   setInterval(save, 10000);
 }
 

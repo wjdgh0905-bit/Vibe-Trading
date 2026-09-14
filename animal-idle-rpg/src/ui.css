@@ -358,3 +358,9 @@ html.lite .stage{background:radial-gradient(110% 70% at 27% 76%, rgba(255,147,51
 .stage.wl-ds .wv.done{background:var(--ember)} .stage.wl-ds .wv.cur{background:#fff;box-shadow:0 0 6px #fff}
 .stage.wl-ds .rib{background:rgba(20,28,32,.86)}
 .stage.wl-ds .fuse{box-shadow:0 0 10px rgba(193,57,26,.6)}
+
+/* ── 레이드 버튼 ── */
+.ghost.raid.ready{color:#FFD9C4;border-color:rgba(193,57,26,.55);background:rgba(193,57,26,.22);animation:raidPulse 1.6s ease-in-out infinite}
+.ghost.raid.on{color:#fff;border-color:#C1391A;background:rgba(193,57,26,.55);font-family:var(--num);font-variant-numeric:tabular-nums}
+@keyframes raidPulse{0%,100%{box-shadow:0 0 0 0 rgba(193,57,26,.0)}50%{box-shadow:0 0 0 5px rgba(193,57,26,.28)}}
+.wl-shot{z-index:30}

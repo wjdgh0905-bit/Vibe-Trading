@@ -7,7 +7,8 @@
 (function () {
 'use strict';
 var W = (window.WL = window.WL || {});
-var C = W.Content, D = W.Difficulty, Cr = W.Chibi || W.Creatures, Sc = null, FX = W.FX, Sk = W.Skills, Nu = W.Nurture;
+var C = W.Content, D = W.Difficulty, Cr = W.Pixel || W.Chibi || W.Creatures, Sc = null, FX = W.FX, Sk = W.Skills, Nu = W.Nurture;
+var Sh = W.Shots;
 var NIGHT_SCENE = W.Scene, DAY_SCENE = W.DayScene;
 var $ = function (s) { return document.querySelector(s); };
 
@@ -83,6 +84,7 @@ function blank() {
     auto: true, quality: IOS ? 0 : (innerWidth < 720 || LOWEND) ? 1 : 2, qty: 1, tab: 'pets', open: -1,
     kills: 0, bossKills: 0, ascs: 0, played: 0, started: Date.now(), last: Date.now(),
     hp: 0, bt: 0, seen: {}, skills: null, nurture: null, lite: false, night: false,
+    raid: null, raidDone: {},
   };
   UPS.forEach(function (u) { s.ups[u.k] = 0; });
   SOULS.forEach(function (u) { s.sls[u.k] = 0; });
@@ -178,6 +180,7 @@ function makeEnemy(z, w) {
   return { info: info, mod: mod, max: mod.hp * (mod.count || 1) };
 }
 function spawn(keepHp) {
+  if (S.raid) { mountRaid(); return; }
   cur = makeEnemy(S.zone, S.wave);
   if (!keepHp || !(S.hp > 0) || S.hp > cur.max) S.hp = cur.max;
   S.bt = cur.mod.timeLimit || 0;
@@ -198,6 +201,7 @@ function hurt(amount, opt) {
   if (S.hp <= 0) kill();
 }
 function kill() {
+  if (S.raid) { S.raid.hp = 0; S.raid.dmg = S.raid.max; endRaid(true); return; }
   var p = passives(), info = cur.info, kind = cur.mod.kind || info.kind;
   var newBest = S.zone > (S.bestBeaten || 0);
   var rw = D ? D.rewardFor({
@@ -265,6 +269,93 @@ function tap(n, opts) {
   }
   if (n > 40) dmg *= n / 40;
   hurt(dmg, { tap: true, crit: crit, auto: opts && opts.auto, x: opts && opts.x, y: opts && opts.y, n: n });
+}
+
+/* ══ 레이드 ════════════════════════════════════════════════════════════
+   지역(5존)마다 한 번, 3번째 존에 닿으면 도전할 수 있다. 60초 동안 피해를 넣고
+   넣은 만큼 받는다. 잡으면 야생혼까지. 환생하면 다시 열린다. */
+var RAIDS = [
+  { n: '숲의 대왕멧돼지', sp: 'brute' },   { n: '초원의 폭풍뿔소', sp: 'rhino' },
+  { n: '설원의 서리매머드', sp: 'mammoth' }, { n: '사막의 모래거룡', sp: 'dragon' },
+  { n: '심해의 메갈로돈', sp: 'megalodon' }, { n: '정글의 티타노보아', sp: 'titanoboa' },
+  { n: '화산의 용암거인', sp: 'titan' },   { n: '창공의 붕', sp: 'peng' },
+  { n: '습지의 고대악어', sp: 'crocodile' }, { n: '심연의 별삼키는 용', sp: 'dragon' },
+];
+var RAID_TIME = 60;
+function raidRegion() { return Math.floor((S.zone - 1) / 5); }
+function raidInfo() { return RAIDS[raidRegion() % RAIDS.length]; }
+function raidAvailable() { return !S.raid && S.zone >= raidRegion() * 5 + 3 && !(S.raidDone && S.raidDone[raidRegion()]); }
+/* 레이드 체력: 존 기준치와 "내 DPS 70초분" 중 큰 쪽 — 스킬·터치를 얹어야 잡히는 벽 */
+function raidMaxHP(region) {
+  var byZone = D.zoneHP(region * 5 + 5) * 90 * (D.tierOf(S.tier).hp || 1);
+  var byDps = totalDps() * 70;
+  return Math.min(1e300, Math.max(byZone, byDps));
+}
+function startRaid() {
+  if (!raidAvailable()) return;
+  var region = raidRegion(), max = raidMaxHP(region);
+  S.raid = { region: region, max: max, hp: max, t: RAID_TIME, dmg: 0 };
+  mountRaid();
+  ribbon('레이드 — ' + raidInfo().n + ' 등장! 60초', 'bad');
+  haptic([20, 60, 30]);
+  renderRaidBtn();
+}
+function mountRaid() {
+  var r = S.raid, info = RAIDS[r.region % RAIDS.length];
+  cur = { info: { name: info.n, baseName: info.n, boss: true, kind: 'raid', archetype: info.sp, rankName: '', title: null, sizeMul: 1.3, palette: null, biome: C.biomeFor(S.zone) },
+          mod: { kind: 'raid', hp: r.max, count: 1, playerDmgMult: 1, timeLimit: RAID_TIME, goldMult: 1, snackMult: 1, affixes: [] }, max: r.max };
+  S.hp = r.hp; S.bt = r.t;
+  Stage.enemy(cur);
+  if (Sc && Sc.setMood) Sc.setMood('boss');
+  paintStage();
+}
+function endRaid(killed) {
+  var r = S.raid; if (!r) return;
+  var ratio = clamp(r.dmg / r.max, 0, 1), region = r.region, info = RAIDS[region % RAIDS.length];
+  var p = passives();
+  var base = D.rewardFor({ zone: region * 5 + 5, wave: 10, kind: 'boss', tier: S.tier, seed: seedOf(), goldMult: goldMultiplier(), snackBonus: p.snackAdd });
+  var gold = base.gold * (10 + 50 * ratio) * (killed ? 2 : 1);
+  var snack = (base.snack || 5) * (6 + 24 * ratio) + (killed ? 60 : 0);
+  var souls = killed ? 3 : (ratio >= 0.5 ? 1 : 0);
+  S.gold += gold; S.snack = (S.snack || 0) + snack; S.souls += souls;
+  if (!S.raidDone) S.raidDone = {};
+  S.raidDone[region] = true;
+  S.raid = null;
+  if (Sc && Sc.setMood) Sc.setMood('normal');
+  spawn();
+  haptic(killed ? [30, 40, 30, 40, 60] : 20);
+  openModal('<h3>' + (killed ? '레이드 격파' : '레이드 종료') + ' — ' + info.n + '</h3>' +
+    '<p>넣은 피해 <span class="num">' + (ratio * 100).toFixed(1) + '%</span>' + (killed ? ' (처치)' : '') + '<br>' +
+    '발자국 <span class="num">' + fmt(gold) + '</span> · 간식 <span class="num">' + fmt(snack) + '</span>' +
+    (souls ? ' · 야생혼 <span class="num soul">+' + souls + '</span>' : '') + '<br>' +
+    '<span style="color:var(--label)">이 지역 레이드는 환생 후 다시 열립니다.</span></p>' +
+    '<button class="big" id="m-ok">받기</button>');
+  $('#m-ok').onclick = closeModal;
+  renderTop(); renderRaidBtn();
+}
+function raidTick(dt) {
+  var r = S.raid; if (!r) return;
+  var before = S.hp;
+  if (S.hp > 0) hurt(totalDps() * dt, { silent: true });
+  r.hp = Math.max(0, S.hp); r.dmg += Math.max(0, before - S.hp);
+  r.t -= dt; S.bt = r.t;
+  if (r.hp <= 0) { endRaid(true); return; }
+  if (r.t <= 0) endRaid(false);
+}
+function renderRaidBtn() {
+  var b = $('#b-raid'); if (!b) return;
+  if (S.raid) { b.hidden = false; b.className = 'ghost raid on'; setText(b, '레이드 ' + Math.ceil(S.raid.t) + '초 · ' + (S.raid.dmg / S.raid.max * 100).toFixed(0) + '%'); }
+  else if (raidAvailable()) { b.hidden = false; b.className = 'ghost raid ready'; setText(b, '레이드 · ' + raidInfo().n); }
+  else b.hidden = true;
+}
+function confirmRaid() {
+  if (S.raid) { openModal('<h3>레이드를 포기할까요</h3><p>지금까지 넣은 피해만큼만 보상을 받습니다.</p><div class="mrow"><button class="big danger" id="m-ok">포기</button><button class="big" id="m-no">계속</button></div>');
+    $('#m-ok').onclick = function () { closeModal(); endRaid(false); }; $('#m-no').onclick = closeModal; return; }
+  if (!raidAvailable()) return;
+  var info = raidInfo();
+  openModal('<h3>레이드 — ' + info.n + '</h3><p>60초 동안 최대한 피해를 넣습니다. 넣은 만큼 발자국·간식을, 잡으면 <span class="soul">야생혼 +3</span>까지.<br>체력 <span class="num">' + fmt(raidMaxHP(raidRegion())) + '</span> · 지역당 1회</p>' +
+    '<div class="mrow"><button class="big" id="m-ok">도전</button><button class="big" id="m-no">나중에</button></div>');
+  $('#m-ok').onclick = function () { closeModal(); startRaid(); }; $('#m-no').onclick = closeModal;
 }
 
 /* ══ 저장 / 오프라인 ═══════════════════════════════════════════════════ */
@@ -433,7 +524,9 @@ var Stage = (function () {
           if (lt >= 1) rec.lunge = 0;
           else lx = Math.sin(lt * Math.PI) * size * 0.34;
         }
-        setStyle(rec.wrap, 'transform', 'translate(' + ((x + lx) | 0) + 'px,' + (y | 0) + 'px) translate(-50%,-100%)');
+        var bob = Math.sin(_bt * 3.1 + i * 1.3) * (rw === 'air' ? 3 : 1.2);
+        rec.pos = { x: x + lx, y: y - size * 0.45 + bob };
+        setStyle(rec.wrap, 'transform', 'translate(' + ((x + lx) | 0) + 'px,' + ((y + bob) | 0) + 'px) translate(-50%,-100%)');
         setStyle(rec.wrap, 'zIndex', String(Math.round((s ? s.z : (rw === 'front' ? 100 : rw === 'back' ? 40 : 20)) + y * 0.1)));
       });
     });
@@ -460,8 +553,8 @@ var Stage = (function () {
     var fs = scene ? scene.slots(1, 'foe')[0] : null;
     var base = fs && fs.size ? fs.size : H0 * 0.24;
     var cam = camZoom();
-    var size = clamp(base * (info.sizeMul || 1) * (isPhone() ? 1.1 : 1.25) * (0.62 + 0.38 * cam),
-                     28, H0 * (isPhone() ? 0.44 : 0.58));
+    var size = clamp(base * (info.sizeMul || 1) * (isPhone() ? 1.15 : 1.3) * (0.62 + 0.38 * cam) * (info.kind === 'raid' ? 1.4 : 1),
+                     28, H0 * (isPhone() ? 0.5 : 0.62));
     var pal = isDay() ? { rim: 'cold', amt: 0.78, base: '#C9B79A', accent: info.boss ? '#B3261E' : '#2B1E14' }
                       : { rim: 'cold', amt: 0.55 };
     if (info.palette && info.palette.base) pal.tint = info.palette.base;
@@ -490,20 +583,21 @@ var Stage = (function () {
   }
 
   function hit(amt, opt) {
-    if (foe && foe.h.play && !PHONE_SAFE && !(opt && opt.silent)) foe.h.play('hurt');
+    if (foe && foe.h.play && !(opt && opt.silent) && (opt && opt.tap)) foe.h.play('hurt');
     var p = foePos();
     var x = (opt && opt.x != null) ? opt.x : p.x + (Math.random() * 36 - 18);
     var y = (opt && opt.y != null) ? opt.y : p.y;
     if (opt && opt.silent) return;
     if (FX && FX.hit) FX.hit(x, y, { amount: amt, crit: opt && opt.crit, boss: cur && cur.info.boss,
                                      kind: opt && opt.auto ? 'auto' : opt && opt.tap ? 'claw' : 'bite' });
-    else popup(x, y, fmt(amt), opt && opt.crit);
+    else { popup(x, y, fmt(amt), opt && opt.crit); if (Sh && opt && opt.tap && !opt.auto) { Sh.fire('claw', x - 14, y - 14, x + 10, y + 10, null, { size: 18, dur: 0.14 }); } }
     if (opt && opt.tap && FX && FX.tap) FX.tap(x, y, { crit: opt.crit });
   }
   function die(rw) {
     var p = foePos();
     crumb('die');
-    if (foe && foe.h.play && !PHONE_SAFE) foe.h.play('die');
+    if (foe && foe.h.play) foe.h.play('die');
+    if (Sh) Sh.burst(p.x, p.y, 5);
     if (FX && FX.poof) FX.poof(p.x, p.y, cur && cur.info.palette);
     if (FX && FX.coins) FX.coins(p.x, p.y, $('#r-gold'), clamp(Math.round(Math.log10(Math.max(10, rw.gold))), 3, 12));
     crumb('ok');
@@ -512,8 +606,16 @@ var Stage = (function () {
   function cheer() { if (PHONE_SAFE) return; for (var id in pets) if (pets[id].h.play) pets[id].h.play('cheer'); }
 
   /* 자동 전투 연출 — DPS 비중이 큰 동료일수록 자주 때린다 */
+  var _bt = 0;
   function beat(dt) {
+    _bt += dt;
     place();
+    /* 걷기 프레임 — 제자리 발걸음, 각자 다른 박자 */
+    for (var id in pets) {
+      var r = pets[id];
+      r.stepT = (r.stepT == null ? Math.random() * 0.5 : r.stepT) - dt;
+      if (r.stepT <= 0) { r.stepT = 0.38 + ((+id * 37) % 7) * 0.05; if (r.h.step) r.h.step(); }
+    }
     if (scene && cur) scene.setProgress((S.wave - 1 + (1 - clamp(S.hp / cur.max, 0, 1))) / 10);
     var list = visibleList();
     if (!list.length) return;
@@ -526,10 +628,19 @@ var Stage = (function () {
         atk[i] = iv;
         var rec = pets[i];
         if (!rec) return;
-        if (PHONE_SAFE) rec.lunge = performance.now();
-        else if (rec.h.play) rec.h.play('attack');
+        rec.lunge = performance.now();
+        if (rec.h.play) rec.h.play('attack');
+        shoot(i, rec);
       }
     });
+  }
+  function shoot(i, rec) {
+    if (!Sh || !foe) return;
+    var kind = (W.Pixel && W.Pixel.shotOf) ? W.Pixel.shotOf(C.PETS[i].species) : 'claw';
+    var from = rec.pos || { x: W0 * 0.4, y: ground() - H0 * 0.1 }, to = foePos();
+    Sh.fire(kind, from.x + rec.size * 0.35, from.y, to.x - 6 + (Math.random() * 12 - 6), to.y + (Math.random() * 10 - 5),
+      function () { if (foe && foe.h.play) foe.h.play('hurt'); Sh.burst(to.x, to.y, 2); },
+      { size: clamp(rec.size * 0.32, 10, 22) });
   }
   function popup(x, y, text, crit) {
     var d = el('div', null, text);
@@ -552,6 +663,7 @@ var Stage = (function () {
       } catch (e) { scene = null; }
     }
     if (!scene) fallbackSky();
+    if (Sh && Sh.mount) { try { Sh.mount(field); } catch (e) {} }
     measure();
     if (FX && FX.mount) { try { FX.mount(host, { driveFire: false }); } catch (e) {} }
     addEventListener('resize', function () { measure(); place(); });
@@ -1114,6 +1226,7 @@ function bindInput() {
     tap(1, { x: e.clientX - r.left, y: e.clientY - r.top });
   });
   $('#b-auto').onclick = function () { S.auto = !S.auto; paintStage(); };
+  var rb = $('#b-raid'); if (rb) rb.onclick = confirmRaid;
   $('#b-quality').onclick = function () {
     if (SAFE) { try { sessionStorage.setItem('wl-boot', '0'); } catch (x) {} save(); location.reload(); return; }
     S.quality = (S.quality + 2) % 3;
@@ -1144,6 +1257,7 @@ function logic(dt) {
   S.played += dt;
   if (Sk && Sk.tick) Sk.tick(dt);
   if (Nu) Nu.tick(dt, { owned: ownedList() });
+  if (S.raid) { raidTick(dt); return; }
   if (S.hp > 0) hurt(totalDps() * dt, { silent: true });
   if (cur && cur.info.boss && S.bt > 0) {
     S.bt -= dt;
@@ -1212,7 +1326,7 @@ function boot() {
     accPlace += dt;
     if (accPlace >= placeStep) { Stage.beat(accPlace); accPlace = 0; }
     accHud += dt;
-    if (accHud >= 0.1) { accHud = 0; paintStage(); renderTop(); }      /* 10fps — 사람 눈엔 충분 */
+    if (accHud >= 0.1) { accHud = 0; paintStage(); renderTop(); renderRaidBtn(); }      /* 10fps — 사람 눈엔 충분 */
     accSk += dt;
     if (accSk >= 0.2) { accSk = 0; renderSkills(); }
     accTab += dt;
@@ -1256,6 +1370,7 @@ function safeBoot() {
   if (LASTCRUMB && LASTCRUMB.indexOf('ok@') !== 0) errbar('지난번 멈춘 지점: ' + LASTCRUMB.split('@')[0] + (SAFE ? '\n절약 모드로 열었습니다.' : ''));
   else if (SAFE) setTimeout(function () { ribbon('지난번에 화면이 멈춰서 절약 모드로 열었어요 — 연출 버튼으로 다시 켤 수 있어요', 'bad'); }, 3600);
 }
+W.debug = function () { return { S: S, cur: cur, raidAvail: raidAvailable() }; };
 if (document.readyState === 'loading') addEventListener('DOMContentLoaded', safeBoot);
 else safeBoot();
 })();

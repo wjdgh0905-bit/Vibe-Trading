@@ -6,9 +6,10 @@
   "js": [
     "roster.js",
     "difficulty.js",
-    "chibi.js",
     "scene.js",
     "dayscene.js",
+    "pixel.js",
+    "shots.js",
     "fx.js",
     "skills.js",
     "nurture.js",
@@ -22,6 +23,7 @@
     "ui.css",
     "shell.html",
     "dayscene.js",
-    "chibi.js"
+    "pixel.js",
+    "shots.js"
   ]
 }

@@ -7,7 +7,8 @@
 (function () {
 'use strict';
 var W = (window.WL = window.WL || {});
-var C = W.Content, D = W.Difficulty, Cr = W.Creatures, Sc = W.Scene, FX = W.FX, Sk = W.Skills, Nu = W.Nurture;
+var C = W.Content, D = W.Difficulty, Cr = W.Creatures, Sc = null, FX = W.FX, Sk = W.Skills, Nu = W.Nurture;
+var NIGHT_SCENE = W.Scene, DAY_SCENE = W.DayScene;
 var $ = function (s) { return document.querySelector(s); };
 
 /* ══ 표기 ══════════════════════════════════════════════════════════════ */
@@ -81,7 +82,7 @@ function blank() {
     ups: {}, sls: {},
     auto: true, quality: IOS ? 0 : (innerWidth < 720 || LOWEND) ? 1 : 2, qty: 1, tab: 'pets', open: -1,
     kills: 0, bossKills: 0, ascs: 0, played: 0, started: Date.now(), last: Date.now(),
-    hp: 0, bt: 0, seen: {}, skills: null, nurture: null, lite: false,
+    hp: 0, bt: 0, seen: {}, skills: null, nurture: null, lite: false, night: false,
   };
   UPS.forEach(function (u) { s.ups[u.k] = 0; });
   SOULS.forEach(function (u) { s.sls[u.k] = 0; });
@@ -316,6 +317,9 @@ var SWIM = { shark: 1, squid: 1, spermwhale: 1, bluewhale: 1, megalodon: 1 };
 var HEAVY = { bear: 1, tiger: 1, rhino: 1, elephant: 1, mammoth: 1, crocodile: 1, titanoboa: 1, paracer: 1, kirin: 1 };
 
 var _lastIntro = 0;
+function petPalette() {
+  return isDay() ? { rim: 'warm', amt: 0.88, base: '#E2D3B4', accent: '#2B1E14' } : { rim: 'warm' };
+}
 var Stage = (function () {
   var field, scene = null, pets = {}, foe = null, atk = {}, W0 = 0, H0 = 0, lastSlots = {};
 
@@ -378,7 +382,7 @@ var Stage = (function () {
       if (!rec) {
         var wrap = el('div', 'actor');
         var h = makeCreature({ species: row.species, stage: st, size: H0 * 0.16, seed: 1000 + i * 77,
-                               palette: { rim: 'warm' }, label: row.n, mood: 'calm' }, row.ic);
+                               palette: petPalette(), label: row.n, mood: 'calm' }, row.ic);
         wrap.appendChild(h.el);
         field.appendChild(wrap);
         rec = pets[i] = { h: h, wrap: wrap, st: st, size: 0 };
@@ -423,7 +427,13 @@ var Stage = (function () {
         if (rw !== 'air') y += (k % 2 ? 1 : -1) * H0 * 0.018 * (0.5 + (1 - cam) * 1.8);
     var size = slotSize(s, i, cam) * (rw === 'back' ? 0.88 : 1);
         if (rec.size !== size) { rec.size = size; if (rec.h.setSize) rec.h.setSize(size); }
-        setStyle(rec.wrap, 'transform', 'translate(' + (x | 0) + 'px,' + (y | 0) + 'px) translate(-50%,-100%)');
+        var lx = 0;
+        if (rec.lunge) {
+          var lt = (performance.now() - rec.lunge) / 420;
+          if (lt >= 1) rec.lunge = 0;
+          else lx = Math.sin(lt * Math.PI) * size * 0.34;
+        }
+        setStyle(rec.wrap, 'transform', 'translate(' + ((x + lx) | 0) + 'px,' + (y | 0) + 'px) translate(-50%,-100%)');
         setStyle(rec.wrap, 'zIndex', String(Math.round((s ? s.z : (rw === 'front' ? 100 : rw === 'back' ? 40 : 20)) + y * 0.1)));
       });
     });
@@ -452,10 +462,11 @@ var Stage = (function () {
     var cam = camZoom();
     var size = clamp(base * (info.sizeMul || 1) * (isPhone() ? 1.1 : 1.25) * (0.62 + 0.38 * cam),
                      28, H0 * (isPhone() ? 0.44 : 0.58));
-    var pal = { rim: 'cold', amt: 0.55 };
+    var pal = isDay() ? { rim: 'cold', amt: 0.78, base: '#C9B79A', accent: info.boss ? '#B3261E' : '#2B1E14' }
+                      : { rim: 'cold', amt: 0.55 };
     if (info.palette && info.palette.base) pal.tint = info.palette.base;
     if (!pal.tint && info.biome && info.biome.tint) pal.tint = info.biome.tint;
-    if (info.boss) pal.accent = '#C1391A';
+    if (info.boss && !isDay()) pal.accent = '#C1391A';
     var wrap = el('div', 'actor');
     var h = makeCreature({ species: info.archetype, stage: info.boss ? 4 : 2, size: size, flip: true,
                            palette: pal, seed: S.zone * 1000 + S.wave, mood: info.boss ? 'fierce' : 'calm',
@@ -479,7 +490,7 @@ var Stage = (function () {
   }
 
   function hit(amt, opt) {
-    if (foe && foe.h.play && !(opt && opt.silent)) foe.h.play('hurt');
+    if (foe && foe.h.play && !PHONE_SAFE && !(opt && opt.silent)) foe.h.play('hurt');
     var p = foePos();
     var x = (opt && opt.x != null) ? opt.x : p.x + (Math.random() * 36 - 18);
     var y = (opt && opt.y != null) ? opt.y : p.y;
@@ -492,13 +503,13 @@ var Stage = (function () {
   function die(rw) {
     var p = foePos();
     crumb('die');
-    if (foe && foe.h.play) foe.h.play('die');
+    if (foe && foe.h.play && !PHONE_SAFE) foe.h.play('die');
     if (FX && FX.poof) FX.poof(p.x, p.y, cur && cur.info.palette);
     if (FX && FX.coins) FX.coins(p.x, p.y, $('#r-gold'), clamp(Math.round(Math.log10(Math.max(10, rw.gold))), 3, 12));
     crumb('ok');
     if (scene) scene.shake(cur && cur.info.boss ? 0.8 : 0.15);
   }
-  function cheer() { for (var id in pets) if (pets[id].h.play) pets[id].h.play('cheer'); }
+  function cheer() { if (PHONE_SAFE) return; for (var id in pets) if (pets[id].h.play) pets[id].h.play('cheer'); }
 
   /* 자동 전투 연출 — DPS 비중이 큰 동료일수록 자주 때린다 */
   function beat(dt) {
@@ -514,7 +525,9 @@ var Stage = (function () {
       if (atk[i] <= 0) {
         atk[i] = iv;
         var rec = pets[i];
-        if (rec && rec.h.play) rec.h.play('attack');
+        if (!rec) return;
+        if (PHONE_SAFE) rec.lunge = performance.now();
+        else if (rec.h.play) rec.h.play('attack');
       }
     });
   }
@@ -530,6 +543,7 @@ var Stage = (function () {
   function mount() {
     var host = $('#stage');
     field = $('#field');
+    Sc = pickScene();
     if (Sc && Sc.mount) {
       try {
         scene = Sc.mount(host, { biome: C ? C.biomeFor(S.zone).i : 0 });
@@ -778,7 +792,7 @@ function portraitFor(i) {
   if (p) p.h.dispose();
   var h = Cr.make({
     species: C.PETS[i].species, stage: st, size: 38, seed: 1000 + i * 77,
-    palette: owned ? { rim: 'warm' } : { rim: 'cold', amt: 0, base: '#1C2331', accent: '#2B3346' },
+    palette: owned ? petPalette() : { rim: 'cold', amt: 0, base: '#1C2331', accent: '#2B3346' },
     mood: owned ? 'calm' : 'tired', label: C.PETS[i].n,
   });
   h.el.style.opacity = owned ? '1' : '.38';
@@ -958,7 +972,8 @@ function tabLog() {
   ];
   return '<div class="note">불은 꺼지지 않는다. 자리를 비워도 무리는 사냥을 계속한다.</div>' +
     rows.map(function (r) { return '<div class="kv"><span>' + r[0] + '</span><b>' + r[1] + '</b></div>'; }).join('') +
-    '<button class="big" id="b-lite">' + (S.lite ? '야경·이펙트 다시 켜기' : '저사양 모드 (야경·이펙트 끄기)') + '</button>' +
+    (PHONE_SAFE ? '' : '<button class="big" id="b-night">' + (S.night ? '낮 무대로' : '모닥불 야경 무대로 (캔버스)') + '</button>') +
+    '<button class="big" id="b-lite">' + (S.lite ? '무대 다시 켜기' : '저사양 모드 (무대·이펙트 끄기)') + '</button>' +
     '<button class="big" id="b-export">저장 내보내기</button>' +
     '<button class="big" id="b-import">저장 불러오기</button>' +
     '<button class="big danger" id="b-reset">처음부터 다시</button>';
@@ -985,6 +1000,7 @@ function renderTab() {
   var a = body.querySelector('#b-asc'); if (a) a.onclick = confirmAscend;
   var rs = body.querySelector('#b-reset'); if (rs) rs.onclick = confirmReset;
   var ex = body.querySelector('#b-export'); if (ex) ex.onclick = doExport;
+  var nt = body.querySelector('#b-night'); if (nt) nt.onclick = function () { S.night = !S.night; save(); location.reload(); };
   var lt = body.querySelector('#b-lite'); if (lt) lt.onclick = function () {
     S.lite = !S.lite; save();
     try { sessionStorage.setItem('wl-boot', '0'); } catch (x) {}
@@ -1101,11 +1117,12 @@ function bindInput() {
   $('#b-quality').onclick = function () {
     if (SAFE) { try { sessionStorage.setItem('wl-boot', '0'); } catch (x) {} save(); location.reload(); return; }
     S.quality = (S.quality + 2) % 3;
+    if (PHONE_SAFE) S.quality = Math.min(S.quality, 1);
     var names = ['연출 끔', '연출 약', '연출 강'];
     $('#b-quality').textContent = names[S.quality];
-    if (Cr && Cr.quality) Cr.quality(S.quality);
+    if (Cr && Cr.quality) Cr.quality(PHONE_SAFE ? 0 : S.quality);
     if (Sc && Sc.quality) Sc.quality(S.quality);
-    if (navigator.vibrate) navigator.vibrate(8);
+    haptic(8);
   };
   $('#tabs').onclick = function (e) {
     var t = e.target.closest('.tab');
@@ -1165,8 +1182,8 @@ function boot() {
   bindInput();
   spawn(true);
   Stage.sync();
-  if (Cr && Cr.quality) Cr.quality((SAFE || LITE) ? 0 : S.quality);
-  if (Cr && Cr.autoQuality) Cr.autoQuality(!(SAFE || LITE));
+  if (Cr && Cr.quality) Cr.quality((SAFE || LITE || PHONE_SAFE) ? 0 : S.quality);
+  if (Cr && Cr.autoQuality) Cr.autoQuality(!(SAFE || LITE || PHONE_SAFE));
   var off = had ? offline() : null;
   renderTop(); renderTab(); paintStage(); renderSkills();
   if (off) {
@@ -1216,7 +1233,15 @@ try {
 } catch (e) {}
 var LITE = false;
 try { LITE = /lite/.test(location.hash) || /"lite":true/.test(localStorage.getItem(KEY) || ''); } catch (e) {}
-if (SAFE || LITE) { Sc = null; FX = null; try { document.documentElement.className += ' lite'; } catch (e) {} }
+var PHONE_SAFE = IOS || isPhone() || LOWEND;         /* 폰은 캔버스 이펙트·크리처 애니메이션 없이 */
+if (PHONE_SAFE) FX = null;
+if (SAFE || LITE) { FX = null; try { document.documentElement.className += ' lite'; } catch (e) {} }
+function pickScene() {
+  if (SAFE || LITE) return null;
+  if (S.night && !PHONE_SAFE && NIGHT_SCENE) return NIGHT_SCENE;
+  return DAY_SCENE || (PHONE_SAFE ? null : NIGHT_SCENE);
+}
+function isDay() { return Sc === DAY_SCENE; }
 function errbar(msg) {
   var b = document.getElementById('errbar');
   if (!b) { b = el('div', 'errbar'); b.id = 'errbar'; document.body.appendChild(b); }

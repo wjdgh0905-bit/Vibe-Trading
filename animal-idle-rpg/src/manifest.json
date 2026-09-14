@@ -8,6 +8,7 @@
     "difficulty.js",
     "creatures.js",
     "scene.js",
+    "dayscene.js",
     "fx.js",
     "skills.js",
     "nurture.js",
@@ -20,6 +21,7 @@
     "nurture.js",
     "core.js",
     "ui.css",
-    "shell.html"
+    "shell.html",
+    "dayscene.js"
   ]
 }

@@ -30,7 +30,9 @@ function time(s) {
 }
 var clamp = function (v, a, b) { return Math.max(a, Math.min(b, v)); };
 var isPhone = function () { return innerWidth < 720; };
-var LOWEND = (navigator.deviceMemory && navigator.deviceMemory <= 4) ||
+var IOS = /iP(hone|ad|od)/.test(navigator.userAgent) ||
+          (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+var LOWEND = IOS || (navigator.deviceMemory && navigator.deviceMemory <= 4) ||
              (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4);
 /* DOM 쓰기는 값이 바뀐 프레임에만 — 모바일에서 이게 프레임을 지킨다 */
 var _txt = new WeakMap();
@@ -77,7 +79,7 @@ function blank() {
     v: 2, zone: 1, wave: 1, gold: 15, souls: 0, best: 1, runBest: 1,
     pets: new Array(PET_N).fill(0),
     ups: {}, sls: {},
-    auto: true, quality: (innerWidth < 720 || LOWEND) ? 1 : 2, qty: 1, tab: 'pets', open: -1,
+    auto: true, quality: IOS ? 0 : (innerWidth < 720 || LOWEND) ? 1 : 2, qty: 1, tab: 'pets', open: -1,
     kills: 0, bossKills: 0, ascs: 0, played: 0, started: Date.now(), last: Date.now(),
     hp: 0, bt: 0, seen: {}, skills: null, nurture: null, lite: false,
   };
@@ -347,7 +349,7 @@ var Stage = (function () {
     return _rows;
   }
   /* 화면에 세우는 동료 수 상한 — 강한 쪽부터. 모바일에서 프레임을 지키는 첫 번째 방어선 */
-  function actorCap() { return isPhone() ? 5 : LOWEND ? 10 : 14; }
+  function actorCap() { return IOS ? 4 : isPhone() ? 5 : LOWEND ? 10 : 14; }
   function visibleList() {
     var all = ownedList(), cap = actorCap();
     return all.length <= cap ? all : all.slice(all.length - cap);
@@ -1163,8 +1165,8 @@ function boot() {
   bindInput();
   spawn(true);
   Stage.sync();
-  if (Cr && Cr.quality) Cr.quality(S.quality);
-  if (Cr && Cr.autoQuality) Cr.autoQuality(true);
+  if (Cr && Cr.quality) Cr.quality((SAFE || LITE) ? 0 : S.quality);
+  if (Cr && Cr.autoQuality) Cr.autoQuality(!(SAFE || LITE));
   var off = had ? offline() : null;
   renderTop(); renderTab(); paintStage(); renderSkills();
   if (off) {
@@ -1214,7 +1216,7 @@ try {
 } catch (e) {}
 var LITE = false;
 try { LITE = /lite/.test(location.hash) || /"lite":true/.test(localStorage.getItem(KEY) || ''); } catch (e) {}
-if (SAFE || LITE) { Sc = null; FX = null; }
+if (SAFE || LITE) { Sc = null; FX = null; try { document.documentElement.className += ' lite'; } catch (e) {} }
 function errbar(msg) {
   var b = document.getElementById('errbar');
   if (!b) { b = el('div', 'errbar'); b.id = 'errbar'; document.body.appendChild(b); }

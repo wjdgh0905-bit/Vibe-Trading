@@ -41,7 +41,7 @@ svg{display:block}
 .num,.v,.c{font-family:var(--num);font-variant-numeric:tabular-nums}
 .soul{color:var(--soulfire)} .warm{color:var(--ember)}
 
-.app{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;padding-bottom:24px}
+.app{display:flex;flex-direction:column;padding-bottom:24px}
 /* 모바일: 스트립 → 무대 → 스킬 → 탭 → 장부 순서로 흐른다 */
 .grid{display:contents}
 .strip{order:0} .col-stage{order:1} .tabs{order:2} .ledger{order:3}
@@ -67,7 +67,7 @@ svg{display:block}
 /* ══ 무대 ══════════════════════════════════════════════════════════════ */
 .stage{
   position:relative;overflow:hidden;background:var(--night);
-  aspect-ratio:4/3;min-height:230px;max-height:52vh;
+  aspect-ratio:4/3;min-height:230px;max-height:440px;
   border-bottom:1px solid var(--line);
 }
 .stage.boss{box-shadow:inset 0 0 0 1px rgba(193,57,26,.42)}
@@ -296,7 +296,7 @@ textarea{width:100%;height:110px;background:#0B0E15;color:var(--ink);border:1px 
   .ledger{grid-area:ledger;border:1px solid var(--line);border-top:none;
     border-radius:0 0 var(--r) var(--r);background:rgba(20,26,38,.4);
     position:sticky;top:114px;align-self:start}
-  .body{padding:8px 16px 16px;max-height:min(66vh,660px);overflow-y:auto;scrollbar-width:thin}
+  .body{padding:8px 16px 16px;max-height:660px;overflow-y:auto;scrollbar-width:thin}
   .modal{align-items:center}
   .mbox{border-radius:var(--r);border-bottom:1px solid var(--line-2);padding-bottom:20px}
   .mbox::before{display:none}
@@ -340,3 +340,8 @@ textarea{width:100%;height:110px;background:#0B0E15;color:var(--ink);border:1px 
   font-family:var(--num);font-size:10px;line-height:1.5;color:#FF9F8C;background:rgba(30,12,10,.96);
   border:1px solid rgba(193,57,26,.5);border-radius:8px;white-space:pre-wrap;word-break:break-all}
 .errbar b{display:block;font-family:var(--body);font-size:11px;color:var(--ink);margin-bottom:4px}
+
+/* #lite — 진단·저사양: 크리처 애니메이션까지 멈춘다 */
+html.lite .actor *,html.lite .por *{animation:none !important;transition:none !important}
+html.lite .stage{background:radial-gradient(110% 70% at 27% 76%, rgba(255,147,51,.16), transparent 55%),
+  linear-gradient(180deg,#0B0E15 0%,#141A26 58%,#1E2635 70%,#141A26 100%)}

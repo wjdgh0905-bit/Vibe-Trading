@@ -56,7 +56,7 @@ svg{display:block}
 .num,.v,.c{font-family:var(--num);font-variant-numeric:tabular-nums}
 .soul{color:var(--soulfire)} .warm{color:var(--ember)}
 
-.app{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;padding-bottom:24px}
+.app{display:flex;flex-direction:column;padding-bottom:24px}
 /* 모바일: 스트립 → 무대 → 스킬 → 탭 → 장부 순서로 흐른다 */
 .grid{display:contents}
 .strip{order:0} .col-stage{order:1} .tabs{order:2} .ledger{order:3}
@@ -82,7 +82,7 @@ svg{display:block}
 /* ══ 무대 ══════════════════════════════════════════════════════════════ */
 .stage{
   position:relative;overflow:hidden;background:var(--night);
-  aspect-ratio:4/3;min-height:230px;max-height:52vh;
+  aspect-ratio:4/3;min-height:230px;max-height:440px;
   border-bottom:1px solid var(--line);
 }
 .stage.boss{box-shadow:inset 0 0 0 1px rgba(193,57,26,.42)}
@@ -311,7 +311,7 @@ textarea{width:100%;height:110px;background:#0B0E15;color:var(--ink);border:1px 
   .ledger{grid-area:ledger;border:1px solid var(--line);border-top:none;
     border-radius:0 0 var(--r) var(--r);background:rgba(20,26,38,.4);
     position:sticky;top:114px;align-self:start}
-  .body{padding:8px 16px 16px;max-height:min(66vh,660px);overflow-y:auto;scrollbar-width:thin}
+  .body{padding:8px 16px 16px;max-height:660px;overflow-y:auto;scrollbar-width:thin}
   .modal{align-items:center}
   .mbox{border-radius:var(--r);border-bottom:1px solid var(--line-2);padding-bottom:20px}
   .mbox::before{display:none}
@@ -355,6 +355,11 @@ textarea{width:100%;height:110px;background:#0B0E15;color:var(--ink);border:1px 
   font-family:var(--num);font-size:10px;line-height:1.5;color:#FF9F8C;background:rgba(30,12,10,.96);
   border:1px solid rgba(193,57,26,.5);border-radius:8px;white-space:pre-wrap;word-break:break-all}
 .errbar b{display:block;font-family:var(--body);font-size:11px;color:var(--ink);margin-bottom:4px}
+
+/* #lite — 진단·저사양: 크리처 애니메이션까지 멈춘다 */
+html.lite .actor *,html.lite .por *{animation:none !important;transition:none !important}
+html.lite .stage{background:radial-gradient(110% 70% at 27% 76%, rgba(255,147,51,.16), transparent 55%),
+  linear-gradient(180deg,#0B0E15 0%,#141A26 58%,#1E2635 70%,#141A26 100%)}
 </style>
 </head>
 <body>
@@ -9119,7 +9124,9 @@ function time(s) {
 }
 var clamp = function (v, a, b) { return Math.max(a, Math.min(b, v)); };
 var isPhone = function () { return innerWidth < 720; };
-var LOWEND = (navigator.deviceMemory && navigator.deviceMemory <= 4) ||
+var IOS = /iP(hone|ad|od)/.test(navigator.userAgent) ||
+          (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+var LOWEND = IOS || (navigator.deviceMemory && navigator.deviceMemory <= 4) ||
              (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4);
 /* DOM 쓰기는 값이 바뀐 프레임에만 — 모바일에서 이게 프레임을 지킨다 */
 var _txt = new WeakMap();
@@ -9166,7 +9173,7 @@ function blank() {
     v: 2, zone: 1, wave: 1, gold: 15, souls: 0, best: 1, runBest: 1,
     pets: new Array(PET_N).fill(0),
     ups: {}, sls: {},
-    auto: true, quality: (innerWidth < 720 || LOWEND) ? 1 : 2, qty: 1, tab: 'pets', open: -1,
+    auto: true, quality: IOS ? 0 : (innerWidth < 720 || LOWEND) ? 1 : 2, qty: 1, tab: 'pets', open: -1,
     kills: 0, bossKills: 0, ascs: 0, played: 0, started: Date.now(), last: Date.now(),
     hp: 0, bt: 0, seen: {}, skills: null, nurture: null, lite: false,
   };
@@ -9436,7 +9443,7 @@ var Stage = (function () {
     return _rows;
   }
   /* 화면에 세우는 동료 수 상한 — 강한 쪽부터. 모바일에서 프레임을 지키는 첫 번째 방어선 */
-  function actorCap() { return isPhone() ? 5 : LOWEND ? 10 : 14; }
+  function actorCap() { return IOS ? 4 : isPhone() ? 5 : LOWEND ? 10 : 14; }
   function visibleList() {
     var all = ownedList(), cap = actorCap();
     return all.length <= cap ? all : all.slice(all.length - cap);
@@ -10252,8 +10259,8 @@ function boot() {
   bindInput();
   spawn(true);
   Stage.sync();
-  if (Cr && Cr.quality) Cr.quality(S.quality);
-  if (Cr && Cr.autoQuality) Cr.autoQuality(true);
+  if (Cr && Cr.quality) Cr.quality((SAFE || LITE) ? 0 : S.quality);
+  if (Cr && Cr.autoQuality) Cr.autoQuality(!(SAFE || LITE));
   var off = had ? offline() : null;
   renderTop(); renderTab(); paintStage(); renderSkills();
   if (off) {
@@ -10303,7 +10310,7 @@ try {
 } catch (e) {}
 var LITE = false;
 try { LITE = /lite/.test(location.hash) || /"lite":true/.test(localStorage.getItem(KEY) || ''); } catch (e) {}
-if (SAFE || LITE) { Sc = null; FX = null; }
+if (SAFE || LITE) { Sc = null; FX = null; try { document.documentElement.className += ' lite'; } catch (e) {} }
 function errbar(msg) {
   var b = document.getElementById('errbar');
   if (!b) { b = el('div', 'errbar'); b.id = 'errbar'; document.body.appendChild(b); }

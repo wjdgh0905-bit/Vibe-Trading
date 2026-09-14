@@ -235,3 +235,72 @@ button:focus-visible,[tabindex]:focus-visible{outline:1px solid var(--ember);out
   .res{min-width:48px}
   .res .v{font-size:13px}
 }
+
+/* ══ 정리 패스 — 장식을 덜어내고 위계만 남긴다 ══════════════════════════ */
+
+/* 무대 머리글 : 배지 상자를 버리고 한 줄로 잇는다 */
+.ov-zone{gap:0;align-items:baseline}
+.ov-zone > *{padding:0 9px;border-left:1px solid var(--line)}
+.ov-zone > *:first-child{padding-left:0;border-left:none}
+.grade{border:none;padding:0 9px;font-size:10.5px;letter-spacing:.02em;opacity:1}
+.tierbadge{border:none;padding:0 9px;font-size:10.5px;letter-spacing:.02em}
+.zname{font-size:16px}
+.bname{font-size:10.5px}
+
+/* 적 이름 : 이름이 주인공, 수치는 뒤로 */
+.ename{font-size:13px;font-weight:500;letter-spacing:.01em}
+.etag{font-size:8.5px;letter-spacing:.14em;padding:0 0 0 6px;border:none;vertical-align:1px;opacity:.9}
+.hptxt{font-size:9.5px;opacity:.75}
+
+/* 스킬바 : 12개가 나란히 있어도 시끄럽지 않게 — 색은 상태에만 쓴다 */
+.skills{padding:9px 0 0;border-top:none;background:none}
+.skills .wl-sk-bar{gap:4px;padding:0}
+.skills .wl-sk{min-height:0;padding:13px 7px 8px;border-radius:2px;
+  border-color:rgba(158,182,214,.10);background:rgba(20,26,38,.55)}
+.skills .wl-sk.t-leaf.rdy,.skills .wl-sk.t-soul.rdy,.skills .wl-sk.t-deep.rdy,
+.skills .wl-sk.rdy{border-color:rgba(255,147,51,.20);background:rgba(28,35,49,.5)}
+.skills .wl-sk .n{font-size:11px;font-weight:500}
+.skills .wl-sk.rdy .n,.skills .wl-sk.t-leaf.rdy .n,.skills .wl-sk.t-soul.rdy .n,.skills .wl-sk.t-deep.rdy .n{color:var(--ink)}
+.skills .wl-sk.rdy .c,.skills .wl-sk.t-leaf.rdy .c,.skills .wl-sk.t-soul.rdy .c,.skills .wl-sk.t-deep.rdy .c{color:var(--label)}
+.skills .wl-sk.rdy .f,.skills .wl-sk.t-leaf.rdy .f{background:rgba(255,147,51,.5)}
+.skills .wl-sk .c{font-size:9px;color:var(--dim)}
+.skills .wl-sk.rdy .c{color:var(--label)}
+.skills .wl-sk .k{color:rgba(158,182,214,.28);font-size:8px}
+.skills .wl-sk.on{border-color:var(--ember);background:rgba(255,147,51,.08)}
+.skills .wl-sk .f{opacity:.35}
+
+/* 장부 : 행에 숨 쉴 틈을 준다 */
+.body{padding:12px 14px 14px}
+.row{padding:11px 0;gap:12px}
+.nm{font-size:13.5px;letter-spacing:-.005em}
+.lv{font-size:9px;letter-spacing:.04em;color:var(--dim)}
+.x2{font-size:9px}
+.sub{font-size:10px;margin-top:3px;letter-spacing:.01em}
+.sub .pv{color:var(--label)}
+.buy{min-width:92px}
+.buy .c{font-size:12.5px;color:rgba(158,182,214,.35)}
+.buy .q{font-size:9px;letter-spacing:.04em;opacity:.8}
+.buy.ok{box-shadow:none}
+.buy.ok .c{color:var(--ember);text-shadow:none}
+.buy.ok .q{color:var(--label)}
+.mst{margin-top:6px;height:1px;background:rgba(158,182,214,.08)}
+.mst i{opacity:.5}
+.por{width:50px;height:44px}
+
+/* 난이도 : 이모지 대신 색 띠 */
+.tier{gap:12px;padding:11px 0}
+.tier .ic{width:2px;height:34px;border-radius:1px;opacity:.75;font-size:0}
+.tier .tn{font-size:13px}
+.tier .td{font-size:10px;margin-top:2px}
+.tier .tr{font-size:9.5px;letter-spacing:.01em;opacity:.8}
+.tier.sel{box-shadow:none}
+.tier.sel .ic{width:3px;opacity:1}
+.tier.sel .tn::after{content:'선택됨';margin-left:8px;font-family:var(--body);font-size:9px;
+  font-weight:400;letter-spacing:.08em;color:var(--label)}
+
+/* 탭 */
+.tab{font-size:11px;letter-spacing:.02em;padding:11px 4px 9px}
+.tabs{border-bottom-color:var(--line)}
+
+/* 배너 : 얇게 */
+.wl-fx-rib{font-size:11px !important;letter-spacing:.01em}

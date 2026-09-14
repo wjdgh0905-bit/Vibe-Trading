@@ -29,6 +29,10 @@ function time(s) {
   return h ? h + '시간 ' + m + '분' : m ? m + '분 ' + x + '초' : x + '초';
 }
 var clamp = function (v, a, b) { return Math.max(a, Math.min(b, v)); };
+function plainPassive(i) {
+  var line = (C && C.passiveLine) ? C.passiveLine(i) : '';
+  return line.replace(/^[^\uAC00-\uD7A3A-Za-z0-9]+/, '').trim();
+}
 var el = function (tag, cls, html) { var e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; };
 
 /* ══ 상태 ══════════════════════════════════════════════════════════════ */
@@ -194,7 +198,7 @@ function kill() {
   if (boss) {
     S.bossKills++;
     if (D) D.recordBest(S, S.zone, kind);
-    ribbon('👑 ' + info.name + ' 격파  +' + fmt(rw.gold), 'gold');
+    ribbon(info.name + ' 격파 · 발자국 +' + fmt(rw.gold), 'gold');
     Stage.cheer();
     if (FX && FX.bossWarn) FX.bossWarn(0);
     chatterSome('win');
@@ -206,7 +210,7 @@ function kill() {
       if (D && S.zone % 5 === 1) {
         var reg = D.regionReward(S.zone, { tier: S.tier, seed: seedOf(), snackBonus: p.snackAdd });
         S.snack += reg.snack || 0;
-        ribbon('🗺 ' + (C ? C.biomeFor(S.zone).n : '') + '  간식 +' + fmt(reg.snack || 0), 'good');
+        ribbon((C ? C.biomeFor(S.zone).n : '') + '에 들어섰다 · 간식 +' + fmt(reg.snack || 0), 'zone');
         if (Sc && Sc.setBiome) Sc.setBiome(C ? C.biomeFor(S.zone).i : 0);
       }
     } else if (S.auto) S.wave++;
@@ -215,7 +219,7 @@ function kill() {
 }
 function bossFail() {
   if (D) D.recordBossFail(S, S.zone);
-  ribbon('💀 ' + (cur ? cur.info.name : '보스') + ' 토벌 실패 — 존 ' + S.zone + ' 1웨이브', 'bad');
+  ribbon((cur ? cur.info.name : '보스') + ' 토벌 실패 — 존 ' + S.zone + ' 1웨이브로', 'bad');
   S.wave = 1; spawn();
 }
 function tapScaled(n, power) {
@@ -316,9 +320,16 @@ var Stage = (function () {
     ownedList().forEach(function (i) { out[rowOf(C.PETS[i].species)].push(i); });
     return out;
   }
-  function slotSize(slot, i) {
+  /* 무리가 늘수록 카메라가 뒤로 물러난다 — 5마리까지는 그대로, 이후 서서히 */
+  function camZoom() {
+    var n = ownedList().length;
+    /* 좁은 화면에서는 너무 멀리 물러나면 아무것도 안 보인다 */
+    var floor = (typeof innerWidth === 'number' && innerWidth < 620) ? 0.60 : 0.46;
+    return clamp(1 - Math.max(0, n - 5) * 0.052, floor, 1);
+  }
+  function slotSize(slot, i, cam) {
     var base = slot && slot.size ? slot.size : H0 * 0.19;
-    return clamp(base * (0.88 + 0.028 * i), 26, H0 * 0.50);
+    return clamp(base * (0.88 + 0.028 * i) * cam, 16, H0 * 0.50);
   }
 
   function sync() {
@@ -344,23 +355,39 @@ var Stage = (function () {
   /* 매 프레임 배치 — Scene 이 주는 무대 좌표를 그대로 쓴다 */
   function place() {
     if (!field) return;
-    var g = rows();
+    var g = rows(), cam = camZoom();
+    /* 카메라가 물러난 만큼 줄을 옆으로 벌린다 — 같은 프레임에 더 넓은 땅이 들어온다 */
+    var spread = 1.42 + (1 - cam) * 2.2;
     ['front', 'back', 'air'].forEach(function (rw) {
       var ids = g[rw];
       if (!ids.length) return;
       var sl = scene ? scene.slots(ids.length, rw) : null;
+      var mid = 0;
+      if (sl && sl.length) { for (var q = 0; q < sl.length; q++) mid += sl[q].x; mid /= sl.length; }
+      else mid = W0 * 0.45;
       ids.forEach(function (i, k) {
         var rec = pets[i]; if (!rec) return;
         var s = sl && sl[k];
         var x = s ? s.x : W0 * (0.30 + 0.30 * (k / Math.max(1, ids.length - 1)));
         var y = s ? s.y : ground() - (rw === 'air' ? H0 * 0.26 : rw === 'back' ? H0 * 0.06 : 0);
-        var size = slotSize(s, i);
+        x = clamp(mid + (x - mid) * spread, W0 * 0.07, W0 * 0.72);
+        /* 일직선으로 서지 않도록 앞뒤로 살짝 어긋나게 — 깊이가 생긴다 */
+        /* 줄 사이를 벌리고, 같은 줄 안에서도 앞뒤로 어긋나게 — 깊이가 생긴다 */
+        if (rw === 'back') y -= H0 * 0.035;
+        if (rw !== 'air') y += (k % 2 ? 1 : -1) * H0 * 0.018 * (0.5 + (1 - cam) * 1.8);
+    var size = slotSize(s, i, cam) * (rw === 'back' ? 0.88 : 1);
         if (rec.size !== size) { rec.size = size; if (rec.h.setSize) rec.h.setSize(size); }
         rec.wrap.style.transform = 'translate(' + x + 'px,' + y + 'px) translate(-50%,-100%)';
-        rec.wrap.style.zIndex = s ? s.z : (rw === 'front' ? 10 : rw === 'back' ? 4 : 2);
+        rec.wrap.style.zIndex = Math.round((s ? s.z : (rw === 'front' ? 100 : rw === 'back' ? 40 : 20)) + y * 0.1);
       });
     });
     if (foe) {
+      var fcam = camZoom();
+      if (foe.h.setSize && Math.abs((foe.cam || 1) - fcam) > 0.02) {
+        foe.cam = fcam;
+        var fb = (scene ? (scene.slots(1, 'foe')[0] || {}).size : 0) || H0 * 0.24;
+        foe.h.setSize(clamp(fb * (foe.mul || 1) * 1.25 * (0.62 + 0.38 * fcam), 30, H0 * 0.58));
+      }
       var fs = scene ? scene.slots(1, 'foe')[0] : null;
       var fx = fs ? fs.x : W0 * 0.80, fy = fs ? fs.y : ground();
       foe.wrap.style.transform = 'translate(' + fx + 'px,' + fy + 'px) translate(-50%,-100%)';
@@ -375,7 +402,8 @@ var Stage = (function () {
     var info = c.info;
     var fs = scene ? scene.slots(1, 'foe')[0] : null;
     var base = fs && fs.size ? fs.size : H0 * 0.24;
-    var size = clamp(base * (info.sizeMul || 1) * 1.25, 38, H0 * 0.58);
+    var cam = camZoom();
+    var size = clamp(base * (info.sizeMul || 1) * 1.25 * (0.62 + 0.38 * cam), 30, H0 * 0.58);
     var pal = { rim: 'cold', amt: 0.55 };
     if (info.palette && info.palette.base) pal.tint = info.palette.base;
     if (!pal.tint && info.biome && info.biome.tint) pal.tint = info.biome.tint;
@@ -386,7 +414,7 @@ var Stage = (function () {
                            label: info.name }, info.ic);
     wrap.appendChild(h.el);
     field.appendChild(wrap);
-    foe = { h: h, wrap: wrap, pos: { x: W0 * 0.8, y: ground() } };
+    foe = { h: h, wrap: wrap, pos: { x: W0 * 0.8, y: ground() }, cam: cam, mul: (info.sizeMul || 1) };
     place();
     if (info.boss && FX && FX.bossIntro && Date.now() - _lastIntro > 7000) {
       _lastIntro = Date.now();
@@ -558,8 +586,10 @@ function paintStage() {
   var info = cur.info, pct = clamp(S.hp / cur.max, 0, 1);
   $('#o-zone').textContent = '존 ' + S.zone;
   $('#o-biome').textContent = C ? C.biomeFor(S.zone).n : '';
-  var tier = D ? D.tierOf(S.tier) : { ic: '🍃', n: '산책', c: '#7fd4a0' };
-  $('#o-tier').textContent = tier.ic + ' ' + tier.n;
+  var tier = D ? D.tierOf(S.tier) : { n: '산책', c: '#7fd4a0' };
+  var tb = $('#o-tier');
+  tb.textContent = tier.n;
+  tb.style.color = tier.c;
   if (D) {
     var p = passives();
     var r = D.ratingOf(S.zone, totalDps(), { tier: S.tier, seed: seedOf(), bossMult: bossMultiplier(), hunt: S.sls.hunt, petHunt: p.huntAdd });
@@ -673,14 +703,20 @@ function buildPets() {
   updatePets();
 }
 function portraitFor(i) {
-  var lv = S.pets[i];
-  if (!lv || !Cr || !Cr.make) return null;
-  var st = Nu ? Nu.stageOf(lv) : 2;
+  if (!Cr || !Cr.make) return null;
+  var lv = S.pets[i], owned = lv > 0;
+  var st = owned ? (Nu ? Nu.stageOf(lv) : 2) : 2;
+  var key = st + (owned ? 'o' : 's');
   var p = portraits[i];
-  if (p && p.st === st) return p.h;
-  if (p) { p.h.dispose(); }
-  var h = Cr.make({ species: C.PETS[i].species, stage: st, size: 38, seed: 1000 + i * 77, palette: { rim: 'warm' }, label: C.PETS[i].n });
-  portraits[i] = { h: h, st: st };
+  if (p && p.key === key) return p.h;
+  if (p) p.h.dispose();
+  var h = Cr.make({
+    species: C.PETS[i].species, stage: st, size: 38, seed: 1000 + i * 77,
+    palette: owned ? { rim: 'warm' } : { rim: 'cold', amt: 0, base: '#1C2331', accent: '#2B3346' },
+    mood: owned ? 'calm' : 'tired', label: C.PETS[i].n,
+  });
+  h.el.style.opacity = owned ? '1' : '.38';
+  portraits[i] = { h: h, key: key };
   return h;
 }
 function updatePets() {
@@ -698,8 +734,7 @@ function updatePets() {
     var por = r.row.querySelector('.por');
     var h = portraitFor(i);
     if (h && por.firstChild !== h.el) { por.innerHTML = ''; por.classList.remove('emoji'); por.appendChild(h.el); }
-    else if (!h && !por.firstChild) { por.classList.add('emoji'); por.textContent = hidden ? '❔' : d.ic; }
-    else if (!h) { por.textContent = hidden ? '❔' : d.ic; }
+    else if (!h) { por.classList.add('emoji'); por.textContent = hidden ? '·' : d.ic; }
 
     var nick = (Nu && Nu.nick(i)) || null;
     r.row.querySelector('.n').textContent = hidden ? '???' : (nick || d.n);
@@ -757,12 +792,12 @@ function buyPet(i) {
   if (n < 1 || cost > S.gold) return;
   S.gold -= cost; S.pets[i] += n;
   if (lv === 0) {
-    ribbon('🐾 ' + C.PETS[i].n + ' 이(가) 불가에 앉았다', 'good');
-    if (C.PETS[i].passive) ribbon(C.passiveLine ? C.passiveLine(i) : '', 'good');
+    ribbon(C.PETS[i].n + ' 이(가) 불가에 앉았다', 'good');
+    if (C.PETS[i].passive) ribbon(plainPassive(i), 'good');
   }
   var crossed = MILESTONES.filter(function (m) { return m > lv && m <= S.pets[i]; });
   if (crossed.length) {
-    ribbon('★ ' + C.PETS[i].n + ' ' + crossed[crossed.length - 1] + '레벨 — 피해 ×' + Math.pow(2, crossed.length), 'gold');
+    ribbon(C.PETS[i].n + ' ' + crossed[crossed.length - 1] + '레벨 — 피해 ×' + Math.pow(2, crossed.length), 'gold');
     if (FX && FX.milestone && petRows[i]) FX.milestone(petRows[i].row, '×2');
   }
   _ppKey = '';
@@ -796,7 +831,7 @@ function tabDiff() {
   D.TIERS.forEach(function (T) {
     var u = un.list[T.t], sel = (S.tier | 0) === T.t;
     h += '<div class="tier' + (sel ? ' sel' : '') + (u.ok ? '' : ' off') + '" data-tier="' + T.t + '" style="color:' + T.c + '">' +
-      '<div class="ic">' + T.ic + '</div><div class="info"><div class="tn" style="color:' + T.c + '">' + T.n + '</div>' +
+      '<div class="ic" style="background:' + T.c + '"></div><div class="info"><div class="tn" style="color:' + T.c + '">' + T.n + '</div>' +
       '<div class="td">' + T.d + '</div>' +
       '<div class="tr">체력 ×' + T.hp.toFixed(2) + ' · 발자국 ×' + T.rg.toFixed(2) + ' · 간식 ×' + T.rn.toFixed(2) + ' · 야생혼 ×' + T.rs.toFixed(2) +
       (u.ok ? '' : ' · <span style="color:#ff9f8c">' + u.reason + '</span>') + '</div></div></div>';
@@ -894,13 +929,13 @@ function buySoul(k) {
   var u = SOULS.filter(function (x) { return x.k === k; })[0], lv = S.sls[k], cost = u.c * Math.pow(u.g, lv);
   if (cost > S.souls) return;
   S.souls -= cost; S.sls[k]++; _ppKey = '';
-  ribbon('💠 ' + u.n + ' Lv.' + S.sls[k], 'soul');
+  ribbon(u.n + ' Lv.' + S.sls[k], 'soul');
   renderTop(); renderTab();
 }
 function setTier(t) {
   if (!D) return;
   if (!D.setTier(S, t)) { ribbon('아직 해금되지 않았다', 'bad'); return; }
-  ribbon(D.tierOf(t).ic + ' ' + D.tierOf(t).n + ' 난이도로 사냥한다', 'good');
+  ribbon(D.tierOf(t).n + ' 난이도로 사냥한다', 'good');
   spawn(); renderTab(); paintStage();
 }
 
@@ -932,7 +967,7 @@ function ascend() {
   S.best = Math.max(S.best, S.zone); S.runBest = S.zone;
   _ppKey = '';
   closeModal(); Stage.sync(); spawn(); renderTop(); renderTab();
-  ribbon('🌀 환생 #' + S.ascs + ' — 야생혼 +' + fmt(gain), 'soul');
+  ribbon('환생 ' + S.ascs + '회차 — 야생혼 +' + fmt(gain), 'soul');
 }
 function confirmReset() {
   openModal('<h3>전부 지웁니다</h3><p>야생혼·교감·기록이 모두 사라집니다. 되돌릴 수 없습니다.</p>' +

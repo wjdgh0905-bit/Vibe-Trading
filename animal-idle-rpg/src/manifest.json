@@ -1,0 +1,27 @@
+{
+  "shell": "shell.html",
+  "css": [
+    "ui.css"
+  ],
+  "js": [
+    "roster.js",
+    "difficulty.js",
+    "chibi.js",
+    "scene.js",
+    "dayscene.js",
+    "fx.js",
+    "skills.js",
+    "nurture.js",
+    "core.js"
+  ],
+  "required": [
+    "roster.js",
+    "difficulty.js",
+    "nurture.js",
+    "core.js",
+    "ui.css",
+    "shell.html",
+    "dayscene.js",
+    "chibi.js"
+  ]
+}

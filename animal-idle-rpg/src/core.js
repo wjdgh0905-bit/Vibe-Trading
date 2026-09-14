@@ -194,6 +194,8 @@ function kill() {
     S.bossKills++;
     if (D) D.recordBest(S, S.zone, kind);
     ribbon('👑 ' + info.name + ' 격파  +' + fmt(rw.gold), 'gold');
+    Stage.cheer();
+    if (FX && FX.bossWarn) FX.bossWarn(0);
     chatterSome('win');
   }
   if (S.auto || !boss) {
@@ -204,7 +206,7 @@ function kill() {
         var reg = D.regionReward(S.zone, { tier: S.tier, seed: seedOf(), snackBonus: p.snackAdd });
         S.snack += reg.snack || 0;
         ribbon('🗺 ' + (C ? C.biomeFor(S.zone).n : '') + '  간식 +' + fmt(reg.snack || 0), 'good');
-        if (Sc) Sc.setBiome(C ? C.biomeFor(S.zone).i : 0);
+        if (Sc && Sc.setBiome) Sc.setBiome(C ? C.biomeFor(S.zone).i : 0);
       }
     } else if (S.auto) S.wave++;
   }
@@ -277,27 +279,14 @@ var SWIM = { shark: 1, squid: 1, spermwhale: 1, bluewhale: 1, megalodon: 1 };
 var HEAVY = { bear: 1, tiger: 1, rhino: 1, elephant: 1, mammoth: 1, crocodile: 1, titanoboa: 1, paracer: 1, kirin: 1 };
 
 var Stage = (function () {
-  var field, tapcatch, pets = {}, foe = null, atk = {}, W0 = 0, H0 = 0;
+  var field, scene = null, pets = {}, foe = null, atk = {}, W0 = 0, H0 = 0, lastSlots = {};
 
   function measure() {
-    var r = field.getBoundingClientRect();
+    var r = (scene ? scene.host : field).getBoundingClientRect();
     W0 = r.width; H0 = r.height;
-    return r;
   }
-  function ground() { return H0 * 0.70; }
-  function lane(species) { return AIR[species] ? 'air' : SWIM[species] ? 'swim' : HEAVY[species] ? 'front' : 'back'; }
-
-  function slotFor(idx, list, species) {
-    var ln = lane(species);
-    var same = list.filter(function (j) { return lane(C.PETS[j].species) === ln; });
-    var k = same.indexOf(idx), n = Math.max(1, same.length);
-    var t = n === 1 ? 0.5 : k / (n - 1);
-    var jitter = ((idx * 37) % 13 - 6) * 0.8;
-    if (ln === 'air')   return { x: W0 * (0.30 + 0.28 * t) + jitter, y: ground() - H0 * (0.24 + 0.05 * ((idx % 3) / 3)), s: 0.80, z: 2 };
-    if (ln === 'front') return { x: W0 * (0.44 + 0.16 * t) + jitter, y: ground(), s: 1.00, z: 10 };
-    if (ln === 'swim')  return { x: W0 * (0.36 + 0.20 * t) + jitter, y: ground() - H0 * 0.10, s: 0.92, z: 6 };
-    return { x: W0 * (0.29 + 0.14 * t) + jitter, y: ground() - H0 * 0.055, s: 0.84, z: 4 };
-  }
+  function ground() { return scene ? scene.groundY() : H0 * 0.70; }
+  function rowOf(species) { return AIR[species] ? 'air' : SWIM[species] ? 'front' : HEAVY[species] ? 'front' : 'back'; }
 
   function makeCreature(opts, fallbackIcon) {
     if (Cr && Cr.make) { try { return Cr.make(opts); } catch (e) {} }
@@ -306,72 +295,102 @@ var Stage = (function () {
     return { el: d, play: function () {}, setStage: function () {}, dispose: function () { d.remove(); } };
   }
 
-  function petSize(i) {
-    var base = H0 * 0.21 * (0.62 + 0.030 * i);
-    return clamp(base, 26, H0 * 0.42);
+  /* 보유 동료를 줄별로 묶는다 — 줄 안 순서는 인덱스 순(약한 쪽이 안쪽) */
+  function rows() {
+    var out = { front: [], back: [], air: [] };
+    ownedList().forEach(function (i) { out[rowOf(C.PETS[i].species)].push(i); });
+    return out;
+  }
+  function slotSize(slot, i) {
+    var base = slot && slot.size ? slot.size : H0 * 0.19;
+    return clamp(base * (0.88 + 0.028 * i), 26, H0 * 0.50);
   }
 
   function sync() {
     if (!field) return;
     measure();
     var list = ownedList();
-    // 제거
     for (var id in pets) if (list.indexOf(+id) < 0) { pets[id].h.dispose(); pets[id].wrap.remove(); delete pets[id]; }
-    // 생성/갱신
     list.forEach(function (i) {
-      var lv = S.pets[i], st = Nu ? Nu.stageOf(lv) : 2, row = C.PETS[i];
-      var rec = pets[i];
+      var lv = S.pets[i], st = Nu ? Nu.stageOf(lv) : 2, row = C.PETS[i], rec = pets[i];
       if (!rec) {
         var wrap = el('div', 'actor');
-        var h = makeCreature({ species: row.species, stage: st, size: petSize(i), seed: 1000 + i * 77,
+        var h = makeCreature({ species: row.species, stage: st, size: H0 * 0.16, seed: 1000 + i * 77,
                                palette: { rim: 'warm' }, label: row.n, mood: 'calm' }, row.ic);
         wrap.appendChild(h.el);
         field.appendChild(wrap);
-        rec = pets[i] = { h: h, wrap: wrap, st: st, lv: lv };
+        rec = pets[i] = { h: h, wrap: wrap, st: st, size: 0 };
       }
       if (rec.st !== st) { rec.st = st; if (rec.h.setStage) rec.h.setStage(st); }
-      if (rec.h.setSize) rec.h.setSize(petSize(i));
-      var p = slotFor(i, list, row.species);
-      rec.wrap.style.left = p.x + 'px';
-      rec.wrap.style.top = p.y + 'px';
-      rec.wrap.style.zIndex = p.z;
-      rec.wrap.style.transform = 'translate(-50%,-100%) scale(' + p.s + ')';
     });
+    place();
+  }
+
+  /* 매 프레임 배치 — Scene 이 주는 무대 좌표를 그대로 쓴다 */
+  function place() {
+    if (!field) return;
+    var g = rows();
+    ['front', 'back', 'air'].forEach(function (rw) {
+      var ids = g[rw];
+      if (!ids.length) return;
+      var sl = scene ? scene.slots(ids.length, rw) : null;
+      ids.forEach(function (i, k) {
+        var rec = pets[i]; if (!rec) return;
+        var s = sl && sl[k];
+        var x = s ? s.x : W0 * (0.30 + 0.30 * (k / Math.max(1, ids.length - 1)));
+        var y = s ? s.y : ground() - (rw === 'air' ? H0 * 0.26 : rw === 'back' ? H0 * 0.06 : 0);
+        var size = slotSize(s, i);
+        if (rec.size !== size) { rec.size = size; if (rec.h.setSize) rec.h.setSize(size); }
+        rec.wrap.style.transform = 'translate(' + x + 'px,' + y + 'px) translate(-50%,-100%)';
+        rec.wrap.style.zIndex = s ? s.z : (rw === 'front' ? 10 : rw === 'back' ? 4 : 2);
+      });
+    });
+    if (foe) {
+      var fs = scene ? scene.slots(1, 'foe')[0] : null;
+      var fx = fs ? fs.x : W0 * 0.80, fy = fs ? fs.y : ground();
+      foe.wrap.style.transform = 'translate(' + fx + 'px,' + fy + 'px) translate(-50%,-100%)';
+      foe.wrap.style.zIndex = 12;
+      foe.pos = { x: fx, y: fy };
+    }
   }
 
   function enemy(c) {
     measure();
     if (foe) { foe.h.dispose(); foe.wrap.remove(); foe = null; }
     var info = c.info;
-    var size = clamp(H0 * 0.26 * (info.sizeMul || 1), 38, H0 * 0.52);
+    var fs = scene ? scene.slots(1, 'foe')[0] : null;
+    var base = fs && fs.size ? fs.size : H0 * 0.24;
+    var size = clamp(base * (info.sizeMul || 1) * 1.25, 38, H0 * 0.58);
     var pal = { rim: 'cold', amt: 0.55 };
     if (info.palette && info.palette.base) pal.tint = info.palette.base;
-    if (info.biome && info.biome.tint && !pal.tint) pal.tint = info.biome.tint;
+    if (!pal.tint && info.biome && info.biome.tint) pal.tint = info.biome.tint;
     if (info.boss) pal.accent = '#C1391A';
     var wrap = el('div', 'actor');
     var h = makeCreature({ species: info.archetype, stage: info.boss ? 4 : 2, size: size, flip: true,
                            palette: pal, seed: S.zone * 1000 + S.wave, mood: info.boss ? 'fierce' : 'calm',
                            label: info.name }, info.ic);
     wrap.appendChild(h.el);
-    wrap.style.left = (W0 * 0.80) + 'px';
-    wrap.style.top = ground() + 'px';
-    wrap.style.zIndex = 12;
-    wrap.style.transform = 'translate(-50%,-100%)';
     field.appendChild(wrap);
-    foe = { h: h, wrap: wrap };
+    foe = { h: h, wrap: wrap, pos: { x: W0 * 0.8, y: ground() } };
+    place();
     if (info.boss && FX && FX.bossIntro) FX.bossIntro(info.name, info.kind === 'overlord' ? '대군주' : '보스');
-    if (Sc) Sc.setMood(info.boss ? 'boss' : 'normal');
+    if (scene) scene.setMood(info.boss ? 'boss' : 'normal');
     if (info.boss) chatterSome('boss');
   }
 
-  function foePos() { return { x: W0 * 0.80, y: ground() - H0 * 0.14 }; }
+  function foePos() {
+    var p = foe ? foe.pos : { x: W0 * 0.8, y: ground() };
+    return { x: p.x, y: p.y - H0 * 0.12 };
+  }
 
   function hit(amt, opt) {
-    if (foe && foe.h.play) foe.h.play('hurt');
+    if (foe && foe.h.play && !(opt && opt.silent)) foe.h.play('hurt');
     var p = foePos();
-    var x = (opt && opt.x != null) ? opt.x : p.x + (Math.random() * 40 - 20);
+    var x = (opt && opt.x != null) ? opt.x : p.x + (Math.random() * 36 - 18);
     var y = (opt && opt.y != null) ? opt.y : p.y;
-    if (FX && FX.hit) FX.hit(x, y, { amount: amt, crit: opt && opt.crit, kind: opt && opt.auto ? 'auto' : opt && opt.tap ? 'claw' : 'bite' });
+    if (opt && opt.silent) return;
+    if (FX && FX.hit) FX.hit(x, y, { amount: amt, crit: opt && opt.crit, boss: cur && cur.info.boss,
+                                     kind: opt && opt.auto ? 'auto' : opt && opt.tap ? 'claw' : 'bite' });
     else popup(x, y, fmt(amt), opt && opt.crit);
     if (opt && opt.tap && FX && FX.tap) FX.tap(x, y, { crit: opt.crit });
   }
@@ -380,12 +399,14 @@ var Stage = (function () {
     if (foe && foe.h.play) foe.h.play('die');
     if (FX && FX.poof) FX.poof(p.x, p.y, cur && cur.info.palette);
     if (FX && FX.coins) FX.coins(p.x, p.y, $('#r-gold'), clamp(Math.round(Math.log10(Math.max(10, rw.gold))), 3, 12));
-    if (Sc && Sc.shake) Sc.shake(cur && cur.info.boss ? 0.9 : 0.2);
+    if (scene) scene.shake(cur && cur.info.boss ? 0.8 : 0.15);
   }
   function cheer() { for (var id in pets) if (pets[id].h.play) pets[id].h.play('cheer'); }
 
   /* 자동 전투 연출 — DPS 비중이 큰 동료일수록 자주 때린다 */
   function beat(dt) {
+    place();
+    if (scene && cur) scene.setProgress((S.wave - 1 + (1 - clamp(S.hp / cur.max, 0, 1))) / 10);
     var list = ownedList();
     if (!list.length) return;
     var tot = baseDps() || 1;
@@ -401,28 +422,34 @@ var Stage = (function () {
     });
   }
   function popup(x, y, text, crit) {
-    var d = el('div', 'dmgpop' + (crit ? ' crit' : ''), text);
-    d.style.cssText = 'position:absolute;left:' + x + 'px;top:' + y + 'px;font-family:var(--num);font-weight:600;' +
+    var d = el('div', null, text);
+    d.style.cssText = 'position:absolute;left:0;top:0;transform:translate(' + x + 'px,' + y + 'px);font-family:var(--num);font-weight:600;' +
       'font-size:' + (crit ? 17 : 12) + 'px;color:' + (crit ? 'var(--ember-core)' : 'var(--ink)') +
       ';text-shadow:0 2px 6px #000;pointer-events:none;transition:transform .7s ease-out,opacity .7s ease-out;';
     field.appendChild(d);
-    requestAnimationFrame(function () { d.style.transform = 'translateY(-42px)'; d.style.opacity = '0'; });
+    requestAnimationFrame(function () { d.style.transform = 'translate(' + x + 'px,' + (y - 42) + 'px)'; d.style.opacity = '0'; });
     setTimeout(function () { d.remove(); }, 760);
   }
   function mount() {
-    field = $('#field'); tapcatch = $('#tap');
+    var host = $('#stage');
+    field = $('#field');
+    if (Sc && Sc.mount) {
+      try {
+        scene = Sc.mount(host, { biome: C ? C.biomeFor(S.zone).i : 0 });
+        if (scene && scene.mob) { field.remove(); field = scene.mob; }
+      } catch (e) { scene = null; }
+    }
+    if (!scene) fallbackSky();
     measure();
-    if (Sc && Sc.mount) { try { Sc.mount($('#stage'), { biome: C ? C.biomeFor(S.zone).i : 0, canvas: $('#scene') }); } catch (e) { fallbackSky(); } }
-    else fallbackSky();
-    if (FX && FX.mount) { try { FX.mount($('#stage')); } catch (e) {} }
-    addEventListener('resize', function () { sync(); if (foe) { measure(); foe.wrap.style.left = (W0 * 0.80) + 'px'; foe.wrap.style.top = ground() + 'px'; } });
+    if (FX && FX.mount) { try { FX.mount(host, { driveFire: false }); } catch (e) {} }
+    addEventListener('resize', function () { measure(); place(); });
   }
   function fallbackSky() {
-    var cv = $('#scene');
-    cv.style.background = 'radial-gradient(120% 80% at 27% 78%, rgba(255,147,51,.22), transparent 55%),' +
+    $('#stage').style.background = 'radial-gradient(120% 80% at 27% 78%, rgba(255,147,51,.22), transparent 55%),' +
       'linear-gradient(180deg,#0E1119 0%,#141A26 58%,#2B3346 70%,#1C2331 100%)';
   }
-  return { mount: mount, sync: sync, enemy: enemy, hit: hit, die: die, beat: beat, cheer: cheer, foePos: foePos, measure: measure };
+  return { mount: mount, sync: sync, enemy: enemy, hit: hit, die: die, beat: beat, cheer: cheer,
+           foePos: foePos, measure: measure, place: place, scene: function () { return scene; } };
 })();
 
 /* ══ 배너 / 대사 ═══════════════════════════════════════════════════════ */
@@ -913,7 +940,7 @@ function bindInput() {
   $('#tap').addEventListener('pointerdown', function (e) {
     if (e.button !== undefined && e.button !== 0) return;
     e.preventDefault();
-    var r = $('#field').getBoundingClientRect();
+    var r = $('#stage').getBoundingClientRect();
     tap(1, { x: e.clientX - r.left, y: e.clientY - r.top });
   });
   $('#b-auto').onclick = function () { S.auto = !S.auto; paintStage(); };
@@ -947,6 +974,7 @@ function logic(dt) {
   if (S.hp > 0) hurt(totalDps() * dt, { silent: true });
   if (cur && cur.info.boss && S.bt > 0) {
     S.bt -= dt;
+    if (FX && FX.bossWarn && S.bt < 8) FX.bossWarn(S.bt);
     if (S.bt <= 0 && S.hp > 0) bossFail();
   }
 }

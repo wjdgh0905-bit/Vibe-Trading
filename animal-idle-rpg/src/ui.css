@@ -47,17 +47,18 @@ button:focus-visible,[tabindex]:focus-visible{outline:1px solid var(--ember);out
 @media (max-width:900px){ .grid{grid-template-columns:1fr} }
 
 /* ── 무대 ── */
-.stage{position:relative;border:1px solid var(--line);background:var(--night);overflow:hidden;border-radius:3px}
+.stage{position:relative;border:1px solid var(--line);background:var(--night);overflow:hidden;border-radius:3px;
+  aspect-ratio:16/9;min-height:250px}
+@media (max-width:560px){ .stage{aspect-ratio:4/3} }
+.wl-scene-mob{pointer-events:none}
 .stage.boss{border-color:rgba(193,57,26,.55)}
-#scene{display:block;width:100%;aspect-ratio:16/9;min-height:250px}
-@media (max-width:560px){ #scene{aspect-ratio:4/3} }
 .field{position:absolute;inset:0;pointer-events:none;overflow:hidden}
 .actor{position:absolute;transform:translate(-50%,-100%);transition:opacity .3s;will-change:transform}
 .actor svg{display:block;overflow:visible}
-.tapcatch{position:absolute;inset:0;cursor:crosshair}
+.tapcatch{position:absolute;inset:0;cursor:crosshair;z-index:3}
 
 /* 무대 오버레이 */
-.ov{position:absolute;pointer-events:none}
+.ov{position:absolute;pointer-events:none;z-index:6}
 .ov-zone{left:12px;top:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .zname{font-family:var(--disp);font-weight:700;font-size:17px;letter-spacing:-.02em;
   text-shadow:0 2px 10px rgba(0,0,0,.8)}
@@ -65,20 +66,20 @@ button:focus-visible,[tabindex]:focus-visible{outline:1px solid var(--ember);out
 .grade{font-size:10px;letter-spacing:.06em;padding:2px 7px;border:1px solid currentColor;border-radius:2px;opacity:.9}
 .tierbadge{font-size:10px;letter-spacing:.06em;color:var(--moon);border-bottom:1px solid var(--line);padding-bottom:1px}
 
-.ov-enemy{left:50%;top:8px;transform:translateX(-50%);width:min(440px,72%);text-align:center}
+.ov-enemy{left:50%;top:8px;transform:translateX(-50%);width:min(300px,56%);text-align:center}
 .ename{font-family:var(--disp);font-weight:700;font-size:14px;letter-spacing:-.01em;
   text-shadow:0 2px 12px rgba(0,0,0,.9);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ename .rank{color:var(--moon);font-weight:500}
 .etag{display:inline-block;font-size:9.5px;letter-spacing:.12em;padding:1px 5px;margin-left:5px;
   border:1px solid currentColor;vertical-align:2px}
 .etag.el{color:var(--firefly)} .etag.bs{color:var(--ember-deep)} .etag.ov{color:var(--soulfire)}
-.hp{position:relative;height:7px;margin-top:5px;background:rgba(10,14,22,.72);border:1px solid var(--line);border-radius:1px;overflow:hidden}
+.hp{position:relative;height:5px;margin-top:5px;background:rgba(10,14,22,.72);border:1px solid var(--line);border-radius:1px;overflow:hidden}
 .hp i{position:absolute;inset:0;transform-origin:left;background:linear-gradient(90deg,var(--ember-deep),var(--ember));transition:transform .1s linear}
 .hp b{position:absolute;top:0;bottom:0;width:2px;background:var(--ember-core);box-shadow:0 0 7px var(--ember-core)}
 .hptxt{margin-top:3px;font-family:var(--num);font-size:10px;font-weight:500;color:var(--label);font-variant-numeric:tabular-nums}
 
 /* 보스 심지선 : 무대 상단을 타들어간다 */
-.fuse{position:absolute;left:0;top:0;height:2px;background:linear-gradient(90deg,var(--ember-core),var(--ember));
+.fuse{position:absolute;left:0;top:0;height:2px;z-index:7;background:linear-gradient(90deg,var(--ember-core),var(--ember));
   box-shadow:0 0 10px var(--ember);transition:width .12s linear}
 .fuse.warn{animation:fusepulse .5s steps(2) infinite}
 @keyframes fusepulse{50%{opacity:.35}}
@@ -195,7 +196,7 @@ button:focus-visible,[tabindex]:focus-visible{outline:1px solid var(--ember);out
 .mapband i span{position:absolute;left:50%;top:100%;transform:translateX(-50%);font-family:var(--num);font-size:8px;color:var(--dim);margin-top:2px}
 
 /* 배너/토스트 */
-.ribbons{position:absolute;left:0;right:0;top:64px;display:flex;flex-direction:column;align-items:center;gap:4px;pointer-events:none;z-index:4}
+.ribbons{position:absolute;left:0;right:0;top:64px;z-index:7;display:flex;flex-direction:column;align-items:center;gap:4px;pointer-events:none;z-index:4}
 .rib{font-family:var(--disp);font-weight:500;font-size:12px;padding:4px 12px;
   background:rgba(14,17,25,.82);border:1px solid var(--line);border-radius:2px;
   animation:ribIn .3s ease-out, ribOut .5s ease-in 3.1s forwards}
@@ -219,3 +220,18 @@ button:focus-visible,[tabindex]:focus-visible{outline:1px solid var(--ember);out
 .mrow .big{margin-top:0}
 .foot{margin-top:14px;text-align:center;font-size:10px;color:var(--dim)}
 @media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
+/* ── 좁은 화면 : 무대 오버레이 겹침 방지 ── */
+@media (max-width:640px){
+  .ov-enemy{top:30px;width:min(280px,74%)}
+  .ribbons{top:92px}
+  .rib{font-size:11px;padding:3px 9px}
+  .zname{font-size:15px}
+  .ov-zone{gap:6px}
+}
+@media (max-width:460px){
+  .ov-zone .bname{display:none}
+  .strip{gap:12px}
+  .res{min-width:48px}
+  .res .v{font-size:13px}
+}

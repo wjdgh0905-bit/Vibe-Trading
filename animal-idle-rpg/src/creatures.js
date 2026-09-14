@@ -6,8 +6,12 @@
  * ----------------------------------------------------------------------------
  *   WL.Creatures.SPECIES
  *     { [id]: spec }  — 종 카탈로그(읽기 전용으로 쓸 것).
- *     동료 12종 id: hamster rabbit fox wolf hawk bear tiger rhino elephant
- *                   shark mammoth dragon
+ *     동료 24종 id (로스터 index 0..23 순서 = WL.Creatures.PETS):
+ *       0~11  hamster rabbit fox wolf hawk bear tiger rhino elephant
+ *             shark mammoth dragon
+ *       12~23 squid crocodile condor spermwhale bluewhale megalodon
+ *             titanoboa paracer quetzal samjogo kirin peng
+ *       (PETS_V1 은 앞 12종만. 구 호출부 호환용)
  *     적 아키타입 10종 id: insect snail critter bird reptile fish cephalopod
  *                   beast brute titan
  *
@@ -55,12 +59,20 @@
  *                                   // fn(tSec) -> number. 해제: drive(null)
  *   WL.Creatures.injectStyle()      // 수동 스타일 주입(보통 불필요, make가 호출)
  * ----------------------------------------------------------------------------
+ * 스펙 필드 — 종 카탈로그에만 쓰는 선택 플래그
+ *   flap   : 초. fly 종(arch:'bird')의 날갯짓 주기. 0/미지정이면 .62s.
+ *            활공조(콘도르 3.4 · 붕 3.0)와 소형 맹금을 같은 속도로 퍼덕이면 같은 새로 읽힌다.
+ *   cape   : false 면 stage4 망토를 걸치지 않는다(엎드린 악어 등).
+ *   collar : false 면 stage1 목줄을 걸지 않는다(목이 두개골과 붙은 종).
+ * ----------------------------------------------------------------------------
  * 조형 언어 — 모든 종이 공유한다
  *   · 단 하나의 프리미티브 ribbon(controlPoints, radiusProfile) 로 전부 그린다.
  *     몸통·목·머리·다리·꼬리·뿔·엄니·코·지느러미·날개·촉수가 전부 같은 함수다.
  *   · 아웃라인은 언제나 자기 fill 을 어둡게 섞은 파생색(검정 금지).
  *   · 실루엣 판별은 extras(뿔/엄니/코/지느러미/날개/등껍질/집게/더듬이/볏/촉수/
- *     갈기/꼬리깃/가시/판/수염)가 만든다. 반경 프로필만으로는 종이 안 갈린다.
+ *     갈기/꼬리깃/가시/판/수염 + 신규 12종이 가져온 긴턱선/목도리/고래미익/사각두상/
+ *     아가리/배비늘/굽/혓불/후광/깔때기/외투막지느러미)가 만든다.
+ *     반경 프로필만으로는 종이 안 갈린다.
  *   · 림라이트 2개: warm(모닥불, 아래-뒤) + cool(달빛, 위-앞).
  * ----------------------------------------------------------------------------
  * 통합 시 주의
@@ -245,7 +257,7 @@ function perp(d) { return [d[1], -d[0]]; }   /* 화면상 '위' 방향 */
  * 모든 길이는 "기준 체고 1.0" 정규화. bulk 가 종간 크기 차이를 만든다.
  * ------------------------------------------------------------- */
 var DEF = {
-  name: '짐승', arch: 'quad', bulk: 1, hover: 0, tilt: 0,
+  name: '짐승', arch: 'quad', bulk: 1, hover: 0, tilt: 0, flap: 0,
   body: { len: 0.56, girth: 0.155, prof: [0.74, 1.00, 0.98, 0.94, 0.60, 0.34], sag: 0.012, rise: 0.035 },
   neck: { len: 0.15, ang: 44, r: 0.55 },
   legs: { n: 4, len: 0.22, thick: 0.045, foreBend: 0.30, rearBend: 0.62, hock: 0.06, paw: 0.045, plant: 0.25, spread: 0.055, sprawl: 0 },
@@ -414,6 +426,200 @@ var SPECIES = {
     extras: [{ t: 'wing', kind: 'membrane', len: 0.74, w: 0.44, ang: 40 }, { t: 'horn', n: 2, len: 0.22, curve: 26, w: 0.040 },
              { t: 'ridge', n: 11, len: 0.055 }, { t: 'fang', n: 3, len: 0.030 }, { t: 'claw', n: 3, len: 0.034 }],
     tint: '#D4553A'
+  }),
+
+  /* ══════════ 동료 신규 12종 (로스터 index 12~23) ══════════
+   * content-roster.js 의 ART 표는 Canvas 렌더러 스키마로 쓰여 있다. 아래는 그것을
+   * 이 스키마로 옮긴 것이며, 번역 규칙은 다음 6줄이 전부다.
+   *   mass            → bulk          계열 내 서열을 유지한 채 0.9+mass*0.7 근처로
+   *   max(rT)         → body.girth    rT[i]/max(rT) → body.prof[i] (6칸 그대로)
+   *   neck.ang        → 부호 반전     Canvas 는 위가 음수, 여기는 위가 양수다
+   *   neck.thick/girth→ neck.r        head.tilt·jaw → head.drop·snout, brow 는 0/1
+   *   legs.rows.length→ legs.n/2      삼족오만 예외(n:3)
+   *   coat.base       → tint          혼합량은 성장단계(M.coat)가 정한다. belly 는 --bel 파생
+   * extras 이름 대응: wingFeather/wingMembrane → wing{kind}, gills → gill,
+   *   tailFeather → tail.type:'feather', caudal → tail.type:'caudal',
+   *   tentacle8 → tentacle{n:8}. 나머지(lips·fluke·sharkjaw·snoutPad·ruffcheek·
+   *   chitin·toes·flame·halo·siphon)는 아래 EX 표에 새로 구현했다.
+   * ------------------------------------------------------------------------- */
+
+  /* 12. 대왕오징어 — 촉수 + 외투막 지느러미. 무척추 실루엣은 이 종뿐 */
+  squid: S_({
+    name: '대왕오징어 크라', arch: 'float', bulk: 1.08, gait: 'drift', hover: 0.62,
+    body: { len: 0.60, girth: 0.158, prof: [0.03, 0.44, 0.92, 1.04, 0.92, 0.56], sag: 0, rise: 0 },
+    neck: { len: 0.03, ang: -50, r: 0.92 },
+    legs: { n: 0 },
+    head: { size: 0.115, prof: [0.80, 1.04, 0.94, 0.80, 0.58], snout: 0.08, taper: 1, drop: 4 },
+    ears: { type: 'none' },
+    tail: { type: 'none' },
+    eye: { size: 0.046, x: 0.00, y: 0.66, shape: 'round' },
+    mouth: 0,
+    extras: [{ t: 'mantlefin', at: 0.12, w: 0.215 }, { t: 'siphon', at: 0.86, len: 0.14, w: 0.040, ang: -56 },
+             { t: 'tentacle', n: 10, len: 0.76, r: 0.027, a0: -6, span: 112 }],
+    marks: { type: 'patch', n: 1 }, tint: '#8E4468'
+  }),
+  /* 13. 바다악어 — 긴 턱선 + 낮은 실루엣. 키가 가장 낮은 동료다 */
+  crocodile: S_({
+    name: '바다악어 고르', bulk: 1.14, gait: 'sprawl', cape: false, collar: false,
+    body: { len: 0.84, girth: 0.142, prof: [0.66, 0.94, 1.00, 0.96, 0.78, 0.50], sag: 0.026, rise: 0.0 },
+    neck: { len: 0.135, ang: 8, r: 0.76 },
+    legs: { n: 4, len: 0.105, thick: 0.044, foreBend: 0.88, rearBend: 1.00, hock: 0.10, paw: 0.054, plant: 0.55, spread: 0.110, sprawl: 1 },
+    head: { size: 0.185, prof: [0.44, 0.80, 0.74, 0.62, 0.46], snout: 1.30, taper: 0.60, drop: 5, brow: 1 },
+    ears: { type: 'none' },
+    tail: { type: 'spike', len: 0.74, r: 0.070, curl: 12, lift: -6 },
+    eye: { size: 0.023, x: 0.30, y: 0.66, shape: 'slit' },
+    mouth: 0,
+    extras: [{ t: 'ridge', n: 9, len: 0.024 }, { t: 'plate', n: 6 }, { t: 'lips', n: 9, tooth: 0.036 },
+             { t: 'fang', n: 2, len: 0.026 }, { t: 'claw', n: 4, len: 0.026 }],
+    marks: { type: 'stripe', n: 6 }, tint: '#6B7C55'
+  }),
+  /* 14. 안데스콘도르 — 목도리(ruffcheek). 매(4번)와 갈라지는 단 하나의 파츠 */
+  condor: S_({
+    name: '안데스콘도르 미르', arch: 'bird', bulk: 0.98, gait: 'hover', hover: 0.07, flap: 3.4,
+    body: { len: 0.38, girth: 0.205, prof: [0.44, 0.92, 1.10, 0.90, 0.30, 0.14], sag: -0.03, rise: 0.050 },
+    neck: { len: 0.275, ang: 72, r: 0.23 },
+    legs: { n: 2, len: 0.20, thick: 0.019, foreBend: 0.5, rearBend: 0.5, hock: 0.055, paw: 0.050, plant: 0.5, spread: 0.030 },
+    head: { size: 0.130, prof: [0.42, 0.96, 0.84, 0.50, 0.24], snout: 0.16, taper: 0.60, drop: 70 },
+    ears: { type: 'none' },
+    tail: { type: 'feather', len: 0.46, r: 0.090, curl: -2, lift: -12 },
+    eye: { size: 0.026, x: 0.30, y: 0.32, shape: 'fierce' },
+    extras: [{ t: 'wing', kind: 'feather', len: 0.45, w: 0.150, ang: 20 }, { t: 'ruffcheek', at: 0.775, r: 0.092, n: 9 },
+             { t: 'beak', len: 0.140, w: 0.050, hook: 0.58 }, { t: 'talon', n: 3, len: 0.038 }],
+    marks: { type: 'counter', n: 1 }, tint: '#5C5464'
+  }),
+  /* 15. 향유고래 — 사각 두상(snoutPad). 등지느러미가 없다는 게 정체성이다 */
+  spermwhale: S_({
+    name: '향유고래 모비', arch: 'fish', bulk: 1.46, gait: 'glide', hover: 0.26, tilt: -2,
+    body: { len: 0.66, girth: 0.188, prof: [0.04, 0.40, 0.94, 1.06, 1.02, 0.86], sag: 0, rise: 0 },
+    neck: { len: 0.03, ang: 1, r: 0.98 },
+    legs: { n: 0 },
+    head: { size: 0.330, prof: [0.88, 1.06, 1.08, 1.06, 0.98], snout: 0.80, taper: 1.0, drop: 0 },
+    ears: { type: 'none' },
+    tail: { type: 'none' },
+    eye: { size: 0.013, x: 0.18, y: -0.52, shape: 'round' },
+    mouth: 0,
+    extras: [{ t: 'fluke', len: 0.36, w: 0.078, lift: 0 }, { t: 'pectoral', len: 0.20, w: 0.052, ang: 34, at: 0.62 },
+             { t: 'snoutPad', at: 0.16, s: 1, o: 0.34 }, { t: 'lips', at: 0.30, n: 0, teeth: false }],
+    marks: { type: 'counter', n: 1 }, tint: '#6E6658'
+  }),
+  /* 16. 대왕고래 — 길이 그 자체. 향유고래의 정확한 반대 실루엣이 되게 짰다 */
+  bluewhale: S_({
+    name: '대왕고래 유하', arch: 'fish', bulk: 1.56, gait: 'glide', hover: 0.24, tilt: -2,
+    body: { len: 0.96, girth: 0.150, prof: [0.03, 0.36, 0.86, 1.02, 0.94, 0.66], sag: 0, rise: 0 },
+    neck: { len: 0.03, ang: 2, r: 0.92 },
+    legs: { n: 0 },
+    head: { size: 0.260, prof: [0.70, 0.92, 0.74, 0.50, 0.24], snout: 0.88, taper: 0.55, drop: 4 },
+    ears: { type: 'none' },
+    tail: { type: 'none' },
+    eye: { size: 0.013, x: 0.20, y: -0.46, shape: 'round' },
+    mouth: 0,
+    extras: [{ t: 'fluke', len: 0.33, w: 0.062, lift: 0 }, { t: 'pectoral', len: 0.34, w: 0.032, ang: 30, at: 0.66 },
+             { t: 'dorsal', len: 0.055, w: 0.036, at: 0.17 }, { t: 'seg', n: 7, at: 0.74, span: 0.20, side: 1 },
+             { t: 'lips', at: 0.36, n: 0, teeth: false }],
+    marks: { type: 'counter', n: 1 }, tint: '#5A7EA4'
+  }),
+  /* 17. 메갈로돈 — 아가리(sharkjaw). 상어(9번)와 같은 계열이되 턱이 전부다 */
+  megalodon: S_({
+    name: '메갈로돈 크론', arch: 'fish', bulk: 1.50, gait: 'glide', hover: 0.22, tilt: -3,
+    body: { len: 0.82, girth: 0.180, prof: [0.08, 0.44, 1.04, 1.00, 0.72, 0.30], sag: 0, rise: 0 },
+    neck: { len: 0.085, ang: 4, r: 0.66 },
+    legs: { n: 0 },
+    head: { size: 0.190, prof: [0.62, 0.98, 0.86, 0.60, 0.26], snout: 0.74, taper: 0.58, drop: 2 },
+    ears: { type: 'none' },
+    tail: { type: 'caudal', len: 0.30, r: 0.19, curl: 0, lift: 0 },
+    eye: { size: 0.017, x: 0.30, y: 0.34, shape: 'fierce' },
+    mouth: 0,
+    extras: [{ t: 'dorsal', len: 0.28, w: 0.125, at: 0.46 }, { t: 'pectoral', len: 0.23, w: 0.105, ang: 26, at: 0.60 },
+             { t: 'gill', n: 5 }, { t: 'sharkjaw', n: 9, tooth: 0.052 }],
+    marks: { type: 'counter', n: 1 }, tint: '#63707B'
+  }),
+  /* 18. 티타노보아 — 다리 0 + 코일 꼬리. 로스터에서 유일한 무족 실루엣 */
+  titanoboa: S_({
+    name: '티타노보아 세르', bulk: 1.26, gait: 'creep',
+    body: { len: 0.76, girth: 0.122, prof: [0.80, 0.96, 1.02, 0.98, 0.88, 0.62], sag: -0.048, rise: 0.055 },
+    neck: { len: 0.165, ang: 46, r: 0.80 },
+    legs: { n: 0 },
+    head: { size: 0.160, prof: [0.50, 0.92, 0.86, 0.66, 0.42], snout: 0.66, taper: 0.62, drop: 12, brow: 1 },
+    ears: { type: 'none' },
+    tail: { type: 'coil', len: 1.02, r: 0.080, curl: 172, lift: 26 },
+    eye: { size: 0.022, x: 0.46, y: 0.44, shape: 'slit' },
+    mouth: 0,
+    extras: [{ t: 'chitin', n: 13, at: 0.06, span: 0.82 }, { t: 'lips', n: 9, tooth: 0.032 },
+             { t: 'fang', n: 3, len: 0.026 }],
+    marks: { type: 'bar', n: 6 }, tint: '#8A7C44'
+  }),
+  /* 19. 파라케라테리움 — 목 길이. 최대 bulk 이므로 장식은 둘로 끝낸다 */
+  paracer: S_({
+    name: '파라케라테리움 세이', bulk: 1.52, gait: 'lumber',
+    body: { len: 0.60, girth: 0.186, prof: [0.82, 1.02, 1.00, 0.98, 0.56, 0.36], sag: 0.008, rise: 0.070 },
+    neck: { len: 0.72, ang: 66, r: 0.33 },
+    legs: { n: 4, len: 0.54, thick: 0.070, foreBend: 0.08, rearBend: 0.16, hock: 0.01, paw: 0.056, plant: 0.5, spread: 0.085 },
+    head: { size: 0.180, prof: [0.46, 0.94, 0.86, 0.62, 0.42], snout: 0.58, taper: 0.78, drop: 44 },
+    ears: { type: 'tube', h: 0.085, w: 0.045, tilt: -10, x: -0.20, y: 0.68 },
+    tail: { type: 'rope', len: 0.16, r: 0.020, curl: -20, lift: -8, tuft: 1.4 },
+    eye: { size: 0.020, x: 0.42, y: 0.30 },
+    extras: [{ t: 'hump', r: 0.075 }, { t: 'lips', n: 0, teeth: false, at: 0.46 }, { t: 'snoutPad', at: 0.62, s: 0.6, o: 0.30 },
+             { t: 'toes' }],
+    tint: '#9E8A6E'
+  }),
+  /* 20. 케찰코아틀루스 — 막날개. 조류 3종과 갈라지는 지점이 여기다 */
+  quetzal: S_({
+    name: '케찰코아틀루스 란', bulk: 1.30, gait: 'stalk',
+    body: { len: 0.38, girth: 0.132, prof: [0.52, 0.94, 1.06, 0.96, 0.56, 0.30], sag: -0.010, rise: 0.040 },
+    neck: { len: 0.36, ang: 58, r: 0.42 },
+    legs: { n: 2, len: 0.44, thick: 0.026, foreBend: 0.5, rearBend: 0.5, hock: 0.11, paw: 0.046, plant: 0.45, spread: 0.050 },
+    head: { size: 0.200, prof: [0.42, 0.92, 0.64, 0.34, 0.15], snout: 1.30, taper: 0.50, drop: 40 },
+    ears: { type: 'none' },
+    tail: { type: 'none' },
+    eye: { size: 0.024, x: 0.26, y: 0.36, shape: 'fierce' },
+    mouth: 0,
+    extras: [{ t: 'wing', kind: 'membrane', len: 1.04, w: 0.46, ang: 30 }, { t: 'crest', n: 3, len: 0.052 },
+             { t: 'beak', len: 0.20, w: 0.040, hook: 0.10 }, { t: 'talon', n: 3, len: 0.034 }],
+    tint: '#B08A66'
+  }),
+  /* 21. 삼족오 — 다리 3개(!). 신규 파츠 0개로 정체성을 만든 유일한 종 */
+  samjogo: S_({
+    name: '삼족오 해무', arch: 'bird', bulk: 1.02, gait: 'hover', hover: 0.06, flap: 1.15,
+    body: { len: 0.34, girth: 0.185, prof: [0.46, 0.92, 1.06, 0.94, 0.50, 0.28], sag: -0.02, rise: 0.030 },
+    neck: { len: 0.125, ang: 58, r: 0.50 },
+    legs: { n: 3, len: 0.20, thick: 0.023, foreBend: 0.5, rearBend: 0.5, hock: 0.07, paw: 0.044, plant: 0.5, spread: 0.060 },
+    head: { size: 0.155, prof: [0.46, 1.02, 0.86, 0.52, 0.26], snout: 0.20, taper: 0.66, drop: 52 },
+    ears: { type: 'none' },
+    tail: { type: 'feather', len: 0.36, r: 0.072, curl: -6, lift: -28 },
+    eye: { size: 0.030, x: 0.30, y: 0.34, shape: 'fierce' },
+    extras: [{ t: 'flame', n: 9, at: 0.12, span: 0.70, len: 0.290, o: 0.58 },
+             { t: 'wing', kind: 'feather', len: 0.52, w: 0.190, ang: 12 },
+             { t: 'beak', len: 0.110, w: 0.042, hook: 0.20 }, { t: 'talon', n: 3, len: 0.032 }],
+    tint: '#56384E'
+  }),
+  /* 22. 기린(麒麟) — 외뿔 하나. 사슴 골격에 비늘이라는 모순이 정체성이다 */
+  kirin: S_({
+    name: '기린 서', bulk: 1.20, gait: 'trot',
+    body: { len: 0.50, girth: 0.120, prof: [0.76, 1.00, 0.94, 0.92, 0.56, 0.34], sag: 0.008, rise: 0.050 },
+    neck: { len: 0.36, ang: 62, r: 0.38 },
+    legs: { n: 4, len: 0.50, thick: 0.024, foreBend: 0.24, rearBend: 0.58, hock: 0.10, paw: 0.030, plant: 0.15, spread: 0.046 },
+    head: { size: 0.150, prof: [0.44, 0.94, 0.80, 0.52, 0.30], snout: 0.58, taper: 0.70, drop: 34 },
+    ears: { type: 'point', h: 0.160, w: 0.085, tilt: -12, x: -0.12, y: 0.74 },
+    tail: { type: 'brush', len: 0.40, r: 0.062, curl: -34, lift: 16, tuft: 1.3 },
+    eye: { size: 0.030, x: 0.50, y: 0.32 },
+    extras: [{ t: 'flame', n: 7, at: 0.16, span: 0.64, len: 0.230, o: 0.55 }, { t: 'scale', n: 6 },
+             { t: 'horn', n: 1, len: 0.40, curve: 14, w: 0.036 }, { t: 'toes' }],
+    marks: { type: 'patch', n: 1 }, tint: '#C08A46'
+  }),
+  /* 23. 붕(鵬) — 후광. 최종 동료이므로 발광 링 하나로 끝낸다 */
+  peng: S_({
+    name: '붕 여명', arch: 'bird', bulk: 1.60, gait: 'hover', hover: 0.11, flap: 3.0,
+    body: { len: 0.40, girth: 0.205, prof: [0.46, 0.92, 1.08, 0.98, 0.50, 0.26], sag: -0.03, rise: 0.055 },
+    neck: { len: 0.185, ang: 62, r: 0.46 },
+    legs: { n: 2, len: 0.26, thick: 0.024, foreBend: 0.5, rearBend: 0.5, hock: 0.08, paw: 0.052, plant: 0.45, spread: 0.035 },
+    head: { size: 0.160, prof: [0.48, 1.02, 0.88, 0.52, 0.26], snout: 0.20, taper: 0.64, drop: 58 },
+    ears: { type: 'none' },
+    tail: { type: 'feather', len: 0.52, r: 0.084, curl: -4, lift: -40 },
+    eye: { size: 0.030, x: 0.30, y: 0.34, shape: 'fierce' },
+    extras: [{ t: 'halo', r: 0.265, x: -0.24, y: 0.36 }, { t: 'wing', kind: 'feather', len: 0.92, w: 0.235, ang: -10 },
+             { t: 'crest', n: 3, len: 0.046 }, { t: 'beak', len: 0.130, w: 0.048, hook: 0.42 },
+             { t: 'talon', n: 3, len: 0.036 }],
+    marks: { type: 'counter', n: 1 }, tint: '#4E72A4'
   }),
 
   /* ══════════ 적 아키타입 10종 ══════════ */
@@ -690,6 +896,19 @@ function buildLegs(b) {
   if (!L.n) return;
   var thick = L.thick * M.girthMul * U100, paw = L.paw * U100;
   var sets = [];
+  if (L.n === 3) {
+    /* 삼족 — 다리가 셋. 두 개를 뒤(deep) 한 개를 앞(front) 으로 갈라야
+       겹쳐도 '세 개' 가 실제로 세어진다. 짝수 쌍 루프를 타면 무조건 넷이 된다. */
+    var a3 = [K.chestX * 0.30, K.baseY + K.rp[3] * 0.52], s3 = L.spread * U100;
+    var cf3 = [[-1.30, 'deep', 'k-f', 'b'], [-0.10, 'deep', 'k-cn', 'b'], [1.15, 'front', 'k-c', 'f']];
+    for (var z = 0; z < 3; z++) {
+      var c3 = cf3[z], hp3 = [a3[0] + s3 * c3[0] * 0.52, a3[1] + (z === 2 ? 0 : 1.1)];
+      var sc3 = z === 2 ? 1 : 0.92;
+      b.p(c3[1], legPath(hp3, a3[0] + s3 * c3[0] * 0.95 + 2, L.foreBend, L.hock, thick * sc3, paw * sc3, L.plant, L.sprawl),
+        'class="' + c3[2] + ' wl-leg wl-leg-' + c3[3] + '" style="transform-origin:@@O:' + r2(hp3[0]) + ',' + r2(hp3[1]) + '@@"');
+    }
+    return;
+  }
   if (L.n === 2) {
     sets.push({ a: [K.chestX * 0.30, K.baseY + K.rp[2] * 0.55], f: K.chestX * 0.30 + 2, bend: L.foreBend, i: 0 });
   } else if (L.n === 6) {
@@ -755,14 +974,17 @@ function buildTail(b) {
     }
     return;
   }
-  var seg = 4, cps = tailChain(base, ang, len, T.curl, seg), prof;
+  var coil = T.type === 'coil';
+  var seg = coil ? 6 : 4, cps = tailChain(base, ang, len, T.curl, seg), prof;
   if (T.type === 'brush') prof = [r * 0.52, r * 0.95, r * 1.12 * tuft, r * 1.0 * tuft, r * 0.55];
   else if (T.type === 'thin') prof = [r * 1.15, r * 0.80, r * 0.68, r * 0.62, r * 0.44 * tuft];
   else if (T.type === 'stub') prof = [r * 1.2, r * 1.05, r * 0.8, r * 0.55, r * 0.4];
   else if (T.type === 'rope') prof = [r * 1.3, r * 0.85, r * 0.7, r * 0.62, r * 1.25 * tuft];
   else if (T.type === 'spike') prof = [r * 1.05, r * 0.88, r * 0.62, r * 0.34, r * 0.06];
+  /* coil: 뱀. 끝이 0 까지 가늘어지고 크게 감긴다(무족 종의 유일한 꼬리 형태) */
+  else if (coil) prof = [r * 1.02, r * 0.94, r * 0.74, r * 0.46, r * 0.04];
   else prof = [r, r, r * 0.8, r * 0.6, r * 0.4];
-  d = ribbon(cps, prof, { n: 14, capN: 4 });
+  d = ribbon(cps, prof, { n: coil ? 20 : 14, capN: 4 });
   b.p('deep', d, 'class="k-cn wl-tail" ' + org);
   if (T.type === 'thin' && tuft > 1) {
     var e = cps[seg];
@@ -892,6 +1114,13 @@ EX.horn = function (b, e) {
     }
     return;
   }
+  if (e.n === 1) {                   /* 기린: 이마 정중선에 외뿔 하나 */
+    o = onHead(K, 0.34);
+    base = add(o.p, K.up, o.r * 0.84);
+    cps = tailChain(base, K.headAng + 76, len, e.curve, 3);
+    b.p('head', ribbon(cps, [w * 1.15, w * 0.82, w * 0.48, w * 0.05], { n: 10, capN: 3 }), 'class="k-n wl-horn"');
+    return;
+  }
   for (i = 0; i < 2; i++) {          /* 용·거수: 두개골 좌우 한 쌍 */
     var far = i === 0;
     o = onHead(K, 0.20);
@@ -967,11 +1196,14 @@ EX.plate = function (b, e) {
   }
   b.pm('body', D, 'class="k-f wl-plate" opacity=".34"');
 };
+/* 마디 — 벌레의 체절(관통선). side:1 로 배 쪽만 그으면 고래의 목주름이 된다 */
 EX.seg = function (b, e) {
   var K = b.K, n = e.n || 3;
+  var t0 = e.at == null ? 0.10 : e.at, sp = e.span == null ? 0.32 : e.span;
   for (var i = 0; i < n; i++) {
-    var t = 0.10 + (i / n) * 0.32, o = onBody(K, t);
-    b.p('body', openSmooth([add(o.p, o.n, o.r * 0.98), add(o.p, o.n, -o.r * 0.98)]), 'class="k-w" fill="none"', true);
+    var t = t0 + (i / n) * sp, o = onBody(K, t);
+    b.p('body', openSmooth([add(o.p, o.n, e.side ? -o.r * 0.26 : o.r * 0.98), add(o.p, o.n, -o.r * 0.98)]),
+      'class="k-w" fill="none"' + (e.side ? ' opacity=".38"' : ''), true);
   }
 };
 EX.dorsal = function (b, e) {
@@ -1078,7 +1310,7 @@ EX.tentacle = function (b, e) {
   var L = e.len * U100 * M.exMul * 1.1, r = e.r * U100;
   for (var i = 0; i < n; i++) {
     var f = i / (n - 1), far = i % 2 === 0;
-    var a = 16 - f * 128 + (rnd() - 0.5) * 12;
+    var a = (e.a0 == null ? 16 : e.a0) - f * (e.span == null ? 128 : e.span) + (rnd() - 0.5) * 12;
     var curl = -34 + (rnd() - 0.5) * 70;
     var bp = [base[0] + (0.5 - abs(f - 0.5)) * hr * 0.9, base[1] + (f - 0.5) * hr * 1.1];
     var cps = tailChain(bp, a, L * (0.66 + 0.44 * (1 - abs(f - 0.5) * 1.4)), curl, 4);
@@ -1086,14 +1318,19 @@ EX.tentacle = function (b, e) {
       (far ? 'class="k-f' : 'class="k-c') + ' wl-tent" style="transform-origin:@@O:' + r2(bp[0]) + ',' + r2(bp[1]) + '@@;--tp:' + r2(f * 0.7) + 's"');
   }
 };
+/* 외투막 지느러미 — 두족류 뒤끝의 삼각 날개. 마름모로 그리면 '혹' 으로 읽힌다.
+   앞전이 몸에 길게 붙고 뒤로 후퇴각을 주어야 오징어가 된다. */
 EX.mantlefin = function (b, e) {
-  var K = b.K, o = onBody(K, 0.26), w = e.w * U100;
+  var K = b.K, o = onBody(K, e.at == null ? 0.26 : e.at), w = e.w * U100;
   for (var sg = -1; sg <= 1; sg += 2) {
-    var c = add(o.p, o.n, sg * o.r * 0.55);
+    var c = add(o.p, o.n, sg * o.r * 0.45);
     b.p(sg < 0 ? 'front' : 'deep', closedSmooth([
-      add(c, o.t, w * 0.9), add(add(c, o.t, w * 0.2), o.n, sg * w * 1.25),
-      add(add(c, o.t, -w * 1.1), o.n, sg * w * 0.95), add(c, o.t, -w * 1.3)]),
-      (sg < 0 ? 'class="k-c' : 'class="k-f') + ' wl-fin"');
+      add(c, o.t, w * 1.05),                                            /* 앞쪽 부착점 */
+      add(add(c, o.t, w * 0.18), o.n, sg * w * 0.72),
+      add(add(c, o.t, -w * 0.70), o.n, sg * w * (sg < 0 ? 1.30 : 1.05)), /* 바깥 꼭짓점 */
+      add(add(c, o.t, -w * 1.30), o.n, sg * w * 0.30),
+      add(c, o.t, -w * 1.15)]),
+      (sg < 0 ? 'class="k-c' : 'class="k-f') + ' wl-fin" stroke="var(--ed)" stroke-width="0.5"');
   }
 };
 EX.shell = function (b, e) {
@@ -1256,6 +1493,174 @@ EX.whisker = function (b, e) {
   b.pm('head', D, 'class="k-w wl-whisk" fill="none"', true);
 };
 
+/* ── 5-6b 신규 12종이 가져온 파츠 ────────────────────────────────────────
+ * 규칙은 위와 같다: ribbon / ell / spike 세 프리미티브만 쓰고, 자기 레이어에만
+ * 밀어넣는다. 새 종을 위해 별도 렌더 경로를 만들지 않는다.
+ * -------------------------------------------------------------------- */
+
+/* 긴 턱선 — 악어·보아·고래·파라케라테리움.
+   fang(송곳니 2~5개)과 다르다: 이건 주둥이를 끝까지 가르는 '잇줄 전체' 다.
+   teeth:false 면 선만 남아 고래의 다문 입선이 된다. */
+EX.lips = function (b, e) {
+  var K = b.K, M = b.M, n = e.n || 0, i;
+  var t0 = e.at == null ? 0.34 : e.at;
+  var dwn = [-K.up[0], -K.up[1]], line = [];
+  for (i = 0; i <= 4; i++) {
+    var t = t0 + (1 - t0) * (i / 4), o = onHead(K, t);
+    line.push(add(o.p, dwn, o.r * (0.46 + 0.34 * (i / 4))));
+  }
+  b.p('head', openSmooth(line), 'class="k-m" fill="none" opacity=".85"', true);
+  if (e.teeth === false || !n) return;
+  var D = [];
+  for (i = 0; i < n; i++) {
+    var f = (i + 0.5) / n, p = crPt(line, f);
+    var L = (e.tooth || 0.040) * U100 * M.headMul * (0.55 + 0.65 * Math.sin(PI * f));
+    D.push(spike(p[0], p[1], K.headAng - 88 - f * 10, L, L * 0.36));
+  }
+  b.pm('head', D, 'class="k-n wl-fang" opacity=".92"');
+};
+
+/* 목도리 — 콘도르. 목 밑동을 한 바퀴 감는 흰 러프(등줄기 갈기가 아니다) */
+EX.ruffcheek = function (b, e) {
+  var K = b.K, M = b.M, o = onBody(K, e.at == null ? 0.82 : e.at);
+  var R = (e.r || 0.085) * U100 * (0.72 + 0.28 * M.exMul), n = e.n || 9, D = [], i;
+  b.p('front', ell(o.p[0], o.p[1], R * 1.15, R * 0.78, -24), 'class="k-b wl-ruffc" opacity=".6"');
+  for (i = 0; i < n; i++) {
+    var a = -164 + (i / (n - 1)) * 320;
+    var bp = [o.p[0] + cos(rad(a)) * R * 0.98, o.p[1] - sin(rad(a)) * R * 0.62];
+    D.push(spike(bp[0], bp[1], a, R * (0.24 + 0.26 * Math.sin(PI * i / (n - 1))), R * 0.20));
+  }
+  b.pm('front', D, 'class="k-b wl-ruffc" opacity=".55"');
+};
+
+/* 고래 미익 — 수평 지느러미. 상어의 수직 미저(caudal)와 정반대인 게 정체성이다.
+   옆에서 보면 얕은 V 두 장 + 가운데 홈. 가까운 엽이 아래로 크게 온다. */
+EX.fluke = function (b, e) {
+  var K = b.K, M = b.M;
+  var len = (e.len || 0.30) * U100 * M.lenMul, w = (e.w || 0.11) * U100;
+  var ang = 180 + (e.lift || 0), base = K.tailBase;
+  var org = ' style="transform-origin:@@O:' + r2(base[0]) + ',' + r2(base[1]) + '@@"';
+  var pk = add(base, dirOf(ang), len * 0.86);
+  /* 미병(尾柄) — 길고 가는 자루. 이게 굵으면 미익이 몸통에 먹혀 고래가 '덩어리' 가 된다 */
+  b.p('deep', ribbon([base, add(base, dirOf(ang), len * 0.44), pk], [w * 0.80, w * 0.42, w * 0.20], { n: 9, capN: 3 }),
+    'class="k-cn wl-tail"' + org);
+  var notch = add(pk, dirOf(ang), len * 0.26);
+  for (var s = 0; s < 2; s++) {
+    var far = s === 0, sg = far ? -1 : 1, sc = far ? 0.78 : 1;
+    var out = dirOf(ang + 90 * sg), back = dirOf(ang);
+    var tip = add(add(pk, back, len * 0.52 * sc), out, len * 0.86 * sc);
+    b.p('deep', closedSmooth([
+      add(pk, out, w * 0.34),
+      add(add(pk, out, len * 0.52 * sc), back, -len * 0.04),   /* 앞전 — 일찍 벌어져야 '한 장' 으로 읽힌다 */
+      tip,
+      add(add(pk, out, len * 0.44 * sc), back, len * 0.72),    /* 뒷전 */
+      notch,
+      add(pk, dirOf(ang - 90 * sg), w * 0.08)
+    ]), (far ? 'class="k-f' : 'class="k-cn') + ' wl-tail"' + org);
+  }
+};
+
+/* 사각 두상 — 향유고래의 정면 '벽'. 파라케라테리움에선 s 를 줄여 콧등 패드로 쓴다 */
+EX.snoutPad = function (b, e) {
+  var K = b.K, s = e.s == null ? 1 : e.s;
+  var o0 = onHead(K, e.at == null ? 0.28 : e.at), o1 = onHead(K, 0.99);
+  b.p('head', closedSmooth([
+    add(o0.p, K.up, o0.r * 0.22),
+    add(o0.p, K.up, o0.r * (0.14 + 0.82 * s)),
+    add(add(o1.p, K.up, o1.r * (0.06 + 0.90 * s)), K.hd, o1.r * 0.22),
+    add(add(o1.p, K.up, -o1.r * 0.34), K.hd, o1.r * 0.12),
+    add(o1.p, K.up, -o1.r * 0.48)
+  ]), 'class="k-b wl-pad" opacity="' + (e.o == null ? 0.40 : e.o) + '"');
+};
+
+/* 아가리 — 메갈로돈. 벌어진 구강 + 아래턱 + 삼각니 2줄.
+   메갈로돈은 '턱이 전부' 이므로 이 파츠 하나에 예산을 몰아준다. */
+EX.sharkjaw = function (b, e) {
+  var K = b.K, M = b.M, n = e.n || 8, i;
+  var dwn = [-K.up[0], -K.up[1]];
+  var up = [], lo = [], t, o;
+  for (i = 0; i <= 4; i++) {                    /* 윗잇줄 */
+    t = 0.30 + 0.70 * (i / 4); o = onHead(K, t);
+    up.push(add(add(o.p, dwn, o.r * (0.26 + 0.44 * (i / 4))), K.hd, -o.r * 0.04));
+  }
+  for (i = 0; i <= 3; i++) {                    /* 아래턱 — 통째로 내린다 */
+    t = 0.32 + 0.66 * (i / 3); o = onHead(K, t);
+    lo.push(add(o.p, dwn, o.r * (0.60 + 0.66 * (i / 3))));
+  }
+  b.p('head', closedSmooth(up.concat(lo.slice().reverse())), 'class="k-d wl-jaw" opacity=".92"');
+  b.p('head', ribbon(lo, [onHead(K, 0.32).r * 0.34, onHead(K, 0.6).r * 0.28, onHead(K, 0.8).r * 0.22, onHead(K, 1).r * 0.14],
+    { n: 10, capN: 3 }), 'class="k-cn wl-jaw"');
+  var D = [];
+  for (i = 0; i < n; i++) {
+    var f = (i + 0.5) / n;
+    var L = (e.tooth || 0.05) * U100 * M.headMul * (0.55 + 0.60 * Math.sin(PI * f));
+    var pu = crPt(up, f);
+    D.push(spike(pu[0], pu[1], K.headAng - 90, L, L * 0.44));
+    if (i < n - 2) { var pl = crPt(lo, f * 0.96); D.push(spike(pl[0], pl[1], K.headAng + 90, L * 0.62, L * 0.36)); }
+  }
+  b.pm('head', D, 'class="k-n wl-fang"');
+};
+
+/* 비늘 띠 — 티타노보아의 배비늘. 몸통을 가로지르는 호가 무족 실루엣을 읽히게 한다 */
+EX.chitin = function (b, e) {
+  var K = b.K, n = e.n || 12, D = [], i;
+  var t0 = e.at == null ? 0.08 : e.at, sp = e.span == null ? 0.80 : e.span;
+  for (i = 0; i < n; i++) {
+    var t = t0 + sp * (i / (n - 1)), o = onBody(K, t);
+    D.push(openSmooth([add(o.p, o.n, -o.r * 0.94), add(add(o.p, o.n, -o.r * 0.24), o.t, o.r * 0.20), add(o.p, o.n, o.r * 0.58)]));
+  }
+  b.pm('body', D, 'class="k-w" fill="none" opacity=".40"', true);
+};
+
+/* 굽 — 기린·파라케라테리움. 작지만 이게 없으면 발이 뭉툭한 덩어리로 끝난다 */
+EX.toes = function (b, e) {
+  var K = b.K, sp = b.sp, D = [], q, k;
+  var xs = sp.legs.n === 2 ? [K.chestX * 0.30] : [K.hipX * 0.80, K.chestX * 0.78];
+  var w = sp.legs.paw * U100;
+  for (q = 0; q < xs.length; q++) for (k = 0; k < 2; k++)
+    D.push(openSmooth([[xs[q] + w * (0.05 + k * 0.72), -w * 1.35], [xs[q] + w * (0.22 + k * 0.72), -0.7]]));
+  b.pm('front', D, 'class="k-m" fill="none" opacity=".5"', true);
+};
+
+/* 혓불 — 삼족오·기린. 등줄기에서 피어오른다. 색은 눈과 같은 accent 를 쓴다:
+   불꽃을 따로 물들이면 지역 팔레트를 갈아끼울 때 이 종만 어긋난다. */
+EX.flame = function (b, e) {
+  var K = b.K, M = b.M, n = e.n || 6, i;
+  var t0 = e.at == null ? 0.18 : e.at, sp = e.span == null ? 0.60 : e.span;
+  var L = (e.len || 0.13) * U100 * M.exMul;
+  for (i = 0; i < n; i++) {
+    var f = n > 1 ? i / (n - 1) : 0.5, o = onBody(K, t0 + sp * f);
+    var base = add(o.p, o.n, o.r * 0.74);
+    var ln = L * (0.46 + 0.80 * Math.sin(PI * (0.16 + f * 0.84)));
+    var a = Math.atan2(-o.n[1], o.n[0]) * 180 / PI + 14;
+    /* 혓불 = 밑동이 굵고 끝이 바늘, 그리고 반드시 한 번 꺾인다. 안 꺾으면 가시로 읽힌다 */
+    var cps = tailChain(base, a, ln, (i % 2 ? -96 : -54), 4);
+    b.p('back', ribbon(cps, [ln * 0.135, ln * 0.098, ln * 0.060, ln * 0.026, ln * 0.004], { n: 12, capN: 3 }),
+      'class="k-fm wl-flame" opacity="' + (e.o == null ? 0.55 : e.o) + '" style="transform-origin:@@O:' + r2(base[0]) + ',' + r2(base[1]) + '@@;--fp:' + r2(f * 0.9) + 's"');
+  }
+};
+
+/* 후광 — 붕(鵬). 최종 동료이므로 발광 링 하나로 끝낸다.
+   evenodd 로 판 고리 + 그 안의 옅은 원반. 머리 뒤(back) 레이어다. */
+EX.halo = function (b, e) {
+  var K = b.K, M = b.M;
+  var R = (e.r || 0.24) * U100 * (0.80 + 0.20 * M.exMul);
+  var c = add(add(K.c1, K.hd, K.hs * (e.x == null ? -0.10 : e.x)), K.up, K.hs * (e.y == null ? 0.30 : e.y));
+  var org = ' style="transform-origin:@@O:' + r2(c[0]) + ',' + r2(c[1]) + '@@"';
+  b.p('back', ell(c[0], c[1], R * 0.94, R * 0.90, 0), 'class="k-fl wl-halod" opacity=".1"' + org, true);
+  b.p('back', ell(c[0], c[1], R, R * 0.96, 0) + ell(c[0], c[1], R * 0.84, R * 0.80, 0),
+    'class="k-fl wl-halo" fill-rule="evenodd" opacity=".72"' + org);
+};
+
+/* 깔때기 — 오징어의 배출관. 작지만 이게 있어야 '두족류' 로 못 박힌다 */
+EX.siphon = function (b, e) {
+  var K = b.K, o = onBody(K, e.at == null ? 0.80 : e.at);
+  var L = (e.len || 0.12) * U100, w = (e.w || 0.042) * U100;
+  var base = add(o.p, o.n, -o.r * 0.48);
+  var cps = tailChain(base, e.ang == null ? -34 : e.ang, L, 26, 2);
+  b.p('front', ribbon(cps, [w * 1.35, w * 0.98, w * 0.60], { n: 7, capN: 3 }), 'class="k-cn wl-siphon"');
+};
+
 /* ── 5-7 무늬 (stage>=2, 몸통 path 로 클립) ── */
 function buildMarks(b, clipId) {
   var K = b.K, sp = b.sp, m = sp.marks;
@@ -1299,7 +1704,7 @@ function buildMarks(b, clipId) {
 function buildGear(b) {
   var K = b.K, M = b.M, sp = b.sp, rnd = b.rnd;
   /* 목줄 + 이름표 (stage>=1) */
-  if (M.collar) {
+  if (M.collar && sp.collar !== false) {
     var o = onBody(K, 0.90);
     var a = add(o.p, o.n, o.r * 1.06), c = add(o.p, o.n, -o.r * 1.02);
     b.p('body', ribbon([a, o.p, c], [o.r * 0.19, o.r * 0.16, o.r * 0.17], { n: 7, capN: 3 }), 'class="k-lt wl-collar"');
@@ -1325,7 +1730,7 @@ function buildGear(b) {
         o2.r * 0.11, o2.r * 0.15, (q - 1) * 18), 'class="k-n wl-troph"', true);
   }
   /* 망토 (stage>=4) — 어깨에 걸친 그을린 외투. 본체보다 80ms 늦게 따라오는 2차 진자 */
-  if (M.cape && sp.arch === 'quad' && sp.legs.n >= 4) {
+  if (M.cape && sp.cape !== false && sp.arch === 'quad' && sp.legs.n >= 4) {
     var tA = 0.78, tB = 0.34, N = 4, top = [], hem = [], k, oo, dd;
     for (k = 0; k <= N; k++) { oo = onBody(K, tA + (tB - tA) * k / N); top.push(add(oo.p, oo.n, oo.r * 0.92)); }
     for (k = N; k >= 0; k--) {
@@ -1408,7 +1813,7 @@ function rimGrad(id, x1, y1, x2, y2, c, o1, o2) {
 var CSS = [
 '.wl-cr{display:block;overflow:visible;--co:#2B3346;--co2:#1C2331;--co3:#141A26;--ed:#0B0E16;',
 '  --bel:#3C4358;--eye:#FFE2A6;--inner:#4A3A36;--bone:#E6DCCB;--mark:#151A26;--scar:#C7A98A;',
-'  --wire:#5A6478;--lt:#6B4A32;--cape:#241C1A;--shadow:#05070C;--rimW:url(#wlcr-rw);--rimC:url(#wlcr-rc);',
+'  --wire:#5A6478;--lt:#6B4A32;--cape:#241C1A;--shadow:#05070C;--flm:#FF9333;--rimW:url(#wlcr-rw);--rimC:url(#wlcr-rc);',
 '  --rwO:.9;--rcO:.5;--amp:1;--lid0:0;--br:3.4s;--tw:2.6s;--ef:4.4s;--bl:3.6s;--ph:0s;--ph2:0s;--ph3:0s;--ph4:0s;',
 '  --skC:transparent;--skW:0;--auraF:url(#wlcr-glow);--eyeW:#0A0D14;--rimG:url(#wlcr-rim)}',
 '.wl-cr.flip{--rimW:url(#wlcr-rwf);--rimC:url(#wlcr-rcf)}',
@@ -1426,6 +1831,8 @@ var CSS = [
 '.wl-cr .k-w{stroke:var(--wire);stroke-width:.5;stroke-linecap:round;fill:none;opacity:.5}',
 '.wl-cr .k-sc{stroke:var(--scar);stroke-width:.62;stroke-linecap:round;fill:none;opacity:.62}',
 '.wl-cr .k-lt{fill:var(--lt)}.wl-cr .k-cp{fill:var(--cape)}',
+/* 신규 12종: 불꽃·후광은 accent(눈 색)를 그대로 쓴다 — 지역 팔레트와 같이 움직인다 */
+'.wl-cr .k-fl{fill:var(--eye)}.wl-cr .k-fm{fill:var(--flm)}',
 '.wl-cr .k-sh{fill:var(--shadow);opacity:.45}.wl-cr .wl-aura{fill:var(--auraF)}',
 '.wl-cr .wl-rim{stroke:var(--rimW);stroke-width:var(--rimWpx,2);opacity:var(--rwO);stroke-linejoin:round}',
 '.wl-cr .wl-rim2{stroke:var(--rimC);stroke-width:var(--rimCpx,1.3);opacity:var(--rcO);stroke-linejoin:round}',
@@ -1435,9 +1842,9 @@ var CSS = [
 '.wl-cr .wl-sil use{--co:transparent;--co2:transparent;--co3:transparent;--con:transparent;',
 '  --bel:transparent;--bone:transparent;--lt:transparent;--cape:transparent;--mark:transparent;',
 '  --inner:transparent;--eye:transparent;--eyeW:transparent;--scar:transparent;--wire:transparent;',
-'  --shadow:transparent;--auraF:transparent;--skC:var(--rimG);--skW:var(--rimWpx,3)}',
+'  --shadow:transparent;--auraF:transparent;--flm:transparent;--skC:var(--rimG);--skW:var(--rimWpx,3)}',
 '.wl-cr .wl-flash{display:none;fill:var(--eye)}',
-'.wl-cr .wl-flash use{--co:var(--eye);--co2:var(--eye);--co3:var(--eye);--bel:var(--eye);--bone:var(--eye);--lt:var(--eye);--cape:var(--eye);--mark:var(--eye);--rwO:0;--rcO:0}',
+'.wl-cr .wl-flash use{--co:var(--eye);--co2:var(--eye);--co3:var(--eye);--bel:var(--eye);--bone:var(--eye);--lt:var(--eye);--cape:var(--eye);--mark:var(--eye);--flm:var(--eye);--rwO:0;--rcO:0}',
 /* 파트 공통 */
 '.wl-cr g[class^="wl-"],.wl-cr path[class*="wl-"]{transform-box:view-box}',
 /* ── 상시 idle ── */
@@ -1454,7 +1861,13 @@ var CSS = [
 '.wl-stalk{animation:wlStalk 3.8s ease-in-out infinite var(--ph3)}',
 '.wl-ant{animation:wlStalk 2.9s ease-in-out infinite var(--ph3)}',
 '.wl-wing-f,.wl-wing-b{animation:wlWing var(--fl,2.4s) ease-in-out infinite var(--ph2)}',
-'.wl-cr.fly .wl-wing-f,.wl-cr.fly .wl-wing-b{--fl:.62s}',
+/* fly 종의 기본 날갯짓은 .62s. 활공조(콘도르·붕)는 --flap 으로 개별 지정한다 —
+   같은 0.62s 로 퍼덕이면 소형 맹금과 대형 활공조가 같은 새로 읽힌다. */
+'.wl-cr.fly .wl-wing-f,.wl-cr.fly .wl-wing-b{--fl:var(--flap,.62s)}',
+'.wl-flame{animation:wlFlame 1.9s ease-in-out infinite calc(var(--fp,0s) * -1)}',
+'.wl-halo{animation:wlHalo 7.2s linear infinite}',
+'@keyframes wlFlame{0%,100%{transform:rotate(calc(-7deg*var(--amp))) scaleY(1)}50%{transform:rotate(calc(8deg*var(--amp))) scaleY(calc(1 + .26*var(--amp)))}}',
+'@keyframes wlHalo{0%{transform:rotate(0) scale(1);opacity:.58}50%{transform:rotate(180deg) scale(calc(1 + .05*var(--amp)));opacity:.95}100%{transform:rotate(360deg) scale(1);opacity:.58}}',
 '.wl-cr.hover .wl-root{animation:wlHover calc(var(--br)*.9) ease-in-out infinite var(--ph)}',
 '@keyframes wlBreathe{0%,100%{transform:scale(1,1)}50%{transform:scale(calc(1 + .020*var(--amp)),calc(1 + .034*var(--amp)))}}',
 '@keyframes wlHead{0%,100%{transform:translate(0,0) rotate(0)}35%{transform:translate(calc(.4px*var(--amp)),calc(-.5px*var(--amp))) rotate(calc(-1.4deg*var(--amp)))}70%{transform:translate(0,calc(.6px*var(--amp))) rotate(calc(1.1deg*var(--amp)))}}',
@@ -1518,11 +1931,13 @@ var CSS = [
    q0: 상시 애니메이션 전부 정지. 상태 연출만.                           */
 'html.wlq1 .wl-cr .wl-leg,html.wlq1 .wl-cr .wl-ear-f,html.wlq1 .wl-cr .wl-ear-b,',
 'html.wlq1 .wl-cr .wl-wing,html.wlq1 .wl-cr .wl-tent,html.wlq1 .wl-cr .wl-trunk,',
-'html.wlq1 .wl-cr .wl-headg,html.wlq1 .wl-cr .wl-spark{animation:none}',
+'html.wlq1 .wl-cr .wl-headg,html.wlq1 .wl-cr .wl-spark,html.wlq1 .wl-cr .wl-flame,',
+'html.wlq1 .wl-cr .wl-halo,html.wlq1 .wl-cr .wl-siphon{animation:none}',
 'html.wlq0 .wl-cr .wl-leg,html.wlq0 .wl-cr .wl-ear-f,html.wlq0 .wl-cr .wl-ear-b,',
 'html.wlq0 .wl-cr .wl-wing,html.wlq0 .wl-cr .wl-tent,html.wlq0 .wl-cr .wl-trunk,',
 'html.wlq0 .wl-cr .wl-headg,html.wlq0 .wl-cr .wl-spark,html.wlq0 .wl-cr .wl-torso,',
-'html.wlq0 .wl-cr .wl-tail,html.wlq0 .wl-cr .wl-eye,html.wlq0 .wl-cr .wl-lid{animation:none}',
+'html.wlq0 .wl-cr .wl-tail,html.wlq0 .wl-cr .wl-eye,html.wlq0 .wl-cr .wl-lid,',
+'html.wlq0 .wl-cr .wl-flame,html.wlq0 .wl-cr .wl-halo{animation:none}',
 'html.rm .wl-cr.is-hurt .wl-flash{display:none}html.rm .wl-cr.is-hurt .wl-root{animation:none}',
 'html.rm .wl-cr.is-attack .wl-root{animation-duration:.32s}html.rm .wl-cr.is-cheer .wl-root{animation:none}'
 ].join('');
@@ -1577,6 +1992,8 @@ function colorsFor(sp, M, pal) {
     '--wire': mix(co, PAL.moon, 0.35),
     '--lt': mix(co, '#8B5A2B', 0.55),
     '--cape': shade(mix(co, PAL.emberDeep, 0.20), 0.40),
+    /* 불꽃은 accent 가 아니라 불 그 자체의 색이다 — 뼈·눈과 같은 색이면 가시로 읽힌다 */
+    '--flm': mix(PAL.ember, pal.accent || (cold ? PAL.emberDeep : PAL.emberCore), 0.28),
     '--shadow': PAL.night,
     '--rwO': cold ? 0.30 : 0.92,
     '--rcO': cold ? 0.92 : 0.46
@@ -1740,6 +2157,8 @@ function make(opts) {
     for (k in c) svg.style.setProperty(k, c[k]);
     var cold = !!(H.pal && H.pal.rim === 'cold');
     svg.style.setProperty('--rimG', 'url(#wlcr-rim' + (cold ? 'k' : '') + (H.flip ? 'f' : '') + ')');
+    /* 활공조는 날갯짓 주기를 종이 직접 정한다. flap:0(기본) 이면 제거 → 기존 동작 그대로 */
+    svg.style.setProperty('--flap', sp.flap ? sp.flap + 's' : '');
     svg.style.setProperty('--br', H._br + 's');
     svg.style.setProperty('--tw', H._tw + 's');
     svg.style.setProperty('--ef', H._ef + 's');
@@ -1807,7 +2226,11 @@ function make(opts) {
 W.Creatures = {
   SPECIES: SPECIES,
   PALETTE: PAL,
-  PETS: ['hamster', 'rabbit', 'fox', 'wolf', 'hawk', 'bear', 'tiger', 'rhino', 'elephant', 'shark', 'mammoth', 'dragon'],
+  /* PETS 는 로스터 index 0..23 순서와 1:1 이다. 앞 12개는 원본, 뒤 12개가 신규다. */
+  PETS: ['hamster', 'rabbit', 'fox', 'wolf', 'hawk', 'bear', 'tiger', 'rhino', 'elephant', 'shark', 'mammoth', 'dragon',
+         'squid', 'crocodile', 'condor', 'spermwhale', 'bluewhale', 'megalodon',
+         'titanoboa', 'paracer', 'quetzal', 'samjogo', 'kirin', 'peng'],
+  PETS_V1: ['hamster', 'rabbit', 'fox', 'wolf', 'hawk', 'bear', 'tiger', 'rhino', 'elephant', 'shark', 'mammoth', 'dragon'],
   FOES: ['insect', 'snail', 'critter', 'bird', 'reptile', 'fish', 'cephalopod', 'beast', 'brute', 'titan'],
   make: make,
   injectStyle: injectStyle,

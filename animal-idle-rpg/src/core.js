@@ -344,8 +344,9 @@ function raidTick(dt) {
 }
 function renderRaidBtn() {
   var b = $('#b-raid'); if (!b) return;
-  if (S.raid) { b.hidden = false; b.className = 'ghost raid on'; setText(b, '레이드 ' + Math.ceil(S.raid.t) + '초 · ' + (S.raid.dmg / S.raid.max * 100).toFixed(0) + '%'); }
-  else if (raidAvailable()) { b.hidden = false; b.className = 'ghost raid ready'; setText(b, '레이드 · ' + raidInfo().n); }
+  var lb = b.querySelector('span') || b;
+  if (S.raid) { b.hidden = false; b.className = 'ghost raid on'; setText(lb, Math.ceil(S.raid.t) + '초 · ' + (S.raid.dmg / S.raid.max * 100).toFixed(0) + '%'); }
+  else if (raidAvailable()) { b.hidden = false; b.className = 'ghost raid ready'; setText(lb, '레이드'); }
   else b.hidden = true;
 }
 function confirmRaid() {

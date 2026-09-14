@@ -845,6 +845,8 @@ function bar() {
       var b = el('button', 'wl-sk t-' + d.tone);
       b.type = 'button';
       b.title = d.n + ' — ' + d.role;
+      b.setAttribute('data-id', d.id);
+      if (W.Icons && W.Icons.has(d.id)) { var ic = el('i', 'ic'); W.Icons.apply(ic, d.id); b.appendChild(ic); }
       var fill = el('i', 'f');
       var adot = el('i', 'a'); adot.style.display = 'none';
       var k = el('i', 'k', d.hot ? String(d.hot) : '·');

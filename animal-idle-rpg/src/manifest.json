@@ -7,9 +7,10 @@
     "roster.js",
     "difficulty.js",
     "scene.js",
-    "dayscene.js",
+    "pixscene.js",
     "pixel.js",
     "shots.js",
+    "icons.js",
     "fx.js",
     "skills.js",
     "nurture.js",
@@ -22,8 +23,9 @@
     "core.js",
     "ui.css",
     "shell.html",
-    "dayscene.js",
     "pixel.js",
-    "shots.js"
+    "shots.js",
+    "pixscene.js",
+    "icons.js"
   ]
 }

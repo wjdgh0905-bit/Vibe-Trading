@@ -3,25 +3,23 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
-<meta name="theme-color" content="#0E1119" />
+<meta name="theme-color" content="#0E1218" />
 <meta name="mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <title>모닥불 무리 — 방치형 동물 RPG</title>
 <meta name="description" content="밤의 야영지에서 동물 무리를 키워 무한히 이어지는 야생을 정복하는 방치형 RPG." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hahmlet:wght@500;700&family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans+KR:wght@300;400;500;600&display=swap" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" />
 <!--INLINE:css-->
 </head>
 <body>
 <div class="app">
 
   <header class="strip">
-    <div class="res gold"><span class="lbl">발자국</span><span class="v" id="r-gold">0</span></div>
-    <div class="res snack"><span class="lbl">간식</span><span class="v" id="r-snack">0</span></div>
-    <div class="res"><span class="lbl">초당 피해</span><span class="v" id="r-dps">0</span></div>
-    <div class="res soul"><span class="lbl">야생혼</span><span class="v" id="r-soul">0</span></div>
-    <div class="res"><span class="lbl">최고</span><span class="v" id="r-best">1</span></div>
+    <div class="res gold"><i class="ic" data-ic="gold"></i><div><span class="lbl">발자국</span><span class="v" id="r-gold">0</span></div></div>
+    <div class="res snack"><i class="ic" data-ic="snack"></i><div><span class="lbl">간식</span><span class="v" id="r-snack">0</span></div></div>
+    <div class="res soul"><i class="ic" data-ic="soul"></i><div><span class="lbl">야생혼</span><span class="v" id="r-soul">0</span></div></div>
   </header>
 
   <main class="grid">
@@ -45,9 +43,13 @@
           <div class="hptxt" id="o-hptxt"></div>
         </div>
 
+        <div class="ov ov-stat">
+          <span class="st"><i class="ic" data-ic="dps"></i><b class="v" id="r-dps">0</b><s>/초</s></span>
+          <span class="st"><i class="ic" data-ic="best"></i><b class="v" id="r-best">1</b><s>최고</s></span>
+        </div>
         <div class="ov ov-waves" id="o-waves"></div>
         <div class="ov ov-ctl">
-          <button class="ghost raid" id="b-raid" hidden>레이드</button>
+          <button class="ghost raid" id="b-raid" hidden><i class="ic" data-ic="raid"></i><span>레이드</span></button>
           <button class="ghost on" id="b-auto">자동 진행</button>
           <button class="ghost" id="b-quality">연출 강</button>
         </div>

@@ -389,7 +389,7 @@ function css() {
 function padRow(r) { r = r || ''; while (r.length < GW) r += '.'; return r.slice(0, GW); }
 function draw(ctx, spec, frame, o) {
   var flash = !!o.flash;
-  var P = spec.p, t = T[spec.t][frame] || T[spec.t][0];
+  var P = o.P || spec.p, t = T[spec.t][frame] || T[spec.t][0];
   var grid = [];
   for (var y = 0; y < GH; y++) grid.push(padRow(t[y]).split(''));
   /* 오버레이 스탬프 — 프레임 1 에서 몸이 위로 1칸 이동하는 템플릿(bird/blob)은 y 보정 */
@@ -416,6 +416,14 @@ function draw(ctx, spec, frame, o) {
     var ex = eo ? eo[1] + dx : 28 + dx, ey = eo ? eo[2] + dy : 6 + dy; ctx.fillRect(ex - 1, ey - 1, 3, 1); }
 }
 
+/* 적 개체 색 변형: 종 기본 팔레트에 로스터 색을 섞어 같은 종이라도 지역마다 다르게 */
+function tintPal(base, t) {
+  if (!t || !/^#[0-9a-fA-F]{3,6}$/.test(t)) return base;
+  var f = mixc(base.f, t, 0.5);
+  var P = {}; for (var k in base) P[k] = base[k];
+  P.f = f; P.o = shade(f, .62); P.s = shade(f, .28); P.h = tint(f, .28); P.b = mixc(base.b, tint(f, .55), 0.4); P.k = mixc(base.k, shade(f, .45), 0.5);
+  return P;
+}
 function make(o) {
   css();
   o = o || {};
@@ -428,7 +436,8 @@ function make(o) {
   var H = { el: wrap, id: o.species, stage: o.stage | 0, size: o.size || 96, state: 'idle', mood: o.mood || 'calm', spec: spec, frame: 0 };
   var cold = !!(o.palette && o.palette.rim === 'cold');
   var flashing = false;
-  function paint() { draw(ctx, spec, H.frame, { stage: H.stage, cold: cold, mood: H.mood, flash: flashing }); }
+  var P = tintPal(spec.p, o.palette && o.palette.tint);
+  function paint() { draw(ctx, spec, H.frame, { stage: H.stage, cold: cold, mood: H.mood, flash: flashing, P: P }); }
   function size() { var h = H.size * spec.sc; cv.style.height = h + 'px'; cv.style.width = (h * GW / GH) + 'px'; }
   paint(); size();
   var tmr = 0;

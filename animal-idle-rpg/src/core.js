@@ -72,13 +72,14 @@ var S = blank();
 /* ══ 수식 ══════════════════════════════════════════════════════════════ */
 var _pp = null, _ppKey = '';
 function passives() {
-  var key = S.pets.join(',') + '|' + S.ups.luck + S.ups.bless + S.ups.claw + S.ups.gold + S.ups.fang + S.sls.echo;
+  var key = S.pets.join(',') + '|' + S.ups.luck + S.ups.bless + S.ups.claw + S.ups.gold + S.ups.fang + S.sls.echo +
+            '|' + ((Sk && Sk.mult) ? Math.round((Sk.mult().cdrMult || 1) * 100) : 0);
   if (key !== _ppKey) {
     _ppKey = key;
     _pp = C ? C.petPassives(S.pets, {
       upsLuck: S.ups.luck, upsBless: S.ups.bless, upsClaw: S.ups.claw,
       upsGold: S.ups.gold, upsFang: S.ups.fang, slsEcho: S.sls.echo,
-      skillCdr: 0,
+      skillCdr: (function () { var m = Sk && Sk.mult ? Sk.mult() : null; return m && m.cdrMult ? Math.max(0, 1 - m.cdrMult) : 0; })(),
     }) : { blessAdd: 0, clawAdd: 0, goldAdd: 0, fangAdd: 0, echoAdd: 0, huntAdd: 0, snackAdd: 0,
            offlineAdd: 0, eliteGoldAdd: 0, pioneerAdd: 0, lowHpAdd: 0, gripAdd: 0, eliteAdd: 0,
            critChance: 0.02 * S.ups.luck, critMult: 5, cdrMul: 1, owned: 0 };
@@ -217,6 +218,19 @@ function bossFail() {
   ribbon('💀 ' + (cur ? cur.info.name : '보스') + ' 토벌 실패 — 존 ' + S.zone + ' 1웨이브', 'bad');
   S.wave = 1; spawn();
 }
+function tapScaled(n, power) {
+  n = Math.max(1, n | 0);
+  power = (typeof power === 'number' && isFinite(power)) ? clamp(power, 0, 1) : 1;
+  var p = passives(), crit = false, dmg = 0;
+  var reps = Math.min(n, 24);
+  for (var i = 0; i < reps; i++) {
+    var c = Math.random() < p.critChance;
+    dmg += clickDamage() * power * (c ? p.critMult : 1);
+    crit = crit || c;
+  }
+  if (n > reps) dmg *= n / reps;
+  hurt(dmg, { tap: true, crit: crit, auto: true, n: n });
+}
 function tap(n, opts) {
   n = n || 1;
   var p = passives(), dmg = 0, crit = false;
@@ -278,6 +292,7 @@ var AIR = { hawk: 1, dragon: 1, condor: 1, quetzal: 1, samjogo: 1, peng: 1 };
 var SWIM = { shark: 1, squid: 1, spermwhale: 1, bluewhale: 1, megalodon: 1 };
 var HEAVY = { bear: 1, tiger: 1, rhino: 1, elephant: 1, mammoth: 1, crocodile: 1, titanoboa: 1, paracer: 1, kirin: 1 };
 
+var _lastIntro = 0;
 var Stage = (function () {
   var field, scene = null, pets = {}, foe = null, atk = {}, W0 = 0, H0 = 0, lastSlots = {};
 
@@ -373,7 +388,10 @@ var Stage = (function () {
     field.appendChild(wrap);
     foe = { h: h, wrap: wrap, pos: { x: W0 * 0.8, y: ground() } };
     place();
-    if (info.boss && FX && FX.bossIntro) FX.bossIntro(info.name, info.kind === 'overlord' ? '대군주' : '보스');
+    if (info.boss && FX && FX.bossIntro && Date.now() - _lastIntro > 7000) {
+      _lastIntro = Date.now();
+      FX.bossIntro(info.name, info.kind === 'overlord' ? '대군주' : '보스');
+    }
     if (scene) scene.setMood(info.boss ? 'boss' : 'normal');
     if (info.boss) chatterSome('boss');
   }
@@ -453,15 +471,26 @@ var Stage = (function () {
 })();
 
 /* ══ 배너 / 대사 ═══════════════════════════════════════════════════════ */
+var _ribT = [];
 function ribbon(text, tone) {
+  /* 빠르게 진행할 때 배너가 화면을 덮지 않도록 — 3초에 2장까지 */
+  var now = Date.now();
+  _ribT = _ribT.filter(function (t) { return now - t < 3000; });
+  var cap = (typeof innerWidth === 'number' && innerWidth < 700) ? 1 : 2;
+  if (tone !== 'bad' && _ribT.length >= cap) return;
+  _ribT.push(now);
   if (FX && FX.ribbon) { FX.ribbon(text, tone); return; }
   var box = $('#ribbons'); if (!box) return;
   var d = el('div', 'rib ' + (tone || ''), text);
   box.appendChild(d);
   setTimeout(function () { d.remove(); }, 3700);
 }
+var _lastChat = 0;
 function chatterSome(when) {
   if (!Nu || !C) return;
+  var now = Date.now();
+  if (now - _lastChat < 9000 || Math.random() > 0.45) return;   /* 무리는 수다스럽지 않다 */
+  _lastChat = now;
   var list = ownedList();
   if (!list.length) return;
   var i = list[Math.floor(Math.random() * list.length)];
@@ -835,6 +864,15 @@ function renderTab() {
   var body = $('#tabbody');
   [].forEach.call($('#tabs').children, function (t) { t.classList.toggle('on', t.dataset.t === S.tab); });
   if (S.tab === 'pets') { if (!Object.keys(petRows).length || body.dataset.t !== 'pets') { body.dataset.t = 'pets'; buildPets(); } else updatePets(); return; }
+  if (S.tab === 'skill') {
+    if (body.dataset.t !== 'skill') {
+      body.dataset.t = 'skill'; body.innerHTML = ''; petRows = {};
+      var pn = (Sk && Sk.panel) ? Sk.panel() : null;
+      if (pn) body.appendChild(pn);
+      else body.innerHTML = '<div class="note">스킬 패널을 불러오지 못했습니다.</div>';
+    } else if (Sk && Sk.refresh) Sk.refresh();
+    return;
+  }
   body.dataset.t = S.tab;
   body.innerHTML = S.tab === 'up' ? tabUp() : S.tab === 'diff' ? tabDiff() : S.tab === 'asc' ? tabAsc() : tabLog();
   petRows = {};
@@ -983,11 +1021,27 @@ function boot() {
   var had = load();
   if (Nu) Nu.init(S.nurture);
   Sk.init && Sk.init(S.skills, {
-    dps: totalDps, clickDamage: clickDamage, tap: function (n) { tap(n, { auto: true }); },
-    hurt: function (d) { hurt(d, { skill: true }); }, zone: function () { return S.zone; },
-    isBoss: function () { return !!(cur && cur.info.boss); }, gold: function () { return S.gold; },
-    spend: function (g) { if (S.gold >= g) { S.gold -= g; return true; } return false; },
-    fx: function () { return FX; }, foe: function () { return Stage.foePos(); },
+    dps: totalDps,
+    clickDamage: clickDamage,
+    tap: function (n) { tap(n, { auto: true }); },
+    tapScaled: function (n, p) { tapScaled(n, p); },
+    hurt: function (d) { hurt(d, { skill: true }); },
+    zone: function () { return S.zone; },
+    bestZone: function () { return S.best; },
+    bossKills: function () { return S.bossKills; },
+    petsOwned: function () { return passives().owned; },
+    isBoss: function () { return !!(cur && cur.info.boss); },
+    enemyHp: function () { return S.hp; },
+    enemyMax: function () { return cur ? cur.max : 0; },
+    enemyCount: function () { return cur ? (cur.mod.count || 1) : 1; },
+    advance: function (n) { for (var k = 0; k < Math.max(1, n | 0) && cur; k++) { S.hp = 0; kill(); } },
+    bossTimeAdd: function (sec) { if (cur && cur.info.boss) S.bt += sec; },
+    bossTime: function () { return cur && cur.info.boss ? S.bt : 0; },
+    critChance: function () { return passives().critChance; },
+    gold: function () { return S.gold; },
+    spend: function (g) { if (S.gold >= g) { S.gold -= g; _ppKey = ''; return true; } return false; },
+    fx: function () { return FX; },
+    foe: function () { var p = Stage.foePos(); return { x: p.x, y: p.y, w: 60, h: 60 }; },
   });
   Stage.mount();
   bindInput();

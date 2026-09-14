@@ -7,7 +7,7 @@
 (function () {
 'use strict';
 var W = (window.WL = window.WL || {});
-var C = W.Content, D = W.Difficulty, Cr = W.Creatures, Sc = null, FX = W.FX, Sk = W.Skills, Nu = W.Nurture;
+var C = W.Content, D = W.Difficulty, Cr = W.Chibi || W.Creatures, Sc = null, FX = W.FX, Sk = W.Skills, Nu = W.Nurture;
 var NIGHT_SCENE = W.Scene, DAY_SCENE = W.DayScene;
 var $ = function (s) { return document.querySelector(s); };
 
@@ -468,8 +468,8 @@ var Stage = (function () {
     if (!pal.tint && info.biome && info.biome.tint) pal.tint = info.biome.tint;
     if (info.boss && !isDay()) pal.accent = '#C1391A';
     var wrap = el('div', 'actor');
-    var h = makeCreature({ species: info.archetype, stage: info.boss ? 4 : 2, size: size, flip: true,
-                           palette: pal, seed: S.zone * 1000 + S.wave, mood: info.boss ? 'fierce' : 'calm',
+    var h = makeCreature({ species: info.archetype, stage: info.elite ? 3 : 2, size: size, flip: true,
+                           palette: pal, seed: S.zone * 1000 + S.wave, mood: (info.boss || info.elite) ? 'fierce' : 'calm',
                            label: info.name }, info.ic);
     wrap.appendChild(h.el);
     field.appendChild(wrap);

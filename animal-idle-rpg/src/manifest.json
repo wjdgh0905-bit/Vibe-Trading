@@ -6,7 +6,7 @@
   "js": [
     "roster.js",
     "difficulty.js",
-    "creatures.js",
+    "chibi.js",
     "scene.js",
     "dayscene.js",
     "fx.js",
@@ -17,11 +17,11 @@
   "required": [
     "roster.js",
     "difficulty.js",
-    "creatures.js",
     "nurture.js",
     "core.js",
     "ui.css",
     "shell.html",
-    "dayscene.js"
+    "dayscene.js",
+    "chibi.js"
   ]
 }

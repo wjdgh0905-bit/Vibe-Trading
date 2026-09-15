@@ -32,6 +32,7 @@
   --shadow:0 10px 30px rgba(0,0,0,.35);
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+[hidden]{display:none !important}
 html,body{margin:0;padding:0;overscroll-behavior:none}
 body{background:var(--bg);color:var(--ink);font-family:var(--body);font-weight:400;font-size:13px;line-height:1.5;
   -webkit-text-size-adjust:100%;overflow-x:hidden;font-feature-settings:"tnum" 1;font-variant-numeric:tabular-nums}
@@ -260,19 +261,20 @@ svg{display:block}
 .mapband i span{position:absolute;left:50%;top:100%;transform:translateX(-50%);font-size:8px;font-weight:700;color:var(--dim);margin-top:3px}
 
 /* ══ 모달 : 바텀시트 ═══════════════════════════════════════════════════ */
-.modal{position:fixed;inset:0;z-index:60;display:flex;align-items:flex-end;justify-content:center;background:rgba(4,6,10,.72);animation:fade .2s ease-out}
+.modal{position:fixed;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;padding:16px 12px 18%;overflow:auto;-webkit-overflow-scrolling:touch;background:rgba(4,6,10,.72);animation:fade .2s ease-out}
 .modal[hidden]{display:none}
 @keyframes fade{from{opacity:0}}
-.mbox{width:100%;max-width:460px;padding:20px 18px calc(env(safe-area-inset-bottom) + 20px);
-  border-radius:22px 22px 0 0;border:1px solid var(--line-2);border-bottom:none;
+.mbox{width:100%;max-width:460px;padding:20px 18px 20px;margin:auto 0;
+  border-radius:22px;border:1px solid var(--line-2);
   background:linear-gradient(180deg,#222C3C,#131924);box-shadow:0 -20px 60px rgba(0,0,0,.6);animation:sheet .34s var(--spring)}
-@keyframes sheet{from{transform:translateY(14%)}}
+@keyframes sheet{from{transform:translateY(6%);opacity:0}}
 .mbox::before{content:'';display:block;width:36px;height:4px;border-radius:2px;background:var(--line-2);margin:-6px auto 16px}
 .mbox h3{margin:0 0 10px;font-weight:900;font-size:17px;letter-spacing:-.02em}
 .mbox p{margin:0 0 14px;font-size:12.5px;color:var(--ink-2);line-height:1.85}
 .mbox p .num{color:var(--gold);font-weight:700}
 .mrow{display:flex;gap:8px}
 .mrow .big{margin-top:0}
+.mbox #m-no{background:var(--card-2);color:var(--ink);box-shadow:none;border-color:var(--line-2)}
 textarea{width:100%;height:110px;background:#0E1218;color:var(--ink);border:1px solid var(--line-2);font-family:ui-monospace,monospace;font-size:10px;padding:10px;border-radius:var(--r-sm);resize:none}
 
 /* ══ 데스크톱 ═══════════════════════════════════════════════════════════ */
@@ -300,7 +302,8 @@ textarea{width:100%;height:110px;background:#0E1218;color:var(--ink);border:1px 
     position:sticky;top:120px;align-self:start}
   .body{padding:10px 12px 14px;max-height:660px;overflow-y:auto;scrollbar-width:thin}
   .modal{align-items:center}
-  .mbox{border-radius:var(--r);border-bottom:1px solid var(--line-2);padding-bottom:20px}
+  .modal{padding-bottom:16px}
+  .mbox{border-radius:var(--r)}
   .mbox::before{display:none}
 }
 
@@ -4460,6 +4463,176 @@ T.quad = [[
 ]];
 /* 위 quad 의 머리는 오른쪽 위(열 23~27, 행 5~9). 눈·코·귀 오버레이는 거기에 찍는다. */
 
+/* ── 프레임 1 생성기: 다리만 벌린다(앞다리 +2, 뒷다리 -2, 몸통·머리는 그대로) / 위로 띄운다 ── */
+function stride(rows, from, a, b) {
+  return rows.map(function (r, y) {
+    if (y < from) return r;
+    r = padRow(r); var out = new Array(GW).fill('.'), k = (y === from) ? 1 : 2;
+    for (var x = 0; x < GW; x++) { var ch = r[x]; if (ch === '.') continue; var nx = x < a ? x - k : x >= b ? x + k : x; if (nx >= 0 && nx < GW) out[nx] = ch; }
+    return out.join('');
+  });
+}
+function lift(rows, n) { var out = rows.slice(n); while (out.length < GH) out.push(''); return out; }
+
+/* 개과(여우·늑대): 가는 몸, 긴 다리, 뾰족한 주둥이, 위로 치켜든 풍성한 꼬리 — 머리는 quad 와 같은 자리 */
+var CANID0 = [
+'........................................',
+'........................................',
+'.........................oo.............',
+'........................ofho............',
+'.......................oofhhoo..........',
+'......................offfhhffoo........',
+'.....................offfffffweffo......',
+'....................offffffffeefffo.....',
+'...................offffffffffffffno....',
+'..oo..........oooooffffffffffffoo.......',
+'.ofho........offhhfffffffffffso.........',
+'.ofhfo......offhhffffffffffsso..........',
+'.offffo....offfffffffffffsso............',
+'.offfffoo.offffffffffffsso..............',
+'..osfffffoofffffffffffssso..............',
+'...osfffffsffffffbbbbssso...............',
+'....ossffsssssssbbbbbssso...............',
+'.....oosssssssssbbbbsssso...............',
+'.......oossooooossooosso................',
+'........oss....oss..oss.................',
+'........oss....oss..oss.................',
+'........oss....os...os..................',
+'........oso....oso..oso.................',
+'........ooo....ooo..ooo.................',
+'........................................',
+'........................................',
+];
+T.canid = [CANID0, stride(CANID0, 18, 12, 19)];
+
+/* 고양이과·맹수(호랑이·기린·야수): 낮고 매끈한 등, 긴 꼬리 */
+var CAT0 = [
+'........................................',
+'........................................',
+'.........................oo.............',
+'........................ofho............',
+'.......................oofhhoo..........',
+'......................offfhhffoo........',
+'.....................offfffffweffo......',
+'....................offffffffeefffo.....',
+'..........ooooooooooffffffffffffffno....',
+'..oo....oofhhhhhhhfffffffffffffffoo.....',
+'.ofso..ofhhhfffffffffffffffffsooo.......',
+'.ofso.offhfffffffffffffffffssso.........',
+'.ofsooffffffffffffffffffsssso...........',
+'..osoffffffffffffffffsssssso............',
+'...oossffffffffffffsssssssso............',
+'.....osssffffffffbbbsssssso.............',
+'.....osssssssssbbbbbssssso..............',
+'......osssssssssbbbssssso...............',
+'.......oossooooossssooosso..............',
+'........oss...oss...oss.oss.............',
+'........oss...oss...oss.oss.............',
+'........oss...os....os..os..............',
+'........oso...oso...oso.oso.............',
+'........ooo...ooo...ooo.ooo.............',
+'........................................',
+'........................................',
+];
+T.cat = [CAT0, stride(CAT0, 18, 12, 19)];
+
+/* 거구(곰·코뿔소·코끼리·매머드): 등혹, 굵고 짧은 다리, 넓은 몸 */
+var BULK0 = [
+'........................................',
+'........................................',
+'.........................oo.............',
+'........................ofho............',
+'.......................oofhhoo..........',
+'..............oooooooofffhhffoo.........',
+'...........oooffhhhhhhfffffffweffo......',
+'.........oofhhhhhhhhfffffffffeefffo.....',
+'.......oofhhhhffffffffffffffffffffno....',
+'......offhhffffffffffffffffffffffoo.....',
+'.....offhffffffffffffffffffffffso.......',
+'....offffffffffffffffffffffffsso........',
+'...offfffffffffffffffffffffsssso........',
+'...ofsffffffffffffffffffffssssso........',
+'...ofssffffffffffffbbbbffsssssso........',
+'...osssffffffffffbbbbbbbsssssso.........',
+'...ossssffffffffbbbbbbbbssssssso........',
+'....osssssssssssbbbbbbbsssssssso........',
+'.....oossssssssssbbbbbsssssssoo.........',
+'......ossssoooossssssoooosssso..........',
+'......osss....osss...osss.osss..........',
+'......osss....osss...osss.osss..........',
+'......osso....osso...osso.osso..........',
+'......oooo....oooo...oooo.oooo..........',
+'........................................',
+'........................................',
+];
+T.bulk = [BULK0, stride(BULK0, 19, 12, 20)];
+
+/* 소형 설치류(햄스터): 동그란 몸, 볼주머니, 작은 귀 — 눈 (21,11) */
+var SMALL0 = [
+'........................................',
+'........................................',
+'........................................',
+'........................................',
+'........................................',
+'........................................',
+'..............oo......oo................',
+'.............ofpoooooofpo...............',
+'............oofhhhhhhhffoo..............',
+'...........offhhhhhhffffffo.............',
+'..........offhhhffffffffffo.............',
+'.........offhhffffffffwefffo............',
+'........offhffffffffffeeffffo...........',
+'........offffffffffffffhhffno...........',
+'........ofsfffffffffffhhhfffo...........',
+'........ofssffffffbbbbffffffo...........',
+'........ossssfffbbbbbbbfffffo...........',
+'.........osssssbbbbbbbbbssso............',
+'.........oosssssbbbbbbbsssso............',
+'...........oossssssbbbsssso.............',
+'............oosssssssssso...............',
+'.............ossoooooosso...............',
+'.............oso.....oso................',
+'.............ooo.....ooo................',
+'........................................',
+'........................................',
+];
+T.small = [SMALL0, lift(SMALL0, 2)];
+
+/* 토끼: 긴 귀, 웅크린 몸, 솜꼬리, 긴 뒷발 — 눈 (28,9) */
+var BUNNY0 = [
+'.......................oo...oo..........',
+'......................ofpo.ofpo.........',
+'......................ofpo.ofpo.........',
+'......................ofpo.ofpo.........',
+'......................ofpo.ofpo.........',
+'......................ofpoofpo..........',
+'......................offoffo...........',
+'.....................offffffoo..........',
+'....................offhhfffffo.........',
+'...................offhhffffwefo........',
+'...................offfffffeefffo.......',
+'...................offffffffffffno......',
+'..............ooooofffffffffffffo.......',
+'............oofhhhffffffffffffoo........',
+'...........ofhhhfffffffffffffso.........',
+'.......oo.offhffffffffffffffsso.........',
+'......obbooffffffffffffffsssso..........',
+'.....obbbbofffffffffffssssssso..........',
+'......obbossfffffffffbbbssssso..........',
+'.......oosssssssssssbbbbssssso..........',
+'........ossssssssssssbbbsssoo...........',
+'........osssssssssoosssoo.oss...........',
+'.........oossssssssso.....oso...........',
+'...........oooooooooo.....ooo...........',
+'........................................',
+'........................................',
+];
+T.bunny = [BUNNY0, stride(lift(BUNNY0, 2), 19, 14, 24)];
+var FOX_TIP = [['b', 2, 10], ['b', 2, 11], ['b', 3, 11], ['b', 2, 12], ['b', 3, 12], ['b', 4, 12], ['k', 24, 1], ['k', 25, 0]];
+var WOLF_BACK = [['k', 9, 13], ['k', 11, 12], ['k', 13, 11], ['k', 15, 10], ['k', 17, 10], ['k', 10, 14], ['k', 12, 13]];
+var QUADS = { quad: 1, canid: 1, cat: 1, bulk: 1 };
+
+
 T.bird = [[
 '....................................',
 '....................................',
@@ -4686,7 +4859,7 @@ T.blob = [[
 
 /* ── 종 정의: 템플릿 · 색 · 오버레이(문자, x, y 를 두 프레임에 찍음) · 크기 배율 ── */
 /* 오버레이 스탬프 좌표계는 quad 머리 기준: 눈 (25,7), 코 (27,8) 근처 */
-function S(t, f, b, ov, sc, k) { return { t: t, p: pal(f, b, k), ov: ov || [], sc: sc || 1 }; }
+function S(t, f, b, ov, sc, k, eye) { return { t: t, p: pal(f, b, k), ov: ov || [], sc: sc || 1, eye: eye || null }; }
 var EYE_Q = [], NOSE_Q = [];   /* 눈·코는 quad 템플릿에 내장 */
 var EAR_POINT = [['o', 24, 1], ['o', 25, 0], ['o', 23, 2], ['f', 24, 2], ['p', 25, 2], ['f', 25, 1], ['o', 26, 1], ['o', 26, 2], ['f', 24, 3], ['p', 25, 3]];
 var EAR_ROUND = [['o', 24, 2], ['o', 25, 1], ['o', 26, 1], ['o', 27, 2], ['f', 25, 2], ['p', 26, 2], ['f', 24, 3], ['f', 27, 3]];
@@ -4719,17 +4892,17 @@ var COLLAR = [['c', 21, 10], ['c', 22, 10], ['c', 21, 11], ['c', 22, 11], ['c', 
 var CROWN = [['g', 26, 3], ['g', 27, 3], ['g', 28, 3], ['g', 26, 2], ['g', 28, 2], ['g', 27, 1], ['g', 29, 2]];
 
 var SPEC = {
-  hamster:   S('quad', '#D9A25E', '#F4E3C6', EYE_Q.concat(NOSE_Q, EAR_ROUND), .62),
-  rabbit:    S('quad', '#E8E1D6', '#FFFFFF', EYE_Q.concat(NOSE_Q, EAR_LONG), .7),
-  fox:       S('quad', '#E27A34', '#FFE9CF', EYE_Q.concat(NOSE_Q, EAR_POINT), .82),
-  wolf:      S('quad', '#8D9BB1', '#E6ECF3', EYE_Q.concat(NOSE_Q, EAR_POINT, FANG), .95),
+  hamster:   S('small', '#D9A25E', '#F4E3C6', [], .8, null, [22, 11]),
+  rabbit:    S('bunny', '#E8E1D6', '#FFFFFF', [], .78, null, [28, 9]),
+  fox:       S('canid', '#E27A34', '#FFE9CF', EAR_POINT.concat(FOX_TIP), .82, '#3A2412'),
+  wolf:      S('canid', '#7F8CA3', '#E6ECF3', EAR_POINT.concat(FANG, WOLF_BACK), .98, '#4A5468'),
   hawk:      S('bird', '#A9803F', '#EBD9B4', EYE_B, .85),
-  bear:      S('quad', '#7E5636', '#D9B88C', EYE_Q.concat(NOSE_Q, EAR_ROUND), 1.08),
-  tiger:     S('quad', '#E9973A', '#FFF1D8', EYE_Q.concat(NOSE_Q, EAR_ROUND, STRIPES, FANG), 1.05, '#3A2412'),
-  rhino:     S('quad', '#8E97A5', '#C9D0DA', EYE_Q.concat(EAR_ROUND, HORN_NOSE), 1.15),
-  elephant:  S('quad', '#9AA2AE', '#D3D9E1', EYE_Q.concat(TRUNK, TUSK, [['o', 24, 1], ['o', 23, 2], ['o', 22, 3], ['o', 22, 4], ['o', 22, 5], ['o', 23, 6], ['f', 24, 2], ['f', 23, 3], ['f', 23, 4], ['f', 23, 5], ['f', 24, 3], ['f', 24, 4], ['f', 24, 5], ['p', 24, 4], ['o', 25, 2], ['o', 25, 3]]), 1.25),
+  bear:      S('bulk', '#7E5636', '#D9B88C', EAR_ROUND, 1.08),
+  tiger:     S('cat', '#E9973A', '#FFF1D8', EAR_ROUND.concat(STRIPES, FANG), 1.05, '#3A2412'),
+  rhino:     S('bulk', '#8E97A5', '#C9D0DA', EAR_ROUND.concat(HORN_NOSE), 1.15),
+  elephant:  S('bulk', '#9AA2AE', '#D3D9E1', EYE_Q.concat(TRUNK, TUSK, [['o', 24, 1], ['o', 23, 2], ['o', 22, 3], ['o', 22, 4], ['o', 22, 5], ['o', 23, 6], ['f', 24, 2], ['f', 23, 3], ['f', 23, 4], ['f', 23, 5], ['f', 24, 3], ['f', 24, 4], ['f', 24, 5], ['p', 24, 4], ['o', 25, 2], ['o', 25, 3]]), 1.25),
   shark:     S('fish', '#6E95B6', '#E3EEF6', EYE_F.concat(DORSAL, GILL), 1.1),
-  mammoth:   S('quad', '#7E5E42', '#D9C0A0', EYE_Q.concat(TRUNK, TUSK, SHAG, EAR_ROUND), 1.3),
+  mammoth:   S('bulk', '#7E5E42', '#D9C0A0', TRUNK.concat(TUSK, SHAG, EAR_ROUND), 1.3),
   dragon:    S('quad', '#C8563A', '#F5CFA6', EYE_Q.concat(NOSE_Q, HORN_HEAD, WING_Q, SPIKES, FANG), 1.15),
   squid:     S('blob', '#8F62A8', '#E5D2EE', EYE_BL.concat(TENT), .95),
   crocodile: S('quad', '#6E9350', '#CFE0B5', EYE_Q.concat(SNOUT, SPIKES), 1.1),
@@ -4738,20 +4911,20 @@ var SPEC = {
   bluewhale: S('fish', '#6A98C6', '#E3EFFA', EYE_F.concat(BLOW), 1.4),
   megalodon: S('fish', '#5B7891', '#D6E0E9', EYE_F.concat(DORSAL, GILL, [['k', 10, 12], ['k', 11, 13]]), 1.35),
   titanoboa: S('snake', '#7A9A4A', '#E2E9C0', EYE_S, 1.2, '#3F5A1F'),
-  paracer:   S('quad', '#B3A08A', '#EFE5D6', EYE_Q.concat(NOSE_Q, EAR_ROUND, [['f', 22, 5], ['f', 22, 6], ['f', 21, 6], ['f', 21, 7], ['o', 21, 5], ['o', 20, 6], ['o', 20, 7]]), 1.3),
+  paracer:   S('bulk', '#B3A08A', '#EFE5D6', EYE_Q.concat(NOSE_Q, EAR_ROUND, [['f', 22, 5], ['f', 22, 6], ['f', 21, 6], ['f', 21, 7], ['o', 21, 5], ['o', 20, 6], ['o', 20, 7]]), 1.3),
   quetzal:   S('bird', '#D2B77E', '#F8EBCF', EYE_B.concat(CREST, [['t', 30, 8], ['t', 31, 8], ['t', 32, 8], ['t', 33, 8], ['o', 34, 8]]), 1.15),
   samjogo:   S('bird', '#2C282E', '#3C363E', EYE_B.concat(FLAME, [['g', 25, 7]]), 1.05, '#F2C25A'),
-  kirin:     S('quad', '#E2BF6A', '#FFF3D6', EYE_Q.concat(NOSE_Q, EAR_POINT, HORN_HEAD, MANE, FLAME), 1.15, '#B7802A'),
+  kirin:     S('cat', '#E2BF6A', '#FFF3D6', EAR_POINT.concat(HORN_HEAD, MANE, FLAME), 1.15, '#B7802A'),
   peng:      S('bird', '#5A82C2', '#E5EEFF', EYE_B.concat(HALO), 1.3),
   insect:    S('blob', '#7C8A3A', '#D8E0A0', EYE_BL.concat(ANTENNA, SHELL), .7, '#3E4718'),
   snail:     S('blob', '#C39B5A', '#F0E0BE', EYE_BL.concat(ANTENNA, SHELL), .72, '#6C4E1E'),
-  critter:   S('quad', '#AE865F', '#EBD7BF', EYE_Q.concat(NOSE_Q, EAR_ROUND), .7),
+  critter:   S('small', '#AE865F', '#EBD7BF', [], .85, null, [22, 11]),
   bird:      S('bird', '#86A8CE', '#EAF3FC', EYE_B, .85),
   reptile:   S('quad', '#89A75A', '#DCE7BF', EYE_Q.concat(SNOUT, SPIKES), .95),
   fish:      S('fish', '#73A2CF', '#E4EFF9', EYE_F.concat(FIN_TOP), .9),
   cephalopod:S('blob', '#B47ABE', '#EDDCF2', EYE_BL.concat(TENT), .95),
-  beast:     S('quad', '#A3673F', '#E8CDB0', EYE_Q.concat(NOSE_Q, EAR_POINT, MANE, FANG), 1.1, '#5A3418'),
-  brute:     S('quad', '#8A8D98', '#D2D6DE', EYE_Q.concat(EAR_ROUND, HORN_NOSE, TUSK), 1.25),
+  beast:     S('cat', '#A3673F', '#E8CDB0', EAR_POINT.concat(MANE, FANG), 1.1, '#5A3418'),
+  brute:     S('bulk', '#8A8D98', '#D2D6DE', EAR_ROUND.concat(HORN_NOSE, TUSK), 1.25),
   titan:     S('quad', '#6A5A8A', '#DDD1EE', EYE_Q.concat(NOSE_Q, EAR_POINT, HORN_HEAD, WING_Q, SPIKES, FLAME, FANG), 1.4, '#2E2340'),
 };
 
@@ -4775,14 +4948,14 @@ function draw(ctx, spec, frame, o) {
   var grid = [];
   for (var y = 0; y < GH; y++) grid.push(padRow(t[y]).split(''));
   /* 오버레이 스탬프 — 프레임 1 에서 몸이 위로 1칸 이동하는 템플릿(bird/blob)은 y 보정 */
-  var dy = (spec.t === 'bird' && frame === 1) ? -2 : (spec.t === 'blob' && frame === 1) ? 1 : (spec.t === 'snake' && frame === 1) ? -2 : (spec.t === 'quad' && frame === 1) ? 1 : 0;
+  var dy = frame !== 1 ? 0 : (spec.t === 'bird' || spec.t === 'snake' || spec.t === 'small' || spec.t === 'bunny') ? -2 : (spec.t === 'blob' || spec.t === 'quad') ? 1 : 0;
   var dx = (spec.t === 'quad' && frame === 1) ? 0 : (spec.t === 'fish' && frame === 1) ? 1 : (spec.t === 'snake' && frame === 1) ? -3 : 0;
   spec.ov.forEach(function (s) {
     var x = s[1] + dx, y = s[2] + dy;
     if (x >= 0 && x < GW && y >= 0 && y < GH) grid[y][x] = s[0];
   });
-  if (o.stage >= 1 && !o.cold) COLLAR.forEach(function (s) { var x = s[1] + dx, y = s[2] + dy; if (grid[y] && grid[y][x] && grid[y][x] !== '.') grid[y][x] = s[0]; });
-  if (o.stage >= 4 && !o.cold && spec.t === 'quad') CROWN.forEach(function (s) { var x = s[1] + dx, y = s[2] + dy; if (grid[y]) grid[y][x] = s[0]; });
+  if (o.stage >= 99 && !o.cold && QUADS[spec.t]) COLLAR.forEach(function (s) { var x = s[1] + dx, y = s[2] + dy; if (grid[y] && grid[y][x] && grid[y][x] !== '.') grid[y][x] = s[0]; });
+  if (o.stage >= 4 && !o.cold && QUADS[spec.t]) CROWN.forEach(function (s) { var x = s[1] + dx, y = s[2] + dy; if (grid[y]) grid[y][x] = s[0]; });
   ctx.clearRect(0, 0, GW, GH);
   var fierce = o.mood === 'fierce';
   for (var yy = 0; yy < GH; yy++) for (var xx = 0; xx < GW; xx++) {
@@ -4795,7 +4968,7 @@ function draw(ctx, spec, frame, o) {
     ctx.fillStyle = col; ctx.fillRect(xx, yy, 1, 1);
   }
   if (fierce) { ctx.fillStyle = P.o; var eo = spec.ov.filter(function (v) { return v[0] === 'e'; })[0];
-    var ex = eo ? eo[1] + dx : 28 + dx, ey = eo ? eo[2] + dy : 6 + dy; ctx.fillRect(ex - 1, ey - 1, 3, 1); }
+    var ex = spec.eye ? spec.eye[0] + dx : eo ? eo[1] + dx : 29 + dx, ey = spec.eye ? spec.eye[1] + dy : eo ? eo[2] + dy : 6 + dy; ctx.fillRect(ex - 1, ey - 1, 3, 1); }
 }
 
 /* 적 개체 색 변형: 종 기본 팔레트에 로스터 색을 섞어 같은 종이라도 지역마다 다르게 */
@@ -7449,7 +7622,7 @@ function refresh() {
       var k = 'wl-sk t-' + d.tone, sub, w = 0;
       if (!s.u) {
         k += ' lock';
-        sub = unlockText(d).replace(' 도달', '').replace('회 토벌', ' 보스').replace('종 영입', ' 동료');
+        sub = unlockText(d).replace(' 도달', '').replace('회 토벌', '회').replace('종 영입', '종');
         t.b.disabled = true;
         w = unlockProgress(d);                       // 해금까지 얼마나 왔나
       } else if (s.left > 0) {

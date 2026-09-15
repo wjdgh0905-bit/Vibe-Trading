@@ -959,7 +959,7 @@ function refresh() {
       var k = 'wl-sk t-' + d.tone, sub, w = 0;
       if (!s.u) {
         k += ' lock';
-        sub = unlockText(d).replace(' 도달', '').replace('회 토벌', ' 보스').replace('종 영입', ' 동료');
+        sub = unlockText(d).replace(' 도달', '').replace('회 토벌', '회').replace('종 영입', '종');
         t.b.disabled = true;
         w = unlockProgress(d);                       // 해금까지 얼마나 왔나
       } else if (s.left > 0) {

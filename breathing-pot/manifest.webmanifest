@@ -1,0 +1,17 @@
+{
+  "name": "숨결 화분",
+  "short_name": "숨결",
+  "description": "창가의 작은 식물이 당신의 숨결에 맞춰 천천히 자라요.",
+  "lang": "ko",
+  "display": "standalone",
+  "orientation": "portrait",
+  "start_url": "./index.html",
+  "scope": "./",
+  "background_color": "#F6EFE6",
+  "theme_color": "#F6EFE6",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "icon-180.png", "sizes": "180x180", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

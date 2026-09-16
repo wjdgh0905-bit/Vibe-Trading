@@ -2,1703 +2,1003 @@
 
 Source: https://developer.apple.com/kr/design/whats-new/
 
+## What’s new
+
 Discover the latest additions and updates to design guidance. Explore inspirational designs, videos, articles, and resources.
 
-Guidancesearchterm
-
 September  9, 2026
 
-Guidancesearchterm
+Designing for iPhone Duo Guidancesearchterm September  9, 2026 | New page. Introduces the fundamental concepts of designing for iPhone Duo, including device poses, dynamic layouts across dual displays, and toolbars and tab bars on the vertical axis.
 
-September  9, 2026
+Layout Guidancesearchterm September  9, 2026 | Updated guidance to reflect current best practices.
 
-Guidancesearchterm
+Branding Guidancesearchterm September  9, 2026 | Refined guidance for using brand color.
 
-September  9, 2026
-
-Guidancesearchterm
-
-September  9, 2026
-
-resourcessearchterm
+SharePlay Guidancesearchterm September  9, 2026 | Reorganized best practices, expanded visionOS guidance, and added a section on custom templates.
 
 June 23, 2026
 
-resourcessearchterm
+Updated iOS and iPadOS UI Kit for Figma resourcessearchterm June 23, 2026 | Updated iOS 27 and iPadOS 27 design kit for Figma.
 
-June 23, 2026
-
-resourcessearchterm
+Updated macOS UI Kit for Figma resourcessearchterm June 23, 2026 | Updated macOS 27 design kit for Figma.
 
 June  8, 2026
 
-resourcessearchterm
+Pass Designer resourcessearchterm June  8, 2026 | Pass Designer makes it easy to craft and preview Wallet passes that reflect your business.
 
-June  8, 2026
+Download Icon Composer 2 beta resourcessearchterm June  8, 2026 | Icon Composer 2 lets you create layered icons out of Liquid Glass from a single design for iPhone, iPad, Mac, and Apple Watch.
 
-resourcessearchterm
+Download SF Symbols 8 beta resourcessearchterm June  8, 2026 | SF Symbols 8 is a library of symbols designed to integrate seamlessly with San Francisco, the system font for Apple platforms.
 
-June  8, 2026
+Updated iOS and iPadOS UI Kit for Sketch resourcessearchterm June  8, 2026 | Updated iOS 27 and iPadOS 27 design kit for Sketch.
 
-resourcessearchterm
+Updated macOS UI Kit for Sketch resourcessearchterm June  8, 2026 | Updated macOS 27 design kit for Sketch.
 
-June  8, 2026
+Principles of great design Videossearchterm June  8, 2026 | Dive deep into fundamental design principles for Apple platforms.
 
-resourcessearchterm
+Design intuitive search experiences Videossearchterm June  8, 2026 | Explore new patterns and best practices when implementing search in your app.
 
-June  8, 2026
+Design principles Guidancesearchterm June  8, 2026 | Reintroduced design principles.
 
-Videossearchterm
+Siri Guidancesearchterm June  8, 2026 | Revised for Siri AI.
 
-June  8, 2026
+Snippets Guidancesearchterm June  8, 2026 | New page.
 
-Videossearchterm
+App Shortcuts Guidancesearchterm June  8, 2026 | Added guidance for adopting app schemas.
 
-June  8, 2026
+Menus Guidancesearchterm June  8, 2026 | Updated guidance for menu item icons.
 
-Guidancesearchterm
+Sidebars Guidancesearchterm June  8, 2026 | Updated guidance for sidebar icon colors, and clarified guidance for the adaptable sidebar style.
 
-June  8, 2026
+Scroll views Guidancesearchterm June  8, 2026 | Updated guidance for scroll edge effects.
 
-Guidancesearchterm
+App icons Guidancesearchterm June  8, 2026 | Refined guidance for Liquid Glass.
 
-June  8, 2026
+Search fields Guidancesearchterm June  8, 2026 | Updated terminology and refined guidance for search as a tab in iOS.
 
-Guidancesearchterm
+Searching Guidancesearchterm June  8, 2026 | Updated terminology and refined best practices.
 
-June  8, 2026
+Tab bars Guidancesearchterm June  8, 2026 | Updated terminology and art.
 
-Guidancesearchterm
+Generative AI Guidancesearchterm June  8, 2026 | Added guidance for letting people refine results and providing feedback during content generation, and updated guidance for choosing a model type.
 
-June  8, 2026
+Machine learning Guidancesearchterm June  8, 2026 | Made minor updates for clarity.
 
-Guidancesearchterm
+Apple Pay Guidancesearchterm June  8, 2026 | Refined guidance to reflect the latest Apple Pay appearance and capabilities.
 
-June  8, 2026
-
-Guidancesearchterm
-
-June  8, 2026
-
-Guidancesearchterm
-
-June  8, 2026
-
-Guidancesearchterm
-
-June  8, 2026
-
-Guidancesearchterm
-
-June  8, 2026
-
-Guidancesearchterm
-
-June  8, 2026
-
-Guidancesearchterm
-
-June  8, 2026
-
-Guidancesearchterm
-
-June  8, 2026
-
-Guidancesearchterm
-
-June  8, 2026
-
-Guidancesearchterm
-
-June  8, 2026
-
-Guidancesearchterm
-
-June  8, 2026
-
-Guidancesearchterm
+Wallet Guidancesearchterm June  8, 2026 | Updated to reflect guidance for iOS 27 and the Pass Designer app.
 
 March 24, 2026
 
-Guidancesearchterm
+Sheets Guidancesearchterm March 24, 2026 | Updated guidance for button placement.
 
-March 24, 2026
-
-Guidancesearchterm
+Scroll views Guidancesearchterm March 24, 2026 | Added guidance for Look to Scroll in visionOS.
 
 December 16, 2025
 
-Guidancesearchterm
+Widgets Guidancesearchterm December 16, 2025 | Updated guidance for all platforms, and added guidance for visionOS and CarPlay.
 
-December 16, 2025
+Live Activities Guidancesearchterm December 16, 2025 | Updated guidance for all platforms, and added guidance for macOS and CarPlay.
 
-Guidancesearchterm
+Typography Guidancesearchterm December 16, 2025 | Added emphasized weights to the Dynamic Type style specifications for each platform.
 
-December 16, 2025
+Menus Guidancesearchterm December 16, 2025 | Added guidance for presenting menus with breakthrough effects in visionOS.
 
-Guidancesearchterm
+Images Guidancesearchterm December 16, 2025 | Added guidance for spatial photos and spatial scenes in visionOS.
 
-December 16, 2025
+Apple Pay Guidancesearchterm December 16, 2025 | Clarified supported platforms, including web browsers and Apple Vision Pro.
 
-Guidancesearchterm
+Writing Guidancesearchterm December 16, 2025 | Clarified guidance on language patterns, and added guidance for possessive pronouns.
 
-December 16, 2025
+Color Guidancesearchterm December 16, 2025 | Updated guidance for Liquid Glass.
 
-Guidancesearchterm
+Buttons Guidancesearchterm December 16, 2025 | Updated guidance for Liquid Glass.
 
-December 16, 2025
+Toolbars Guidancesearchterm December 16, 2025 | Updated guidance for Liquid Glass.
 
-Guidancesearchterm
-
-December 16, 2025
-
-Guidancesearchterm
-
-December 16, 2025
-
-Guidancesearchterm
-
-December 16, 2025
-
-Guidancesearchterm
-
-December 16, 2025
-
-Guidancesearchterm
-
-December 16, 2025
-
-Articlessearchterm
+Tab bars Guidancesearchterm December 16, 2025 | Updated guidance for Liquid Glass.
 
 December  4, 2025
 
-Resourcessearchterm
+Behind the appealing design of CapWords Articlessearchterm December  4, 2025 | Discover how Ace Lee’s CapWords uses AI, VisionKit, and Apple frameworks to transform everyday photos into language-learning stickers.
 
 September 12, 2025
 
-Guidancesearchterm
+New product bezels Resourcessearchterm September 12, 2025 | New product bezels for Apple Watch Series 11, Apple Watch Ultra 3, and all the new iPhone 17 models.
 
 September  9, 2025
 
-Guidancesearchterm
+Materials Guidancesearchterm September  9, 2025 | Updated guidance for Liquid Glass.
 
-September  9, 2025
+Motion Guidancesearchterm September  9, 2025 | Added guidance for Liquid Glass.
 
-Guidancesearchterm
-
-September  9, 2025
-
-Resourcessearchterm
+Layout Guidancesearchterm September  9, 2025 | Added specifications for iPhone 17, iPhone Air, iPhone 17 Pro, iPhone 17 Pro Max, Apple Watch SE 3, Apple Watch Series 11, and Apple Watch Ultra 3.
 
 August 20, 2025
 
-Resourcessearchterm
+Design kit Resourcessearchterm August 20, 2025 | Added visionOS design kit for Figma.
 
-August 20, 2025
-
-Guidancesearchterm
+Design kit Resourcessearchterm August 20, 2025 | Added watchOS design kit for Figma.
 
 July 28, 2025
 
-Guidancesearchterm
+Tab bars Guidancesearchterm July 28, 2025 | Added guidance for Liquid Glass.
 
-July 28, 2025
+Scroll views Guidancesearchterm July 28, 2025 | Added guidance for scroll edge effects.
 
-Guidancesearchterm
+Menus Guidancesearchterm July 28, 2025 | Added guidance for representing menu items with icons.
 
-July 28, 2025
-
-Guidancesearchterm
-
-July 28, 2025
-
-resourcessearchterm
+SF Symbols Guidancesearchterm July 28, 2025 | Updated with guidance for Draw animations and gradient rendering in SF Symbols 7.
 
 June  9, 2025
 
-resourcessearchterm
+New iOS and iPadOS 26 UI Kit for Sketch resourcessearchterm June  9, 2025 | Rebuilt from the ground up, the new iOS and iPadOS design kit includes liquid glass materials, app icons, updated system colors and a comprehensive set of app UI components and system experiences like Home Screen, Lock Screen, Control Center, Widgets, and Notifications.
 
-June  9, 2025
+New macOS 26 UI Kit for Sketch resourcessearchterm June  9, 2025 | Rebuilt from the ground up, the new macOS design kit includes liquid glass materials, app icons, updated system colors and a comprehensive set of app UI components and system experiences.
 
-resourcessearchterm
+Download Icon Composer resourcessearchterm June  9, 2025 | Icon Composer lets you create layered icons out of Liquid Glass from a single design for iPhone, iPad, Mac, and Apple Watch.
 
-June  9, 2025
+Download SF Symbols 7 beta resourcessearchterm June  9, 2025 | SF Symbols 7 is a library of over 6,900 symbols designed to integrate seamlessly with San Francisco, the system font for Apple Watch.
 
-resourcessearchterm
+Meet Liquid Glass Videossearchterm June  9, 2025 | Get to know the design principles of Liquid Glass, explore its core optical and physical properties, and learn where to use it and why.
 
-June  9, 2025
+Get to know the new design system Videossearchterm June  9, 2025 | Dive deeper into the new design system to explore key changes to visual design, information architecture, and core system components.
 
-Videossearchterm
+Say hello to the new look of app icons Videossearchterm June  9, 2025 | Get an overview of the new app icon appearances for iOS, iPadOS, and macOS, including light and dark tints, and clear options.
 
-June  9, 2025
+Create icons with Icon Composer Videossearchterm June  9, 2025 | Learn how to use Icon Composer to make updated app icons for iOS, iPadOS, macOS, and watchOS.
 
-Videossearchterm
+Design foundations from idea to interface Videossearchterm June  9, 2025 | Discover how app design can elevate functionality, communicate purpose, guide people through your content, and use components thoughtfully to keep the experience simple without losing impact.
 
-June  9, 2025
+Elevate the design of your iPad app Videossearchterm June  9, 2025 | Make your app look and feel great on iPadOS.
 
-Videossearchterm
+App icons Guidancesearchterm June  9, 2025 | Updated guidance to reflect layered icons, consistency across platforms, and best practices for Liquid Glass.
 
-June  9, 2025
+Materials Guidancesearchterm June  9, 2025 | Added guidance for Liquid Glass.
 
-Videossearchterm
+Color Guidancesearchterm June  9, 2025 | Updated system color values, and added guidance for Liquid Glass.
 
-June  9, 2025
+Layout Guidancesearchterm June  9, 2025 | Added guidance for Liquid Glass.
 
-Videossearchterm
+Toolbars Guidancesearchterm June  9, 2025 | Added guidance for grouping bar items, updated guidance for using symbols, and incorporated navigation bar guidance.
 
-June  9, 2025
+Icons Guidancesearchterm June  9, 2025 | Added a table of SF Symbols that represent common actions.
 
-Videossearchterm
+Buttons Guidancesearchterm June  9, 2025 | Updated guidance for button styles and content.
 
-June  9, 2025
+Search fields Guidancesearchterm June  9, 2025 | Updated guidance for search placement in iOS, consolidated iPadOS and macOS platform considerations, and added guidance for tokens.
 
-Guidancesearchterm
+Searching Guidancesearchterm June  9, 2025 | Updated best practices with general guidance from Search fields, and reorganized guidance for systemwide search.
 
-June  9, 2025
+Virtual keyboards Guidancesearchterm June  9, 2025 | Added guidance for displaying custom controls above the keyboard, and updated to reflect virtual keyboard availability in watchOS.
 
-Guidancesearchterm
+Sidebars Guidancesearchterm June  9, 2025 | Added guidance for extending content beneath the sidebar, and updated iPadOS and macOS platform considerations.
 
-June  9, 2025
+Split views Guidancesearchterm June  9, 2025 | Added iOS and iPadOS platform considerations.
 
-Guidancesearchterm
+The menu bar Guidancesearchterm June  9, 2025 | Added guidance for the menu bar in iPadOS.
 
-June  9, 2025
+Multitasking Guidancesearchterm June  9, 2025 | Reorganized guidance in platform considerations, and added guidance for multitasking with multiple windows in iPadOS.
 
-Guidancesearchterm
+Windows Guidancesearchterm June  9, 2025 | Added best practices, and updated with guidance for resizable windows in iPadOS.
 
-June  9, 2025
+Designing for games Guidancesearchterm June  9, 2025 | Updated guidance for touch-based controls and Game Center.
 
-Guidancesearchterm
+Game Center Guidancesearchterm June  9, 2025 | Added guidance for new challenges and multiplayer activities, and considerations for the Apple Games app and Game Overlay. Updated guidance and specifications for activity preview images.
 
-June  9, 2025
+Game controls Guidancesearchterm June  9, 2025 | Updated touch control best practices, updated game controller mapping for UI, and added guidance for spatial game controller support in visionOS.
 
-Guidancesearchterm
+Keyboards Guidancesearchterm June  9, 2025 | Moved game-specific key bindings guidance to the Game controls page.
 
-June  9, 2025
+Going full screen Guidancesearchterm June  9, 2025 | Updated guidance for hiding toolbars and navigation controls, and deferring Home Screen indicator gestures in full-screen iOS and iPadOS apps and games.
 
-Guidancesearchterm
+Loading Guidancesearchterm June  9, 2025 | Revised guidance for storing downloads to reflect downloading large assets in the background.
 
-June  9, 2025
+iCloud Guidancesearchterm June  9, 2025 | Added guidance for synchronizing game data through iCloud.
 
-Guidancesearchterm
+Accessibility Guidancesearchterm June  9, 2025 | Added guidance and links for Assistive Access, Switch Control, and Accessibility Nutrition Labels.
 
-June  9, 2025
+Generative AI Guidancesearchterm June  9, 2025 | New page.
 
-Guidancesearchterm
+Immersive experiences Guidancesearchterm June  9, 2025 | Clarified guidance and noted the availability of portrait-oriented progressive immersion.
 
-June  9, 2025
-
-Guidancesearchterm
-
-June  9, 2025
-
-Guidancesearchterm
-
-June  9, 2025
-
-Guidancesearchterm
-
-June  9, 2025
-
-Guidancesearchterm
-
-June  9, 2025
-
-Guidancesearchterm
-
-June  9, 2025
-
-Guidancesearchterm
-
-June  9, 2025
-
-Guidancesearchterm
-
-June  9, 2025
-
-Guidancesearchterm
-
-June  9, 2025
-
-Guidancesearchterm
-
-June  9, 2025
-
-Guidancesearchterm
-
-June  9, 2025
-
-Guidancesearchterm
-
-June  9, 2025
-
-Guidancesearchterm
-
-June  9, 2025
-
-Guidancesearchterm
-
-June  9, 2025
-
-Guidancesearchterm
-
-June  9, 2025
-
-Guidancesearchterm
-
-June  9, 2025
-
-Guidancesearchterm
-
-June  9, 2025
-
-Guidancesearchterm
-
-June  9, 2025
-
-Articlessearchterm
+App Clips Guidancesearchterm June  9, 2025 | Updated guidance to include demo App Clips.
 
 May  6, 2025
 
-Articlessearchterm
+Behind the Design: The Wreck Articlessearchterm May  6, 2025 | Random access memories: Inside the time-shifting narrative of The Wreck
 
 April  9, 2025
 
-Guidancesearchterm
+Behind the Design: Rooms Articlessearchterm April  9, 2025 | Rooms at the top: How this ADA-winning team built a title that defies description
 
 March  7, 2025
 
-Guidancesearchterm
+Accessibility Guidancesearchterm March  7, 2025 | Expanded and refined all guidance. Moved Dynamic Type guidance to the Typography page, and moved VoiceOver guidance to a new VoiceOver page.
 
-March  7, 2025
+Typography Guidancesearchterm March  7, 2025 | Expanded guidance for Dynamic Type.
 
-Guidancesearchterm
+VoiceOver Guidancesearchterm March  7, 2025 | New page.
 
-March  7, 2025
-
-Guidancesearchterm
-
-March  7, 2025
-
-Articlessearchterm
+Layout Guidancesearchterm March  7, 2025 | Added specifications for iPhone 16e, iPad 11-inch, iPad Air 11-inch, and iPad Air 13-inch.
 
 February  4, 2025
 
-Guidancesearchterm
+Behind the Design: Bears Gratitude Articlessearchterm February  4, 2025 | The good news bears: Inside the adorably unorthodox design of Bears Gratitude.
 
 January 17, 2025
 
-Guidancesearchterm
+Tap to Pay on iPhone Guidancesearchterm January 17, 2025 | Updated merchant education guidance.
 
-January 17, 2025
+Wallet Guidancesearchterm January 17, 2025 | Added specifications for pass image dimensions.
 
-Guidancesearchterm
+Widgets Guidancesearchterm January 17, 2025 | Corrected watchOS widget dimensions.
 
-January 17, 2025
-
-Guidancesearchterm
-
-January 17, 2025
-
-Articlessearchterm
+App Shortcuts Guidancesearchterm January 17, 2025 | Updated and streamlined guidance.
 
 January  7, 2025
 
-Guidancesearchterm
+Behind the Design: Oko Articlessearchterm January  7, 2025 | Walk this way: How Oko leverages AI to make street crossings more accessible.
 
 December 18, 2024
 
-Guidancesearchterm
+Wallet Guidancesearchterm December 18, 2024 | Added guidance for the poster event ticket style.
 
-December 18, 2024
-
-Guidancesearchterm
+Maps Guidancesearchterm December 18, 2024 | Added guidance for place cards and included additional artwork.
 
 November 19, 2024
 
-Articlessearchterm
+Immersive experiences Guidancesearchterm November 19, 2024 | Refined immersion style guidance and added artwork.
 
 November  4, 2024
 
-Resourcessearchterm
+Behind the Design: Crouton Articlessearchterm November  4, 2024 | Coding in the kitchen: How Devin Davies whipped up the tasty recipe app Crouton.
 
 October 17, 2024
 
-Added modes for Increased Contrast color values
-
-Fixed incorrectly sized and positioned home indicators
-
-Fixed incorrectly sized iPhone keyboards
-
-Renamed several button styles
-
-Changed iPad home indicators from portrait to landscape
-
-Articlessearchterm
+Updated iOS UI Kit for Figma Resourcessearchterm October 17, 2024 | Added modes for Increased Contrast color values Fixed incorrectly sized and positioned home indicators Fixed incorrectly sized iPhone keyboards Renamed several button styles Changed iPad home indicators from portrait to landscape
 
 October 10, 2024
 
-Resourcessearchterm
+Behind the Design: Lies of P Articlessearchterm October 10, 2024 | Meet the team pulling the strings behind Lies of P.
 
 September  9, 2024
 
-Resourcessearchterm
+New product bezels Resourcessearchterm September  9, 2024 | New product bezels for Apple Watch Series 10, Apple Watch Ultra 2, and all the new iPhone 16 models.
 
-September  9, 2024
+Updated Sketch iOS UI Kit for Sketch Resourcessearchterm September  9, 2024 | Supports iPhone 16 Pro screen size Resolved the linking issues between components and archived libraries which significantly improved the file’s performance Updated the alphabetic keyboards to match the iPad Pro 11-inch (M4) and iPad Pro 13-inch (M4) and added a numeric keyboards for these models Updated the background color for the iPad activity view controller (share sheet) Updated the separator color across all components Added table row styling to support icons Corrected the background color of context menus Updated the background color of tab bars Other minor bug fixes
 
-Supports iPhone 16 Pro screen size
+Updated macOS UI Kit for Sketch Resourcessearchterm September  9, 2024 | Added dark theme wallpaper Resolved linking issues between components and archived libraries
 
-Resolved the linking issues between components and archived libraries which significantly improved the file’s performance
+Updated visionOS 2 UI kits for Sketch Resourcessearchterm September  9, 2024 | Fixed Segmented Control label wrapping issue
 
-Updated the alphabetic keyboards to match the iPad Pro 11-inch (M4) and iPad Pro 13-inch (M4) and added a numeric keyboards for these models
+New tvOS 18 UI Kit Resourcessearchterm September  9, 2024 | Every component and template has been rebuilt from ground up to match latest design system for tvOS
 
-Updated the background color for the iPad activity view controller (share sheet)
+Design Template - Camera Control Resourcessearchterm September  9, 2024 | New Camera Control design template for Sketch
 
-Updated the separator color across all components
+Camera Control Guidancesearchterm September  9, 2024 | New page.
 
-Added table row styling to support icons
+Gestures Guidancesearchterm September  9, 2024 | Added guidance for working with system overlays in visionOS and made organizational updates.
 
-Corrected the background color of context menus
+Layout Guidancesearchterm September  9, 2024 | Added specifications for iPhone 16, iPhone 16 Plus, iPhone 16 Pro, iPhone 16 Pro Max, and Apple Watch Series 10.
 
-Updated the background color of tab bars
-
-Other minor bug fixes
-
-Resourcessearchterm
-
-September  9, 2024
-
-Added dark theme wallpaper
-
-Resolved linking issues between components and archived libraries
-
-Resourcessearchterm
-
-September  9, 2024
-
-Resourcessearchterm
-
-September  9, 2024
-
-Resourcessearchterm
-
-September  9, 2024
-
-Guidancesearchterm
-
-September  9, 2024
-
-Guidancesearchterm
-
-September  9, 2024
-
-Guidancesearchterm
-
-September  9, 2024
-
-Guidancesearchterm
-
-September  9, 2024
-
-Articlessearchterm
+Tab bars Guidancesearchterm September  9, 2024 | Added art representing the tab bar in iPadOS 18.
 
 September  3, 2024
 
-Articlessearchterm
+Behind the Design: The rhythms of Rytmos Articlessearchterm September  3, 2024 | Find out how Floppy Club built an Apple Design Award winner that sounds as good as it looks.
 
 August  6, 2024
 
-Guidancesearchterm
+Behind the Design: Lost in Play Articlessearchterm August  6, 2024 | Discover how the developers of this Apple Design Award-winning game conjured up an imaginative world of oversized frogs, mischievous gnomes, and occasional pizzas.
 
-August  6, 2024
+Sidebars Guidancesearchterm August  6, 2024 | Updated guidance to include the SwiftUI adaptable sidebar style.
 
-Guidancesearchterm
+Tab bars Guidancesearchterm August  6, 2024 | Updated with guidance for the tab bar in iPadOS 18.
 
-August  6, 2024
+Materials Guidancesearchterm August  6, 2024 | Added platform-specific art.
 
-Guidancesearchterm
-
-August  6, 2024
-
-Guidancesearchterm
-
-August  6, 2024
-
-Articlessearchterm
+Dark Mode Guidancesearchterm August  6, 2024 | Added art contrasting the light and dark appearances.
 
 July 11, 2024
 
-Videossearchterm
+Behind the Design: Gentler Streak Articlessearchterm July 11, 2024 | Find out why the team behind this Apple Design Award-winning lifestyle app believes success is about more than stats.
 
 June 10, 2024
 
-Videossearchterm
+Design advanced games for Apple platforms Videossearchterm June 10, 2024 | Learn how to adapt your high-end game so it feels at home on Mac, iPad, and iPhone.
 
-June 10, 2024
+Elevate your tab and sidebar experience in iPadOS Videossearchterm June 10, 2024 | Explore the new navigation system in iPadOS 18, which gives people the flexibility to choose between using a tab bar or sidebar.
 
-Videossearchterm
+Design great visionOS apps Videossearchterm June 10, 2024 | Find out how to create compelling spatial computing apps by embracing immersion, designing for eyes and hands, and taking advantage of depth, scale, and space.
 
-June 10, 2024
+Explore multiview video playback in visionOS Videossearchterm June 10, 2024 | Learn how AVExperienceController can enable playback of multiple videos on Apple Vision Pro.
 
-Videossearchterm
+Design Live Activities for Apple Watch Videossearchterm June 10, 2024 | Learn how to optimize the layout of your Live Activity for the wrist, and provide the right level of information and interactivity at the right time.
 
-June 10, 2024
+Say hello to the next generation of CarPlay design system Videossearchterm June 10, 2024 | Explore the design system at the heart of the next generation of CarPlay that allows each automaker to express their vehicle's character and brand.
 
-Videossearchterm
+Enhance your UI animations and transitions Videossearchterm June 10, 2024 | Explore how to adopt the zoom transition in navigation and presentations to increase the sense of continuity in your app.
 
-June 10, 2024
+Explore game input in visionOS Videossearchterm June 10, 2024 | Discover how to design and implement great input for your game in visionOS.
 
-Videossearchterm
+Design App Intents for system experiences Videossearchterm June 10, 2024 | Find out how to identify the functionality that's best for App Intents, and how to use parameters to make these intents flexible.
 
-June 10, 2024
+Create custom environments for your immersive apps in visionOS Videossearchterm June 10, 2024 | Discover how to create visually rich and performant customized app environments for Apple Vision Pro.
 
-Videossearchterm
+Design interactive experiences for visionOS Videossearchterm June 10, 2024 | Learn how you can design a compelling interactive narrative experience for Apple Vision Pro from the designers of Encounter Dinosaurs.
 
-June 10, 2024
+What’s new in SF Symbols 6 Videossearchterm June 10, 2024 | Explore the latest updates to SF Symbols, and learn how the new Wiggle, Rotate, and Breathe animation presets can bring vitality to your interface.
 
-Videossearchterm
+Create custom hover effects in visionOS Videossearchterm June 10, 2024 | Learn how to develop custom hover effects that update views when people look at them.
 
-June 10, 2024
+Create custom visual effects with SwiftUI Videossearchterm June 10, 2024 | Discover how to create unique scroll effects, rich color treatments, and custom transitions.
 
-Videossearchterm
+Add personality to your app through UX writing Videossearchterm June 10, 2024 | Learn how to define your app's voice and modulate your tone for every situation, from celebratory notifications to error messages.
 
-June 10, 2024
+Designing for games Guidancesearchterm June 10, 2024 | New page.
 
-Videossearchterm
+Controls Guidancesearchterm June 10, 2024 | New page.
 
-June 10, 2024
+App icons Guidancesearchterm June 10, 2024 | Added guidance for creating dark and tinted app icon variants for iOS and iPadOS.
 
-Videossearchterm
+SF Symbols Guidancesearchterm June 10, 2024 | Updated with guidance for new animations and features of SF Symbols 6.
 
-June 10, 2024
+Widgets Guidancesearchterm June 10, 2024 | Updated to include guidance for accented widgets in iOS 18 and iPadOS 18.
 
-Videossearchterm
+Live Activities Guidancesearchterm June 10, 2024 | Added guidance for Live Activities in watchOS.
 
-June 10, 2024
+Gestures Guidancesearchterm June 10, 2024 | Added guidance for the updated double-tap gesture in watchOS.
 
-Videossearchterm
+Immersive experiences Guidancesearchterm June 10, 2024 | Added guidance for tinting passthrough and specifying initial, minimum, and maximum immersion levels.
 
-June 10, 2024
+File management Guidancesearchterm June 10, 2024 | Added guidelines for using the document launcher in iOS and iPadOS.
 
-Videossearchterm
+Typography Guidancesearchterm June 10, 2024 | Added guidance for using Apple's Unity plug-ins to support Dynamic Type in a Unity-based game and enhanced guidance on billboarding in a visionOS app or game.
 
-June 10, 2024
+Eyes Guidancesearchterm June 10, 2024 | Added guidance for custom hover effects.
 
-Videossearchterm
+Menus Guidancesearchterm June 10, 2024 | Added guidance for in-game menus and included game-specific examples.
 
-June 10, 2024
+Motion Guidancesearchterm June 10, 2024 | Added game-specific examples and enhanced guidance for using motion in games.
 
-Guidancesearchterm
+Settings Guidancesearchterm June 10, 2024 | Reorganized some guidance into new topics and added game-specific examples.
 
-June 10, 2024
+Game controls Guidancesearchterm June 10, 2024 | Added guidance for supporting touch controls and changed title from Game controllers.
 
-Guidancesearchterm
+Windows Guidancesearchterm June 10, 2024 | Updated to include guidance for using volumes in visionOS 2 and added game-specific examples.
 
-June 10, 2024
+Keyboards Guidancesearchterm June 10, 2024 | Added game-specific guidance and made organizational updates.
 
-Guidancesearchterm
+Onboarding Guidancesearchterm June 10, 2024 | Clarified different approaches to onboarding and added a guideline on displaying a splash screen.
 
-June 10, 2024
+Layout Guidancesearchterm June 10, 2024 | Made minor corrections and organizational updates.
 
-Guidancesearchterm
+Going full screen Guidancesearchterm June 10, 2024 | Enhanced guidance for playing a game in full-screen mode.
 
-June 10, 2024
+Launching Guidancesearchterm June 10, 2024 | Added guidance on displaying a splash screen.
 
-Guidancesearchterm
+Loading Guidancesearchterm June 10, 2024 | Added guidelines for showing progress and storing downloads, and enhanced guidance for games.
 
-June 10, 2024
+Accessibility Guidancesearchterm June 10, 2024 | Added a link to Apple's Unity plug-ins for supporting Dynamic Type.
 
-Guidancesearchterm
-
-June 10, 2024
-
-Guidancesearchterm
-
-June 10, 2024
-
-Guidancesearchterm
-
-June 10, 2024
-
-Guidancesearchterm
-
-June 10, 2024
-
-Guidancesearchterm
-
-June 10, 2024
-
-Guidancesearchterm
-
-June 10, 2024
-
-Guidancesearchterm
-
-June 10, 2024
-
-Guidancesearchterm
-
-June 10, 2024
-
-Guidancesearchterm
-
-June 10, 2024
-
-Guidancesearchterm
-
-June 10, 2024
-
-Guidancesearchterm
-
-June 10, 2024
-
-Guidancesearchterm
-
-June 10, 2024
-
-Guidancesearchterm
-
-June 10, 2024
-
-Guidancesearchterm
-
-June 10, 2024
-
-Guidancesearchterm
-
-June 10, 2024
-
-Guidancesearchterm
-
-June 10, 2024
-
-Guidancesearchterm
-
-June 10, 2024
-
-Guidancesearchterm
-
-June 10, 2024
-
-Guidancesearchterm
-
-June 10, 2024
-
-Articlessearchterm
+Apple Pay Guidancesearchterm June 10, 2024 | Updated links to developer guidance for offering Apple Pay on the web.
 
 May  9, 2024
 
-Guidancesearchterm
+“I taught myself”: Tucker MacDonald and the rise of Tide Guide Articlessearchterm May  9, 2024 | Lots of apps have great origin stories, but the tale of Tucker MacDonald and Tide Guide seems tailor-made for the Hollywood treatment.
 
 May  7, 2024
 
-Guidancesearchterm
+Apple Pencil and Scribble Guidancesearchterm May  7, 2024 | Added guidance for handling squeeze and barrel roll on Apple Pencil Pro.
 
-May  7, 2024
+Playing haptics Guidancesearchterm May  7, 2024 | Added guidance for playing haptics on Apple Pencil Pro.
 
-Guidancesearchterm
+Immersive experiences Guidancesearchterm May  7, 2024 | Added guidance for creating an environment.
 
-May  7, 2024
-
-Guidancesearchterm
-
-May  7, 2024
-
-Articlessearchterm
+Tap to Pay on iPhone Guidancesearchterm May  7, 2024 | Updated to include guidance on enabling the feature and educating merchants.
 
 April  4, 2024
 
-Guidancesearchterm
+Knotwords: Gage and Schlesinger at the crossroads Articlessearchterm April  4, 2024 | Zach Gage and Jack Schlesinger created Knotwords not to revolutionize the humble crossword but to learn it.
 
 March 29, 2024
 
-Guidancesearchterm
+Immersive experiences Guidancesearchterm March 29, 2024 | Added guidance for displaying virtual hands.
 
-March 29, 2024
+Activity rings Guidancesearchterm March 29, 2024 | Enhanced guidance for displaying Activity rings and listed specific colors for displaying related content.
 
-Guidancesearchterm
+Sheets Guidancesearchterm March 29, 2024 | Added guidance to use form or page sheet styles in iPadOS apps.
 
-March 29, 2024
+Eyes Guidancesearchterm March 29, 2024 | Added artwork showing the visionOS hover effect.
 
-Guidancesearchterm
+Spatial layout Guidancesearchterm March 29, 2024 | Emphasized the importance of keeping interactive elements from overlapping each other.
 
-March 29, 2024
-
-Guidancesearchterm
-
-March 29, 2024
-
-Guidancesearchterm
-
-March 29, 2024
-
-Articlessearchterm
+Toggles Guidancesearchterm March 29, 2024 | Enhanced guidance for using switches in macOS apps, clarified when a checkbox has a title, and added artwork for radio buttons.
 
 March  7, 2024
 
-Articlessearchterm
+Uncovering the hidden joys of Finding Hannah Articlessearchterm March  7, 2024 | On its surface, Finding Hannah is a bright and playful hidden-object game — but dig a little deeper and you’ll find something much more.
 
 February  8, 2024
 
-Resourcessearchterm
+“The best version we’ve ever made” Articlessearchterm February  8, 2024 | Michael Simmons discusses bringing Fantastical to visionOS.
 
 February  5, 2024
 
-Guidancesearchterm
+Design kit Resourcessearchterm February  5, 2024 | Updated visionOS design kits for Figma and Sketch.
 
 February  2, 2024
 
-Guidancesearchterm
+Designing for visionOS Guidancesearchterm February  2, 2024 | Included a link to Apple Vision Pro User Guide.
 
-February  2, 2024
+Immersive experiences Guidancesearchterm February  2, 2024 | Clarified guidance for choosing an immersion style that matches the experience your app provides.
 
-Guidancesearchterm
+Virtual keyboards Guidancesearchterm February  2, 2024 | Clarified the virtual keyboard's support for direct and indirect gestures in visionOS.
 
-February  2, 2024
+Buttons Guidancesearchterm February  2, 2024 | Noted that visionOS buttons don't support custom hover effects.
 
-Guidancesearchterm
+Ornaments Guidancesearchterm February  2, 2024 | Added guidance on using multiple ornaments.
 
-February  2, 2024
+Game Center Guidancesearchterm February  2, 2024 | Added links to developer guidance on using the access point and dashboard in a visionOS game.
 
-Guidancesearchterm
+Alerts Guidancesearchterm February  2, 2024 | Enhanced guidance for using default and Cancel buttons.
 
-February  2, 2024
+Layout Guidancesearchterm February  2, 2024 | Enhanced guidance for avoiding system controls in iPadOS app layouts, and added specifications for 10.9-inch iPad Air and 8.3-inch iPad mini.
 
-Guidancesearchterm
+Scroll views Guidancesearchterm February  2, 2024 | Added artwork showing the behavior of the visionOS scroll indicator.
 
-February  2, 2024
+Color Guidancesearchterm February  2, 2024 | Distinguished UI Kit and SwiftUI gray colors in iOS and iPadOS, and added guidance for balancing brightness levels in visionOS apps.
 
-Guidancesearchterm
-
-February  2, 2024
-
-Guidancesearchterm
-
-February  2, 2024
-
-Guidancesearchterm
-
-February  2, 2024
-
-Guidancesearchterm
-
-February  2, 2024
-
-Guidancesearchterm
-
-February  2, 2024
-
-Guidancesearchterm
+Motion Guidancesearchterm February  2, 2024 | Enhanced guidance for minimizing peripheral motion in visionOS apps.
 
 January 31, 2024
 
-Articlessearchterm
+App icons Guidancesearchterm January 31, 2024 | Clarified platform availability for alternate app icons.
 
 January 30, 2024
 
-Resourcessearchterm
+“So much possibility”: How Ryan McLeod rebooted Blackbox for Apple Vision Pro Articlessearchterm January 30, 2024 | The inventive game comes to the infinite canvas.
 
 January 16, 2024
 
-Articlessearchterm
+SF Symbols 5.1 Resourcessearchterm January 16, 2024 | Version 5.1 adds over 400 localized symbols and minor bug fixes.
 
 January 11, 2024
 
-Articlessearchterm
+Realizing their vision: How djay designed for visionOS Articlessearchterm January 11, 2024 | The team behind djay reveals why Apple Vision Pro represents “the culmination of everything” for their app.
 
-January 11, 2024
-
-Articlessearchterm
+Q&A: Building apps for visionOS Articlessearchterm January 11, 2024 | Get advice directly from Apple experts on creating incredible apps and games for Apple Vision Pro.
 
 December  7, 2023
 
-Articlessearchterm
+With Ancient Board Game Collection, Klemens Strasser goes back in time Articlessearchterm December  7, 2023 | Discover how the title blends the new and the (very) old.
 
-December  7, 2023
-
-Guidancesearchterm
+Q&A: Spatial design for visionOS Articlessearchterm December  7, 2023 | Get expert advice from the Apple design team on creating experiences for Apple Vision Pro.
 
 December  5, 2023
 
-Guidancesearchterm
+Offering help Guidancesearchterm December  5, 2023 | Included visionOS in guidance for creating tooltips.
 
-December  5, 2023
+Layout Guidancesearchterm December  5, 2023 | Clarified guidance on centering content in a visionOS window.
 
-Guidancesearchterm
+Images Guidancesearchterm December  5, 2023 | Clarified guidance on choosing a resolution for a rasterized image in a visionOS app.
 
-December  5, 2023
+Scroll views Guidancesearchterm December  5, 2023 | Described the visionOS scroll indicator and added guidance for integrating it with window layout.
 
-Guidancesearchterm
+Modality Guidancesearchterm December  5, 2023 | Enhanced guidance for in-depth modal experiences and clarified guidance on multiple modal views.
 
-December  5, 2023
+Activity rings Guidancesearchterm December  5, 2023 | Added artwork representing Activity rings in iOS.
 
-Guidancesearchterm
+Touch Bar Guidancesearchterm December  5, 2023 | Updated Dark Mode artwork.
 
-December  5, 2023
+Multitasking Guidancesearchterm December  5, 2023 | Added artwork for primary and auxiliary windows in iPadOS.
 
-Guidancesearchterm
+Digital Crown Guidancesearchterm December  5, 2023 | Added artwork for Apple Vision Pro and Apple Watch, and clarified that visionOS apps don't receive direct information from the Digital Crown.
 
-December  5, 2023
+Sidebars Guidancesearchterm December  5, 2023 | Added artwork for iPadOS.
 
-Guidancesearchterm
+Virtual keyboards Guidancesearchterm December  5, 2023 | Added artwork for visionOS.
 
-December  5, 2023
+SharePlay Guidancesearchterm December  5, 2023 | Added artwork for visionOS.
 
-Guidancesearchterm
+Accessibility Guidancesearchterm December  5, 2023 | Updated visionOS Zoom lens artwork.
 
-December  5, 2023
+Collaboration and sharing Guidancesearchterm December  5, 2023 | Added artwork illustrating button placement and various types of collaboration permissions.
 
-Guidancesearchterm
+Buttons Guidancesearchterm December  5, 2023 | Clarified some terminology and guidance for buttons in visionOS.
 
-December  5, 2023
+Materials Guidancesearchterm December  5, 2023 | Updated descriptions of the various material types, and clarified terms related to vibrancy and material thickness.
 
-Guidancesearchterm
+Split views Guidancesearchterm December  5, 2023 | Added guidance for split views in visionOS.
 
-December  5, 2023
+Ornaments Guidancesearchterm December  5, 2023 | Removed a statement about using ornaments to present supplementary items.
 
-Guidancesearchterm
+Sheets Guidancesearchterm December  5, 2023 | Recommended using a split view to offer supplementary items in a visionOS app.
 
-December  5, 2023
-
-Guidancesearchterm
-
-December  5, 2023
-
-Guidancesearchterm
-
-December  5, 2023
-
-Guidancesearchterm
-
-December  5, 2023
-
-Guidancesearchterm
-
-December  5, 2023
-
-Guidancesearchterm
-
-December  5, 2023
-
-Guidancesearchterm
-
-December  5, 2023
-
-Guidancesearchterm
-
-December  5, 2023
-
-Guidancesearchterm
-
-December  5, 2023
-
-Guidancesearchterm
-
-December  5, 2023
-
-Articlessearchterm
+Context menus Guidancesearchterm December  5, 2023 | Added guidance on hiding unavailable menu items.
 
 November  9, 2023
 
-Guidancesearchterm
+The "sweet, creative" world of Kimono Cats Articlessearchterm November  9, 2023 | How Greg Johnson and team created a cute cartoon adventure.
 
 October 24, 2023
 
-Guidancesearchterm
+Machine learning Guidancesearchterm October 24, 2023 | Added art to Corrections section.
 
-October 24, 2023
+Focus and selection Guidancesearchterm October 24, 2023 | Clarified the difference between focus effects and the visionOS hover effect.
 
-Guidancesearchterm
+Eyes Guidancesearchterm October 24, 2023 | Clarified the difference between focus effects and the visionOS hover effect.
 
-October 24, 2023
+Notifications Guidancesearchterm October 24, 2023 | Updated watchOS platform considerations with guidance for presenting notification responses to double tap.
 
-Guidancesearchterm
+Complications Guidancesearchterm October 24, 2023 | Replaced links to deprecated ClockKit documentation with links to WidgetKit documentation.
 
-October 24, 2023
+Pop-up buttons Guidancesearchterm October 24, 2023 | Added artwork.
 
-Guidancesearchterm
+Drag and drop Guidancesearchterm October 24, 2023 | Added artwork.
 
-October 24, 2023
+Immersive experiences Guidancesearchterm October 24, 2023 | Updated artwork.
 
-Guidancesearchterm
-
-October 24, 2023
-
-Guidancesearchterm
-
-October 24, 2023
-
-Guidancesearchterm
-
-October 24, 2023
-
-Guidancesearchterm
-
-October 24, 2023
-
-Articlessearchterm
+Live Activities Guidancesearchterm October 24, 2023 | Expanded and updated guidance and added new artwork.
 
 October  3, 2023
 
-Guidancesearchterm
+The gorgeous gadgets of Automatoys Articlessearchterm October  3, 2023 | Discover the wild inspirations behind Steffan Glynn’s perfectly perplexing puzzler.
 
 September 15, 2023
 
-Guidancesearchterm
+Layout Guidancesearchterm September 15, 2023 | Added specifications for iPhone 15 Pro Max, iPhone 15 Pro, iPhone 15 Plus, iPhone 15, Apple Watch Ultra 2, and Apple Watch SE.
 
-September 15, 2023
-
-Guidancesearchterm
+Gestures Guidancesearchterm September 15, 2023 | Updated specifications to include double tap in watchOS.
 
 September 12, 2023
 
-Guidancesearchterm
+Color Guidancesearchterm September 12, 2023 | Enhanced guidance for using background color in watchOS views, and added color swatches for tvOS.
 
-September 12, 2023
+Typography Guidancesearchterm September 12, 2023 | Added artwork illustrating system font weights, and clarified tvOS specification table descriptions.
 
-Guidancesearchterm
+Offering help Guidancesearchterm September 12, 2023 | Added guidance for creating tips.
 
-September 12, 2023
+Playing video Guidancesearchterm September 12, 2023 | Corrected the recommended width for a thumbnail in visionOS.
 
-Guidancesearchterm
+Ratings and reviews Guidancesearchterm September 12, 2023 | Added artwork.
 
-September 12, 2023
+Search fields Guidancesearchterm September 12, 2023 | Combined guidance common to all platforms.
 
-Guidancesearchterm
+Alerts Guidancesearchterm September 12, 2023 | Added anatomy artwork for visionOS.
 
-September 12, 2023
+Toggles Guidancesearchterm September 12, 2023 | Updated artwork.
 
-Guidancesearchterm
+Progress indicators Guidancesearchterm September 12, 2023 | Combined guidance common to all platforms.
 
-September 12, 2023
+Action button Guidancesearchterm September 12, 2023 | Updated to include guidance for iOS.
 
-Guidancesearchterm
+Apple Pencil and Scribble Guidancesearchterm September 12, 2023 | Updated artwork.
 
-September 12, 2023
+Always On Guidancesearchterm September 12, 2023 | Updated intro image artwork.
 
-Guidancesearchterm
+Apple Pay Guidancesearchterm September 12, 2023 | Updated artwork.
 
-September 12, 2023
+Game Center Guidancesearchterm September 12, 2023 | Added artwork for the iOS achievement layout.
 
-Guidancesearchterm
+ID Verifier Guidancesearchterm September 12, 2023 | New page.
 
-September 12, 2023
+In-app purchase Guidancesearchterm September 12, 2023 | Updated artwork and guidance for redeeming offer codes.
 
-Guidancesearchterm
+Maps Guidancesearchterm September 12, 2023 | Added artwork.
 
-September 12, 2023
+ResearchKit Guidancesearchterm September 12, 2023 | Updated artwork.
 
-Guidancesearchterm
-
-September 12, 2023
-
-Guidancesearchterm
-
-September 12, 2023
-
-Guidancesearchterm
-
-September 12, 2023
-
-Guidancesearchterm
-
-September 12, 2023
-
-Guidancesearchterm
-
-September 12, 2023
-
-Guidancesearchterm
-
-September 12, 2023
-
-Guidancesearchterm
-
-September 12, 2023
-
-Guidancesearchterm
-
-September 12, 2023
-
-Guidancesearchterm
-
-September 12, 2023
-
-Resourcessearchterm
+Wallet Guidancesearchterm September 12, 2023 | Added guidance for helping people add orders to Wallet.
 
 July 19, 2023
 
-Resourcessearchterm
+Design kit Resourcessearchterm July 19, 2023 | Updated visionOS design kits for Figma and Sketch.
 
 July 12, 2023
 
-Resourcessearchterm
+Design kit Resourcessearchterm July 12, 2023 | Updated iOS 17 and iPadOS 17 design kits for Figma and Sketch.
 
 June 23, 2023
 
-Guidancesearchterm
+Design kit Resourcessearchterm June 23, 2023 | New visionOS design kit for Figma.
 
 June 21, 2023
 
-Guidancesearchterm
+Designing for visionOS Guidancesearchterm June 21, 2023 | New page.
 
-June 21, 2023
+Immersive experiences Guidancesearchterm June 21, 2023 | New page.
 
-Guidancesearchterm
+Spatial layout Guidancesearchterm June 21, 2023 | New page.
 
-June 21, 2023
+Eyes Guidancesearchterm June 21, 2023 | New page.
 
-Guidancesearchterm
+Ornaments Guidancesearchterm June 21, 2023 | New page.
 
-June 21, 2023
+Accessibility Guidancesearchterm June 21, 2023 | Updated to include guidance for visionOS.
 
-Guidancesearchterm
+App icons Guidancesearchterm June 21, 2023 | Updated to include guidance for visionOS.
 
-June 21, 2023
+Icons Guidancesearchterm June 21, 2023 | Updated to include guidance for visionOS.
 
-Guidancesearchterm
+Images Guidancesearchterm June 21, 2023 | Updated to include guidance for visionOS.
 
-June 21, 2023
+Layout Guidancesearchterm June 21, 2023 | Updated to include guidance for visionOS.
 
-Guidancesearchterm
+Materials Guidancesearchterm June 21, 2023 | Updated to include guidance for visionOS.
 
-June 21, 2023
+Motion Guidancesearchterm June 21, 2023 | Updated to include guidance for visionOS.
 
-Guidancesearchterm
+Privacy Guidancesearchterm June 21, 2023 | Consolidated guidance into new page and updated for visionOS.
 
-June 21, 2023
+Privacy Guidancesearchterm June 21, 2023 | Consolidated guidance into new page and updated for visionOS.
 
-Guidancesearchterm
+Typography Guidancesearchterm June 21, 2023 | Updated to include guidance for visionOS.
 
-June 21, 2023
+Collaboration and sharing Guidancesearchterm June 21, 2023 | Updated to include guidance for visionOS.
 
-Guidancesearchterm
+Drag and drop Guidancesearchterm June 21, 2023 | Updated to include guidance for visionOS.
 
-June 21, 2023
+Entering data Guidancesearchterm June 21, 2023 | Updated to include guidance for visionOS.
 
-Guidancesearchterm
+File management Guidancesearchterm June 21, 2023 | Updated to include guidance for visionOS.
 
-June 21, 2023
+Launching Guidancesearchterm June 21, 2023 | Updated to include guidance for visionOS.
 
-Guidancesearchterm
+Modality Guidancesearchterm June 21, 2023 | Updated to include guidance for visionOS.
 
-June 21, 2023
+Multitasking Guidancesearchterm June 21, 2023 | Updated to include guidance for visionOS.
 
-Guidancesearchterm
+Onboarding Guidancesearchterm June 21, 2023 | Updated to include guidance for visionOS.
 
-June 21, 2023
+Playing audio Guidancesearchterm June 21, 2023 | Updated to include guidance for visionOS.
 
-Guidancesearchterm
+Playing haptics Guidancesearchterm June 21, 2023 | Updated to include guidance for visionOS.
 
-June 21, 2023
+Playing video Guidancesearchterm June 21, 2023 | Updated to include guidance for visionOS.
 
-Guidancesearchterm
+Image views Guidancesearchterm June 21, 2023 | Updated to include guidance for visionOS.
 
-June 21, 2023
+Lists and tables Guidancesearchterm June 21, 2023 | Updated to include guidance for visionOS.
 
-Guidancesearchterm
+Buttons Guidancesearchterm June 21, 2023 | Updated to include guidance for visionOS.
 
-June 21, 2023
+Context menus Guidancesearchterm June 21, 2023 | Updated to include guidance for visionOS.
 
-Guidancesearchterm
+Edit menus Guidancesearchterm June 21, 2023 | Updated to include guidance for visionOS.
 
-June 21, 2023
+Menus Guidancesearchterm June 21, 2023 | Updated to include guidance for visionOS.
 
-Guidancesearchterm
+Toolbars Guidancesearchterm June 21, 2023 | Updated to include guidance for visionOS.
 
-June 21, 2023
+Navigation bars Guidancesearchterm June 21, 2023 | Updated to include guidance for visionOS.
 
-Guidancesearchterm
+Sidebars Guidancesearchterm June 21, 2023 | Updated to include guidance for visionOS.
 
-June 21, 2023
+Tab bars Guidancesearchterm June 21, 2023 | Updated to include guidance for visionOS.
 
-Guidancesearchterm
+Alerts Guidancesearchterm June 21, 2023 | Updated to include guidance for visionOS.
 
-June 21, 2023
+Page controls Guidancesearchterm June 21, 2023 | Updated to include guidance for visionOS.
 
-Guidancesearchterm
+Sheets Guidancesearchterm June 21, 2023 | Updated to include guidance for visionOS.
 
-June 21, 2023
+Windows Guidancesearchterm June 21, 2023 | Updated to include guidance for visionOS.
 
-Guidancesearchterm
+Segmented controls Guidancesearchterm June 21, 2023 | Updated to include guidance for visionOS.
 
-June 21, 2023
+Sliders Guidancesearchterm June 21, 2023 | Updated to include guidance for visionOS.
 
-Guidancesearchterm
+Virtual keyboards Guidancesearchterm June 21, 2023 | Changed page title from Onscreen keyboards and updated to include guidance for visionOS.
 
-June 21, 2023
+Digital Crown Guidancesearchterm June 21, 2023 | Updated to include guidance for visionOS.
 
-Guidancesearchterm
+Focus and selection Guidancesearchterm June 21, 2023 | Updated to include guidance for visionOS.
 
-June 21, 2023
+Gestures Guidancesearchterm June 21, 2023 | Changed page title from Touchscreen gestures and updated to include guidance for visionOS.
 
-Guidancesearchterm
+Keyboards Guidancesearchterm June 21, 2023 | Updated to include guidance for visionOS.
 
-June 21, 2023
+Nearby interactions Guidancesearchterm June 21, 2023 | Changed page title from Spatial interactions.
 
-Guidancesearchterm
+Pointing devices Guidancesearchterm June 21, 2023 | Updated to include guidance for visionOS.
 
-June 21, 2023
-
-Guidancesearchterm
-
-June 21, 2023
-
-Guidancesearchterm
-
-June 21, 2023
-
-Guidancesearchterm
-
-June 21, 2023
-
-Guidancesearchterm
-
-June 21, 2023
-
-Guidancesearchterm
-
-June 21, 2023
-
-Guidancesearchterm
-
-June 21, 2023
-
-Guidancesearchterm
-
-June 21, 2023
-
-Guidancesearchterm
-
-June 21, 2023
-
-Guidancesearchterm
-
-June 21, 2023
-
-Guidancesearchterm
-
-June 21, 2023
-
-Guidancesearchterm
-
-June 21, 2023
-
-Guidancesearchterm
-
-June 21, 2023
-
-Guidancesearchterm
-
-June 21, 2023
-
-Guidancesearchterm
-
-June 21, 2023
-
-Guidancesearchterm
-
-June 21, 2023
-
-Guidancesearchterm
-
-June 21, 2023
-
-Guidancesearchterm
-
-June 21, 2023
-
-Guidancesearchterm
-
-June 21, 2023
-
-Guidancesearchterm
-
-June 21, 2023
-
-Guidancesearchterm
-
-June 21, 2023
-
-Guidancesearchterm
-
-June 21, 2023
-
-Guidancesearchterm
-
-June 21, 2023
-
-Guidancesearchterm
-
-June 21, 2023
-
-Guidancesearchterm
-
-June 21, 2023
-
-Resourcessearchterm
+SharePlay Guidancesearchterm June 21, 2023 | Updated to include guidance for visionOS.
 
 June 16, 2023
 
-Resourcessearchterm
+Design kit Resourcessearchterm June 16, 2023 | New macOS Sonoma design kit for Figma and Sketch.
 
 June  7, 2023
 
-Videossearchterm
+Design kit Resourcessearchterm June  7, 2023 | New iOS 17 and iPadOS 17 design kits for Figma and Sketch.
 
 June  5, 2023
 
-Videossearchterm
+Meet watchOS 10 Videossearchterm June  5, 2023 | Discover some of the most significant changes to Apple Watch since its introduction.
 
-June  5, 2023
+Principles of spatial design Videossearchterm June  5, 2023 | Discover the fundamentals of spatial design.
 
-Videossearchterm
+Design for spatial input Videossearchterm June  5, 2023 | Learn how to design great interactions for eyes and hands.
 
-June  5, 2023
+Design spatial SharePlay experiences Videossearchterm June  5, 2023 | Explore the types of shared activities you can create in your visionOS apps.
 
-Videossearchterm
+Design for spatial user interfaces Videossearchterm June  5, 2023 | Learn how to design great interfaces for spatial computing apps.
 
-June  5, 2023
+Design considerations for vision and motion Videossearchterm June  5, 2023 | Learn how to design engaging immersive experiences for visionOS that respect the limitations of human vision and motion perception.
 
-Videossearchterm
+Design with SwiftUI Videossearchterm June  5, 2023 | Discover how SwiftUI can help you quickly iterate and explore design ideas.
 
-June  5, 2023
+Design and build apps for watchOS 10 Videossearchterm June  5, 2023 | Dive into the details of watchOS design principles and learn how to apply them in your app using SwiftUI.
 
-Videossearchterm
+Design Shortcuts for Spotlight Videossearchterm June  5, 2023 | Learn about the latest updates to the visual language of App Shortcuts and find out how to design your shortcut to appear as a top hit in Spotlight.
 
-June  5, 2023
+Design dynamic Live Activities Videossearchterm June  5, 2023 | Learn the best way to create graphically rich layouts that update seamlessly on the Lock Screen, in StandBy, and in the Dynamic Island.
 
-Videossearchterm
+What’s new in SF Symbols 5 Videossearchterm June  5, 2023 | Explore the latest updates to SF Symbols.
 
-June  5, 2023
+Create animated symbols Videossearchterm June  5, 2023 | Discover animation presets and learn how to use them with SF Symbols and custom symbols.
 
-Videossearchterm
+Explore immersive sound design Videossearchterm June  5, 2023 | Discover how you can use sound to enhance the experience of your visionOS apps and games.
 
-June  5, 2023
+Design widgets for the Smart Stack on Apple Watch Videossearchterm June  5, 2023 | Bring your widgets to watchOS with the new Smart Stack.
 
-Videossearchterm
+Behind the Design: Afterplace Articlessearchterm June  5, 2023 | Find out how Evan Kice created the throwback pixelated adventure game Afterplace.
 
-June  5, 2023
+Behind the Design: Any Distance Articlessearchterm June  5, 2023 | Learn how Luke Beard and Daniel Kuntz created the design-forward fitness tracker Any Distance.
 
-Videossearchterm
+Behind the Design: Duolingo Articlessearchterm June  5, 2023 | Learn the design strategies behind the language app's incredible success.
 
-June  5, 2023
+Behind the Design: Endling Articlessearchterm June  5, 2023 | How the HandyGames team created this powerful mix of medium and message.
 
-Videossearchterm
+Behind the Design: Flighty Articlessearchterm June  5, 2023 | Find out how Ryan Jones created this best-in-class travel app.
 
-June  5, 2023
+Behind the Design: Headspace Articlessearchterm June  5, 2023 | Find out how the Headspace team made its app.
 
-Videossearchterm
+Behind the Design: MARVEL SNAP Articlessearchterm June  5, 2023 | Find out how the SNAP team rebooted the entire collectible-card game universe.
 
-June  5, 2023
+Behind the Design: Railbound Articlessearchterm June  5, 2023 | Learn how the Afterburn game studio created this tricky track puzzler.
 
-Videossearchterm
+Behind the Design: Resident Evil Village Articlessearchterm June  5, 2023 | Learn how the stunningly beautiful horror adventure came to life on Mac.
 
-June  5, 2023
+Behind the Design: stitch. Articlessearchterm June  5, 2023 | Find out how Lykke Studios sewed up its embroidery-themed puzzle game.
 
-Videossearchterm
+Behind the Design: SwingVision Articlessearchterm June  5, 2023 | Discover how the SwingVision team served up the definitive tennis app.
 
-June  5, 2023
+Behind the Design: Universe Articlessearchterm June  5, 2023 | Discover how Universe makes creating a website as easy as building with blocks.
 
-Articlessearchterm
+Materials Guidancesearchterm June  5, 2023 | Added guidance on using materials to provide context and orientation in watchOS apps.
 
-June  5, 2023
+Designing for watchOS Guidancesearchterm June  5, 2023 | Enhanced guidance for providing a glanceable, focused app experience, and emphasized the importance of the Digital Crown in navigation.
 
-Articlessearchterm
+Color Guidancesearchterm June  5, 2023 | Updated guidance for using background color in watchOS.
 
-June  5, 2023
+SF Symbols Guidancesearchterm June  5, 2023 | Added a new section on animations. Included animation guidance for custom symbols.
 
-Articlessearchterm
+Text views Guidancesearchterm June  5, 2023 | Updated guidance to reflect changes in watchOS 10.
 
-June  5, 2023
+Labels Guidancesearchterm June  5, 2023 | Updated guidance to reflect changes in watchOS 10.
 
-Articlessearchterm
+Lists and tables Guidancesearchterm June  5, 2023 | Updated guidance to reflect changes in watchOS 10.
 
-June  5, 2023
+Split views Guidancesearchterm June  5, 2023 | Added guidance for split views in watchOS.
 
-Articlessearchterm
+Tab views Guidancesearchterm June  5, 2023 | Added guidance for using tab views in watchOS.
 
-June  5, 2023
+Buttons Guidancesearchterm June  5, 2023 | Updated guidance for using buttons in watchOS.
 
-Articlessearchterm
+Toolbars Guidancesearchterm June  5, 2023 | Updated guidance for using toolbars in watchOS.
 
-June  5, 2023
+Navigation bars Guidancesearchterm June  5, 2023 | Updated guidance for using navigation bars in watchOS.
 
-Articlessearchterm
+Search fields Guidancesearchterm June  5, 2023 | Added guidance for using search fields in watchOS.
 
-June  5, 2023
+Page controls Guidancesearchterm June  5, 2023 | Updated guidance for using page controls in watchOS.
 
-Articlessearchterm
+Scroll views Guidancesearchterm June  5, 2023 | Updated guidance for using scroll views in watchOS.
 
-June  5, 2023
+Sheets Guidancesearchterm June  5, 2023 | Updated guidance for using sheets in watchOS.
 
-Articlessearchterm
+Pickers Guidancesearchterm June  5, 2023 | Updated guidance for using pickers in watchOS.
 
-June  5, 2023
+Text fields Guidancesearchterm June  5, 2023 | Updated guidance to reflect changes in watchOS 10.
 
-Articlessearchterm
+Progress indicators Guidancesearchterm June  5, 2023 | Updated guidance to reflect changes in watchOS 10.
 
-June  5, 2023
+App Shortcuts Guidancesearchterm June  5, 2023 | New page.
 
-Articlessearchterm
+Complications Guidancesearchterm June  5, 2023 | Updated guidance for rectangular complications to support them as widgets in the Smart Stack.
 
-June  5, 2023
+Live Activities Guidancesearchterm June  5, 2023 | Updated guidance to include features of iOS 17 and iPadOS 17.
 
-Articlessearchterm
+Widgets Guidancesearchterm June  5, 2023 | Updated guidance to include widgets in watchOS, widgets on the iPad Lock Screen, and updates for iOS 17, iPadOS 17, and macOS 14.
 
-June  5, 2023
+Digital Crown Guidancesearchterm June  5, 2023 | Added guidelines emphasizing the central role of the Digital Crown for navigation.
 
-Guidancesearchterm
-
-June  5, 2023
-
-Guidancesearchterm
-
-June  5, 2023
-
-Guidancesearchterm
-
-June  5, 2023
-
-Guidancesearchterm
-
-June  5, 2023
-
-Guidancesearchterm
-
-June  5, 2023
-
-Guidancesearchterm
-
-June  5, 2023
-
-Guidancesearchterm
-
-June  5, 2023
-
-Guidancesearchterm
-
-June  5, 2023
-
-Guidancesearchterm
-
-June  5, 2023
-
-Guidancesearchterm
-
-June  5, 2023
-
-Guidancesearchterm
-
-June  5, 2023
-
-Guidancesearchterm
-
-June  5, 2023
-
-Guidancesearchterm
-
-June  5, 2023
-
-Guidancesearchterm
-
-June  5, 2023
-
-Guidancesearchterm
-
-June  5, 2023
-
-Guidancesearchterm
-
-June  5, 2023
-
-Guidancesearchterm
-
-June  5, 2023
-
-Guidancesearchterm
-
-June  5, 2023
-
-Guidancesearchterm
-
-June  5, 2023
-
-Guidancesearchterm
-
-June  5, 2023
-
-Guidancesearchterm
-
-June  5, 2023
-
-Guidancesearchterm
-
-June  5, 2023
-
-Guidancesearchterm
-
-June  5, 2023
-
-Guidancesearchterm
-
-June  5, 2023
-
-Guidancesearchterm
-
-June  5, 2023
-
-Guidancesearchterm
+Siri Guidancesearchterm June  5, 2023 | Removed Add to Siri guidance. Added references to the new App Shortcuts page.
 
 May  2, 2023
 
-Guidancesearchterm
+Siri Guidancesearchterm May  2, 2023 | Consolidated guidance into one page.
 
-May  2, 2023
+Messages for Business Guidancesearchterm May  2, 2023 | Consolidated guidance into one page.
 
-Guidancesearchterm
+Machine learning Guidancesearchterm May  2, 2023 | Consolidated guidance into one page.
 
-May  2, 2023
+Mac Catalyst Guidancesearchterm May  2, 2023 | Consolidated guidance into one page.
 
-Guidancesearchterm
+iMessage apps and stickers Guidancesearchterm May  2, 2023 | Consolidated guidance into one page.
 
-May  2, 2023
+HomeKit Guidancesearchterm May  2, 2023 | Consolidated guidance into one page.
 
-Guidancesearchterm
+Game Center Guidancesearchterm May  2, 2023 | Consolidated guidance into one page.
 
-May  2, 2023
+CarPlay Guidancesearchterm May  2, 2023 | Consolidated guidance into one page.
 
-Guidancesearchterm
+CareKit Guidancesearchterm May  2, 2023 | Consolidated guidance into one page.
 
-May  2, 2023
+Apple Pay Guidancesearchterm May  2, 2023 | Consolidated guidance into one page.
 
-Guidancesearchterm
+App Clips Guidancesearchterm May  2, 2023 | Consolidated guidance into one page.
 
-May  2, 2023
-
-Guidancesearchterm
-
-May  2, 2023
-
-Guidancesearchterm
-
-May  2, 2023
-
-Guidancesearchterm
-
-May  2, 2023
-
-Guidancesearchterm
-
-May  2, 2023
-
-Guidancesearchterm
-
-May  2, 2023
-
-Resourcessearchterm
+AirPlay Guidancesearchterm May  2, 2023 | Consolidated guidance into one page.
 
 March 21, 2023
 
-Guidancesearchterm
+Design kit Resourcessearchterm March 21, 2023 | Updated iOS 16 and iPadOS 16 design kits for Sketch and XD.
 
 March  3, 2023
 
-Guidancesearchterm
+Tap to Pay on iPhone Guidancesearchterm March  3, 2023 | Enhanced guidance for educating merchants and improving their experience.
 
 February 27, 2023
 
-Guidancesearchterm
+Writing Guidancesearchterm February 27, 2023 | New page.
 
 February 20, 2023
 
-Resourcessearchterm
+Wallet Guidancesearchterm February 20, 2023 | Enhanced guidance for presenting order-tracking information and added artwork.
 
 January 19, 2023
 
-Resourcessearchterm
+Design kits Resourcessearchterm January 19, 2023 | Updated design kits for iOS 16, iPadOS 16, macOS Ventura, watchOS 9, and tvOS 16, in addition to technologies like App Clips, Live Activities, Sign in with Apple, and more.
 
 January  2, 2023
 
-Guidancesearchterm
+Design kit Resourcessearchterm January  2, 2023 | Updated Keynote design kit for iOS 16.
 
 December 19, 2022
 
-Guidancesearchterm
+Color Guidancesearchterm December 19, 2022 | Corrected RGB values for system mint color (dark) in iOS and iPadOS.
 
-December 19, 2022
-
-Guidancesearchterm
+SharePlay Guidancesearchterm December 19, 2022 | Clarified guidance for helping nonsubscribers join a group activity.
 
 November 30, 2022
 
-Guidancesearchterm
+Wallet Guidancesearchterm November 30, 2022 | Added guidance to include a carrier name in status information for a shipping fulfillment.
 
 November  3, 2022
 
-Guidancesearchterm
+Widgets Guidancesearchterm November  3, 2022 | Added guidance for widgets on the iPhone Lock Screen and updated design comprehensives for iPhone 14, iPhone 14 Pro, and iPhone 14 Pro Max.
 
-November  3, 2022
+Apple Pencil and Scribble Guidancesearchterm November  3, 2022 | Added guidelines for using hover to enhance your app.
 
-Guidancesearchterm
+Live Activities Guidancesearchterm November  3, 2022 | Updated artwork and specifications.
 
-November  3, 2022
-
-Guidancesearchterm
-
-November  3, 2022
-
-Resourcessearchterm
+In-app purchase Guidancesearchterm November  3, 2022 | Added a guideline for displaying the total billing price for every in-app purchase item and consolidated guidance into one page.
 
 October  6, 2022
 
-Guidancesearchterm
+Design kit Resourcessearchterm October  6, 2022 | Updated design kit for watchOS.
 
 September 23, 2022
 
-Guidancesearchterm
+Live Activities Guidancesearchterm September 23, 2022 | New page.
 
-September 23, 2022
+Charting data Guidancesearchterm September 23, 2022 | New page.
 
-Guidancesearchterm
+Charts Guidancesearchterm September 23, 2022 | New page.
 
-September 23, 2022
+Maps Guidancesearchterm September 23, 2022 | Added guidelines for presenting custom information, refined best practices, and consolidated guidance into one page.
 
-Guidancesearchterm
+Gauges Guidancesearchterm September 23, 2022 | New page.
 
-September 23, 2022
+Rating indicators Guidancesearchterm September 23, 2022 | New page.
 
-Guidancesearchterm
-
-September 23, 2022
-
-Guidancesearchterm
-
-September 23, 2022
-
-Guidancesearchterm
-
-September 23, 2022
-
-Resourcessearchterm
+Always On Guidancesearchterm September 23, 2022 | Expanded guidance to cover the Always On display on iPhone 14 Pro and iPhone 14 Pro Max.
 
 September 19, 2022
 
-Articlessearchterm
+Design kits Resourcessearchterm September 19, 2022 | Updated design kits for iOS 16, iPadOS 16, and macOS Ventura.
 
 September 17, 2022
 
-Guidancesearchterm
+Behind the Design: Rebel Girls Articlessearchterm September 17, 2022 | Behind the Design: Rebel Girls
 
 September 14, 2022
 
-Guidancesearchterm
+Collaboration and sharing Guidancesearchterm September 14, 2022 | New page.
 
-September 14, 2022
+Designing for tvOS Guidancesearchterm September 14, 2022 | Refined best practices for multiuser support.
 
-Guidancesearchterm
+App icons Guidancesearchterm September 14, 2022 | Added specifications for Apple Watch Ultra.
 
-September 14, 2022
+Images Guidancesearchterm September 14, 2022 | Added specifications for Apple Watch Ultra.
 
-Guidancesearchterm
+Layout Guidancesearchterm September 14, 2022 | Added specifications for iPhone 14 Pro Max, iPhone 14 Pro, iPhone 14 Plus, iPhone 14, and Apple Watch Ultra.
 
-September 14, 2022
+SF Symbols Guidancesearchterm September 14, 2022 | Added a new section on variable color. Removed instructions on creating custom symbol paths, exporting templates, and layering paths, deferring to developer articles that cover these topics.
 
-Guidancesearchterm
+Context menus Guidancesearchterm September 14, 2022 | Refined guidance on including a submenu and added a guideline on using a context menu to support object creation in an iPadOS app.
 
-September 14, 2022
+Edit menus Guidancesearchterm September 14, 2022 | Added guidance on supporting both edit-menu styles in iPadOS.
 
-Guidancesearchterm
+Menus Guidancesearchterm September 14, 2022 | Added guidelines for using the small, medium, and large menu layouts in iPadOS.
 
-September 14, 2022
+Pop-up buttons Guidancesearchterm September 14, 2022 | Added a guideline on using a pop-up button in a popover or modal view in iPadOS.
 
-Guidancesearchterm
+Pull-down buttons Guidancesearchterm September 14, 2022 | Refined guidance on designing a useful menu length.
 
-September 14, 2022
+Complications Guidancesearchterm September 14, 2022 | Added specifications for Apple Watch Ultra.
 
-Guidancesearchterm
+Action button Guidancesearchterm September 14, 2022 | New page.
 
-September 14, 2022
+Sign in with Apple Guidancesearchterm September 14, 2022 | Refined guidance on supporting existing accounts, helping people set up a new account, and indicating the current sign-in status. Consolidated guidance into one page.
 
-Guidancesearchterm
+Tap to Pay on iPhone Guidancesearchterm September 14, 2022 | Refined guidance on preparing Tap to Pay on iPhone and helping merchants learn how to use the feature.
 
-September 14, 2022
-
-Guidancesearchterm
-
-September 14, 2022
-
-Guidancesearchterm
-
-September 14, 2022
-
-Guidancesearchterm
-
-September 14, 2022
-
-Guidancesearchterm
-
-September 14, 2022
-
-Guidancesearchterm
-
-September 14, 2022
-
-Guidancesearchterm
-
-September 14, 2022
-
-Guidancesearchterm
-
-September 14, 2022
-
-Articlessearchterm
+Wallet Guidancesearchterm September 14, 2022 | Added guidelines for using Verify with Wallet, updated guidance on providing shipping status values and descriptions, and consolidated guidance into one page.
 
 September 12, 2022
 
-Articlessearchterm
+Behind the Design: Overboard! Articlessearchterm September 12, 2022 | Behind the Design: Overboard!
 
 August 29, 2022
 
-Articlessearchterm
+Behind the Design: (Not Boring) Habits Articlessearchterm August 29, 2022 | Behind the Design: (Not Boring) Habits
 
 August 22, 2022
 
-Articlessearchterm
+Behind the Design: Lego Star Wars: Castaways Articlessearchterm August 22, 2022 | Behind the Design: Lego Star Wars: Castaways
 
 August 15, 2022
 
-Articlessearchterm
+关于设计的幕后故事：Slopes Articlessearchterm August 15, 2022 | Behind the Design: Slopes
 
 August  8, 2022
 
-Articlessearchterm
+Behind the Design: Marvel Future Revolution Articlessearchterm August  8, 2022 | Behind the Design: Marvel Future Revolution
 
 August  1, 2022
 
-Articlessearchterm
+Behind the Design: Odio Articlessearchterm August  1, 2022 | Behind the Design: Odio
 
 July 25, 2022
 
-Articlessearchterm
+Behind the Design: Wylde Flowers Articlessearchterm July 25, 2022 | Behind the Design: Wylde Flowers
 
 July 18, 2022
 
-Articlessearchterm
+Behind the Design: Procreate Articlessearchterm July 18, 2022 | Behind the Design: Procreate
 
 July 11, 2022
 
-Articlessearchterm
+Behind the Design: A Musical Story Articlessearchterm July 11, 2022 | Behind the Design: A Musical Story
 
 July  5, 2022
 
-Articlessearchterm
+Behind the Design: Halide Mark II Articlessearchterm July  5, 2022 | Behind the Design: Halide Mark II
 
 June 27, 2022
 
-Articlessearchterm
+Behind the Design: Gibbon: Beyond the Trees Articlessearchterm June 27, 2022 | Behind the Design: Gibbon: Beyond the Trees
 
 June 20, 2022
+
+Meet the prototypers Articlessearchterm June 20, 2022 | Meet the prototypers
+
+##### No Results.
 
 ## Links
 

@@ -119,11 +119,22 @@ def parse_static(html: bytes, url: str) -> dict:
         for h in main.find_all(re.compile(r"^h[1-6]$"))
         if h.get_text(strip=True)
     ]
-    paragraphs = [
-        p.get_text(" ", strip=True)
-        for p in main.find_all(["p", "li"])
-        if len(p.get_text(strip=True)) > 0
-    ]
+    # Body text: headings, paragraphs, list items, and table rows (cells joined
+    # with " | "). Hidden metadata cells (e.g. What's New dates) are kept so the
+    # row is self-describing.
+    paragraphs: list[str] = []
+    for el in main.find_all(["h1", "h2", "h3", "h4", "p", "li", "tr"]):
+        if el.find_parent("tr") is not None and el.name != "tr":
+            continue  # cells are emitted with their row
+        if el.name == "tr":
+            cells = [c.get_text(" ", strip=True) for c in el.find_all(["td", "th"])]
+            text = " | ".join(c for c in cells if c)
+        elif el.name.startswith("h"):
+            text = "#" * (int(el.name[1]) + 1) + " " + el.get_text(" ", strip=True)
+        else:
+            text = el.get_text(" ", strip=True)
+        if text.strip():
+            paragraphs.append(text)
     links = []
     seen = set()
     for a in main.find_all("a", href=True):

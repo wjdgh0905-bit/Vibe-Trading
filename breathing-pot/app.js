@@ -140,6 +140,7 @@
       lastStageUpAt: 0,
       lastStageUpDayKey: '',
       whispersSeen: {},
+      whisperN: {},                 // {n} value a templated line was first heard with (journal copy)
       recentWhispers: [],
       lastTapWhisperAt: 0,
       pressed: [],
@@ -165,12 +166,30 @@
     var out = Object.assign(f, s);
     out.settings = Object.assign(fresh().settings, (s.settings && typeof s.settings === 'object') ? s.settings : {});
     out.firsts = Object.assign(fresh().firsts, (s.firsts && typeof s.firsts === 'object') ? s.firsts : {});
+    var t0 = now();
+    var num = function (v) { return typeof v === 'number' && isFinite(v); };
+    // a damaged or hand-edited record must never turn growth into NaN or break the journal
     if (!Array.isArray(out.pressed)) out.pressed = [];
+    out.pressed = out.pressed.filter(function (p) { return p && typeof p === 'object'; }).map(function (p) {
+      var c = Object.assign({ id: 'p_' + t0, plantId: 'bean', plantSeed: 0, plantedAt: 0, bloomedAt: 0, gatheredAt: 0, daysTogether: 0, note: '' }, p);
+      c.id = String(c.id); c.note = String(c.note || '').slice(0, 40);
+      if (!PLANT_NAMES[c.plantId]) c.plantId = 'bean';
+      ['plantSeed', 'plantedAt', 'bloomedAt', 'gatheredAt', 'daysTogether'].forEach(function (k) { if (!num(c[k])) c[k] = 0; });
+      return c;
+    });
     if (!Array.isArray(out.unlocked) || out.unlocked.indexOf('bean') === -1) out.unlocked = ['bean'].concat(Array.isArray(out.unlocked) ? out.unlocked : []);
+    out.unlocked = out.unlocked.filter(function (id) { return !!PLANT_NAMES[id]; });
     if (!Array.isArray(out.recentWhispers)) out.recentWhispers = [];
     if (!out.whispersSeen || typeof out.whispersSeen !== 'object') out.whispersSeen = {};
+    if (!out.whisperN || typeof out.whisperN !== 'object') out.whisperN = {};
     if (!out.moods || typeof out.moods !== 'object') out.moods = {};
-    if (typeof out.gp !== 'number' || !isFinite(out.gp)) out.gp = 0;
+    if (!num(out.gp) || out.gp < 0) out.gp = 0;
+    ['lastSeen', 'plantedAt', 'firstSeen'].forEach(function (k) { if (!num(out[k])) out[k] = t0; });
+    ['lastStageUpAt', 'lastTapWhisperAt', 'breaths'].forEach(function (k) { if (!num(out[k]) || out[k] < 0) out[k] = 0; });
+    if (!num(out.daysTogether) || out.daysTogether < 1) out.daysTogether = 1;
+    if (!num(out.plantSeed)) out.plantSeed = Math.floor(t0 / 1000);
+    if (typeof out.lastDayKey !== 'string') out.lastDayKey = '';
+    if (typeof out.lastStageUpDayKey !== 'string') out.lastStageUpDayKey = '';
     out.hydration = clamp(typeof out.hydration === 'number' && isFinite(out.hydration) ? out.hydration : 80, 0, 100);
     if (!PLANT_NAMES[out.plantId]) out.plantId = 'bean';
     if (['auto', 'on', 'off'].indexOf(out.settings.motion) === -1) out.settings.motion = 'auto';
@@ -245,25 +264,53 @@
   function isThirsty() { return state.hydration <= THIRSTY_AT; }
   function isBloomed() { return stageOf(state.gp) >= 5; }
 
-  /* live tick: advance + stage-up detection */
+  /* live tick: advance + stage-up detection. The clock only starts after the first watering
+   * (spec §4.2: the seed stays bare through the first-run bubbles). */
   function tick() {
+    if (!state.onboarded) { state.lastSeen = now(); return; }
     var before = stageOf(state.gp);
     advance(state, now());
     var after = stageOf(state.gp);
-    if (after > before) onStageUp(after);
+    if (after > before) onStageUp(after, false);
   }
-  function onStageUp(stage) {
-    state.lastStageUpAt = now();
-    state.lastStageUpDayKey = dayKey();
+  /* offline catch-up (boot, import): same as tick() but the stage-up is announced quietly */
+  function catchUp() {
+    if (!state.onboarded) { state.lastSeen = now(); return; }
+    var before = stageOf(state.gp);
+    advance(state, now());
+    var after = stageOf(state.gp);
+    if (after > before) onStageUp(after, true);
+  }
+  function onStageUp(stage, offline) {
+    var t = now();
+    if (offline) {
+      // the threshold was crossed while away: estimate when (hydrated-rate bound), never before the last visit
+      var est = t - Math.max(0, (state.gp - THRESH[stage]) * 60000);
+      state.lastStageUpAt = Math.max(lastSeenBeforeOpen || 0, est);
+      state.lastStageUpDayKey = dayKey(new Date(state.lastStageUpAt));
+    } else {
+      state.lastStageUpAt = t;
+      state.lastStageUpDayKey = dayKey();
+    }
     renderScene();
+    if (offline) { pendingStage = stage; save(); return; }   // whispered after the greeting (flushStageWhisper)
     var g = $('plant');
     if (g) { g.classList.remove('stageup'); void g.offsetWidth; g.classList.add('stageup'); setTimeout(function () { g.classList.remove('stageup'); }, 1300); }
     vib(30);
     snd('chime', 'stage');
+    stageWhisper(stage);
+  }
+  var pendingStage = 0;
+  function stageWhisper(stage) {
     say('stage');
     if (stage >= 5 && !state.firsts.bloom) { state.firsts.bloom = true; say('first', { firstId: 'bloom' }); }
     if (stage >= 5) checkUnlocks();
     save();
+  }
+  function flushStageWhisper() {
+    if (!pendingStage) return;
+    var s = pendingStage; pendingStage = 0;
+    stageWhisper(s);
   }
 
   function checkDay() {
@@ -383,7 +430,7 @@
   }
 
   /* ═══════════════════════════ 7. whisper bubble ═══════════════════════════ */
-  var bubble = { queue: [], visible: false, shownAt: 0, hideTimer: 0, pumpTimer: 0, swapTimer: 0, lastId: '' };
+  var bubble = { queue: [], visible: false, shownAt: 0, hideTimer: 0, pumpTimer: 0, swapTimer: 0, lastId: '', holdUntil: 0 };
 
   function whisperCtx(extra) {
     var absent = Math.floor(Math.max(0, now() - (lastSeenBeforeOpen || state.lastSeen)) / DAY_MS);
@@ -430,9 +477,12 @@
     // a crossfade in progress counts as "visible": the incoming line still needs its 5 s dwell
     var wait = bubble.swapTimer ? BUBBLE_FADE_MS + BUBBLE_MIN_MS
       : bubble.visible ? Math.max(0, BUBBLE_MIN_MS - (now() - bubble.shownAt)) : 0;
+    wait = Math.max(wait, bubble.holdUntil - now());
+    // a sheet covers the bubble: keep the line until the sheet closes (e.g. the unlock after gathering)
+    if (sheets.current) wait = Math.max(wait, 500);
     bubble.pumpTimer = setTimeout(function () {
       bubble.pumpTimer = 0;
-      if (bubble.swapTimer || (bubble.visible && now() - bubble.shownAt < BUBBLE_MIN_MS - 50)) { pump(); return; }
+      if (sheets.current || now() < bubble.holdUntil || bubble.swapTimer || (bubble.visible && now() - bubble.shownAt < BUBBLE_MIN_MS - 50)) { pump(); return; }
       var item = bubble.queue.shift();
       if (item) showBubble(item.line, item.opts);
       pump();
@@ -673,7 +723,8 @@
     clearSitTimers();
     if (ov) { ov.classList.remove('show'); sit.closing = setTimeout(function () { ov.hidden = true; sit.closing = 0; }, isRM() ? 200 : 800); }
     var wasFirst = !state.firsts.sit;
-    say('sit', { sitCount: sit.count });
+    var line = say('sit', { sitCount: sit.count });
+    if (line && line.id === 'sit_end' && !state.whisperN.sit_end) state.whisperN.sit_end = sit.count;   // remembered as first heard
     if (sit.count > 0 && wasFirst) state.firsts.sit = true;
     checkUnlocks();
     renderScene();
@@ -705,9 +756,9 @@
       sheets.lastFocus = document.activeElement;
     }
     sheets.current = id;
-    if (id === 'sheetJournal') renderJournal();
-    if (id === 'sheetSettings') renderSettings();
-    if (id === 'sheetSeeds') buildSeedCards();
+    if (id === 'sheetJournal') safe(renderJournal);
+    if (id === 'sheetSettings') safe(renderSettings);
+    if (id === 'sheetSeeds') safe(buildSeedCards);
     el.hidden = false;
     el.style.transform = '';
     el.scrollTop = 0;
@@ -771,7 +822,7 @@
         sheet.style.transform = '';
         if (dy >= 80) closeSheet();
       };
-      on(g, 'pointerup', done); on(g, 'pointercancel', done);
+      on(g, 'pointerup', done); on(g, 'pointercancel', done); on(g, 'lostpointercapture', done);
     });
   }
 
@@ -866,7 +917,8 @@
     if (empty) empty.hidden = entries.length > 0;
     var shown = journal.whispersExpanded ? entries : entries.slice(0, 5);
     shown.forEach(function (e) {
-      var line = lineById(e.id, whisperCtx({ sitCount: state.breaths }));
+      // templated lines are shown as first heard, never with the growing lifetime total
+      var line = lineById(e.id, whisperCtx({ sitCount: state.whisperN[e.id] || Math.min(state.breaths, 6) || 1 }));
       if (!line) return;
       var li = document.createElement('li');
       var txt = document.createElement('span'); txt.className = 'txt'; txt.textContent = line.text;
@@ -1168,16 +1220,29 @@
       var s = parseImport(ta ? ta.value : '');
       if (!s) { flashLabel('importLabel', '읽을 수 없는 글이에요', 2000); return; }
       showConfirm('지금 화분 대신 이 기록을 불러올까요?', '네, 불러와요', function () {
+        if (sit.open) endSit();
+        endHold();
         state = s;
         lastSeenBeforeOpen = state.lastSeen;
-        advance(state, now());
+        catchUp();
         checkDay();
+        checkUnlocks();
+        flushStageWhisper();
         saveNow();
         applyTextSize(); applyMotion(); snd('setEnabled', !!state.settings.sound);
         updateSky(); renderAll();
         if (ta) ta.value = '';
         closeSheet();
-        document.body.classList.toggle('onboarding', !state.onboarded);
+        if (state.onboarded) {
+          if (onboard.active) {                 // an onboarded record replaces an unfinished first run
+            onboard.active = false;
+            document.body.classList.remove('onboarding');
+            Array.prototype.forEach.call(document.querySelectorAll('.reveal'), function (el) { el.classList.remove('reveal'); });
+          }
+        } else if (!onboard.active) {           // a fresh record: run the first-run bubbles again
+          onboard.step = 0;
+          startOnboarding();
+        }
       });
     });
     on($('btnReplant'), 'click', function () {
@@ -1199,12 +1264,13 @@
   }
 
   /* ═══════════════════════════ 16. onboarding (spec §4.2) ═══════════════════════════ */
-  var onboard = { step: 0, lastAdvance: 0, active: false };
+  var onboard = { step: 0, lastAdvance: 0, active: false, wired: false };
   function startOnboarding() {
     onboard.active = true;
     document.body.classList.add('onboarding');
-    setTimeout(function () { onboardStep(); }, 1500);
-    on($('scene'), 'pointerup', onboardTap);
+    // the timer only opens the sequence; a tap that already advanced it is never overridden
+    setTimeout(function () { if (onboard.active && onboard.step === 0) onboardStep(); }, 1500);
+    if (!onboard.wired) { onboard.wired = true; on($('scene'), 'pointerup', onboardTap); }
   }
   function onboardTap(e) {
     if (!onboard.active || onboard.step >= 3) return;
@@ -1252,18 +1318,22 @@
     var mood = skyMood(dayKey());
     var kind = 'open';
     var milestone = [7, 30, 100].indexOf(state.daysTogether) !== -1 && !state.whispersSeen['days_' + state.daysTogether];
-    if (absent >= 2 || isThirsty() || firstOpenToday) kind = 'open';
+    // priority: absence / thirst > days milestone (exact day, once) > first open > mood > season > default
+    if (absent >= 2 || isThirsty()) kind = 'open';
     else if (milestone) kind = 'days';
+    else if (firstOpenToday) kind = 'open';
     else if ((mood === 'rain' || mood === 'cloud') && Math.random() < 0.3) kind = 'mood';
     else if (Math.random() < 0.15) kind = 'season';
     say(kind);
     if (band() === 'night' && !state.firsts.nightVisit) { state.firsts.nightVisit = true; say('first', { firstId: 'nightVisit' }); save(); }
+    flushStageWhisper();                   // a stage reached while away is told after the greeting
   }
 
   function boot() {
     state = load();
     lastSeenBeforeOpen = state.lastSeen;
-    advance(state, now());
+    bubble.holdUntil = now() + 1500;       // scene fades in first; any boot whisper (stage-up, greeting) follows
+    catchUp();
     checkDay();
     applyTextSize();
     applyMotion();
@@ -1295,6 +1365,7 @@
       if (document.hidden) {
         document.body.classList.add('hidden');
         endHold();
+        if (sit.open) endSit();              // breaths are only counted while the player is present
         saveNow();
         snd('suspend');
       } else {

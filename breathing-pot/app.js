@@ -20,7 +20,11 @@
   var TAP_MAX_MS = 250, TAP_MAX_PX = 8;
   var THRESH = [0, 2, 60, 480, 1500, 3600];
   var STAGE_NAMES = ['씨앗', '새싹', '떡잎', '줄기', '무성한 잎', '꽃'];
-  var PLANT_NAMES = { bean: '강낭콩', succulent: '다육이', dandelion: '민들레', morningglory: '나팔꽃', pine: '작은 소나무' };
+  /* prototype-less: a hand-edited / imported id such as 'constructor' or '__proto__' must
+   * miss the table instead of inheriting Object.prototype and passing validation. */
+  var PLANT_NAMES = Object.assign(Object.create(null), { bean: '강낭콩', succulent: '다육이', dandelion: '민들레', morningglory: '나팔꽃', pine: '작은 소나무' });
+  var MOOD_NAMES = Object.assign(Object.create(null), { sun: '맑음', cloud: '구름', rain: '비', wind: '바람' });
+  var MOOD_KEYS = ['sun', 'cloud', 'rain', 'wind'];
 
   var BUBBLE_FADE_MS = 600, BUBBLE_MIN_MS = 5000, BUBBLE_QUIET_MS = 25000;
   var TAP_WHISPER_COOLDOWN = 20000;
@@ -32,15 +36,15 @@
   var SUNSET = [17.6, 18.1, 18.6, 19.0, 19.4, 19.8, 19.8, 19.4, 18.7, 18.0, 17.4, 17.3];
 
   var PALETTES = {
-    morning: { skyA: '#FBEFE4', skyB: '#F3E6DD', wall: '#F5ECE2', sill: '#EADCCD', sillLine: '#DCCBB9', onScene: '#8A847D', ring: 'rgba(231,183,166,.8)' },
-    day:     { skyA: '#F6EFE6', skyB: '#E8EEF2', wall: '#F3ECE3', sill: '#E9DCCF', sillLine: '#DCCBB9', onScene: '#8A847D', ring: 'rgba(231,183,166,.8)' },
-    evening: { skyA: '#F4DFD8', skyB: '#D9CFE3', wall: '#EFE3E0', sill: '#E4D3C7', sillLine: '#DCCBB9', onScene: '#7E7770', ring: 'rgba(231,183,166,.8)' },
+    morning: { skyA: '#FBEFE4', skyB: '#F3E6DD', wall: '#F5ECE2', sill: '#EADCCD', sillLine: '#DCCBB9', onScene: '#6A645E', ring: 'rgba(231,183,166,.8)' },
+    day:     { skyA: '#F6EFE6', skyB: '#E8EEF2', wall: '#F3ECE3', sill: '#E9DCCF', sillLine: '#DCCBB9', onScene: '#6A645E', ring: 'rgba(231,183,166,.8)' },
+    evening: { skyA: '#F4DFD8', skyB: '#D9CFE3', wall: '#EFE3E0', sill: '#E4D3C7', sillLine: '#DCCBB9', onScene: '#6A645E', ring: 'rgba(231,183,166,.8)' },
     night:   { skyA: '#2E3446', skyB: '#4A4F66', wall: '#3A3F52', sill: '#55596E', sillLine: '#3F4356', onScene: '#E9E4DC', ring: 'rgba(233,228,220,.6)' }
   };
   var MOOD_GREY = '#D8D6D2';
 
   /* Fallback lines used only if whispers.js failed to load (strings identical to spec §12). */
-  var FALLBACK_LINES = {
+  var FALLBACK_LINES = Object.assign(Object.create(null), {
     onboard_1: '안녕하세요. 저는 작은 씨앗이에요.',
     onboard_2: '여기서 천천히 자랄 거예요. 서두를 일은 없어요.',
     onboard_3: '준비되면 꾹 눌러 물을 주세요. 천천히요.',
@@ -48,7 +52,7 @@
     new_seed: '안녕하세요. 새 씨앗이에요. 천천히 시작해요.',
     storage_fail: '오늘은 기억을 남기지 못할 것 같아요. 그래도 함께 있어요.',
     open_default_1: '오늘도 와 주셨네요.'
-  };
+  });
 
   /* ═══════════════════════════ 2. utils ═══════════════════════════ */
   function clamp(v, a, b) { return v < a ? a : v > b ? b : v; }
@@ -83,6 +87,19 @@
   function raf(fn) { (window.requestAnimationFrame || function (f) { setTimeout(f, 16); })(fn); }
   function now() { return Date.now(); }
   function safe(fn) { try { return fn(); } catch (e) { if (window.console && console.warn) console.warn('[sumgyeol]', e); } }
+
+  /* Restart a one-shot CSS animation on the plant group. SVGGElement has no offsetWidth, so the
+   * style flush has to come from a geometry read the element actually supports; the removal timer
+   * is kept per class so a re-tap gets the full duration instead of the first tap's leftover. */
+  var animTimers = Object.create(null);
+  function restartAnim(el, cls, ms) {
+    if (!el) return;
+    if (animTimers[cls]) { clearTimeout(animTimers[cls]); animTimers[cls] = 0; }
+    el.classList.remove(cls);
+    void el.getBoundingClientRect();
+    el.classList.add(cls);
+    animTimers[cls] = setTimeout(function () { el.classList.remove(cls); animTimers[cls] = 0; }, ms);
+  }
 
   function hasPlants() { return typeof window.Plants === 'object' && !!window.Plants; }
   function hasWhispers() { return typeof window.Whispers === 'object' && !!window.Whispers; }
@@ -119,6 +136,7 @@
   /* ═══════════════════════════ 3. state (spec §2) ═══════════════════════════ */
   var state = null;
   var storageOK = true;
+  var storageWarned = false;           // the 기억을 남기지 못할 whisper is told once per session
   var saveTimer = 0;
   var firstOpenToday = false;
   var lastSeenBeforeOpen = 0;          // lastSeen as loaded, before offline catch-up (absence days)
@@ -139,12 +157,12 @@
       breaths: 0,
       lastStageUpAt: 0,
       lastStageUpDayKey: '',
-      whispersSeen: {},
-      whisperN: {},                 // {n} value a templated line was first heard with (journal copy)
+      whispersSeen: Object.create(null),
+      whisperN: Object.create(null),   // {n} value a templated line was first heard with (journal copy)
       recentWhispers: [],
       lastTapWhisperAt: 0,
       pressed: [],
-      moods: {},
+      moods: Object.create(null),
       unlocked: ['bean'],
       firsts: { thirstyRevive: false, nightVisit: false, rainVisit: false, sit: false, bloom: false },
       settings: { sound: false, haptic: true, motion: 'auto', textSize: 0 },
@@ -154,14 +172,18 @@
   }
 
   function migrate(s) {
-    if (!s || typeof s !== 'object' || !s.v) s = fresh();
-    while (s.v < CURRENT_V) {
+    if (!s || typeof s !== 'object') s = fresh();
+    // a hand-edited / hostile `v` (-1e16, -Infinity, "1", 99) must never spin the upgrade loop
+    var v = Number(s.v);
+    if (!isFinite(v) || v !== Math.floor(v) || v < 1 || v > CURRENT_V) { s = fresh(); v = CURRENT_V; }
+    s.v = v;
+    for (; s.v < CURRENT_V; s.v++) {
       switch (s.v) {
         /* case 1: upgrade v1 → v2 here */
         default: break;
       }
-      s.v++;
     }
+    s.v = CURRENT_V;
     var f = fresh();
     var out = Object.assign(f, s);
     out.settings = Object.assign(fresh().settings, (s.settings && typeof s.settings === 'object') ? s.settings : {});
@@ -170,23 +192,38 @@
     var num = function (v) { return typeof v === 'number' && isFinite(v); };
     // a damaged or hand-edited record must never turn growth into NaN or break the journal
     if (!Array.isArray(out.pressed)) out.pressed = [];
-    out.pressed = out.pressed.filter(function (p) { return p && typeof p === 'object'; }).map(function (p) {
-      var c = Object.assign({ id: 'p_' + t0, plantId: 'bean', plantSeed: 0, plantedAt: 0, bloomedAt: 0, gatheredAt: 0, daysTogether: 0, note: '' }, p);
-      c.id = String(c.id); c.note = String(c.note || '').slice(0, 40);
+    var seenIds = Object.create(null);
+    out.pressed = out.pressed.filter(function (p) { return p && typeof p === 'object'; }).map(function (p, i) {
+      var c = Object.assign({ id: '', plantId: 'bean', plantSeed: 0, plantedAt: 0, bloomedAt: 0, gatheredAt: 0, daysTogether: 0, note: '' }, p);
+      c.id = String(c.id || ('p_' + t0 + '_' + i));
+      if (seenIds[c.id]) c.id = 'p_' + t0 + '_' + i;          // duplicate ids make the detail toggle ambiguous
+      seenIds[c.id] = true;
+      c.note = String(c.note || '').slice(0, 40);
       if (!PLANT_NAMES[c.plantId]) c.plantId = 'bean';
       ['plantSeed', 'plantedAt', 'bloomedAt', 'gatheredAt', 'daysTogether'].forEach(function (k) { if (!num(c[k])) c[k] = 0; });
+      c.daysTogether = Math.max(0, Math.floor(c.daysTogether));
       return c;
     });
     if (!Array.isArray(out.unlocked) || out.unlocked.indexOf('bean') === -1) out.unlocked = ['bean'].concat(Array.isArray(out.unlocked) ? out.unlocked : []);
     out.unlocked = out.unlocked.filter(function (id) { return !!PLANT_NAMES[id]; });
     if (!Array.isArray(out.recentWhispers)) out.recentWhispers = [];
-    if (!out.whispersSeen || typeof out.whispersSeen !== 'object') out.whispersSeen = {};
-    if (!out.whisperN || typeof out.whisperN !== 'object') out.whisperN = {};
-    if (!out.moods || typeof out.moods !== 'object') out.moods = {};
+    // whispersSeen / whisperN / moods are keyed by data: rebuild them prototype-less, keeping
+    // only in-domain values so the journal never renders inherited members or junk classes
+    out.whispersSeen = numMap(out.whispersSeen);
+    out.whisperN = numMap(out.whisperN);
+    out.moods = (function (m) {
+      var o = Object.create(null);
+      if (m && typeof m === 'object') Object.keys(m).forEach(function (k) {
+        if (/^\d{4}-\d{2}-\d{2}$/.test(k) && MOOD_KEYS.indexOf(m[k]) !== -1) o[k] = m[k];
+      });
+      return o;
+    })(out.moods);
     if (!num(out.gp) || out.gp < 0) out.gp = 0;
     ['lastSeen', 'plantedAt', 'firstSeen'].forEach(function (k) { if (!num(out[k])) out[k] = t0; });
     ['lastStageUpAt', 'lastTapWhisperAt', 'breaths'].forEach(function (k) { if (!num(out[k]) || out[k] < 0) out[k] = 0; });
+    out.breaths = Math.min(Math.floor(out.breaths), 1e7);
     if (!num(out.daysTogether) || out.daysTogether < 1) out.daysTogether = 1;
+    out.daysTogether = Math.max(1, Math.floor(out.daysTogether));
     if (!num(out.plantSeed)) out.plantSeed = Math.floor(t0 / 1000);
     if (typeof out.lastDayKey !== 'string') out.lastDayKey = '';
     if (typeof out.lastStageUpDayKey !== 'string') out.lastStageUpDayKey = '';
@@ -195,6 +232,16 @@
     if (['auto', 'on', 'off'].indexOf(out.settings.motion) === -1) out.settings.motion = 'auto';
     if ([0, 1, 2].indexOf(out.settings.textSize) === -1) out.settings.textSize = 0;
     return out;
+  }
+
+  /* {id: timestamp} maps rebuilt prototype-less, dropping non-numeric values */
+  function numMap(m) {
+    var o = Object.create(null);
+    if (m && typeof m === 'object') Object.keys(m).forEach(function (k) {
+      var v = m[k];
+      if (typeof v === 'number' && isFinite(v) && v >= 0) o[k] = v;
+    });
+    return o;
   }
 
   function load() {
@@ -210,8 +257,12 @@
     if (!state) return;
     state.lastSeen = now();
     if (saveTimer) { clearTimeout(saveTimer); saveTimer = 0; }
-    try { window.localStorage.setItem(KEY, JSON.stringify(state)); }
-    catch (e) { storageOK = false; }
+    try { window.localStorage.setItem(KEY, JSON.stringify(state)); storageOK = true; }
+    catch (e) {
+      // quota / private-mode writes fail long after boot: say it once, then stay quiet (spec §2)
+      storageOK = false;
+      if (!storageWarned) { storageWarned = true; state.storageHintShown = true; sayId('storage_fail'); }
+    }
   }
   function save() {
     if (saveTimer) clearTimeout(saveTimer);
@@ -294,8 +345,7 @@
     }
     renderScene();
     if (offline) { pendingStage = stage; save(); return; }   // whispered after the greeting (flushStageWhisper)
-    var g = $('plant');
-    if (g) { g.classList.remove('stageup'); void g.offsetWidth; g.classList.add('stageup'); setTimeout(function () { g.classList.remove('stageup'); }, 1300); }
+    restartAnim($('plant'), 'stageup', 1300);
     vib(30);
     snd('chime', 'stage');
     stageWhisper(stage);
@@ -411,7 +461,16 @@
       });
     }
     var days = $('days');
-    if (days) days.textContent = '함께한 날 ' + state.daysTogether + '일';
+    if (days) {
+      var dtxt = '함께한 날 ' + state.daysTogether + '일';
+      if (days.textContent !== dtxt) days.textContent = dtxt;
+    }
+    // the scene has no text: the plant's name carries species / stage / thirst (no numbers, spec §8)
+    var svg = $('plantSvg');
+    if (svg) {
+      var lbl = plantName(state.plantId) + ' · ' + stageName(state.plantId, stageOf(state.gp)) + (isThirsty() ? ', 조금 목말라요' : '');
+      if (svg.getAttribute('aria-label') !== lbl) svg.setAttribute('aria-label', lbl);
+    }
     renderHoldLabel();
     document.body.classList.toggle('thirsty', isThirsty());
   }
@@ -420,6 +479,8 @@
     if (!btn || !label) return;
     var txt = holding ? '천천히…' : state.hydration >= 98 ? '충분히 마셨어요' : '꾹 눌러 물 주기';
     if (label.textContent !== txt) label.textContent = txt;
+    // the accessible name must match the visible label in every state (WCAG 2.5.3)
+    if (btn.getAttribute('aria-label') !== txt) btn.setAttribute('aria-label', txt);
     btn.classList.toggle('full', !holding && state.hydration >= 98);
   }
   function renderAll() {
@@ -551,6 +612,8 @@
 
   function startHold(e) {
     if (hold.active || hold.graceTimer) return;
+    var cf = $('confirm');
+    if (sheets.current || sit.open || (cf && !cf.hidden)) return;     // a modal is open: the pot is not reachable
     var btn = $('btnHold');
     if (e && typeof e.pointerId === 'number') {
       hold.pointerId = e.pointerId;
@@ -663,10 +726,16 @@
       if (ok) onPlantTap();
     });
     on(svg, 'pointercancel', function () { tapStart = null; });
+    // the same little greeting from the keyboard (the svg carries tabindex="0")
+    on(svg, 'keydown', function (e) {
+      if (e.key !== ' ' && e.key !== 'Enter' && e.key !== 'Spacebar') return;
+      e.preventDefault();
+      if (e.repeat) return;
+      onPlantTap();
+    });
   }
   function onPlantTap() {
-    var g = $('plant');
-    if (g) { g.classList.remove('tapped'); void g.offsetWidth; g.classList.add('tapped'); setTimeout(function () { g.classList.remove('tapped'); }, 1400); }
+    restartAnim($('plant'), 'tapped', 1400);
     vib(10);
     snd('tap');
     if (!state.onboarded) return;
@@ -676,7 +745,7 @@
   }
 
   /* ═══════════════════════════ 11. sit-together overlay (spec §4.6) ═══════════════════════════ */
-  var sit = { open: false, timers: [], progress: 0, count: 0, max: 6, cycle: 10000, startedAt: 0, closing: 0 };
+  var sit = { open: false, timers: [], progress: 0, count: 0, max: 6, cycle: 10000, startedAt: 0, closing: 0, lastFocus: null };
 
   function sitTimer(fn, ms) { var id = setTimeout(fn, ms); sit.timers.push(id); return id; }
   function clearSitTimers() { sit.timers.forEach(clearTimeout); sit.timers.length = 0; if (sit.progress) { clearInterval(sit.progress); sit.progress = 0; } }
@@ -695,7 +764,10 @@
     sit.startedAt = now();
     var txt = $('breathText'); if (txt) { txt.textContent = '들이쉬어요…'; txt.classList.remove('fade'); }
     var bar = $('sitProgress'); if (bar) bar.style.width = '0%';
+    sit.lastFocus = document.activeElement;
     ov.hidden = false;
+    updateModalInert();
+    try { ov.focus({ preventScroll: true }); } catch (e) { ov.focus(); }
     raf(function () { ov.classList.add('show'); });
     breathStep();
     sit.progress = setInterval(function () {
@@ -722,6 +794,9 @@
     sit.open = false;
     clearSitTimers();
     if (ov) { ov.classList.remove('show'); sit.closing = setTimeout(function () { ov.hidden = true; sit.closing = 0; }, isRM() ? 200 : 800); }
+    updateModalInert();
+    restoreFocus(sit.lastFocus);
+    sit.lastFocus = null;
     var wasFirst = !state.firsts.sit;
     var line = say('sit', { sitCount: sit.count });
     if (line && line.id === 'sit_end' && !state.whisperN.sit_end) state.whisperN.sit_end = sit.count;   // remembered as first heard
@@ -733,12 +808,71 @@
   function wireSit() {
     on($('btnSit'), 'click', function () { if (state.onboarded) openSit(); });
     on($('sitOverlay'), 'click', function () { endSit(); });
+    // "any tap ends it" (spec §4.6) needs a keyboard equivalent while the overlay holds focus
+    on($('sitOverlay'), 'keydown', function (e) {
+      if (e.key !== ' ' && e.key !== 'Enter' && e.key !== 'Spacebar') return;
+      e.preventDefault();
+      endSit();
+    });
   }
 
   /* ═══════════════════════════ 12. sheets + scrim + confirm (spec §4.3–4.5) ═══════════════════════════ */
-  var sheets = { current: null, lastFocus: null, closeTimer: 0 };
+  var sheets = { current: null, lastFocus: null, closeTimer: 0, closing: null };
   function isRM() { return document.body.classList.contains('rm'); }
   function isOpen(id) { return sheets.current === id; }
+
+  /* ── focus containment (spec §8: dialogs are aria-modal) ──────────────────────────
+   * Everything outside the topmost dialog is made inert, so Tab, Space and taps cannot
+   * reach the scene controls behind the scrim. A Tab handler keeps the ring closed on
+   * engines that route past the last element instead of wrapping. */
+  var HAS_INERT = typeof HTMLElement !== 'undefined' && 'inert' in HTMLElement.prototype;
+  function setInert(el, on) {
+    if (!el) return;
+    if (HAS_INERT) el.inert = !!on;
+    else if (on) el.setAttribute('aria-hidden', 'true');
+    if (!on && !HAS_INERT) el.removeAttribute('aria-hidden');
+  }
+  function topDialog() {
+    var c = $('confirm');
+    if (c && !c.hidden) return c;
+    if (sheets.current) return $(sheets.current);
+    if (sit.open) return $('sitOverlay');
+    return null;
+  }
+  function updateModalInert() {
+    var top = topDialog();
+    var bg = [$('scene'), $('sitOverlay'), $('sheetJournal'), $('sheetSeeds'), $('sheetSettings')];
+    bg.forEach(function (el) { setInert(el, !!top && el !== top); });
+  }
+  function focusables(root) {
+    var out = [];
+    if (!root) return out;
+    var els = root.querySelectorAll('button, [href], input, select, textarea, summary, [tabindex]');
+    Array.prototype.forEach.call(els, function (el) {
+      if (el.disabled || el.hidden) return;
+      var ti = el.getAttribute('tabindex');
+      if (ti !== null && parseInt(ti, 10) < 0) return;
+      if (!el.getClientRects().length) return;
+      out.push(el);
+    });
+    return out;
+  }
+  function trapTab(e) {
+    if (e.key !== 'Tab') return;
+    var dlg = topDialog();
+    if (!dlg) return;
+    var f = focusables(dlg);
+    if (!f.length) { e.preventDefault(); try { dlg.focus({ preventScroll: true }); } catch (err) { /* ignore */ } return; }
+    var i = f.indexOf(document.activeElement);
+    if (i === -1) { e.preventDefault(); (e.shiftKey ? f[f.length - 1] : f[0]).focus(); return; }
+    if (e.shiftKey && i === 0) { e.preventDefault(); f[f.length - 1].focus(); }
+    else if (!e.shiftKey && i === f.length - 1) { e.preventDefault(); f[0].focus(); }
+  }
+  function restoreFocus(f) {
+    if (f && typeof f.focus === 'function' && f !== document.body && document.contains(f)) {
+      try { f.focus({ preventScroll: true }); } catch (e) { /* ignore */ }
+    }
+  }
   function scrim(show) {
     var s = $('scrim');
     if (!s) return;
@@ -749,6 +883,13 @@
     var el = $(id);
     if (!el) return;
     if (sheets.closeTimer) { clearTimeout(sheets.closeTimer); sheets.closeTimer = 0; }
+    // a close that was still animating out would otherwise stay un-hidden forever
+    if (sheets.closing && sheets.closing !== el) {
+      var c = sheets.closing;
+      c.classList.remove('open'); c.hidden = true;
+      if (c.id === 'sheetSeeds') safe(afterSeedsClosed);
+    }
+    sheets.closing = null;
     if (sheets.current && sheets.current !== id) {        // swap sheets without dropping the scrim
       var prev = $(sheets.current);
       if (prev) { prev.classList.remove('open'); prev.hidden = true; }
@@ -763,6 +904,7 @@
     el.style.transform = '';
     el.scrollTop = 0;
     scrim(true);
+    updateModalInert();
     raf(function () {
       el.classList.add('open');
       var title = el.querySelector('.sheet-title');
@@ -778,12 +920,18 @@
     if (el) {
       el.classList.remove('open', 'dragging');
       el.style.transform = '';
-      sheets.closeTimer = setTimeout(function () { el.hidden = true; sheets.closeTimer = 0; if (id === 'sheetSeeds') afterSeedsClosed(); }, isRM() ? 200 : 500);
+      sheets.closing = el;
+      sheets.closeTimer = setTimeout(function () {
+        el.hidden = true; sheets.closeTimer = 0;
+        if (sheets.closing === el) sheets.closing = null;
+        if (id === 'sheetSeeds') afterSeedsClosed();
+      }, isRM() ? 200 : 500);
     }
     scrim(false);
+    updateModalInert();
     var f = sheets.lastFocus;
     sheets.lastFocus = null;
-    if (f && typeof f.focus === 'function' && document.contains(f)) { try { f.focus({ preventScroll: true }); } catch (e) { /* ignore */ } }
+    restoreFocus(f);
   }
   function wireSheets() {
     Array.prototype.forEach.call(document.querySelectorAll('[data-close]'), function (b) { on(b, 'click', closeSheet); });
@@ -796,6 +944,7 @@
       if (sit.open) { endSit(); return; }
       if (sheets.current) closeSheet();
     });
+    on(document, 'keydown', trapTab);
     Array.prototype.forEach.call(document.querySelectorAll('.sheet'), wireDrag);
   }
   /* drag-down ≥ 80 px on the handle / head closes the sheet */
@@ -828,14 +977,17 @@
 
   /* inline confirm card */
   var confirmCb = null;
+  var confirmLastFocus = null;
   function showConfirm(text, yesLabel, onYes) {
     var c = $('confirm');
     if (!c) return;
     $('confirmText').textContent = text;
     $('confirmYes').textContent = yesLabel;
     confirmCb = onYes;
+    confirmLastFocus = document.activeElement;
     c.hidden = false;
     if (!sheets.current) scrim(true);
+    updateModalInert();
     raf(function () { try { $('confirmNo').focus({ preventScroll: true }); } catch (e) { /* ignore */ } });
   }
   function hideConfirm() {
@@ -844,6 +996,10 @@
     c.hidden = true;
     confirmCb = null;
     if (!sheets.current) scrim(false);
+    updateModalInert();
+    var f = confirmLastFocus;                 // focus goes back to what opened the card, not to <body>
+    confirmLastFocus = null;
+    restoreFocus(f);
   }
   function wireConfirm() {
     on($('confirmNo'), 'click', hideConfirm);
@@ -888,6 +1044,12 @@
       var d = document.createElement('span');
       d.className = 'dot' + (m ? ' ' + m : '') + (i === 0 ? ' today' : '');
       d.setAttribute('title', k);
+      // colour alone carries the mood: name each recorded day, hide the empty ones
+      if (m) {
+        var p = k.split('-');
+        d.setAttribute('role', 'listitem');
+        d.setAttribute('aria-label', (parseInt(p[1], 10)) + '월 ' + (parseInt(p[2], 10)) + '일 · ' + (MOOD_NAMES[m] || '') + (i === 0 ? ' (오늘)' : ''));
+      } else d.setAttribute('aria-hidden', 'true');
       dots.appendChild(d);
     }
   }
@@ -912,14 +1074,17 @@
   function renderWhisperList() {
     var list = $('whisperList'), empty = $('whisperEmpty'), more = $('btnMoreWhispers');
     if (!list) return;
-    var entries = whisperEntries();
+    // ids that no longer resolve to a line must not keep the empty state hidden or pad 더 보기
+    var entries = whisperEntries().map(function (e) {
+      // templated lines are shown as first heard, never with the growing lifetime total
+      e.line = lineById(e.id, whisperCtx({ sitCount: state.whisperN[e.id] || Math.min(state.breaths, 6) || 1 }));
+      return e;
+    }).filter(function (e) { return !!e.line; });
     list.textContent = '';
     if (empty) empty.hidden = entries.length > 0;
     var shown = journal.whispersExpanded ? entries : entries.slice(0, 5);
     shown.forEach(function (e) {
-      // templated lines are shown as first heard, never with the growing lifetime total
-      var line = lineById(e.id, whisperCtx({ sitCount: state.whisperN[e.id] || Math.min(state.breaths, 6) || 1 }));
-      if (!line) return;
+      var line = e.line;
       var li = document.createElement('li');
       var txt = document.createElement('span'); txt.className = 'txt'; txt.textContent = line.text;
       var date = document.createElement('span'); date.className = 'date'; date.textContent = fmtDate(e.ts);
@@ -963,7 +1128,12 @@
       var dsvg = $('pressedDetailSvg');
       if (dsvg && hasPlants()) safe(function () { window.Plants.renderStatic(dsvg, cur.plantId); });
       var meta = $('pressedDetailMeta');
-      if (meta) meta.textContent = plantName(cur.plantId) + ' · 함께한 날 ' + cur.daysTogether + '일 · ' + fmtDateLong(cur.plantedAt) + ' ~ ' + fmtDateLong(cur.bloomedAt || cur.gatheredAt);
+      if (meta) {
+        var end = cur.bloomedAt || cur.gatheredAt;
+        // a record without dates shows no range at all, never 1970.1.1
+        var range = (cur.plantedAt && end) ? ' · ' + fmtDateLong(cur.plantedAt) + ' ~ ' + fmtDateLong(end) : '';
+        meta.textContent = plantName(cur.plantId) + ' · 함께한 날 ' + cur.daysTogether + '일' + range;
+      }
       var note = $('pressedNote');
       if (note && note.value !== (cur.note || '')) note.value = cur.note || '';
       updateNoteCounter();
@@ -1139,7 +1309,29 @@
     var seg = $(id);
     if (!seg) return;
     Array.prototype.forEach.call(seg.querySelectorAll('[role=radio]'), function (b) {
-      b.setAttribute('aria-checked', b.getAttribute('data-value') === value ? 'true' : 'false');
+      var sel = b.getAttribute('data-value') === value;
+      b.setAttribute('aria-checked', sel ? 'true' : 'false');
+      b.setAttribute('tabindex', sel ? '0' : '-1');    // a radio group is one tab stop
+    });
+  }
+  /* arrow keys move and select inside a radiogroup (the expected radio interaction) */
+  function wireSegKeys(id) {
+    var seg = $(id);
+    if (!seg) return;
+    on(seg, 'keydown', function (e) {
+      var fwd = e.key === 'ArrowRight' || e.key === 'ArrowDown';
+      var back = e.key === 'ArrowLeft' || e.key === 'ArrowUp';
+      var home = e.key === 'Home', end = e.key === 'End';
+      if (!fwd && !back && !home && !end) return;
+      var radios = Array.prototype.slice.call(seg.querySelectorAll('[role=radio]'));
+      if (!radios.length) return;
+      var i = radios.indexOf(document.activeElement);
+      if (i === -1) for (var k = 0; k < radios.length; k++) if (radios[k].getAttribute('aria-checked') === 'true') i = k;
+      if (i === -1) i = 0;
+      var n = home ? 0 : end ? radios.length - 1 : (i + (fwd ? 1 : -1) + radios.length) % radios.length;
+      e.preventDefault();
+      radios[n].focus();
+      radios[n].click();                                // reuse the click path: state, apply*, render, save
     });
   }
   function applyTextSize() {
@@ -1259,6 +1451,8 @@
         try { window.location.reload(); } catch (e) { /* ignore */ }
       });
     });
+    wireSegKeys('setMotion');
+    wireSegKeys('setText');
     var importBtn = $('btnImport');
     if (importBtn && importBtn.firstElementChild && !importBtn.firstElementChild.id) importBtn.firstElementChild.id = 'importLabel';
   }
@@ -1354,10 +1548,10 @@
 
     if (!state.onboarded) startOnboarding();
     else setTimeout(firstWhisper, 1500);
-    if (!storageOK) setTimeout(function () { sayId('storage_fail'); }, state.onboarded ? 4000 : 9000);
+    if (!storageOK) { storageWarned = true; setTimeout(function () { sayId('storage_fail'); }, state.onboarded ? 4000 : 9000); }
 
     setInterval(tick, 1000);
-    setInterval(renderScene, 5000);
+    setInterval(function () { if (!document.hidden) renderScene(); }, 5000);   // visibilitychange re-renders on return
     setInterval(updateSky, 60000);
     setInterval(function () { if (isBloomed() && state.plantId === 'bean' && !document.hidden && !isRM() && hasPlants()) safe(function () { window.Plants.petalDrift($('fx'), state.plantId); }); }, 8000);
 

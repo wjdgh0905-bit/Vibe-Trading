@@ -8,7 +8,7 @@
 
 /* ---------- 6.1 tokens ---------- */
 :root {
-  --cream:#F6EFE6; --paper:#FFFDF9; --ink:#5B554F; --muted:#8A847D; --divider:#EEE9E1;
+  --cream:#F6EFE6; --paper:#FFFDF9; --ink:#5B554F; --muted:#6F6963; --divider:#EEE9E1;
   --blush:#E7B7A6; --blush-press:#DDA894;
   --leaf-light:#9CC5A1; --leaf-mid:#6FA37A; --leaf-deep:#4F7F5C; --thirsty:#B9BFA9;
   --pot:#D9A08A; --pot-shadow:#C08A76; --soil-wet:#6B5546; --soil-dry:#8A7361;
@@ -16,7 +16,7 @@
   --pine-tuft:#6F8F73; --pine-needle:#4F7F5C;
   /* scene layer, retinted by time of day (JS writes these on #scene) */
   --sky-a:#F6EFE6; --sky-b:#E8EEF2; --wall:#F3ECE3; --sill:#E9DCCF; --sill-line:#DCCBB9;
-  --on-scene:#8A847D; --ring:rgba(231,183,166,.8);
+  --on-scene:#6A645E; --ring:rgba(231,183,166,.8);
   --ease:cubic-bezier(.33,0,.2,1);
   --shadow:0 8px 24px rgba(91,85,79,.08);
 
@@ -146,7 +146,7 @@ body.holding .drop { animation-play-state:running; }
 .bubble.show { opacity:1; }
 .sit-btn {
   min-height:44px; padding:0 16px; border-radius:999px; font-size:1.0625rem;
-  color:var(--on-scene); opacity:.7; transition:opacity 600ms var(--ease), color 1.2s var(--ease), transform 150ms var(--ease);
+  color:var(--on-scene); transition:opacity 600ms var(--ease), color 1.2s var(--ease), transform 150ms var(--ease);
 }
 .sit-btn:active { transform:scale(.98); }
 .hold {
@@ -158,7 +158,7 @@ body.holding .drop { animation-play-state:running; }
 }
 .hold span { pointer-events:none; transition:opacity 300ms var(--ease); }
 .hold:active, .hold[aria-pressed="true"] { transform:scale(.98); background:var(--blush-press); }
-.hold.full span { opacity:.7; }           /* 충분히 마셨어요 label state */
+.hold.full span { color:#524C46; }        /* 충분히 마셨어요 label state (dimmed by colour, ≥4.5:1) */
 body.thirsty .hold { animation:thirstyPulse 3s var(--ease) infinite; }
 
 /* first run: chrome + buttons hidden until JS adds .reveal */
@@ -197,7 +197,9 @@ body.onboarding .hold.reveal { transition:transform 150ms var(--ease), backgroun
   animation:ripple 1400ms var(--ease) forwards;
 }
 #fx .petal  { animation:petalFall 2.4s cubic-bezier(.5,0,.85,.5) forwards; }
-#fx .pappus, .pappus { animation:pappusDrift 3.5s cubic-bezier(0,0,.2,1) forwards; }
+/* .pappus has no CSS animation on purpose: plants.js gatherEffect() drives each particle
+   from its own place on the seed head with an inline transform + transition, and a running
+   animation would override both (all 14 would fly from the viewBox origin instead). */
 
 /* rain-day glass drops: 6 drops (3 per pseudo via box-shadow), only under #scene.rain.
    Scoped by id: #scene itself carries the class "rain", so a bare .rain would match it. */
@@ -334,7 +336,7 @@ body.onboarding .hold.reveal { transition:transform 150ms var(--ease), backgroun
 .toggle[aria-checked="true"] .knob { transform:translateX(20px); }
 .seg { display:flex; gap:4px; padding:4px; border-radius:999px; background:var(--cream); }
 .seg button {
-  flex:1 1 auto; min-height:44px; padding:0 10px; border-radius:999px; font-size:.9375rem; color:var(--muted); white-space:nowrap;
+  flex:1 1 auto; min-height:48px; padding:0 10px; border-radius:999px; font-size:.9375rem; color:var(--muted); white-space:nowrap;
   transition:background-color 300ms var(--ease), color 300ms var(--ease), box-shadow 300ms var(--ease);
 }
 .seg button[aria-checked="true"] { background:var(--paper); color:var(--ink); box-shadow:0 1px 3px rgba(91,85,79,.12); }
@@ -356,7 +358,7 @@ textarea.import {
   width:100%; min-height:88px; padding:12px 14px; font-size:1rem; line-height:1.5; border-radius:16px;
   border:1px solid var(--divider); background:var(--cream); resize:vertical; -webkit-appearance:none; appearance:none;
 }
-.text-btn.danger-soft { display:flex; width:100%; min-height:48px; padding:0; font-size:.8125rem; opacity:.6; justify-content:flex-start; }
+.text-btn.danger-soft { display:flex; width:100%; min-height:48px; padding:0; font-size:.8125rem; color:var(--muted); justify-content:flex-start; }
 .footer { font-size:.8125rem; color:var(--muted); text-align:center; padding-top:24px; }
 
 /* ---------- shared buttons ---------- */
@@ -383,7 +385,7 @@ textarea.import {
 
 /* ---------- 4.6 sit overlay ---------- */
 .sit {
-  position:fixed; inset:0; z-index:30; background:rgba(46,52,70,.55); color:var(--on-scrim);
+  position:fixed; inset:0; z-index:30; background:rgba(46,52,70,.72); color:var(--on-scrim);
   opacity:0; transition:opacity 800ms var(--ease); touch-action:manipulation;
 }
 .sit.show { opacity:1; }
@@ -406,7 +408,7 @@ textarea.import {
 .sit-progress-fill { height:100%; width:0; border-radius:2px; background:rgba(246,239,230,.85); transition:width 1s linear; }
 .hint.on-scrim {
   position:absolute; left:24px; right:24px; top:calc(var(--sill-y) + var(--sill-h) + 112px);
-  text-align:center; font-size:.8125rem; color:rgba(246,239,230,.75);
+  text-align:center; font-size:.8125rem; color:var(--on-scrim);
 }
 /* while sitting, the chrome and bottom stack step back (no JS needed; :has is Safari 15.4+/Chrome 105+) */
 body:has(.sit:not([hidden])) .top, body:has(.sit:not([hidden])) .bottom { opacity:0; transition:opacity 800ms var(--ease); }
@@ -444,13 +446,13 @@ body.rm .gather-ring { animation:none; }
 body.rm .scene { animation-duration:600ms; }
 
 /* ambient loops pause when the tab is hidden */
-body.hidden * { animation-play-state:paused !important; }
+body.hidden *, body.hidden *::before, body.hidden *::after { animation-play-state:paused !important; }
 
 /* short screens: tighten the bottom stack */
 @media (max-height: 640px) {
   .bottom { gap:8px; }
   .bubble { min-height:60px; padding:10px 16px; }
-  .sit-btn { min-height:40px; }
+  .sit-btn { min-height:44px; }
 }
 /* phone held sideways: raise the sill and shrink the plant so the bottom stack never covers the pot */
 @media (orientation: landscape) and (max-height: 480px) {
@@ -458,7 +460,7 @@ body.hidden * { animation-play-state:paused !important; }
   @supports not (height: 1dvh) { :root { --stage-h:min(30vh, 416px); } }
   .bottom { gap:6px; bottom:calc(env(safe-area-inset-bottom, 0px) + 8px); }
   .bubble { min-height:48px; padding:8px 14px; }
-  .sit-btn { min-height:40px; }
+  .sit-btn { min-height:44px; }
   .hold { height:52px; }
 }
 
@@ -495,15 +497,11 @@ body.hidden * { animation-play-state:paused !important; }
   100% { transform:translateY(var(--fall, 60px)); opacity:0; }
 }
 @keyframes ripple { 0% { transform:scale(.4); opacity:.9; } 100% { transform:scale(1); opacity:0; } }
-/* petal/pappus: element sets --x/--y (px) for its start; movement is relative */
+/* petal: element sets --x/--y (px) for its start; movement is relative */
 @keyframes petalFall {
   0%   { transform:translate(var(--x, 0px), var(--y, 0px)) rotate(0deg); opacity:1; }
   80%  { opacity:.9; }
   100% { transform:translate(calc(var(--x, 0px) + 14px), calc(var(--y, 0px) + var(--fall, 100px))) rotate(140deg); opacity:0; }
-}
-@keyframes pappusDrift {
-  0%   { transform:translate(var(--x, 0px), var(--y, 0px)) rotate(0deg); opacity:1; }
-  100% { transform:translate(calc(var(--x, 0px) + 60px), calc(var(--y, 0px) - 120px)) rotate(25deg); opacity:0; }
 }
 @keyframes rainSlide { from { transform:translateY(0); } to { transform:translateY(70vh); } }
 @keyframes gatherRing { from { transform:scale(.97); } to { transform:scale(1.06); } }

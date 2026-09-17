@@ -248,21 +248,29 @@
     }
     B.stroke(root, { d: stemD, w: [0, 3, 3.2, 3.6, 3.8, 3.8][s], color: s === 1 ? C.leafLight : C.leafMid });
 
-    if (s === 1) {
-      beanSeed(B.group(root, { pos: function (c) { var p = tip(c); return { x: p.x, y: p.y + 2, a: -30 }; }, appear: 0, scale: 0.6, id: 1, jitter: true }));
+    if (s === 1) {   // the casing carries over from stage 0 (same pose and size at t = 0) and shrinks onto the hook
+      beanSeed(B.group(root, { pos: function (c) { var p = tip(c); return { x: p.x, y: p.y + 2, a: lerp(-20, -30, Math.min(1, c.t / 0.35)) }; },
+        appear: -1, scale: function (c) { return lerp(1, 0.6, smooth(c.t / 0.35)); }, id: 1, jitter: false }));
     }
-    var cot = function (side, pos, scale, ap) {
-      B.leaf(root, { shape: 'round', fill: C.leafLight, scale: scale, appear: ap, id: 3 + (side > 0 ? 1 : 0), pos: pos, sway: true, jitter: true });
+    var cot = function (side, pos, scale, ap, op) {
+      B.leaf(root, { shape: 'round', fill: C.leafLight, scale: scale, appear: ap, id: 3 + (side > 0 ? 1 : 0), pos: pos, sway: true, jitter: true, opacity: op });
     };
+    if (s === 2 || s === 3) {
+      if (s === 2) beanSeed(B.group(root, { pos: function (c) { var p = tip(c); return { x: p.x, y: p.y + 2, a: -30 }; }, appear: -1, scale: 0.6,
+        opacity: function (c) { return 1 - smooth(c.t / 0.3); }, id: 1, jitter: false }));
+      beanSeed(B.group(root, { pos: { x: 128, y: 195, a: 15 }, appear: -1, scale: 0.6,
+        opacity: s === 2 ? function (c) { return 0.4 * smooth((c.t - 0.05) / 0.25); } : function (c) { return 0.4 * (1 - smooth(c.t / 0.15)); }, id: 2 }));
+    }
     if (s === 2) {
-      beanSeed(B.group(root, { pos: { x: 128, y: 195, a: 15 }, appear: 0.3, scale: 0.6, opacity: 0.4, id: 2 }));
       cot(-1, function (c) { var p = tip(c); return { x: p.x - 1, y: p.y + 1, a: -58 }; }, 14, 0);
       cot(1, function (c) { var p = tip(c); return { x: p.x + 1, y: p.y + 1, a: 58 }; }, 14, 0.15);
     }
-    if (s === 3) {   // cotyledons stay at the old node while the stem keeps climbing
+    if (s === 3 || s === 4) {   // cotyledons stay at the old node while the stem keeps climbing
       var cu = function (c) { return 40 / H(c); };
-      cot(-1, function (c) { var p = pt(c, cu(c)); return { x: p.x - 1, y: p.y + 1, a: -62 }; }, function (c) { return lerp(14, 11, c.t); }, -1);
-      cot(1, function (c) { var p = pt(c, cu(c)); return { x: p.x + 1, y: p.y + 1, a: 62 }; }, function (c) { return lerp(14, 11, c.t); }, -1);
+      var cotSc = s === 3 ? function (c) { return lerp(14, 11, c.t); } : function (c) { return lerp(11, 8, c.t); };
+      var cotOp = s === 3 ? null : function (c) { return 1 - smooth(c.t / 0.4); };   // stage 4: they wither off
+      cot(-1, function (c) { var p = pt(c, cu(c)); return { x: p.x - 1, y: p.y + 1, a: -62 }; }, cotSc, -1, cotOp);
+      cot(1, function (c) { var p = pt(c, cu(c)); return { x: p.x + 1, y: p.y + 1, a: 62 }; }, cotSc, -1, cotOp);
     }
     var leaves = s === 3 ? [{ u: 0.55, a: -35, ap: 0, id: 11 }, { u: 0.8, a: 38, ap: 0.4, id: 12 }]
       : s === 4 ? [{ u: 0.3, a: -40, ap: 0, id: 13 }, { u: 0.45, a: 42, ap: 0.3, id: 14 }, { u: [0.55, 0.6], a: -36, ap: -1, id: 11 }, { u: [0.8, 0.75], a: 40, ap: -1, id: 12 }, { u: 0.9, a: -30, ap: 0.7, id: 15 }]
@@ -274,9 +282,15 @@
       B.leaf(root, { shape: 'heart', fill: fill, scale: sc, appear: L.ap, id: L.id, sway: true, vein: C.leafDeep, petiole: true,
         pos: function (c) { var p = pt(c, uf(c)); return { x: p.x, y: p.y, a: L.a }; } });
     });
-    if (s === 3 || s === 4) {   // tendril at the tip
+    if (s >= 3) {   // tendril at the tip: curl (stage 3) → loop (stage 4+), never removed
       var tg = B.group(root, { pos: function (c) { var p = tip(c); return { x: p.x, y: p.y, a: 0 }; }, appear: s === 3 ? 0.7 : -1, sway: true, id: 16, jitter: true });
-      el('path', { d: s === 3 ? 'M0 0 Q10 -8 6 -18' : 'M0 0 C10 -6 14 -18 4 -22 C-4 -25 -6 -16 2 -14', fill: 'none', stroke: C.leafMid, 'stroke-width': 1.6, 'stroke-linecap': 'round' }, tg);
+      var curlD = 'M0 0 Q10 -8 6 -18', loopD = 'M0 0 C10 -6 14 -18 4 -22 C-4 -25 -6 -16 2 -14';
+      var tPath = function (d) { return el('path', { d: d, fill: 'none', stroke: C.leafMid, 'stroke-width': 1.6, 'stroke-linecap': 'round' }, tg); };
+      if (s === 3) { tPath(curlD); }
+      else if (s === 4) {   // crossfade the two shapes so the curl does not snap into the loop
+        var pc = tPath(curlD), pl = tPath(loopD);
+        B.dyn(function (c) { var k = smooth(c.t / 0.3); pc.style.opacity = n2(1 - k); pl.style.opacity = n2(k); });
+      } else { tPath(loopD); }
     }
     if (s === 5) {
       [{ u: 0.7, dx: -12, ap: 0, id: 21 }, { u: 0.85, dx: 12, ap: 0.3, id: 22 }, { u: 0.96, dx: -6, ap: 0.6, id: 23 }].forEach(function (F) {
@@ -291,9 +305,11 @@
   // 다육이 — mother leaf → rosette → bell stalk
   SP.succulent = function (B, root, s) {
     var MINT = '#B7D2BE', SAGE = '#8FB89C', DRY = '#D9C6B3';
-    if (s <= 2) {   // mother leaf lying on the soil
-      B.leaf(root, { shape: 'drop', fill: s === 2 ? function (c) { return hexLerp(MINT, DRY, c.t); } : MINT,
-        scale: s === 2 ? function (c) { return lerp(20, 14, c.t); } : 20, id: 1, pos: { x: 104, y: 194, a: 80 }, highlight: true, jitter: true });
+    if (s <= 3) {   // mother leaf lying on the soil (dries through stage 2, fades away early in stage 3)
+      B.leaf(root, { shape: 'drop', fill: s === 2 ? function (c) { return hexLerp(MINT, DRY, c.t); } : s === 3 ? DRY : MINT,
+        scale: s === 2 ? function (c) { return lerp(20, 14, c.t); } : s === 3 ? function (c) { return lerp(14, 10, c.t); } : 20,
+        opacity: s === 3 ? function (c) { return 1 - smooth(c.t / 0.15); } : null,
+        id: 1, pos: { x: 104, y: 194, a: 80 }, highlight: true, jitter: true });
     }
     if (s === 1) {   // pink roots reaching into the soil
       var rg = B.group(root, { pos: { x: 104, y: 194, a: 0 }, appear: 0, id: 2 });
@@ -343,7 +359,11 @@
     var fan = el('g', { 'class': 'fan' }, root);
     fan.style.transformBox = 'view-box'; fan.style.transformOrigin = AX + 'px ' + AY + 'px';
     var fanScale = [0, 1, 1, [1, 1.1], [1.1, 1.3], 1.3][s];
-    B.dyn(function (c) { var k = Array.isArray(fanScale) ? lerp(fanScale[0], fanScale[1], c.t) : fanScale; fan.style.transform = 'scale(' + n2(k) + ',' + n2(k * (s >= 2 ? 0.6 : 1)) + ')'; });
+    B.dyn(function (c) {
+      var k = Array.isArray(fanScale) ? lerp(fanScale[0], fanScale[1], c.t) : fanScale;
+      var sq = s < 2 ? 1 : s === 2 ? lerp(1, 0.6, smooth(c.t)) : 0.6;   // the rosette lies down across stage 2
+      fan.style.transform = 'scale(' + n2(k) + ',' + n2(k * sq) + ')';
+    });
     var lanceScale = s === 1 ? function (c) { return lerp(12, 20, c.t); } : function (c) { return s === 2 ? lerp(20, 16, c.t) : 16; };
     B.leaf(fan, { shape: 'lance', fill: LG, scale: lanceScale, appear: s === 1 ? 0 : -1, id: 1, pos: { x: AX - 1, y: AY, a: -25 }, sway: true });
     B.leaf(fan, { shape: 'lance', fill: LG, scale: lanceScale, appear: s === 1 ? 0.15 : -1, id: 2, pos: { x: AX + 1, y: AY, a: 25 }, sway: true });
@@ -358,7 +378,15 @@
       var H = function (c) { return lerp(Hs[0], Hs[1], c.t); };
       var tip = function (c) { return { x: 103, y: AY - H(c) }; };
       B.stroke(root, { d: function (c) { var h = H(c); return 'M' + AX + ' ' + AY + ' Q' + n2(AX - 2 + h * 0.03) + ' ' + n2(AY - h * 0.55) + ' 103 ' + n2(AY - h); }, w: 2.6, color: '#9CBF8E' });
-      var head = B.group(root, { pos: function (c) { var p = tip(c); return { x: p.x, y: p.y, a: 0 }; }, appear: s === 3 ? 0.5 : -1, id: 30, sway: true, cls: 'head' });
+      if (s === 5) {   // the stage-4 flower stays for one beat and fades out under the opening seed head (2 s, style.css §5)
+        var ghost = B.group(root, { pos: function (c) { var p = tip(c); return { x: p.x, y: p.y, a: 0 }; }, appear: -1, id: 30, sway: true,
+          opacity: function (c) { return c.t < 0 ? 1 : 0; } });
+        el('ellipse', { cx: 0, cy: 0.5, rx: 4.2, ry: 3, fill: LG2 }, ghost);
+        el('path', { d: petalRing(24, 17, 0.85, rad(7)), fill: '#F5D77A', 'class': 'petal' }, ghost);
+        el('path', { d: petalRing(12, 11, 0.85, rad(15)), fill: '#F0C860', 'class': 'petal' }, ghost);
+        el('circle', { cx: 0, cy: 0, r: 5.5, fill: '#E9B94E' }, ghost);
+      }
+      var head = B.group(root, { pos: function (c) { var p = tip(c); return { x: p.x, y: p.y, a: 0 }; }, appear: s === 3 ? 0.5 : s === 5 ? 0 : -1, id: 30, sway: true, cls: 'head' });
       if (s === 3) {
         el('ellipse', { cx: 0, cy: -4, rx: 3, ry: 4.6, fill: LG2 }, head);
         el('path', { d: 'M-2.4 -2 L-3 -6 M2.4 -2 L3 -6 M0 -8.4 L0 -9', stroke: LG2, 'stroke-width': 1, 'stroke-linecap': 'round', fill: 'none' }, head);
@@ -401,11 +429,12 @@
       B.leaf(root, { shape: 'lance', fill: C.leafLight, scale: 4, appear: 0.6, id: 9, pos: { x: 97, y: 193, a: 20 } });
       return;
     }
-    if (s === 1) {
-      B.stroke(root, { d: function (c) { var k = lerp(0.4, 1, c.t); return 'M97 196 Q' + n2(97 + 2 * k) + ' ' + n2(196 - 5 * k) + ' ' + n2(97 + 7 * k) + ' ' + n2(196 - 6 * k); }, w: 1.8, color: C.leafLight });
-      B.leaf(root, { shape: 'heart', fill: C.leafLight, scale: function (c) { return lerp(8, 14, c.t); }, appear: 0, id: 1, pos: function (c) { var k = lerp(0.4, 1, c.t); return { x: 97 + 7 * k, y: 196 - 6 * k, a: -20 }; }, sway: true, vein: C.leafMid });
-      return;
-    }
+    // the first true leaf appears at stage 1 and stays for every later stage
+    var k1 = function (c) { return s === 1 ? lerp(0.4, 1, c.t) : 1; };
+    B.stroke(root, { d: function (c) { var k = k1(c); return 'M97 196 Q' + n2(97 + 2 * k) + ' ' + n2(196 - 5 * k) + ' ' + n2(97 + 7 * k) + ' ' + n2(196 - 6 * k); }, w: 1.8, color: C.leafLight });
+    B.leaf(root, { shape: 'heart', fill: C.leafLight, scale: s === 1 ? function (c) { return lerp(8, 14, c.t); } : 14, appear: s === 1 ? 0 : -1, id: 1,
+      pos: function (c) { var k = k1(c); return { x: 97 + 7 * k, y: 196 - 6 * k, a: -20 }; }, sway: true, vein: C.leafMid });
+    if (s === 1) return;
     var F1 = VINE_T.frac(1 / 3);
     var frac = s === 2 ? function (c) { return lerp(0, F1, c.t); } : s === 3 ? function (c) { return lerp(F1, 1, c.t); } : function () { return 1; };
     B.reveal(root, { d: VINE_D, color: C.leafMid, w: 2.2, length: VINE_T.length, frac: frac });
@@ -487,17 +516,19 @@
       : s === 3 ? [{ u: 0.6, dx: -11, dy: 1, rx: [10, 11], ap: -1, id: 32 }, { u: 0.8, dx: 11, dy: 0, rx: 11, ap: 0.3, id: 33 }, { u: 1, dx: 0, dy: 0, rx: [12, 13], ap: -1, id: 31 }]
       : [{ u: 0.42, dx: 11, dy: 1, rx: s === 4 ? 12 : 12, ap: s === 4 ? 0.3 : -1, id: 34 }, { u: 0.62, dx: -12, dy: 1, rx: s === 4 ? [11, 13] : 13, ap: -1, id: 32 }, { u: 0.8, dx: 12, dy: 0, rx: s === 4 ? [11, 14] : 14, ap: -1, id: 33 }, { u: 1, dx: 0, dy: 0, rx: s === 4 ? [13, 16] : 16, ap: -1, id: 31 }];
     TF.forEach(function (F) {
-      var g = B.group(sw, { pos: function (c) { var p = tpt(c, F.u); return { x: p.x + F.dx, y: p.y + F.dy, a: 0 }; }, appear: F.ap, id: F.id, jitter: true, cls: 'tuft' });
-      if (F.dx) el('path', { d: 'M0 0 L' + n2(-F.dx) + ' ' + n2(-F.dy + 1), stroke: C.bark, 'stroke-width': 2, 'stroke-linecap': 'round' }, g);
-      var body = el('ellipse', { cx: 0, cy: 0, fill: C.pineTuft }, g);
+      // the group sits ON the trunk and the tuft is drawn at (dx,dy) inside it, so unfolding
+      // grows the branch out of the trunk instead of detaching the tuft from it
+      var g = B.group(sw, { pos: function (c) { var p = tpt(c, F.u); return { x: p.x, y: p.y, a: 0 }; }, appear: F.ap, id: F.id, jitter: true, cls: 'tuft' });
+      if (F.dx) el('path', { d: 'M0 1 L' + n2(F.dx) + ' ' + n2(F.dy), stroke: C.bark, 'stroke-width': 2, 'stroke-linecap': 'round' }, g);
+      var body = el('ellipse', { cx: n2(F.dx), cy: n2(F.dy), fill: C.pineTuft }, g);
       var hi = el('ellipse', { fill: '#7FA083' }, g);
       var nd = el('path', { stroke: needle, 'stroke-width': 1.2, 'stroke-linecap': 'round', fill: 'none' }, g);
       B.dyn(function (c) {
         var rx = Array.isArray(F.rx) ? lerp(F.rx[0], F.rx[1], c.t) : F.rx, ry = rx * 0.66;
         body.setAttribute('rx', n2(rx)); body.setAttribute('ry', n2(ry));
-        hi.setAttribute('cx', n2(-rx * 0.2)); hi.setAttribute('cy', n2(-ry * 0.28)); hi.setAttribute('rx', n2(rx * 0.55)); hi.setAttribute('ry', n2(ry * 0.5));
+        hi.setAttribute('cx', n2(F.dx - rx * 0.2)); hi.setAttribute('cy', n2(F.dy - ry * 0.28)); hi.setAttribute('rx', n2(rx * 0.55)); hi.setAttribute('ry', n2(ry * 0.5));
         var d = '';
-        for (var i = 0; i < 14; i++) { var a = rad(i * 360 / 14 + 7); d += 'M0 0 L' + n2(Math.cos(a) * rx * 0.86) + ' ' + n2(Math.sin(a) * ry * 0.86) + ' '; }
+        for (var i = 0; i < 14; i++) { var a = rad(i * 360 / 14 + 7); d += 'M' + n2(F.dx) + ' ' + n2(F.dy) + ' L' + n2(F.dx + Math.cos(a) * rx * 0.86) + ' ' + n2(F.dy + Math.sin(a) * ry * 0.86) + ' '; }
         nd.setAttribute('d', d);
       });
     });

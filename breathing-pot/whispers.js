@@ -191,7 +191,7 @@
   L('onboard_3', '준비되면 꾹 눌러 물을 주세요. 천천히요.', { kind: 'system', weight: 9, when: systemIs(['onboard_3']) });
 
   /* ── indexes ── */
-  var BY_ID = {};
+  var BY_ID = Object.create(null);   /* null-prototype: byId('constructor') must miss, not hit Object.prototype */
   var DEFAULTS = [];
   for (var i = 0; i < POOL.length; i++) {
     Object.freeze(POOL[i].kinds);

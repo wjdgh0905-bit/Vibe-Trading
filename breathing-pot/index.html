@@ -45,7 +45,7 @@
     <div class="stage" id="stage">
       <div class="ring" id="ring" aria-hidden="true"></div>
       <div class="drops" id="drops" aria-hidden="true"></div>
-      <svg id="plantSvg" class="plant-svg" viewBox="0 0 200 260" role="img" aria-label="화분 속 식물">
+      <svg id="plantSvg" class="plant-svg" viewBox="0 0 200 260" role="img" tabindex="0" aria-label="화분 속 식물">
         <g id="pot"></g>
         <g id="plant"></g>
         <g id="fx"></g>
@@ -93,7 +93,7 @@
           <button class="chip" type="button" data-mood="rain" aria-pressed="false">비</button>
           <button class="chip" type="button" data-mood="wind" aria-pressed="false">바람</button>
         </div>
-        <div class="dots" id="moodDots" aria-label="최근 14일 마음 날씨"></div>
+        <div class="dots" id="moodDots" role="list" aria-label="최근 14일 마음 날씨"></div>
       </section>
 
       <section class="block">
@@ -193,11 +193,11 @@
   </section>
 
   <!-- ───────── 가만히 앉기 · sit-together overlay ───────── -->
-  <div class="sit" id="sitOverlay" role="dialog" aria-modal="true" aria-label="가만히 앉기" hidden>
+  <div class="sit" id="sitOverlay" role="dialog" aria-modal="true" aria-label="가만히 앉기" tabindex="-1" hidden>
     <div class="breath-circle" id="breathCircle" aria-hidden="true">
       <svg class="breath-arc" viewBox="0 0 200 200" aria-hidden="true"><circle id="breathArc" cx="100" cy="100" r="92" /></svg>
     </div>
-    <p class="breath-text" id="breathText">들이쉬어요…</p>
+    <p class="breath-text" id="breathText" role="status" aria-live="polite" aria-atomic="true">들이쉬어요…</p>
     <div class="sit-progress" aria-hidden="true"><div class="sit-progress-fill" id="sitProgress"></div></div>
     <p class="hint on-scrim">언제든 톡 하면 끝나요</p>
   </div>

@@ -6,8 +6,9 @@
      · #scene 안에 조명 레이어(#lx, #lxg)와 젖은 광택(.lx-wet)을 주입한다.
      · setTime()이 올 때마다 밴드별 조명 상수를 한 번에 lerp해 #scene에
        CSS 커스텀 프로퍼티로 쓴다. 보간은 CSS가 한다 (cinematic.css §0).
-     · high 티어에서만 먼지 캔버스를 20fps로 돌린다. 모듈 전체에 rAF 루프는
-       이것 하나고, 프레임은 그릴 때만 요청한다 — 매 vsync가 아니라.
+     · high 티어에서만 먼지 캔버스를 돌린다 (실측 초당 16프레임).
+       모듈 전체에 rAF 루프는 이것 하나고, 프레임은 그릴 때만 요청한다 —
+       매 vsync가 아니라.
 
    무엇을 하지 않는가
      · SVG 필터를 하나도 만들지 않는다. #pot 안의 #soil은 물 주는 동안
@@ -151,13 +152,13 @@
     }
   })();
 
-  var SCENE_INK_DAY = parse('#5B554F');    /* = 기존 --ink 토큰. 새 색이 아니다. */
+  var SCENE_INK_DAY = parse('#524C46');    /* PALETTES.onScene와 같은 값으로 맞춘다 — 유휴 대비 때문에 한 단계 어둡다. */
   var SCENE_INK_NIGHT = parse('#E9E4DC');
   var CON_RGB = [46, 34, 26];
   var SIDE_RGB = [40, 32, 26];
   var VIG_RGB = [32, 24, 20];
-  /* 젖은 헉은 밝아지지 않는다. 어두워지고 진해진다 — 그래서 이 색은 맑은
-     큰 값이 아니라 따뜻한 어둠이고, .lx-wet은 multiply로 깔린다. */
+  /* 젖은 흙은 밝아지지 않는다. 어두워지고 진해진다. 그래서 이 값은
+     흰색이 아니라 따뜻한 어둠이고, .lx-wet은 multiply로 깔린다. */
   var WET_RGB = [92, 70, 54];
 
   /* 날씨 커플링. 확산광이 지배하는 날은 빔이 없고, 공기가 더 산란하고,
@@ -189,14 +190,15 @@
     sunX: 60, sunY: 20, tau: 17, shaftO: 0, moteGain: 0,
     pulseUntil: 0, pulseAmp: 0, wetAt: 0,
     stageH: REF_STAGE_H,
-    sig: '', sampled: false, readyTimer: 0, sampleTimer: 0, boundResize: null, boundVis: null, mo: null
+    sig: '', sampled: false, readyTimer: 0, sampleTimer: 0, boundResize: null, boundVis: null, mo: null, moSit: null
   };
 
   var MOTE_N = 16;           /* 200개가 아니다. 성긴 먼지가 진짜 먼지다. */
-  /* 20fps. 먼지는 초당 12–26px로 흐른다 — 20과 60은 구분되지 않는다.
-     측정: 30fps + dpr1.5 백킹에서 p95가 33.4ms(프레임 드롭)였고, 20fps +
-     dpr1.0 백킹에서 16.8ms로 돌아왔다. 캔버스 비용은 그리기가 아니라
-     매 프레임의 텍스처 업로드이므로 해상도가 가장 큰 지렛대다. */
+  /* 프레임 간격. 먼지는 초당 12–26px로 흐른다 — 16과 60은 구분되지 않는다.
+     타이머 50ms 뒤에 다음 vsync를 기다리므로 실질 주기는 약 60ms, 초당 15–17
+     프레임이다 (5초 트레이스에서 commit 78회, 고치기 전에는 300회였다).
+     캔버스 비용은 그리기가 아니라 매 프레임의 텍스처 업로드이므로
+     해상도가 가장 큰 지렛대다. */
   var MOTE_MS = 50;
 
   /* ═══════════════ 3. 지원 여부 ═══════════════ */
@@ -289,7 +291,7 @@
       S.lxg.appendChild(mk('div', 'lx-grade'));
       scene.insertBefore(S.lxg, before);
     }
-    /* 접지 2단 — 페널브라와 AO 코어. 이 둘만으로 화분이 뜨는 것이 멈춘다.
+    /* 접지 2단 — 페넘브라와 AO 코어. 이 둘만으로 화분이 뜨는 것이 멈춘다.
        벽에 길게 드리우던 캐스트 로브는 빼냈다 — 이유는 cinematic.css §7. */
     if (!S.lx.querySelector('.lx-contact')) {
       S.lx.appendChild(mk('div', 'lx-contact'));
@@ -471,8 +473,9 @@
   /* 다음 프레임은 rAF 체인이 아니라 타이머에서 온다.
      매 vsync마다 rAF를 요청하고 그 중 둘을 버리면, 버린 프레임도 공짜가
      아니다 — 요청 자체가 문서 라이프사이클(style+layout+paint+commit)을
-     60Hz로 돌린다. 측정: 그리는 속도는 같은데 5초에 commit 300회가 81회로,
-     렌더러 CPU가 코어의 10.7%에서 4%대로 내려갔다. */
+     60Hz로 돌린다. 측정(5초 CDP 트레이스): 그리는 속도는 거의 같은데
+     commit 300회가 78회로, styleN 352가 92로, Paint 31ms가 9ms로 내려갔고,
+     45초 유휴 렌더러 CPU는 코어의 10.7%에서 7.2%로(HEAD는 3.4%) 내려갔다. */
   function queueFrame() {
     if (looping()) return;
     S.mtimer = W.setTimeout(function () {
@@ -485,7 +488,7 @@
   function tick(ts) {
     S.raf = 0;
     if (!shouldRun()) { if (S.ctx) { try { S.ctx.clearRect(0, 0, S.mw, S.mh); } catch (e) { } } return; }
-    var dt = S.last ? ts - S.last : MOTE_MS;   /* 20fps. 간격은 타이머가 정한다 */
+    var dt = S.last ? ts - S.last : MOTE_MS;   /* 간격은 타이머가 정한다 */
     S.last = ts;
     S.frames++;
     draw(Math.min(dt, 120) / 1000, ts);
@@ -660,7 +663,7 @@
     if (S.quality === 'low') {
       /* low가 아끼는 것은 두 번째 drop-shadow(그늘면) 하나다. 림 자체는
          high와 같은 모양이어야 한다 — blur 0은 잃을 것이 없을 만큼
-         싸지도 않고(같은 drop-shadow 한 장이다), 윈 위로 4–5디바이스
+         싸지도 않고(같은 drop-shadow 한 장이다), 잎 위로 4–5디바이스
          픽셀의 선을 그어 §9의 규칙(blur >= 1.5 x |offset|)을 정면으로
          어기며, 그 결과는 림이 아니라 스티커 테두리로 읽힌다. */
       var lrb = Math.max(rb, 1.6, 1.5 * Math.sqrt(rdx * rdx + rdy * rdy));
@@ -672,8 +675,8 @@
     set('--lx-plant-f', f);
 
     /* 젖은 흙 광택. renderPot이 10Hz로 재발화해도 비용은 변수 쓰기 하나다. */
-    /* 1/255보다 작은 알파 변화는 화면에 존재하지 않는다. 그만큼씩 끈어
-       쓰면 물 주는 10초 동안 --wet-c 쓰기가 100번이 아니라 서른 번이 된다. */
+    /* 1/255보다 작은 알파 변화는 화면에 존재하지 않는다. 그 단위로 끊어
+       쓰면 물 주는 10초 동안 --wet-c 쓰기가 100번이 아니라 일곱 번이 된다 (실측). */
     var wetA = Math.round((0.05 + 0.10 * (hydration() / 100)) * (holding ? 1.45 : 1) * 250) / 250;
     set('--wet-c', rgba([WET_RGB[0], WET_RGB[1], WET_RGB[2], wetA]));
 
@@ -681,7 +684,7 @@
        스타일+레이아웃을 그 자리에서 강제로 플러시한다. applyTokens는 물 주는
        동안 초당 여러 번 불리므로, 그 한 줄이 홀드 내내 동기적 레이아웃을
        끌고 왔다. 캔버스 백킹 크기는 만들 때(ensureMotes)와 리사이즈 때
-       (onResize)만 바뀜 수 있고, 둘 다 이미 직접 부른다. */
+       (onResize)만 바뀔 수 있고, 둘 다 이미 직접 부른다. */
     sync();
   }
   function px2(v) { return (Math.round(v * 100) / 100) + 'px'; }
@@ -855,6 +858,14 @@
         if (W.MutationObserver) {
           S.mo = new W.MutationObserver(onBodyClass);
           S.mo.observe(D.body, { attributes: true, attributeFilter: ['class'] });
+          /* 앉기가 열리고 닫히는 것은 body의 class를 바꾸지 않는다 — CSS는
+             :has()로 읽는다. 먼지 루프는 그 동안 멈췄다가 다시 돌아야 하므로
+             hidden 속성 하나만 따로 본다. 한 번의 앉기에 콜백 두 번이다. */
+          var sit = D.getElementById('sitOverlay');
+          if (sit) {
+            S.moSit = new W.MutationObserver(function () { try { sync(); } catch (e) { } });
+            S.moSit.observe(sit, { attributes: true, attributeFilter: ['hidden'] });
+          }
         }
 
         applyQuality();
@@ -934,8 +945,8 @@
           S.pulseUntil = t + 600;
           S.pulseAmp = 0.35;
           /* 호출자는 이것이 얼마짜리 일을 하는지 알 필요가 없어야 한다.
-             물은 100ms마다 떨어지고 --wet-c는 400ms로 페이드한다 — 60ms보다
-             바짐 쓰는 것은 어차피 같은 프레임에 쌀인다. */
+             물은 100ms마다 떨어지고 --wet-c는 1/255 단위로만 움직인다 —
+             60ms보다 짧은 간격의 호출은 어차피 같은 값을 다시 계산할 뿐이다. */
           if (t - S.wetAt < 60) return;
           S.wetAt = t;
           applyTokens();
@@ -954,6 +965,7 @@
         if (S.readyTimer) { clearTimeout(S.readyTimer); S.readyTimer = 0; }
         if (S.sampleTimer) { clearTimeout(S.sampleTimer); S.sampleTimer = 0; }
         if (S.mo) { S.mo.disconnect(); S.mo = null; }
+        if (S.moSit) { S.moSit.disconnect(); S.moSit = null; }
         if (S.boundVis) D.removeEventListener('visibilitychange', S.boundVis, false);
         if (S.boundResize) {
           W.removeEventListener('resize', S.boundResize, false);

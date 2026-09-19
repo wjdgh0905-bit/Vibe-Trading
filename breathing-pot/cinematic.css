@@ -46,7 +46,7 @@
 @property --grade-top { syntax:'<color>'; inherits:true; initial-value:rgba(0,0,0,0); }
 @property --grade-bot { syntax:'<color>'; inherits:true; initial-value:rgba(0,0,0,0); }
 @property --vig-c     { syntax:'<color>'; inherits:true; initial-value:rgba(0,0,0,0); }
-@property --scene-ink { syntax:'<color>'; inherits:true; initial-value:#5B554F; }
+@property --scene-ink { syntax:'<color>'; inherits:true; initial-value:#524C46; }
 @property --wet-c     { syntax:'<color>'; inherits:true; initial-value:rgba(92,70,54,0); }
 
 @property --sun-x    { syntax:'<percentage>'; inherits:true; initial-value:60%; }
@@ -111,8 +111,16 @@ body.fx-ready #scene {
     --core-g0 1.2s var(--ease), --core-g1 1.2s var(--ease),
     --core-w 1.2s var(--ease), --core-h 1.2s var(--ease), --core-dx 1.2s var(--ease),
     --grade-top 1.2s var(--ease), --grade-bot 1.2s var(--ease), --vig-c 1.2s var(--ease),
-    --scene-ink 1.2s var(--ease), --wet-c 400ms var(--ease);
+    --scene-ink 1.2s var(--ease);
 }
+/* --wet-c is deliberately NOT in that list. It is the one token that moves
+   while the player is holding the button, and every frame a registered
+   inherited custom property is mid-transition re-runs style for the whole
+   #scene subtree — measured at ~170 extra recalcs per 10s hold, on top of
+   the dust. It does not need a crossfade: scenefx.js quantises its alpha to
+   1/250, so it arrives in steps that are already below the visible
+   threshold, about three times a second. The layer's own fade in and out is
+   carried by opacity on .lx-wet, which is a compositor property. */
 
 /* ---------- 2. .lx-sky — 태양 글로우(블룸) + 대기 헤이즈 --------------------
    A full-screen threshold bloom is impossible on a phone and unnecessary:
@@ -357,17 +365,53 @@ body.holding .lx-wet { --wet-o:1; }
 }
 
 /* ---------- 12. scene ink ---------------------------------------------------
-   #6A645E on the scene is already a live WCAG failure in the evening band
-   (4.46:1 / 4.13:1 measured on HEAD) with only 0.03 of headroom by day — no
-   lighting layer can be added on top of it. --scene-ink is the existing
-   --ink token (#5B554F) by day, the unchanged #E9E4DC at night, blended by
-   nightness. Visually indistinguishable at 13px Gowun Dodum.
-   Scoped to the fx tiers here so quality 'off' stays pixel-identical; the
-   permanent fix belongs in PALETTES.onScene and is not a lighting feature.
+   --scene-ink pins the chrome ink to two known values — the existing --ink
+   token (#5B554F) by day, the unchanged #E9E4DC at night, blended by
+   nightness — so that no lighting layer can erode it. Visually
+   indistinguishable at 13px Gowun Dodum. Scoped to the fx tiers so quality
+   'off' stays pixel-identical.
+
+   The numbers, measured on this build, 390x844 dpr3, text set transparent
+   and the real backdrop averaged after the 1.2s colour transition has run
+   out (scratchpad/fx-contrast2.mjs, one fresh context per cell):
+
+                     #days            #btnSit
+     band        off  low  high    off  low  high
+     morning    5.14 6.36 6.36    5.00 5.93 5.85
+     day        5.11 6.41 6.41    4.98 5.95 5.89
+     evening    4.51 5.67 5.67    4.65 5.41 5.31
+     night      9.53 8.67 8.67    8.25 9.76 9.78
+
+   The shipped #6A645E is thin in the evening but it passes: 4.51 and 4.65,
+   not the 4.46/4.13 an earlier draft of this comment claimed, and by day it
+   has 0.61 of headroom, not 0.03. Those two figures were a probe reading the
+   colour mid-transition and they are withdrawn. --scene-ink earns its place
+   on the second row of that table instead: it buys back roughly a full point
+   everywhere the sun is up, which is what pays for the grade sitting over
+   the frame at all. The permanent fix belongs in PALETTES.onScene and is
+   still not a lighting feature.
+
+   THE STATE THE GAME ACTUALLY SITS IN. style.css:94 fades .chrome to 55%
+   three seconds after the last pointerdown and leaves it there. At that
+   opacity nothing in the scene reaches AA in any band but night, and that is
+   true of the shipped game with this file deleted:
+
+     .chrome.idle      #days: head 2.20  off 2.20  low 2.43  high 2.43 (day)
+                              head 2.09  off 2.09  low 2.31  high 2.31 (eve)
+                     #btnSit: head 2.18  off 2.18  low 2.36  high 2.35 (day)
+
+   The fx tiers make it better, never worse, in every band but night, where
+   they trade 4.07 -> 3.84 on #days for 3.72 -> 4.13 on #btnSit. It cannot be
+   fixed from here: at 55% even pure black ink measures 4.4 against the
+   evening backdrop, so no choice of --scene-ink reaches 4.5. The lever is
+   the idle opacity itself, and it lives in style.css. That has since been
+   taken to .93 — and .93 alone still left evening 잠시 함께 앉아요 at 4.44,
+   so the ink went one notch darker too, to #524C46, matching the value
+   PALETTES.onScene now carries so the fx and non-fx paths agree.
    -------------------------------------------------------------------------- */
 body.fx-high #days,  body.fx-low #days,
 body.fx-high #btnSit, body.fx-low #btnSit,
-body.fx-high .icon-btn, body.fx-low .icon-btn { color:var(--scene-ink, #5B554F); }
+body.fx-high .icon-btn, body.fx-low .icon-btn { color:var(--scene-ink, #524C46); }
 
 /* ---------- 13. body.rm — 빛이 아니라 움직임을 줄인다 ----------------------
    Reduced motion means less movement, not less light. Erasing the static

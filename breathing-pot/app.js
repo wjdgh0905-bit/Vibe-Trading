@@ -36,9 +36,9 @@
   var SUNSET = [17.6, 18.1, 18.6, 19.0, 19.4, 19.8, 19.8, 19.4, 18.7, 18.0, 17.4, 17.3];
 
   var PALETTES = {
-    morning: { skyA: '#FBEFE4', skyB: '#F3E6DD', wall: '#F5ECE2', sill: '#EADCCD', sillLine: '#DCCBB9', onScene: '#6A645E', ring: 'rgba(231,183,166,.8)' },
-    day:     { skyA: '#F6EFE6', skyB: '#E8EEF2', wall: '#F3ECE3', sill: '#E9DCCF', sillLine: '#DCCBB9', onScene: '#6A645E', ring: 'rgba(231,183,166,.8)' },
-    evening: { skyA: '#F4DFD8', skyB: '#D9CFE3', wall: '#EFE3E0', sill: '#E4D3C7', sillLine: '#DCCBB9', onScene: '#6A645E', ring: 'rgba(231,183,166,.8)' },
+    morning: { skyA: '#FBEFE4', skyB: '#F3E6DD', wall: '#F5ECE2', sill: '#EADCCD', sillLine: '#DCCBB9', onScene: '#524C46', ring: 'rgba(231,183,166,.8)' },
+    day:     { skyA: '#F6EFE6', skyB: '#E8EEF2', wall: '#F3ECE3', sill: '#E9DCCF', sillLine: '#DCCBB9', onScene: '#524C46', ring: 'rgba(231,183,166,.8)' },
+    evening: { skyA: '#F4DFD8', skyB: '#D9CFE3', wall: '#EFE3E0', sill: '#E4D3C7', sillLine: '#DCCBB9', onScene: '#524C46', ring: 'rgba(231,183,166,.8)' },
     night:   { skyA: '#2E3446', skyB: '#4A4F66', wall: '#3A3F52', sill: '#55596E', sillLine: '#3F4356', onScene: '#E9E4DC', ring: 'rgba(233,228,220,.6)' }
   };
   var MOOD_GREY = '#D8D6D2';
@@ -1333,7 +1333,13 @@
   function renderSettings() {
     var el;
     if ((el = $('setSound'))) el.setAttribute('aria-checked', state.settings.sound ? 'true' : 'false');
-    if ((el = $('setBgm'))) el.setAttribute('aria-checked', state.settings.bgm ? 'true' : 'false');
+    if ((el = $('setBgm'))) {
+      // iOS caps concurrent AudioContexts: if BGM could not get one, the switch must not
+      // claim the music is on. bgm.js reports that through isAvailable().
+      var bgmDead = !!(hasBgm() && window.BGM.isAvailable && !window.BGM.isAvailable());
+      el.setAttribute('aria-checked', state.settings.bgm && !bgmDead ? 'true' : 'false');
+      el.setAttribute('aria-disabled', bgmDead ? 'true' : 'false');
+    }
     if ((el = $('setFx'))) el.setAttribute('aria-checked', state.settings.fx ? 'true' : 'false');
     if ((el = $('setHaptic'))) el.setAttribute('aria-checked', state.settings.haptic ? 'true' : 'false');
     if ((el = $('rowHaptic'))) el.hidden = !navigator.vibrate;

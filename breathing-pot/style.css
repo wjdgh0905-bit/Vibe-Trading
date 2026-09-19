@@ -345,7 +345,7 @@ body.onboarding .hold.reveal { transition:transform 150ms var(--ease), backgroun
   box-shadow:0 1px 3px rgba(91,85,79,.18); transition:transform 300ms var(--ease);
 }
 .toggle[aria-checked="true"] { background:var(--leaf-mid); }
-.toggle[aria-disabled="true"] { opacity:.45; }   /* the music can't start on this device */
+.toggle[aria-disabled="true"] { opacity:.45; pointer-events:none; }   /* the music can't start on this device */
 .toggle[aria-checked="true"] .knob { transform:translateX(20px); }
 .seg { display:flex; gap:4px; padding:4px; border-radius:999px; background:var(--cream); }
 .seg button {

@@ -1242,8 +1242,9 @@
 
   /* ═══════════════════════════ 12. SFX sidechain ═══════════════════════════ */
 
-  /* window.Sound keeps its AudioContext private, so BGM runs its own and learns when SFX fire by
-   * decorating Sound non-destructively. No public API is added, no file is edited, and a missing
+  /* BGM shares audio.js's AudioContext when there is one (Sound.__ctx()), because iOS caps
+   * concurrent contexts — but sharing a context says nothing about when a sound effect fires,
+   * so BGM still learns that by decorating Sound non-destructively. No public API is added, no file is edited, and a missing
    * or late Sound degrades to "no ducking" rather than to a crash. tap() is deliberately NOT
    * wrapped: it is 100 ms long and fires constantly, and ducking on it would pump. */
   function attachSfxSidechain() {

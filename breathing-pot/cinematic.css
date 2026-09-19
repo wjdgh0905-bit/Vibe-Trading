@@ -106,14 +106,21 @@ body.fx-ready #scene {
     --wash-c 1.2s var(--ease), --wash-len 1.2s var(--ease), --side-c 1.2s var(--ease),
     --lift-c 1.2s var(--ease), --bounce-c 1.2s var(--ease),
     --sill-hot 1.2s var(--ease), --pool-c 1.2s var(--ease), --pool-x 1.2s var(--ease),
-    --con-g0 1.2s var(--ease), --con-g1 1.2s var(--ease), --con-g2 1.2s var(--ease),
     --con-w 1.2s var(--ease), --con-h 1.2s var(--ease), --con-dx 1.2s var(--ease),
-    --core-g0 1.2s var(--ease), --core-g1 1.2s var(--ease),
     --core-w 1.2s var(--ease), --core-h 1.2s var(--ease), --core-dx 1.2s var(--ease),
     --grade-top 1.2s var(--ease), --grade-bot 1.2s var(--ease), --vig-c 1.2s var(--ease),
     --scene-ink 1.2s var(--ease);
 }
-/* --wet-c is deliberately NOT in that list. It is the one token that moves
+/* --con-g0/g1/g2 and --core-g0/g1 are deliberately NOT in that list either,
+   for the same reason as --wet-c below: the holding multiplier moves all five
+   on both edges of every watering, and a registered inherited custom property
+   mid-transition re-runs style for the whole #scene subtree at 60fps. Leaving
+   them out cost 27% of the hold's renderer CPU and ~90% of its dropped frames.
+   The shadows still change weight on the press — they just step to the new
+   alpha instead of gliding, which at these deltas is not visible. The five
+   geometry tokens beside them stay in the list: they only move on a band change.
+
+   --wet-c is deliberately NOT in that list. It is the one token that moves
    while the player is holding the button, and every frame a registered
    inherited custom property is mid-transition re-runs style for the whole
    #scene subtree — measured at ~170 extra recalcs per 10s hold, on top of
@@ -334,8 +341,12 @@ body.fx-high #plantSvg, body.fx-low #plantSvg { filter:var(--lx-plant-f, none); 
   left:32%; right:32%; top:75.8%; height:3.2%;
   border-radius:50%;
   mix-blend-mode:multiply;
-  background:radial-gradient(ellipse 58% 100% at var(--pool-x, 55%) 46%,
+  /* the vertical radius has to overshoot the box, or the gradient is still at
+     ~50% alpha where the element clips and the damp patch reads as a bar */
+  background:radial-gradient(ellipse 58% 210% at var(--pool-x, 55%) 46%,
     var(--wet-c, rgba(92,70,54,0)) 0%, rgba(92,70,54,0) 100%);
+  -webkit-mask-image:linear-gradient(to bottom, transparent 0%, #000 38%, #000 62%, transparent 100%);
+  mask-image:linear-gradient(to bottom, transparent 0%, #000 38%, #000 62%, transparent 100%);
   opacity:var(--wet-o, 0);
   transition:opacity 400ms var(--ease);
 }
@@ -365,49 +376,37 @@ body.holding .lx-wet { --wet-o:1; }
 }
 
 /* ---------- 12. scene ink ---------------------------------------------------
-   --scene-ink pins the chrome ink to two known values — the existing --ink
-   token (#5B554F) by day, the unchanged #E9E4DC at night, blended by
-   nightness — so that no lighting layer can erode it. Visually
-   indistinguishable at 13px Gowun Dodum. Scoped to the fx tiers so quality
-   'off' stays pixel-identical.
+   --scene-ink pins the chrome ink to two known values — #524C46 by day, the
+   unchanged #E9E4DC at night, blended by nightness — so that no lighting
+   layer can erode it. It is the same value PALETTES.onScene carries, so the
+   fx and non-fx paths agree; scenefx.js SCENE_INK_DAY is the other half.
+   Scoped to the fx tiers so quality 'off' stays pixel-identical to the
+   stylesheet it sits on top of.
 
-   The numbers, measured on this build, 390x844 dpr3, text set transparent
-   and the real backdrop averaged after the 1.2s colour transition has run
-   out (scratchpad/fx-contrast2.mjs, one fresh context per cell):
+   WHY IT IS #524C46 AND NOT THE OLD #6A645E. Not because the non-idle scene
+   failed — it did not, it measured 4.51 in the evening, thinly. The state
+   the game actually sits in is the idle one: three seconds after the last
+   pointerdown, style.css fades .chrome and leaves it there for as long as
+   someone watches. At the 55% that used to be, 함께한 날 and 잠시 함께 앉아요
+   measured 2.09–2.43:1 in every band but night, and that was equally true of
+   the shipped game with this file deleted.
 
-                     #days            #btnSit
-     band        off  low  high    off  low  high
-     morning    5.14 6.36 6.36    5.00 5.93 5.85
-     day        5.11 6.41 6.41    4.98 5.95 5.89
-     evening    4.51 5.67 5.67    4.65 5.41 5.31
-     night      9.53 8.67 8.67    8.25 9.76 9.78
+   Against a light background an opacity fade cannot both read as "receded"
+   and stay legible — at 55% even pure black ink measures 4.4 against the
+   evening backdrop, so no choice of --scene-ink reaches 4.5 on its own. It
+   took both levers: the idle fade went to .93 and the ink went one notch
+   darker. Measured in the idle state, text set transparent and the real
+   backdrop averaged after the 1.2s colour transition has run out
+   (scratchpad/idlechk.mjs, one fresh context per cell, 390x844):
 
-   The shipped #6A645E is thin in the evening but it passes: 4.51 and 4.65,
-   not the 4.46/4.13 an earlier draft of this comment claimed, and by day it
-   has 0.61 of headroom, not 0.03. Those two figures were a probe reading the
-   colour mid-transition and they are withdrawn. --scene-ink earns its place
-   on the second row of that table instead: it buys back roughly a full point
-   everywhere the sun is up, which is what pays for the grade sitting over
-   the frame at all. The permanent fix belongs in PALETTES.onScene and is
-   still not a lighting feature.
+                     #days          #btnSit
+     band        화면효과 끔  켬    화면효과 끔  켬
+     morning       6.22  6.10       6.08  5.76
+     day           6.20  6.15       6.06  5.76
+     evening       5.55  5.50       5.71  5.05
+     night         8.48  7.81       7.39  8.74
 
-   THE STATE THE GAME ACTUALLY SITS IN. style.css:94 fades .chrome to 55%
-   three seconds after the last pointerdown and leaves it there. At that
-   opacity nothing in the scene reaches AA in any band but night, and that is
-   true of the shipped game with this file deleted:
-
-     .chrome.idle      #days: head 2.20  off 2.20  low 2.43  high 2.43 (day)
-                              head 2.09  off 2.09  low 2.31  high 2.31 (eve)
-                     #btnSit: head 2.18  off 2.18  low 2.36  high 2.35 (day)
-
-   The fx tiers make it better, never worse, in every band but night, where
-   they trade 4.07 -> 3.84 on #days for 3.72 -> 4.13 on #btnSit. It cannot be
-   fixed from here: at 55% even pure black ink measures 4.4 against the
-   evening backdrop, so no choice of --scene-ink reaches 4.5. The lever is
-   the idle opacity itself, and it lives in style.css. That has since been
-   taken to .93 — and .93 alone still left evening 잠시 함께 앉아요 at 4.44,
-   so the ink went one notch darker too, to #524C46, matching the value
-   PALETTES.onScene now carries so the fx and non-fx paths agree.
+   Worst cell 5.05, was 2.09. The non-idle scene is strictly better again.
    -------------------------------------------------------------------------- */
 body.fx-high #days,  body.fx-low #days,
 body.fx-high #btnSit, body.fx-low #btnSit,

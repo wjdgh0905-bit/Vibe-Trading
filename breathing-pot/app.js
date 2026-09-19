@@ -367,6 +367,7 @@
     snd('chime', 'stage');
     bgm('accent', 'stage');
     vfx('pulse', 'stage');
+    updateSky();                           // the music reads `stage` from here and nowhere else
     stageWhisper(stage);
   }
   var pendingStage = 0;
@@ -1250,7 +1251,6 @@
     var fx = $('fx');
     var done = function () {
       plantNew(plantId, true);         // fresh seed of the same species until another is chosen
-      updateSky();                     // re-drives setMood to stage 0; otherwise the pad holds the gather colour
       gather.busy = false;
       checkUnlocks();
       save();
@@ -1318,6 +1318,7 @@
       g.style.opacity = '0';
       setTimeout(function () { renderScene(); g.style.opacity = '1'; setTimeout(function () { g.style.transition = ''; }, 700); }, 600);
     } else renderScene();
+    updateSky();                           // a fresh seed must score as stage 0 now, not in 60s
     seedWhisperPending = true;
     if (!quiet) afterSeedsClosed();
     save();
@@ -1439,6 +1440,7 @@
     on($('setSound'), 'click', function () { state.settings.sound = !state.settings.sound; applySound(); renderSettings(); save(); });
     // turning the music on with 소리 off would be a dead switch, so it brings 소리 with it
     on($('setBgm'), 'click', function () {
+      if (hasBgm() && window.BGM.isAvailable && !window.BGM.isAvailable()) return;   // no context: the row is inert
       state.settings.bgm = !state.settings.bgm;
       if (state.settings.bgm) state.settings.sound = true;
       applySound(); renderSettings(); save();
@@ -1592,9 +1594,9 @@
     applyMotion();
     vfx('init');
     applyFx();
-    snd('setEnabled', !!state.settings.sound);
-    bgm('setEnabled', bgmOn());
-    snd('roomTone', true);                 // scene open; applied once the context is unlocked
+    applySound();                          // also arms the one-shot pointerdown unlock — boot is
+                                           // not a gesture, so the first tap anywhere is what
+                                           // gives audio.js its context for BGM to share
     if (rmQuery && rmQuery.addEventListener) rmQuery.addEventListener('change', applyMotion);
     else if (rmQuery && rmQuery.addListener) rmQuery.addListener(applyMotion);
 

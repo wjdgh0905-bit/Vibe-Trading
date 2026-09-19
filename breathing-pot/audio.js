@@ -299,6 +299,9 @@
     breathPad: breathPad,
     // read-only helpers (not in contract; harmless)
     isEnabled: function () { return enabled; },
-    state: function () { return ctx ? ctx.state : 'none'; }
+    state: function () { return ctx ? ctx.state : 'none'; },
+    // iOS caps concurrent AudioContexts and `new AudioContext()` can throw once one exists,
+    // so bgm.js shares this one rather than opening a second. Null until unlock() has run.
+    __ctx: function () { return ctx; }
   };
 })();

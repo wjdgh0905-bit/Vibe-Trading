@@ -17,6 +17,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="cinematic.css">
 </head>
 <body>
   <!-- ───────── 창가 · main scene ───────── -->
@@ -142,6 +143,14 @@
         <span class="row-label" id="lblSound">소리</span>
         <button class="toggle" id="setSound" type="button" role="switch" aria-checked="false" aria-labelledby="lblSound"><span class="knob"></span></button>
       </div>
+      <div class="row" id="rowBgm">
+        <span class="row-label" id="lblBgm">배경 음악</span>
+        <button class="toggle" id="setBgm" type="button" role="switch" aria-checked="false" aria-labelledby="lblBgm"><span class="knob"></span></button>
+      </div>
+      <div class="row">
+        <span class="row-label" id="lblFx">화면 효과</span>
+        <button class="toggle" id="setFx" type="button" role="switch" aria-checked="true" aria-labelledby="lblFx"><span class="knob"></span></button>
+      </div>
       <div class="row" id="rowHaptic">
         <span class="row-label" id="lblHaptic">손끝 느낌 (진동)</span>
         <button class="toggle" id="setHaptic" type="button" role="switch" aria-checked="true" aria-labelledby="lblHaptic"><span class="knob"></span></button>
@@ -214,6 +223,8 @@
   <script src="plants.js"></script>
   <script src="whispers.js"></script>
   <script src="audio.js"></script>
+  <script src="bgm.js"></script>
+  <script src="scenefx.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

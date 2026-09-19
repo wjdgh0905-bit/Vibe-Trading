@@ -110,6 +110,21 @@
     try { window.Sound[method].apply(window.Sound, args); } catch (e) { /* audio is optional */ }
   }
 
+  function hasBgm() { return typeof window.BGM === 'object' && !!window.BGM; }
+  function bgm(method) {
+    if (!hasBgm() || typeof window.BGM[method] !== 'function') return;
+    var args = Array.prototype.slice.call(arguments, 1);
+    try { window.BGM[method].apply(window.BGM, args); } catch (e) { /* music is optional */ }
+  }
+  /* music rides on 소리: with sound off there is nothing for the SFX sidechain to duck against */
+  function bgmOn() { return !!(state.settings.sound && state.settings.bgm); }
+  function hasFx() { return typeof window.SceneFX === 'object' && !!window.SceneFX; }
+  function vfx(method) {
+    if (!hasFx() || typeof window.SceneFX[method] !== 'function') return;
+    var args = Array.prototype.slice.call(arguments, 1);
+    try { window.SceneFX[method].apply(window.SceneFX, args); } catch (e) { /* lighting is optional */ }
+  }
+
   /* color helpers for the sky blend */
   function parseColor(c) {
     c = String(c).trim();
@@ -165,7 +180,7 @@
       moods: Object.create(null),
       unlocked: ['bean'],
       firsts: { thirstyRevive: false, nightVisit: false, rainVisit: false, sit: false, bloom: false },
-      settings: { sound: false, haptic: true, motion: 'auto', textSize: 0 },
+      settings: { sound: false, haptic: true, motion: 'auto', textSize: 0, bgm: false, fx: true },
       onboarded: false,
       storageHintShown: false
     };
@@ -231,6 +246,8 @@
     if (!PLANT_NAMES[out.plantId]) out.plantId = 'bean';
     if (['auto', 'on', 'off'].indexOf(out.settings.motion) === -1) out.settings.motion = 'auto';
     if ([0, 1, 2].indexOf(out.settings.textSize) === -1) out.settings.textSize = 0;
+    out.settings.bgm = !!out.settings.bgm;
+    out.settings.fx = out.settings.fx !== false;          // new field: on unless a save says otherwise
     return out;
   }
 
@@ -348,6 +365,8 @@
     restartAnim($('plant'), 'stageup', 1300);
     vib(30);
     snd('chime', 'stage');
+    bgm('accent', 'stage');
+    vfx('pulse', 'stage');
     stageWhisper(stage);
   }
   var pendingStage = 0;
@@ -444,6 +463,10 @@
     isNight = nightness >= 0.5;
     document.body.classList.toggle('night', isNight);
     scene.classList.toggle('rain', mood === 'rain');
+    // the lighting rig and the music both read the blend, not band(): they cross-fade with it
+    vfx('setTime', { band: mix.a, nextBand: mix.b, t: mix.t, nightness: nightness, palette: out });
+    vfx('setWeather', mood);
+    bgm('setMood', mix.t < 0.5 ? mix.a : mix.b, { weather: mood, nightness: nightness, stage: stageOf(state.gp) });
     if (mood === 'rain' && !state.firsts.rainVisit) { state.firsts.rainVisit = true; save(); }
   }
 
@@ -610,6 +633,9 @@
     return p < 0.4 ? p / 0.4 : 1 - (p - 0.4) / 0.6;   // 0→1 over inhale, 1→0 over exhale
   }
 
+  /* one source of truth: sitting is quieter than watering, which is quieter than idle */
+  function bgmIntensity() { return sit.open ? 0.45 : hold.active ? 0.55 : 1; }
+
   function startHold(e) {
     if (hold.active || hold.graceTimer) return;
     var cf = $('confirm');
@@ -635,6 +661,7 @@
     renderHoldLabel();
     vib(8);
     snd('startPour');
+    bgm('setIntensity', bgmIntensity());
     hold.tickTimer = setInterval(pourTick, HOLD_TICK_MS);
   }
   function pourTick() {
@@ -653,7 +680,10 @@
     if (hasPlants()) safe(function () { window.Plants.renderPot($('pot'), { hydration: state.hydration }); });
     if (prev <= THIRSTY_AT && state.hydration > THIRSTY_AT) renderScene();   // posture lifts within 800 ms
     snd('pourPhase', breathPhase());
+    pourN += 1;
+    if (pourN % 10 === 0) { vfx('pulse', 'water'); bgm('accent', 'water'); }   // 1 Hz, not 10
   }
+  var pourN = 0;
   function endHold() {
     var btn = $('btnHold');
     if (hold.graceTimer) { clearTimeout(hold.graceTimer); hold.graceTimer = 0; }
@@ -668,6 +698,8 @@
     if (hold.tickTimer) { clearInterval(hold.tickTimer); hold.tickTimer = 0; }
     document.body.classList.remove('holding');
     snd('stopPour');
+    pourN = 0;
+    bgm('setIntensity', bgmIntensity());
 
     var dur = now() - hold.startedAt;
     var revived = hold.hydBefore <= THIRSTY_AT && state.hydration > THIRSTY_AT;
@@ -769,6 +801,7 @@
     updateModalInert();
     try { ov.focus({ preventScroll: true }); } catch (e) { ov.focus(); }
     raf(function () { ov.classList.add('show'); });
+    bgm('setIntensity', bgmIntensity());
     breathStep();
     sit.progress = setInterval(function () {
       var b = $('sitProgress');
@@ -793,6 +826,7 @@
     if (!sit.open) return;
     sit.open = false;
     clearSitTimers();
+    bgm('setIntensity', bgmIntensity());
     if (ov) { ov.classList.remove('show'); sit.closing = setTimeout(function () { ov.hidden = true; sit.closing = 0; }, isRM() ? 200 : 800); }
     updateModalInert();
     restoreFocus(sit.lastFocus);
@@ -1209,12 +1243,14 @@
     journal.detailId = null;
     var plantId = state.plantId;
     snd('chime', 'gather');
+    bgm('accent', 'gather');
     vib(20);
     closeSheet();
     var rm = isRM();
     var fx = $('fx');
     var done = function () {
       plantNew(plantId, true);         // fresh seed of the same species until another is chosen
+      updateSky();                     // re-drives setMood to stage 0; otherwise the pad holds the gather colour
       gather.busy = false;
       checkUnlocks();
       save();
@@ -1297,6 +1333,8 @@
   function renderSettings() {
     var el;
     if ((el = $('setSound'))) el.setAttribute('aria-checked', state.settings.sound ? 'true' : 'false');
+    if ((el = $('setBgm'))) el.setAttribute('aria-checked', state.settings.bgm ? 'true' : 'false');
+    if ((el = $('setFx'))) el.setAttribute('aria-checked', state.settings.fx ? 'true' : 'false');
     if ((el = $('setHaptic'))) el.setAttribute('aria-checked', state.settings.haptic ? 'true' : 'false');
     if ((el = $('rowHaptic'))) el.hidden = !navigator.vibrate;
     setSeg('setMotion', state.settings.motion);
@@ -1343,16 +1381,22 @@
     var sys = false;
     try { rmQuery = rmQuery || (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)')); sys = !!(rmQuery && rmQuery.matches); } catch (e) { /* ignore */ }
     document.body.classList.toggle('rm', m === 'on' || (m === 'auto' && sys));
+    vfx('setReducedMotion', document.body.classList.contains('rm'));
   }
+  /* 'high' is where SceneFX starts; it still steps itself down on a slow device */
+  function applyFx() { vfx('setQuality', state.settings.fx ? 'high' : 'off'); }
   function applySound() {
     snd('setEnabled', !!state.settings.sound);
+    bgm('setEnabled', bgmOn());
     if (state.settings.sound) {
       snd('unlock');           // we are inside a user gesture when toggled
+      if (bgmOn()) bgm('unlock');
       snd('roomTone', true);
       if (!soundUnlockArmed) {
         soundUnlockArmed = true;
         on(document, 'pointerdown', function unlockOnce() {
           if (state.settings.sound) { snd('unlock'); snd('roomTone', true); }
+          if (bgmOn()) bgm('unlock');
           document.removeEventListener('pointerdown', unlockOnce);
           soundUnlockArmed = false;
         });
@@ -1387,6 +1431,13 @@
   }
   function wireSettings() {
     on($('setSound'), 'click', function () { state.settings.sound = !state.settings.sound; applySound(); renderSettings(); save(); });
+    // turning the music on with 소리 off would be a dead switch, so it brings 소리 with it
+    on($('setBgm'), 'click', function () {
+      state.settings.bgm = !state.settings.bgm;
+      if (state.settings.bgm) state.settings.sound = true;
+      applySound(); renderSettings(); save();
+    });
+    on($('setFx'), 'click', function () { state.settings.fx = !state.settings.fx; applyFx(); renderSettings(); save(); });
     on($('setHaptic'), 'click', function () { state.settings.haptic = !state.settings.haptic; renderSettings(); save(); if (state.settings.haptic) vib(8); });
     on($('setMotion'), 'click', function (e) {
       var b = e.target && e.target.closest ? e.target.closest('[data-value]') : null;
@@ -1421,7 +1472,8 @@
         checkUnlocks();
         flushStageWhisper();
         saveNow();
-        applyTextSize(); applyMotion(); snd('setEnabled', !!state.settings.sound);
+        applyTextSize(); applyMotion(); applyFx();
+        snd('setEnabled', !!state.settings.sound); bgm('setEnabled', bgmOn());
         updateSky(); renderAll();
         if (ta) ta.value = '';
         closeSheet();
@@ -1447,6 +1499,7 @@
       showConfirm('정말요? 지금 식물과 일기가 모두 사라져요.', '네, 새로 시작해요', function () {
         state = fresh();
         try { window.localStorage.removeItem(KEY); } catch (e) { /* ignore */ }
+        try { window.localStorage.removeItem('sumgyeol.gfx'); } catch (e) { /* ignore */ }
         saveNow();
         try { window.location.reload(); } catch (e) { /* ignore */ }
       });
@@ -1531,7 +1584,10 @@
     checkDay();
     applyTextSize();
     applyMotion();
+    vfx('init');
+    applyFx();
     snd('setEnabled', !!state.settings.sound);
+    bgm('setEnabled', bgmOn());
     snd('roomTone', true);                 // scene open; applied once the context is unlocked
     if (rmQuery && rmQuery.addEventListener) rmQuery.addEventListener('change', applyMotion);
     else if (rmQuery && rmQuery.addListener) rmQuery.addListener(applyMotion);
@@ -1562,6 +1618,7 @@
         if (sit.open) endSit();              // breaths are only counted while the player is present
         saveNow();
         snd('suspend');
+        bgm('suspend');
       } else {
         document.body.classList.remove('hidden');
         lastSeenBeforeOpen = state.lastSeen;
@@ -1570,6 +1627,8 @@
         updateSky();
         renderAll();
         snd('resume');
+        bgm('resume');
+        bgm('setIntensity', bgmIntensity());
       }
     });
     on(window, 'pagehide', saveNow);
@@ -1587,7 +1646,8 @@
     state: function () { return state; },
     setState: function (fn) { safe(function () { var r = fn(state); if (r && typeof r === 'object') state = r; renderAll(); save(); }); },
     setHour: function (h) { debugHour = (typeof h === 'number' && isFinite(h)) ? h : null; updateSky(); renderScene(); },
-    say: say, sayId: sayId, render: renderAll, renderAll: renderAll, updateSky: updateSky, skyMood: skyMood
+    say: say, sayId: sayId, render: renderAll, renderAll: renderAll, updateSky: updateSky, skyMood: skyMood,
+    fx: function () { return window.SceneFX; }, bgm: function () { return window.BGM; }
   };
 
   function start() { try { boot(); } catch (e) { if (window.console) console.error('[sumgyeol] boot failed', e); } }

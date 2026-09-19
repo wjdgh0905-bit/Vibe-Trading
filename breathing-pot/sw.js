@@ -1,6 +1,6 @@
 /* 숨결 화분 — tiny cache-first service worker (registered by app.js only over http/https). */
-const CACHE = 'sumgyeol-v1';
-const PRECACHE = ['./', 'index.html', 'style.css', 'plants.js', 'whispers.js', 'audio.js', 'app.js',
+const CACHE = 'sumgyeol-v2';
+const PRECACHE = ['./', 'index.html', 'style.css', 'cinematic.css', 'plants.js', 'whispers.js', 'audio.js', 'bgm.js', 'scenefx.js', 'app.js',
   'icon.svg', 'icon-180.png', 'icon-512.png', 'manifest.webmanifest'];
 
 self.addEventListener('install', (e) => {

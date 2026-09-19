@@ -8,14 +8,29 @@
  * (Later than audio.js so the SFX sidechain in §duck can decorate window.Sound at unlock;
  *  a wrong order degrades to "no ducking", never to a crash — see attachSfxSidechain.)
  *
- * Wiring expected from app.js:
- *   BGM.setEnabled(state.settings.sound && state.settings.bgm)   // at load, and on either toggle
- *   BGM.unlock()                                                 // inside a user gesture
- *   BGM.suspend() / BGM.resume()                                 // visibilitychange hidden / visible
- *   BGM.setMood(band, { weather: mood, nightness: n, stage: s }) // from updateSky() and on stage change
- *   BGM.setIntensity(x)          // 1 idle · ~0.55 while pouring · ~0.45 while sitting (함께 앉기)
+ * Wiring, as it stands in app.js. Every call goes through app.js's bgm() helper (which swallows a
+ * missing module), and 배경 음악 is nested under 소리, so bgmOn() is `settings.sound && settings.bgm`:
+ *   BGM.setEnabled(bgmOn())      // boot() and applySound(): at load, and on either toggle.
+ *                                // Self-sufficient — it opens (or borrows) the context itself, so a
+ *                                // toggle flipped on long after the app's one unlock() still plays.
+ *   BGM.unlock()                 // inside a user gesture (pointerdown / toggle click). Belt and
+ *                                // braces only: setEnabled(true) and this file's own capture-phase
+ *                                // pointerdown listener recover a session without it.
+ *   BGM.suspend() / BGM.resume() // visibilitychange hidden / visible
+ *   BGM.setMood(band, { weather: mood, nightness: n, stage: s }) // end of updateSky(), and onStageUp()
+ *   BGM.setIntensity(bgmIntensity())   // 1 idle · 0.55 while pouring · 0.45 while sitting (함께 앉기),
+ *                                // recomputed at every edge (beginPour / endHold, the sit open and
+ *                                // close paths, visibilitychange) — recomputed, never pushed and popped
  *   BGM.accent('stage'|'gather'|'water')                         // alongside the matching SFX
  *   BGM.setMood(band, { ... stage: 0 })                          // explicitly, at replant — see accent('gather')
+ *   BGM.isEnabled() / BGM.isAvailable()  // the player's toggle, and whether a context could be opened
+ *                                // at all. A settings row reading ON while isAvailable() is false is
+ *                                // claiming music from a module that can never make a sound.
+ *
+ * The context: audio.js owns the page's AudioContext once it has one, and this file borrows it
+ * through Sound.__ctx() rather than opening a second — iOS caps concurrent contexts, and a
+ * `new AudioContext()` that throws would leave the music dead for the whole session. Only a context
+ * this file opened itself (Sound had none yet) is ever suspended here, and none is ever closed.
  *
  * The music: one white-key collection all day, a drone whose root walks F → C → A → D with the
  * sun, a 3–4 voice pad that changes chord every 50–66 s by moving one or two voices a step, a
@@ -133,6 +148,7 @@
   var enabled = false;           // the player's toggle; survives everything, even `dead`
   var dead = false;              // no AudioContext available/constructible — permanent no-op
   var ctx = null;
+  var ownCtx = false;            // false when the context was borrowed from audio.js (never park it)
   var G = null;                  // the persistent graph (buses, reverb, air, master chain)
   var sets = [];                 // live band voice sets; 1 normally, 2 during a crossfade
   var active = null;             // the set that owns the chord clock
@@ -259,8 +275,17 @@
       }
     } catch (e) {}
   }
+  // The same cancelAndHoldAtTime-first shape as rampDown, for the same reason: cancelScheduledValues
+  // drops a ramp in flight *and* reverts the param to the setValueAtTime that started it. Re-enabling
+  // inside the 1.2 s disable fade would then restore full gain in one render quantum instead of over
+  // the ≈ 4 s this function promises. Holding first makes the new target start from wherever the
+  // fade actually got to. The cancel gets its own try so a refused hold still leaves a working ramp.
   function toward(param, v, t, tau) {
-    try { param.cancelScheduledValues(t); param.setTargetAtTime(v, t, tau); } catch (e) {}
+    try {
+      if (param.cancelAndHoldAtTime) param.cancelAndHoldAtTime(t);
+      else param.cancelScheduledValues(t);
+    } catch (e) { try { param.cancelScheduledValues(t); } catch (e2) {} }
+    try { param.setTargetAtTime(v, t, tau); } catch (e) {}
   }
 
   /* ═══════════════════════════ 4. the room — FDN reverb ═══════════════════════════ */
@@ -992,8 +1017,20 @@
     } catch (e) {}
   }
 
+  // slotIndex is absolute and monotonic while the scheduler runs, but this puts it back on the
+  // Date.now() grid, i.e. into 0..3 — a fall of hundreds after a long session. lastMelSlot and
+  // restUntilSlot are absolute slot numbers too, and evaluateSlot gates the melody on the distance
+  // between them, so rebasing one without the others mutes the tune for as long as the session had
+  // already been running. Shift them by the same delta (distances survive), then clamp: a gap is a
+  // rest, not a debt — nothing carried across it may sit in the future of the new clock.
   function resyncSlotIndex() {
+    var prev = slotIndex;
     slotIndex = Math.floor(((Date.now() % (cycle * 1000)) / 1000) / slotDur);
+    var d = slotIndex - prev;
+    lastMelSlot += d;
+    restUntilSlot += d;
+    if (lastMelSlot > slotIndex) lastMelSlot = slotIndex;      // ... so the melody waits 3 slots, not 300
+    if (restUntilSlot > slotIndex) restUntilSlot = slotIndex;  // a deep rest does not outlive the gap
   }
 
   function evaluateSlot(i, when) {
@@ -1152,6 +1189,11 @@
       // At most one crossfade in flight; latest pending wins; never build a third voice set.
       if (active && band !== active.band) pendingBand = band;
       else pendingBand = '';
+      // mood.band is the band that has been *asked for*, not the one sounding: setMood compares
+      // against it to decide whether a request is a band change at all. Leaving it stale here made
+      // an A→B→A sequence inside one crossfade drop the third request and settle on B forever,
+      // because moodKey had already advanced past it.
+      mood.band = band;
       return;
     }
     if (active && active.band === band) return;
@@ -1336,12 +1378,17 @@
 
   /* ═══════════════════════════ 14. tier + self-healing ═══════════════════════════ */
 
+  // Safari never implements navigator.deviceMemory, so reading an absent value as 8 made the
+  // low-end detector inert on the one browser family that runs on phones: every iPhone took the
+  // full tier (~156 nodes) while a mid-range Android reporting deviceMemory 4 took the lean one.
+  // Unknown means unknown — assume the smaller device, exactly as scenefx.js does, and let the
+  // jitter watchdog in measureJitter() decide from measurement rather than from a guess.
   function detectLean() {
     try {
-      var cores = navigator.hardwareConcurrency || 8;
-      var memGB = navigator.deviceMemory || 8;
+      var cores = typeof navigator.hardwareConcurrency === 'number' ? navigator.hardwareConcurrency : 4;
+      var memGB = typeof navigator.deviceMemory === 'number' ? navigator.deviceMemory : 4;
       return cores <= 4 || memGB <= 4;
-    } catch (e) { return false; }
+    } catch (e) { return true; }
   }
 
   var lastTickAt = 0, healRef = 0, healCtx = 0;
@@ -1417,16 +1464,43 @@
     xfading = false; pendingBand = '';
   }
 
+  // audio.js's context, or null while it has none. Borrowing it is worth a little care: iOS caps
+  // concurrent AudioContexts, and once Sound holds one `new AudioContext()` can throw — which would
+  // kill the music for the session. Sharing also means the two layers are finally summed in one
+  // graph, so they can be levelled against each other with a single analyser.
+  function sharedCtx() {
+    try {
+      var S = window.Sound;
+      if (S && typeof S.__ctx === 'function') return S.__ctx() || null;
+    } catch (e) {}
+    return null;
+  }
+  // True while audio.js is enabled and about to open a context we should wait for rather than
+  // race. 배경 음악 is nested under 소리, so this is the ordinary state of a fresh session.
+  function soundPending() {
+    try {
+      var S = window.Sound;
+      if (!S || typeof S.__ctx !== 'function') return false;
+      if (S.__ctx()) return false;
+      return !(typeof S.isEnabled === 'function' && !S.isEnabled());
+    } catch (e) {}
+    return false;
+  }
+
   function ensureContext() {
     if (dead) return false;
     if (ctx) return true;
     try {
       // A QA affordance: an OfflineAudioContext can be handed in for headless rendering.
-      if (window.__bgmCtx) { ctx = window.__bgmCtx; }
+      if (window.__bgmCtx) { ctx = window.__bgmCtx; ownCtx = false; }
       else {
-        var AC = window.AudioContext || window.webkitAudioContext;
-        if (!AC) { dead = true; return false; }
-        ctx = new AC();
+        var shared = sharedCtx();
+        if (shared) { ctx = shared; ownCtx = false; }
+        else {
+          var AC = window.AudioContext || window.webkitAudioContext;
+          if (!AC) { dead = true; return false; }
+          ctx = new AC(); ownCtx = true;
+        }
       }
     } catch (e) { dead = true; ctx = null; return false; }
     if (!ctx) { dead = true; return false; }
@@ -1441,6 +1515,13 @@
   function setEnabled(on) {
     try {
       enabled = !!on;
+      // The toggle cannot depend on someone else having called unlock() first. A player who turns
+      // 배경 음악 on after the app's one-shot unlock has already run — or who arrives with it
+      // saved on — otherwise just stores the flag and hears nothing, forever. A toggle click is
+      // itself a user gesture, so opening the context here is legal; while audio.js is enabled and
+      // has not opened its own yet we wait instead, and the pointerdown listener at the foot of
+      // this file borrows that one on the next tap (nothing can sound before a gesture anyway).
+      if (enabled && !ctx && !dead && !soundPending()) ensureContext();
       if (dead || !ctx || !G) return;
       var t = now();
       if (enabled) {
@@ -1464,8 +1545,9 @@
         later(function () {
           if (enabled) return;      // the toggle was flipped back inside the fade — leave it playing
           fullTeardown();
-          // Never ctx.close(): a closed context cannot be reopened.
-          try { if (ctx && ctx.state === 'running') quiet(ctx.suspend()); } catch (e) {}
+          // Never ctx.close(): a closed context cannot be reopened. And never park a context
+          // borrowed from audio.js — suspending it would take every sound effect down with the music.
+          try { if (ownCtx && ctx && ctx.state === 'running') quiet(ctx.suspend()); } catch (e) {}
         }, 1600);
       }
     } catch (e) {}
@@ -1503,7 +1585,8 @@
       stopScheduler();
       later(function () {
         if (running) return;        // resume() landed inside the fade; do not park the context
-        try { if (ctx && ctx.state === 'running') quiet(ctx.suspend()); } catch (e) {}
+        // Only ours: audio.js parks its own from the same visibilitychange handler.
+        try { if (ownCtx && ctx && ctx.state === 'running') quiet(ctx.suspend()); } catch (e) {}
       }, 400);
     } catch (e) {}
   }
@@ -1573,15 +1656,31 @@
   }
 
   function isEnabled() { return enabled; }
+  // "the toggle is on" and "the music can ever be heard" are different facts: on a device where no
+  // AudioContext can be constructed, enabled stays true and nothing will ever sound. A settings row
+  // that wants to be honest greys itself out on isAvailable() === false.
+  function isAvailable() { return !dead; }
 
-  // iOS leaves the context 'interrupted' after a call or Siri and app.js will not call unlock()
-  // again. One capture-phase listener, no DOM mutation, no preventDefault.
+  // Two holes, one listener. iOS leaves the context 'interrupted' after a call or Siri and app.js
+  // will not call unlock() again; and a 배경 음악 toggle restored at boot has no gesture to open a
+  // context in at all. The `ctx &&` this used to carry made the second case unrecoverable — no
+  // context meant the listener that was supposed to create one never ran. Capture phase, no DOM
+  // mutation, no preventDefault.
+  function gestureRecover() {
+    try {
+      if (!enabled || dead) return;
+      if (ctx) { if (ctx.state !== 'running') unlock(); return; }
+      // No context yet. audio.js unlocks from this same pointerdown, so let its handler go first
+      // and borrow what it opens instead of opening a second context; if it opens none, the
+      // deferred call opens ours, and the next tap resumes it from inside a gesture.
+      if (soundPending()) later(unlock, 0);
+      else unlock();
+    } catch (e) {}
+  }
   try {
-    document.addEventListener('pointerdown', function () {
-      try { if (enabled && !dead && ctx && ctx.state !== 'running') unlock(); } catch (e) {}
-    }, { capture: true, passive: true });
+    document.addEventListener('pointerdown', gestureRecover, { capture: true, passive: true });
   } catch (e) {
-    try { document.addEventListener('pointerdown', function () { try { if (enabled && ctx && ctx.state !== 'running') unlock(); } catch (e2) {} }, true); } catch (e3) {}
+    try { document.addEventListener('pointerdown', gestureRecover, true); } catch (e3) {}
   }
 
   window.BGM = {
@@ -1593,10 +1692,11 @@
     setIntensity: setIntensity,
     accent: accent,
     isEnabled: isEnabled,
+    isAvailable: isAvailable,
     // read-only QA helpers (not in contract; harmless — audio.js exposes state() the same way)
     __dbg: function () {
       return {
-        state: ctx ? ctx.state : 'none', dead: dead, lean: lean, nodes: liveNodes,
+        state: ctx ? ctx.state : 'none', dead: dead, lean: lean, nodes: liveNodes, own: ownCtx,
         band: active ? active.band : mood.band, chord: active ? active.chordId : '',
         sets: sets.length, xfading: xfading, tails: melTails, slot: slotIndex,
         cycle: cycle, master: G ? G.master.gain.value : 0,

@@ -14,9 +14,9 @@
    and a little air in the window.
 
    Layer order inside #scene (painted bottom to top):
-     .sky .rain .sill .wall  →  #lx (z0)  →  #lxg (z2)  →  .top (z2)
-                             →  .stage (z1)  →  .bottom (z2)
-   #lxg is inserted BEFORE header.top in the DOM, so at equal z-index the
+     .sky .rain .sill .wall  →  #lx children (z0)  →  .stage (z1)
+                             →  .lx-grade (z2)  →  .top / .bottom (z2)
+   .lx-grade is inserted BEFORE header.top in the DOM, so at equal z-index the
    chrome and the bottom stack always paint on top of the grade. Nothing in
    this file is ever painted over text. That is the contrast guarantee.
    ========================================================================== */
@@ -38,10 +38,6 @@
 @property --bounce-c  { syntax:'<color>'; inherits:true; initial-value:rgba(0,0,0,0); }
 @property --sill-hot  { syntax:'<color>'; inherits:true; initial-value:rgba(0,0,0,0); }
 @property --pool-c    { syntax:'<color>'; inherits:true; initial-value:rgba(0,0,0,0); }
-@property --cast-g0   { syntax:'<color>'; inherits:true; initial-value:rgba(0,0,0,0); }
-@property --cast-g1   { syntax:'<color>'; inherits:true; initial-value:rgba(0,0,0,0); }
-@property --cast-g2   { syntax:'<color>'; inherits:true; initial-value:rgba(0,0,0,0); }
-@property --cast-g3   { syntax:'<color>'; inherits:true; initial-value:rgba(0,0,0,0); }
 @property --con-g0    { syntax:'<color>'; inherits:true; initial-value:rgba(0,0,0,0); }
 @property --con-g1    { syntax:'<color>'; inherits:true; initial-value:rgba(0,0,0,0); }
 @property --con-g2    { syntax:'<color>'; inherits:true; initial-value:rgba(0,0,0,0); }
@@ -51,7 +47,7 @@
 @property --grade-bot { syntax:'<color>'; inherits:true; initial-value:rgba(0,0,0,0); }
 @property --vig-c     { syntax:'<color>'; inherits:true; initial-value:rgba(0,0,0,0); }
 @property --scene-ink { syntax:'<color>'; inherits:true; initial-value:#5B554F; }
-@property --wet-c     { syntax:'<color>'; inherits:true; initial-value:rgba(255,252,244,0); }
+@property --wet-c     { syntax:'<color>'; inherits:true; initial-value:rgba(92,70,54,0); }
 
 @property --sun-x    { syntax:'<percentage>'; inherits:true; initial-value:60%; }
 @property --sun-y    { syntax:'<percentage>'; inherits:true; initial-value:20%; }
@@ -64,23 +60,31 @@
 @property --core-w  { syntax:'<length>'; inherits:true; initial-value:0px; }
 @property --core-h  { syntax:'<length>'; inherits:true; initial-value:0px; }
 @property --core-dx { syntax:'<length>'; inherits:true; initial-value:0px; }
-@property --cast-w  { syntax:'<length>'; inherits:true; initial-value:0px; }
-@property --cast-h  { syntax:'<length>'; inherits:true; initial-value:0px; }
-@property --cast-dx { syntax:'<length>'; inherits:true; initial-value:0px; }
 
 @property --shaft-o  { syntax:'<number>'; inherits:true; initial-value:0; }
 @property --tau      { syntax:'<angle>';  inherits:true; initial-value:20deg; }
-@property --cast-skew{ syntax:'<angle>';  inherits:true; initial-value:0deg; }
 
 /* ---------- 1. scaffolding ------------------------------------------------ */
 /* isolation costs nothing, defines the backdrop for the blend layers, and
    pens them inside #scene so they can never touch .scrim/.sheet/.sit/.confirm. */
 body.fx-high #scene, body.fx-low #scene { isolation:isolate; }
 
+/* The wrappers carry NO z-index, and that is the whole ballgame for the
+   blend layers. A positioned element with a non-auto z-index is a stacking
+   context, and a stacking context is an isolated group: every blended child
+   inside it would see a transparent backdrop and silently degrade to plain
+   source-over. Measured before this was fixed: a multiply probe inside #lxg
+   rendered 253,0,0 over the soil where the same probe as a direct child of
+   #scene rendered 118,0,0. The grade, the bloom and the shadows were all
+   compositing as `normal`.
+   z-index therefore lives on the LAYERS, which are already stacking contexts
+   by virtue of mix-blend-mode, so nothing is nested: 0 for everything that
+   belongs behind .stage (z1), 2 for the grade, which must sit over the plant
+   but under .top/.bottom (equal z-index, later in DOM order, so they win). */
 #lx, #lxg { position:absolute; inset:0; pointer-events:none; }
-#lx  { z-index:0; }
-#lxg { z-index:2; }
 #lx > *, #lxg > * { position:absolute; pointer-events:none; }
+.lx-sky, .lx-shaft, .lx-motes, .lx-contact, .lx-core { z-index:0; }
+.lx-grade { z-index:2; }
 
 /* The whole rig steps back while sitting — one light system at a time.
    The opacity goes on the CHILDREN, never on #lx/#lxg: a parent with
@@ -102,9 +106,6 @@ body.fx-ready #scene {
     --wash-c 1.2s var(--ease), --wash-len 1.2s var(--ease), --side-c 1.2s var(--ease),
     --lift-c 1.2s var(--ease), --bounce-c 1.2s var(--ease),
     --sill-hot 1.2s var(--ease), --pool-c 1.2s var(--ease), --pool-x 1.2s var(--ease),
-    --cast-g0 1.2s var(--ease), --cast-g1 1.2s var(--ease), --cast-g2 1.2s var(--ease),
-    --cast-g3 1.2s var(--ease), --cast-w 1.2s var(--ease), --cast-h 1.2s var(--ease),
-    --cast-dx 1.2s var(--ease), --cast-skew 1.2s var(--ease),
     --con-g0 1.2s var(--ease), --con-g1 1.2s var(--ease), --con-g2 1.2s var(--ease),
     --con-w 1.2s var(--ease), --con-h 1.2s var(--ease), --con-dx 1.2s var(--ease),
     --core-g0 1.2s var(--ease), --core-g1 1.2s var(--ease),
@@ -234,29 +235,20 @@ body.fx-high #wall {
     linear-gradient(90deg, var(--side-c, rgba(0,0,0,0)) 0%, rgba(0,0,0,0) 58%);
 }
 
-/* ---------- 7. .lx-cast — 벽 캐스트 로브 (주인공) --------------------------
-   The pot blocks the wall wash; the block runs down, blurs, and leans away
-   from the sun. skewX with transform-origin 50% 0% is the whole trick: tight
-   to the pot at the sill, leaning further the lower it goes — the silhouette
-   a real soft shadow has as it spreads with distance.
-   No filter:blur() anywhere. Blur destroyed the silhouette and turned this
-   into a generic smudge; a five-stop falloff is what makes it read as the
-   pot's shadow. There is no convolution in this layer at all.
+/* ---------- 7. 벍 캐스트 로브 — 빼다 ---------------------------------
+   There was a long soft lobe here, the pot's shadow thrown down the wall
+   below the sill, and it is gone. It never read as a shadow.
+   The wall below the sill is a flat unshaded field, and a 150x150 gradient
+   blob on a flat field has nothing to be read against: it has no edge that
+   belongs to the pot (the pot is a trapezoid; the lobe was an ellipse), no
+   other shading nearby to set a scale, and it sat in the one part of the
+   frame that is otherwise perfectly clean. Three separate passes over the
+   screenshots called it a smudge or a stain, at every band and both
+   viewports, and once the blend layers actually started compositing it got
+   more visible, not less.
+   Grounding the pot was never this layer's job anyway — §8 does that, at the
+   line where the pot actually touches something.
    -------------------------------------------------------------------------- */
-.lx-cast {
-  left:50%; top:calc(var(--sill-y) + var(--sill-h) - 2px);
-  width:var(--cast-w); height:var(--cast-h);
-  margin-left:calc(var(--cast-w) / -2);
-  transform:translateX(var(--cast-dx)) skewX(var(--cast-skew));
-  transform-origin:50% 0%;
-  mix-blend-mode:multiply;
-  background:radial-gradient(ellipse 50% 62% at 50% 0%,
-    var(--cast-g0, rgba(0,0,0,0))  0%,
-    var(--cast-g1, rgba(0,0,0,0)) 18%,
-    var(--cast-g2, rgba(0,0,0,0)) 44%,
-    var(--cast-g3, rgba(0,0,0,0)) 68%,
-    rgba(44,33,25,0)              92%);
-}
 
 /* ---------- 8. 접지 그림자 — 페넘브라 + AO 코어 ---------------------------
    The single most important effect: with these two the pot stops floating.
@@ -312,19 +304,30 @@ body.fx-high #wall {
    -------------------------------------------------------------------------- */
 body.fx-high #plantSvg, body.fx-low #plantSvg { filter:var(--lx-plant-f, none); }
 
-/* ---------- 10. .lx-wet — 젖은 흙 광택 -------------------------------------
-   Same coordinates as the existing .drops::after soil wash.
-   NO mix-blend-mode: .stage's translateX(-50%) makes it a stacking context,
-   so a blended child there would blend against .stage's transparent
-   background and draw nothing at all. Plain alpha over wet soil reads as
-   gloss perfectly well.
+/* ---------- 10. .lx-wet — 젖은 흙 -----------------------------------------
+   Wet earth does not get paler, it gets DARKER and a little deeper in colour.
+   A pale wash here read as fog: measured on the bean at full hydration it
+   lifted the stem base 110,161,121 -> 138,178,144 and the soil 107,85,70 ->
+   133,115,101, i.e. it bleached the one thing the player is looking straight
+   at while holding the button.
+   multiply is what this layer always wanted. .stage's translateX(-50%) makes
+   it a stacking context, so this blends against the group's own content
+   rather than the wall behind it — which is exactly right: the group's
+   content here IS the pot and the soil, and where the group is transparent
+   the box is already inside the pot silhouette, so nothing is smeared onto
+   the wall. Multiplying by a warm dark keeps green green: the stem darkens
+   with the soil instead of turning mint.
+   The band is the soil and only the soil (stage y 75.8–79.0%, x 32–68%),
+   measured off the art rather than inherited from .drops::after — the old
+   box started 8px above the soil line, on the stem.
    -------------------------------------------------------------------------- */
 .lx-wet {
   position:absolute; pointer-events:none;
-  left:29%; right:29%; top:73.4%; height:5.6%;
+  left:32%; right:32%; top:75.8%; height:3.2%;
   border-radius:50%;
-  background:radial-gradient(ellipse 60% 100% at var(--pool-x, 55%) 40%,
-    var(--wet-c, rgba(255,252,244,0)) 0%, rgba(255,252,244,0) 100%);
+  mix-blend-mode:multiply;
+  background:radial-gradient(ellipse 58% 100% at var(--pool-x, 55%) 46%,
+    var(--wet-c, rgba(92,70,54,0)) 0%, rgba(92,70,54,0) 100%);
   opacity:var(--wet-o, 0);
   transition:opacity 400ms var(--ease);
 }

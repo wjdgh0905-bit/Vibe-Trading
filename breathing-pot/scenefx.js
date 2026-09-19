@@ -6,8 +6,8 @@
      · #scene 안에 조명 레이어(#lx, #lxg)와 젖은 광택(.lx-wet)을 주입한다.
      · setTime()이 올 때마다 밴드별 조명 상수를 한 번에 lerp해 #scene에
        CSS 커스텀 프로퍼티로 쓴다. 보간은 CSS가 한다 (cinematic.css §0).
-     · high 티어에서만 먼지 캔버스를 30fps로 돌린다. 모듈 전체에 rAF 루프는
-       이것 하나다.
+     · high 티어에서만 먼지 캔버스를 20fps로 돌린다. 모듈 전체에 rAF 루프는
+       이것 하나고, 프레임은 그릴 때만 요청한다 — 매 vsync가 아니라.
 
    무엇을 하지 않는가
      · SVG 필터를 하나도 만들지 않는다. #pot 안의 #soil은 물 주는 동안
@@ -91,7 +91,6 @@
       sillHot: 'rgba(255,244,222,.70)', poolC: 'rgba(255,240,214,.48)', poolX: 59,
       conW: 118, conH: 13, conA: 0.30, conDX: -9,
       coreW: 74, coreH: 7, coreA: 0.38,
-      castW: 132, castH: 118, castA: 0.20, castDX: -22, castSkew: -11,
       rimDX: 0.9, rimDY: -1.7, rimB: 2.2, rimC: 'rgba(255,232,196,.42)',
       shDX: -0.5, shDY: 1.0, shB: 2.4, shC: 'rgba(150,140,130,.14)',
       gradeTop: 'rgba(255,246,232,0)', gradeBot: 'rgba(226,214,200,.14)', vigA: 0.06
@@ -106,7 +105,6 @@
       sillHot: 'rgba(255,252,242,.78)', poolC: 'rgba(255,250,236,.48)', poolX: 55,
       conW: 104, conH: 11, conA: 0.34, conDX: -4,
       coreW: 70, coreH: 6, coreA: 0.44,
-      castW: 118, castH: 92, castA: 0.22, castDX: -10, castSkew: -5,
       rimDX: 0.4, rimDY: -1.5, rimB: 1.8, rimC: 'rgba(255,248,226,.38)',
       shDX: -0.25, shDY: 0.9, shB: 2.0, shC: 'rgba(140,132,124,.15)',
       gradeTop: 'rgba(255,246,232,0)', gradeBot: 'rgba(224,214,202,.12)', vigA: 0.05
@@ -121,7 +119,6 @@
       sillHot: 'rgba(255,224,186,.66)', poolC: 'rgba(255,214,172,.52)', poolX: 63,
       conW: 140, conH: 14, conA: 0.28, conDX: -17,
       coreW: 76, coreH: 7, coreA: 0.36,
-      castW: 150, castH: 150, castA: 0.19, castDX: -34, castSkew: -19,
       rimDX: 1.1, rimDY: -1.6, rimB: 2.6, rimC: 'rgba(255,214,168,.44)',
       shDX: -0.6, shDY: 1.0, shB: 2.8, shC: 'rgba(120,104,110,.16)',
       gradeTop: 'rgba(255,230,210,0)', gradeBot: 'rgba(210,196,202,.15)', vigA: 0.08
@@ -136,7 +133,6 @@
       sillHot: 'rgba(206,222,255,.30)', poolC: 'rgba(190,210,250,.22)', poolX: 61,
       conW: 112, conH: 12, conA: 0.26, conDX: -6,
       coreW: 72, coreH: 6, coreA: 0.34,
-      castW: 124, castH: 106, castA: 0.17, castDX: -13, castSkew: -8,
       rimDX: 0.4, rimDY: -1.2, rimB: 2.4, rimC: 'rgba(198,216,255,.13)',
       shDX: -0.25, shDY: 0.8, shB: 2.0, shC: 'rgba(16,20,34,.22)',
       gradeTop: 'rgba(150,178,236,0)', gradeBot: 'rgba(46,50,74,.24)', vigA: 0.16
@@ -157,19 +153,20 @@
 
   var SCENE_INK_DAY = parse('#5B554F');    /* = 기존 --ink 토큰. 새 색이 아니다. */
   var SCENE_INK_NIGHT = parse('#E9E4DC');
-  var CAST_RGB = [44, 33, 25];
   var CON_RGB = [46, 34, 26];
   var SIDE_RGB = [40, 32, 26];
   var VIG_RGB = [32, 24, 20];
-  var WET_RGB = [255, 252, 244];
+  /* 젖은 헉은 밝아지지 않는다. 어두워지고 진해진다 — 그래서 이 색은 맑은
+     큰 값이 아니라 따뜻한 어둠이고, .lx-wet은 multiply로 깔린다. */
+  var WET_RGB = [92, 70, 54];
 
   /* 날씨 커플링. 확산광이 지배하는 날은 빔이 없고, 공기가 더 산란하고,
      그림자가 흐려진다. cloud는 배수, rain은 고정값(전 밴드에서 감소 방향). */
   var WEATHER = {
-    clear: { shaft: 1, haze: 1, ground: 1, cast: 1, rim: 1 },
-    cloud: { shaft: 0.60, haze: 1.12, ground: 0.88, cast: 0.88, rim: 0.75 },
-    rain:  { shaft: 0, haze: 1.35, ground: 0, cast: 0, rim: 0.60,
-             shaftO: 0.10, conA: 0.20, coreA: 0.26, castA: 0.12 }
+    clear: { shaft: 1, haze: 1, ground: 1, rim: 1 },
+    cloud: { shaft: 0.60, haze: 1.12, ground: 0.88, rim: 0.75 },
+    rain:  { shaft: 0, haze: 1.35, ground: 0, rim: 0.60,
+             shaftO: 0.10, conA: 0.20, coreA: 0.26 }
   };
 
   /* ═══════════════ 2. 모듈 상태 ═══════════════ */
@@ -177,6 +174,9 @@
   var S = {
     inited: false, dead: false, capMotes: false, forceMotes: 0,
     wanted: 'high',          /* setQuality가 요청한 티어 */
+    wantedSet: false,        /* 호스트가 setQuality로 의사를 밝혔는가 */
+    bootQ: false,            /* init()과 같은 태스크에서 오는 복원 호출 창 */
+    tok: null,               /* 마지막으로 쓴 토큰 값 — 같은 값을 다시 쓰지 않는다 */
     quality: 'off',          /* 실제 적용된 티어 */
     capLow: false,           /* 런타임 강등 기록 (sumgyeol.gfx) */
     rm: false, hidden: false,
@@ -184,10 +184,10 @@
     info: null,              /* 마지막 setTime 인자 */
     scene: null, lx: null, lxg: null, wet: null,
     shaft: null, canvas: null, ctx: null, blob: null,
-    raf: 0, last: 0, frames: 0,
+    raf: 0, mtimer: 0, last: 0, frames: 0,
     motes: [], mw: 0, mh: 0, mscale: 1,
     sunX: 60, sunY: 20, tau: 17, shaftO: 0, moteGain: 0,
-    pulseUntil: 0, pulseAmp: 0,
+    pulseUntil: 0, pulseAmp: 0, wetAt: 0,
     stageH: REF_STAGE_H,
     sig: '', sampled: false, readyTimer: 0, sampleTimer: 0, boundResize: null, boundVis: null, mo: null
   };
@@ -219,17 +219,33 @@
   function writeCap(v) {
     try { W.localStorage.setItem('sumgyeol.gfx', v); } catch (e) { /* 저장 못해도 이번 세션에는 적용된다 */ }
   }
+  function clearCap() {
+    try { W.localStorage.removeItem('sumgyeol.gfx'); } catch (e) { /* 지우지 못해도 이번 세션에는 풀린다 */ }
+  }
 
   /* 티어는 sumgyeol.gfx 자체 키에 저장한다. 절대 sumgyeol.v1 안에 넣지 않는다 —
      그 블롭은 설정의 '기록 옮기기'가 내보내고 불러온다. 기기별 그래픽 티어가
      기기 사이를 여행해서는 안 된다. */
+  /* 없는 신호는 나쁜 신호가 아니다.
+     navigator.deviceMemory는 Chromium에만 있다. 그것을 `|| 4`로 받으면
+     Safari와 Firefox는 기기가 무엇이든 항상 거르는 값이 나온다 —
+     모든 iPhone과 iPad가 조용히 low로 떨어진다. 그래서 숫자일 때만
+     읽고, 아니면 모든 엔진이 보내는 신호(hardwareConcurrency, 백킹
+     픽셀 수)만 본다. 확실히 작은 기기만 미리 내리고, 나머지 판단은
+     sampleOnce()의 실측 프레임 프로브에 맡긴다 — 그것은 어느 엔진에서도
+     동작하고, 물어보는 대신 재보는 방법이다. */
   function pickTier() {
     try {
       if (!supportsBlend()) return 'off';
-      var hc = W.navigator.hardwareConcurrency || 4;
-      var dm = W.navigator.deviceMemory || 4;
+      var nav = W.navigator || {};
+      var hc = typeof nav.hardwareConcurrency === 'number' && nav.hardwareConcurrency > 0
+             ? nav.hardwareConcurrency : 0;
+      var dm = typeof nav.deviceMemory === 'number' && nav.deviceMemory > 0
+             ? nav.deviceMemory : 0;
       var px = (W.innerWidth || 390) * (W.innerHeight || 844) * (W.devicePixelRatio || 1);
-      if (dm <= 4 || hc <= 4 || px > 3.2e6) return 'low';
+      if (dm && dm <= 2) return 'low';        /* 2GB 이하는 진짜로 작다 */
+      if (hc && hc <= 3) return 'low';
+      if (px > 3.2e6) return 'low';           /* 아주 큰 패널 — 태블릿 가로보기 등 */
       return 'high';
     } catch (e) { return 'off'; }
   }
@@ -273,9 +289,9 @@
       S.lxg.appendChild(mk('div', 'lx-grade'));
       scene.insertBefore(S.lxg, before);
     }
-    /* 접지 2단 + 캐스트 로브 — 이 셋만으로 전체 개선의 대부분이 온다 */
-    if (!S.lx.querySelector('.lx-cast')) {
-      S.lx.appendChild(mk('div', 'lx-cast'));
+    /* 접지 2단 — 페널브라와 AO 코어. 이 둘만으로 화분이 뜨는 것이 멈춘다.
+       벽에 길게 드리우던 캐스트 로브는 빼냈다 — 이유는 cinematic.css §7. */
+    if (!S.lx.querySelector('.lx-contact')) {
       S.lx.appendChild(mk('div', 'lx-contact'));
       S.lx.appendChild(mk('div', 'lx-core'));
     }
@@ -398,6 +414,15 @@
 
   /* ═══════════════ 6. rAF 루프 ═══════════════ */
 
+  /* 앉기 오버레이가 열려 있으면 리그는 이미 .35로 물러나 있다. 그 뒤에서
+     먼지를 계속 그리는 것은 보이지도 않고 공짜도 아니다. */
+  function sitOpen() {
+    try {
+      var el = D.getElementById('sitOverlay');
+      return !!(el && !el.hasAttribute('hidden'));
+    } catch (e) { return false; }
+  }
+
   function shouldRun() {
     if (S.dead || S.quality !== 'high') return false;
     if (S.rm || S.hidden) return false;
@@ -406,6 +431,7 @@
        비 오는 날도 마찬가지다. 어두운 하늘 위의 흰 점은 먼지가 아니라 눈으로
        읽힌다 — 밤으로 가면서 밝기가 0으로 빠지고 루프가 스스로 멎는다. */
     if (S.moteGain < 0.12) return false;
+    if (sitOpen()) return false;
     try { if (D.body && D.body.classList.contains('hidden')) return false; } catch (e) { }
     return true;
   }
@@ -419,7 +445,7 @@
     if (want && !S.canvas) ensureMotes(true);
     if (!want && S.canvas) ensureMotes(false);
     if (shouldRun()) {
-      if (!S.raf) {
+      if (!looping()) {
         S.last = 0; S.raf = W.requestAnimationFrame(tick);
         /* 판정은 판정 대상이 실제로 도는 동안 한 번만 한다 */
         if (!S.sampled) {
@@ -428,21 +454,42 @@
           S.sampleTimer = setTimeout(function () { S.sampleTimer = 0; try { sampleOnce(); } catch (e) { } }, 1400);
         }
       }
-    } else if (S.raf) {
-      W.cancelAnimationFrame(S.raf); S.raf = 0;
+    } else {
+      stopLoop();
     }
+  }
+
+  /* 루프가 살아 있는가. 두 상태가 있다: 프레임을 기다리는 중(S.raf),
+     또는 다음 프레임을 예약해 둔 타이머가 돌고 있는 중(S.mtimer). */
+  function looping() { return !!(S.raf || S.mtimer); }
+
+  function stopLoop() {
+    if (S.raf) { W.cancelAnimationFrame(S.raf); S.raf = 0; }
+    if (S.mtimer) { clearTimeout(S.mtimer); S.mtimer = 0; }
+  }
+
+  /* 다음 프레임은 rAF 체인이 아니라 타이머에서 온다.
+     매 vsync마다 rAF를 요청하고 그 중 둘을 버리면, 버린 프레임도 공짜가
+     아니다 — 요청 자체가 문서 라이프사이클(style+layout+paint+commit)을
+     60Hz로 돌린다. 측정: 그리는 속도는 같은데 5초에 commit 300회가 81회로,
+     렌더러 CPU가 코어의 10.7%에서 4%대로 내려갔다. */
+  function queueFrame() {
+    if (looping()) return;
+    S.mtimer = W.setTimeout(function () {
+      S.mtimer = 0;
+      if (!shouldRun()) return;
+      S.raf = W.requestAnimationFrame(tick);
+    }, MOTE_MS);
   }
 
   function tick(ts) {
     S.raf = 0;
     if (!shouldRun()) { if (S.ctx) { try { S.ctx.clearRect(0, 0, S.mw, S.mh); } catch (e) { } } return; }
-    S.raf = W.requestAnimationFrame(tick);
-    if (!S.last) { S.last = ts; return; }
-    var dt = ts - S.last;
-    if (dt < MOTE_MS) return;                 /* 30fps throttle */
+    var dt = S.last ? ts - S.last : MOTE_MS;   /* 20fps. 간격은 타이머가 정한다 */
     S.last = ts;
     S.frames++;
     draw(Math.min(dt, 120) / 1000, ts);
+    queueFrame();
   }
 
   function draw(dt, ts) {
@@ -522,7 +569,18 @@
 
     var sc = S.stageH / REF_STAGE_H;
     var st = S.scene.style;
-    function set(k, v) { st.setProperty(k, v); }
+    /* 토큰은 전부 inherits:true로 등록되어 있다 (cinematic.css §0). #scene에
+       하나를 쓰면 #scene 서브트리 전체가 무효화된다 — 그리고 서브트리에는
+       식물 SVG가 통째로 들어 있다. 그래서 호출자가 얼마나 자주 부르든
+       실제로 바뀐 값만 내려보낸다. 물 주는 동안 pulse('water')는 초당 10번
+       들어오지만, 그때 바뀌는 것은 --wet-c 하나뿐이다. */
+    var tok = S.tok || (S.tok = {});
+    function set(k, v) {
+      v = '' + v;
+      if (tok[k] === v) return;
+      tok[k] = v;
+      st.setProperty(k, v);
+    }
     function px(v) { return (Math.round(v * sc * 100) / 100) + 'px'; }
 
     /* 광원 방향 */
@@ -581,16 +639,6 @@
     set('--core-g0', rgba([CON_RGB[0], CON_RGB[1], CON_RGB[2], coreA]));
     set('--core-g1', rgba([CON_RGB[0], CON_RGB[1], CON_RGB[2], coreA * 0.7]));
 
-    /* 캐스트 로브 */
-    var castA = (Wt.castA !== undefined ? Wt.castA : n('castA') * Wt.cast) * groundMul;
-    set('--cast-w', px(n('castW'))); set('--cast-h', px(n('castH')));
-    set('--cast-dx', px(n('castDX')));
-    set('--cast-skew', (Math.round(n('castSkew') * 100) / 100) + 'deg');
-    set('--cast-g0', rgba([CAST_RGB[0], CAST_RGB[1], CAST_RGB[2], castA]));
-    set('--cast-g1', rgba([CAST_RGB[0], CAST_RGB[1], CAST_RGB[2], castA * 0.82]));
-    set('--cast-g2', rgba([CAST_RGB[0], CAST_RGB[1], CAST_RGB[2], castA * 0.46]));
-    set('--cast-g3', rgba([CAST_RGB[0], CAST_RGB[1], CAST_RGB[2], castA * 0.16]));
-
     /* 그레이드 + 비네트.
        --grade-top은 모든 밴드에서 알파 0이다 — 위쪽(창 쪽, #days가 있는 곳)은
        그레이드가 건드리지 않는다. 이것이 대비 보장의 절반이다. */
@@ -610,8 +658,13 @@
     var f = 'brightness(' + (Math.round(bri * 1000) / 1000) + ') saturate(' + (Math.round(sat * 1000) / 1000) + ') ';
     var rb = n('rimB'), rdx = n('rimDX'), rdy = n('rimDY');
     if (S.quality === 'low') {
-      /* low는 림 1장, blur 0. 이 경로를 high보다 먼저 만들었다. */
-      f += 'drop-shadow(' + px2(rdx * sc) + ' ' + px2(rdy * sc) + ' 0px ' + rgba(c('rimC'), rimMul) + ')';
+      /* low가 아끼는 것은 두 번째 drop-shadow(그늘면) 하나다. 림 자체는
+         high와 같은 모양이어야 한다 — blur 0은 잃을 것이 없을 만큼
+         싸지도 않고(같은 drop-shadow 한 장이다), 윈 위로 4–5디바이스
+         픽셀의 선을 그어 §9의 규칙(blur >= 1.5 x |offset|)을 정면으로
+         어기며, 그 결과는 림이 아니라 스티커 테두리로 읽힌다. */
+      var lrb = Math.max(rb, 1.6, 1.5 * Math.sqrt(rdx * rdx + rdy * rdy));
+      f += 'drop-shadow(' + px2(rdx * sc) + ' ' + px2(rdy * sc) + ' ' + px2(lrb * sc) + ' ' + rgba(c('rimC'), rimMul) + ')';
     } else {
       f += 'drop-shadow(' + px2(rdx * sc) + ' ' + px2(rdy * sc) + ' ' + px2(rb * sc) + ' ' + rgba(c('rimC'), rimMul) + ') ' +
            'drop-shadow(' + px2(n('shDX') * sc) + ' ' + px2(n('shDY') * sc) + ' ' + px2(n('shB') * sc) + ' ' + rgba(c('shC')) + ')';
@@ -619,10 +672,16 @@
     set('--lx-plant-f', f);
 
     /* 젖은 흙 광택. renderPot이 10Hz로 재발화해도 비용은 변수 쓰기 하나다. */
-    var wetA = (0.06 + 0.12 * (hydration() / 100)) * (holding ? 1.6 : 1);
+    /* 1/255보다 작은 알파 변화는 화면에 존재하지 않는다. 그만큼씩 끈어
+       쓰면 물 주는 10초 동안 --wet-c 쓰기가 100번이 아니라 서른 번이 된다. */
+    var wetA = Math.round((0.05 + 0.10 * (hydration() / 100)) * (holding ? 1.45 : 1) * 250) / 250;
     set('--wet-c', rgba([WET_RGB[0], WET_RGB[1], WET_RGB[2], wetA]));
 
-    if (S.canvas) sizeCanvas();
+    /* sizeCanvas()를 여기서 부르지 않는다. 그것은 clientWidth를 읽고, 읽기는
+       스타일+레이아웃을 그 자리에서 강제로 플러시한다. applyTokens는 물 주는
+       동안 초당 여러 번 불리므로, 그 한 줄이 홀드 내내 동기적 레이아웃을
+       끌고 왔다. 캔버스 백킹 크기는 만들 때(ensureMotes)와 리사이즈 때
+       (onResize)만 바뀜 수 있고, 둘 다 이미 직접 부른다. */
     sync();
   }
   function px2(v) { return (Math.round(v * 100) / 100) + 'px'; }
@@ -635,10 +694,9 @@
       '--sill-hot', '--pool-c', '--pool-x',
       '--con-w', '--con-h', '--con-dx', '--con-g0', '--con-g1', '--con-g2',
       '--core-w', '--core-h', '--core-dx', '--core-g0', '--core-g1',
-      '--cast-w', '--cast-h', '--cast-dx', '--cast-skew',
-      '--cast-g0', '--cast-g1', '--cast-g2', '--cast-g3',
       '--grade-top', '--grade-bot', '--vig-c', '--scene-ink', '--lx-plant-f', '--wet-c'];
     for (var i = 0; i < keys.length; i++) S.scene.style.removeProperty(keys[i]);
+    S.tok = null;
   }
 
   /* ═══════════════ 8. 티어 적용 ═══════════════ */
@@ -685,7 +743,7 @@
      강등은 세션 내에서 되돌리지 않는다 — 깜빡임 방지. */
   function sampleOnce() {
     if (S.dead || S.capLow || S.quality !== 'high') return;
-    if (S.rm || S.hidden || !S.raf) return;
+    if (S.rm || S.hidden || !looping()) return;
     var times = [], prev = 0, raf = 0, n = 0;
     function step(ts) {
       if (S.dead || S.hidden) { if (raf) W.cancelAnimationFrame(raf); return; }
@@ -760,7 +818,11 @@
        파일 머리 주석에 적어 두었다. */
     init: function () {
       try {
-        if (S.inited || S.dead) return;
+        /* destroy()는 종단이 아니다. 그것은 모든 노드·타이머·관찰자·리스너를
+           거두어놓으므로 다시 들어오는 것이 안전하다. 재시작 경로가 조용한
+           no-op이면 그것이야말로 고치기 어려운 버그다. */
+        S.dead = false;
+        if (S.inited) return;
         if (!D.body) return;
         S.inited = true;
         if (!supportsBlend()) { S.quality = 'off'; return; }
@@ -768,8 +830,14 @@
 
         var cap = readCap();
         S.capLow = cap === 'low';
-        S.capMotes = (cap === 'low' || cap === 'nomotes');
-        S.wanted = pickTier();
+        S.capMotes = (cap === 'low');
+        /* 호스트가 init() 전에 이미 setQuality()로 의사를 밝혔다면 그것이
+           이긴다. 저장된 '화면 효과: 꺼요'를 순서 하나로 잃지 않는다. */
+        if (!S.wantedSet) S.wanted = pickTier();
+        /* 부팅 복원 창: init() 바로 뒤의 applyFx()는 사용자의 새 요청이
+           아니라 설정값 복원이므로, 저장된 기기 판정을 지우지 않는다. */
+        S.bootQ = true;
+        setTimeout(function () { S.bootQ = false; }, 0);
         try {
           S.rm = D.body.classList.contains('rm');
           S.hidden = !!D.hidden || D.body.classList.contains('hidden');
@@ -798,7 +866,20 @@
       try {
         if (S.dead) return;
         if (!RANK.hasOwnProperty(q)) return;
-        S.wanted = q;
+        S.wanted = q; S.wantedSet = true;
+        /* 사용자가 명시적으로 high를 다시 요청하면 자동 강등은 풀린다.
+           자동 강등은 단 한 번의 60프레임 샘플에서 나오고 sumgyeol.gfx에
+           남는다. 나가는 문이 없으면 그것은 판정이 아니라 선고가 된다.
+           부팅 직후의 복원 호출(S.bootQ)은 제외한다 — 그것까지 풀면 저장이
+           아무것도 아니게 되고, 느린 기기는 매 세션 둘째 초에 한 번씩
+           티어가 떨어지는 것을 보게 된다. */
+        if (q === 'high' && !S.bootQ && (S.capLow || S.capMotes)) {
+          S.capLow = false; S.capMotes = false;
+          clearCap();
+          /* 방금 명시적으로 청한 것을 1.4초 뒤에 다시 빼앗지 않는다 */
+          S.sampled = true;
+          if (S.sampleTimer) { clearTimeout(S.sampleTimer); S.sampleTimer = 0; }
+        }
         if (!S.inited) return;
         applyQuality();
       } catch (e) { }
@@ -849,8 +930,14 @@
       try {
         if (S.dead || S.quality === 'off') return;
         if (kind === 'water') {
-          S.pulseUntil = (W.performance && performance.now ? performance.now() : Date.now()) + 600;
+          var t = (W.performance && performance.now ? performance.now() : Date.now());
+          S.pulseUntil = t + 600;
           S.pulseAmp = 0.35;
+          /* 호출자는 이것이 얼마짜리 일을 하는지 알 필요가 없어야 한다.
+             물은 100ms마다 떨어지고 --wet-c는 400ms로 페이드한다 — 60ms보다
+             바짐 쓰는 것은 어차피 같은 프레임에 쌀인다. */
+          if (t - S.wetAt < 60) return;
+          S.wetAt = t;
           applyTokens();
         } else if (kind === 'stage') {
           S.pulseUntil = (W.performance && performance.now ? performance.now() : Date.now()) + 900;
@@ -863,7 +950,7 @@
     destroy: function () {
       try {
         S.dead = true;
-        if (S.raf) { W.cancelAnimationFrame(S.raf); S.raf = 0; }
+        stopLoop();
         if (S.readyTimer) { clearTimeout(S.readyTimer); S.readyTimer = 0; }
         if (S.sampleTimer) { clearTimeout(S.sampleTimer); S.sampleTimer = 0; }
         if (S.mo) { S.mo.disconnect(); S.mo = null; }
@@ -882,7 +969,7 @@
           D.body.classList.remove('fx-low');
           D.body.classList.remove('fx-ready');
         }
-        S.inited = false; S.quality = 'off';
+        S.inited = false; S.quality = 'off'; S.tok = null;
       } catch (e) { }
     },
 
@@ -897,7 +984,7 @@
       return {
         quality: S.quality, wanted: S.wanted, capLow: S.capLow, capMotes: S.capMotes,
         rm: S.rm, hidden: S.hidden, weather: S.weather,
-        running: !!S.raf, frames: S.frames, motes: S.motes.length,
+        running: looping(), frames: S.frames, motes: S.motes.length,
         shaftO: S.shaftO, stageH: S.stageH,
         canvas: S.canvas ? [S.canvas.width, S.canvas.height] : null
       };

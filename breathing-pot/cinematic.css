@@ -1,0 +1,375 @@
+/* ==========================================================================
+   숨결 화분 — cinematic.css
+   빛 아트 디렉션 v1 · "창을 등진 역광" 한 벌.
+
+   Loaded AFTER style.css. Every visual rule here is scoped under
+   body.fx-high / body.fx-low, which scenefx.js toggles, so quality 'off'
+   leaves the shipped look byte-for-byte untouched.
+
+   Key light is UP-RIGHT, always: plants.js already paints the pot with its
+   shadow on the left and its specular on the right, and the lighting must
+   not argue with the art. The camera sits inside the room, looking at the
+   window, so the pot is backlit — rim on the silhouette, one short dense
+   band on the sill, one long lobe down the wall, a hot top edge on the sill,
+   and a little air in the window.
+
+   Layer order inside #scene (painted bottom to top):
+     .sky .rain .sill .wall  →  #lx (z0)  →  #lxg (z2)  →  .top (z2)
+                             →  .stage (z1)  →  .bottom (z2)
+   #lxg is inserted BEFORE header.top in the DOM, so at equal z-index the
+   chrome and the bottom stack always paint on top of the grade. Nothing in
+   this file is ever painted over text. That is the contrast guarantee.
+   ========================================================================== */
+
+/* ---------- 0. registered tokens ------------------------------------------
+   Registering the lighting tokens makes them animatable, so a band change
+   cross-fades over 1.2s instead of snapping — including the ones that feed
+   background-image, which does not transition on its own. If @property is
+   unsupported the block is ignored and the values simply snap, which is the
+   behaviour the art direction already budgeted for.
+   -------------------------------------------------------------------------- */
+@property --sun-core  { syntax:'<color>'; inherits:true; initial-value:rgba(0,0,0,0); }
+@property --sun-halo  { syntax:'<color>'; inherits:true; initial-value:rgba(0,0,0,0); }
+@property --haze-c    { syntax:'<color>'; inherits:true; initial-value:rgba(0,0,0,0); }
+@property --shaft-c   { syntax:'<color>'; inherits:true; initial-value:rgba(0,0,0,0); }
+@property --wash-c    { syntax:'<color>'; inherits:true; initial-value:rgba(0,0,0,0); }
+@property --side-c    { syntax:'<color>'; inherits:true; initial-value:rgba(0,0,0,0); }
+@property --lift-c    { syntax:'<color>'; inherits:true; initial-value:rgba(0,0,0,0); }
+@property --bounce-c  { syntax:'<color>'; inherits:true; initial-value:rgba(0,0,0,0); }
+@property --sill-hot  { syntax:'<color>'; inherits:true; initial-value:rgba(0,0,0,0); }
+@property --pool-c    { syntax:'<color>'; inherits:true; initial-value:rgba(0,0,0,0); }
+@property --cast-g0   { syntax:'<color>'; inherits:true; initial-value:rgba(0,0,0,0); }
+@property --cast-g1   { syntax:'<color>'; inherits:true; initial-value:rgba(0,0,0,0); }
+@property --cast-g2   { syntax:'<color>'; inherits:true; initial-value:rgba(0,0,0,0); }
+@property --cast-g3   { syntax:'<color>'; inherits:true; initial-value:rgba(0,0,0,0); }
+@property --con-g0    { syntax:'<color>'; inherits:true; initial-value:rgba(0,0,0,0); }
+@property --con-g1    { syntax:'<color>'; inherits:true; initial-value:rgba(0,0,0,0); }
+@property --con-g2    { syntax:'<color>'; inherits:true; initial-value:rgba(0,0,0,0); }
+@property --core-g0   { syntax:'<color>'; inherits:true; initial-value:rgba(0,0,0,0); }
+@property --core-g1   { syntax:'<color>'; inherits:true; initial-value:rgba(0,0,0,0); }
+@property --grade-top { syntax:'<color>'; inherits:true; initial-value:rgba(0,0,0,0); }
+@property --grade-bot { syntax:'<color>'; inherits:true; initial-value:rgba(0,0,0,0); }
+@property --vig-c     { syntax:'<color>'; inherits:true; initial-value:rgba(0,0,0,0); }
+@property --scene-ink { syntax:'<color>'; inherits:true; initial-value:#5B554F; }
+@property --wet-c     { syntax:'<color>'; inherits:true; initial-value:rgba(255,252,244,0); }
+
+@property --sun-x    { syntax:'<percentage>'; inherits:true; initial-value:60%; }
+@property --sun-y    { syntax:'<percentage>'; inherits:true; initial-value:20%; }
+@property --pool-x   { syntax:'<percentage>'; inherits:true; initial-value:55%; }
+@property --wash-len { syntax:'<percentage>'; inherits:true; initial-value:50%; }
+
+@property --con-w   { syntax:'<length>'; inherits:true; initial-value:0px; }
+@property --con-h   { syntax:'<length>'; inherits:true; initial-value:0px; }
+@property --con-dx  { syntax:'<length>'; inherits:true; initial-value:0px; }
+@property --core-w  { syntax:'<length>'; inherits:true; initial-value:0px; }
+@property --core-h  { syntax:'<length>'; inherits:true; initial-value:0px; }
+@property --core-dx { syntax:'<length>'; inherits:true; initial-value:0px; }
+@property --cast-w  { syntax:'<length>'; inherits:true; initial-value:0px; }
+@property --cast-h  { syntax:'<length>'; inherits:true; initial-value:0px; }
+@property --cast-dx { syntax:'<length>'; inherits:true; initial-value:0px; }
+
+@property --shaft-o  { syntax:'<number>'; inherits:true; initial-value:0; }
+@property --tau      { syntax:'<angle>';  inherits:true; initial-value:20deg; }
+@property --cast-skew{ syntax:'<angle>';  inherits:true; initial-value:0deg; }
+
+/* ---------- 1. scaffolding ------------------------------------------------ */
+/* isolation costs nothing, defines the backdrop for the blend layers, and
+   pens them inside #scene so they can never touch .scrim/.sheet/.sit/.confirm. */
+body.fx-high #scene, body.fx-low #scene { isolation:isolate; }
+
+#lx, #lxg { position:absolute; inset:0; pointer-events:none; }
+#lx  { z-index:0; }
+#lxg { z-index:2; }
+#lx > *, #lxg > * { position:absolute; pointer-events:none; }
+
+/* The whole rig steps back while sitting — one light system at a time.
+   The opacity goes on the CHILDREN, never on #lx/#lxg: a parent with
+   opacity < 1 forms an isolated group, and every blend layer inside it would
+   stop blending with the scene and pop. A blended element may carry its own
+   opacity quite happily. */
+#lx > *, #lxg > * { transition:opacity 800ms var(--ease); }
+body:has(.sit:not([hidden])) #lx > *,
+body:has(.sit:not([hidden])) #lxg > * { opacity:.35; }
+body:has(.sit:not([hidden])) #lx > .lx-shaft { opacity:calc(var(--shaft-o) * .35); }
+
+/* band cross-fade. Added one tick after the first token write so the lights
+   are simply there when sceneIn plays — no second staggered entrance. */
+body.fx-ready #scene {
+  transition:
+    --sun-core 1.2s var(--ease), --sun-halo 1.2s var(--ease), --haze-c 1.2s var(--ease),
+    --shaft-c 1.2s var(--ease), --shaft-o 1.2s var(--ease), --tau 1.2s var(--ease),
+    --sun-x 1.2s var(--ease), --sun-y 1.2s var(--ease),
+    --wash-c 1.2s var(--ease), --wash-len 1.2s var(--ease), --side-c 1.2s var(--ease),
+    --lift-c 1.2s var(--ease), --bounce-c 1.2s var(--ease),
+    --sill-hot 1.2s var(--ease), --pool-c 1.2s var(--ease), --pool-x 1.2s var(--ease),
+    --cast-g0 1.2s var(--ease), --cast-g1 1.2s var(--ease), --cast-g2 1.2s var(--ease),
+    --cast-g3 1.2s var(--ease), --cast-w 1.2s var(--ease), --cast-h 1.2s var(--ease),
+    --cast-dx 1.2s var(--ease), --cast-skew 1.2s var(--ease),
+    --con-g0 1.2s var(--ease), --con-g1 1.2s var(--ease), --con-g2 1.2s var(--ease),
+    --con-w 1.2s var(--ease), --con-h 1.2s var(--ease), --con-dx 1.2s var(--ease),
+    --core-g0 1.2s var(--ease), --core-g1 1.2s var(--ease),
+    --core-w 1.2s var(--ease), --core-h 1.2s var(--ease), --core-dx 1.2s var(--ease),
+    --grade-top 1.2s var(--ease), --grade-bot 1.2s var(--ease), --vig-c 1.2s var(--ease),
+    --scene-ink 1.2s var(--ease), --wet-c 400ms var(--ease);
+}
+
+/* ---------- 2. .lx-sky — 태양 글로우(블룸) + 대기 헤이즈 --------------------
+   A full-screen threshold bloom is impossible on a phone and unnecessary:
+   bloom happens around a bright source, and the source here is the window.
+   Two stops are the threshold — a tight core (above threshold) and a wide
+   halo (the spill). Three gradients composite for free inside one element,
+   so the element blends exactly once.
+   NOTE: radial-gradient(circle <percentage>) is INVALID CSS and silently
+   drops the whole declaration. Always ellipse N% N%.
+   -------------------------------------------------------------------------- */
+.lx-sky {
+  left:0; right:0; top:0; height:var(--sill-y);
+  mix-blend-mode:screen;
+  background:
+    radial-gradient(ellipse 26% 26% at var(--sun-x) var(--sun-y),
+      var(--sun-core) 0%, rgba(0,0,0,0) 62%),
+    radial-gradient(ellipse 62% 62% at var(--sun-x) var(--sun-y),
+      var(--sun-halo) 0%, rgba(0,0,0,0) 100%),
+    /* zenith lift — the top of a window is always the brightest part of it.
+       It is also what keeps "함께한 날 N일" off a darkening backdrop. */
+    linear-gradient(180deg, var(--lift-c) 0%, rgba(0,0,0,0) 24%),
+    linear-gradient(180deg, rgba(0,0,0,0) 38%, var(--haze-c) 100%);
+}
+
+/* ---------- 3. .lx-shaft — 볼류메트릭 (하늘 영역 한정, high 전용) -----------
+   118px period with a 6px core and 28px of feather: never crisp enough to
+   count the bands. If you find yourself counting them, it has failed.
+   Only one animation exists in this whole file, and this is it.
+   scenefx.js does not create this element at all when mask-image is
+   unsupported — an ignored mask would stripe the entire sky.
+   -------------------------------------------------------------------------- */
+.lx-shaft {
+  left:-30%; right:-30%; top:0; height:calc(var(--sill-y) + 2px);
+  overflow:hidden; opacity:var(--shaft-o); mix-blend-mode:screen;
+}
+.lx-shaft::before {
+  content:''; position:absolute; inset:-40%;
+  background:repeating-linear-gradient(calc(var(--tau) + 90deg),
+    rgba(0,0,0,0)   0px, rgba(0,0,0,0)  30px,
+    var(--shaft-c) 44px, var(--shaft-c) 50px,
+    rgba(0,0,0,0)  64px, rgba(0,0,0,0) 118px);
+  -webkit-mask-image:radial-gradient(ellipse 44% 70% at var(--sun-x) var(--sun-y),
+    #000 0%, rgba(0,0,0,.38) 42%, rgba(0,0,0,0) 78%);
+          mask-image:radial-gradient(ellipse 44% 70% at var(--sun-x) var(--sun-y),
+    #000 0%, rgba(0,0,0,.38) 42%, rgba(0,0,0,0) 78%);
+  animation:lxDrift 34s ease-in-out infinite alternate;
+  will-change:transform;
+}
+@keyframes lxDrift {
+  from { transform:translate3d(0,0,0); }
+  to   { transform:translate3d(-14px,6px,0); }
+}
+
+/* ---------- 4. .lx-motes — 먼지 (high 전용, 16개, 20fps) -------------------
+   NO mix-blend-mode. A blended canvas has to be re-composited every time
+   anything underneath it moves — and the shaft underneath drifts forever —
+   so the blend costs a frame even on the frames where the canvas itself is
+   not redrawn. Plain alpha over a pale sky is visually the same thing.
+   scenefx.js removes the element entirely whenever the loop is not running
+   (night, rain, reduced motion, hidden, low, off), so an idle canvas never
+   sits in the compositor tree doing nothing for a cost. */
+.lx-motes {
+  left:0; top:0; width:100%; height:var(--sill-y);
+}
+
+/* ---------- 5. .sill — 핫엣지 + 광원 웅덩이 + 나뭇결 -----------------------
+   No new DOM, no blend pass. background-image paints over background-color,
+   so the existing 1.2s colour transition on .sill survives untouched.
+   The hot edge covers only the top 46% of the 14px bar: the top edge catches
+   the light, the underside is in shade. That one line is what makes the sill
+   start reading as an object with thickness.
+   Every var() carries a fallback — a missing token must mean "no light",
+   never "no sill".
+   -------------------------------------------------------------------------- */
+body.fx-high #sill, body.fx-low #sill {
+  background-image:
+    linear-gradient(180deg, var(--sill-hot, rgba(0,0,0,0)) 0%, rgba(0,0,0,0) 46%),
+    radial-gradient(ellipse 46% 140% at var(--pool-x, 50%) 30%,
+      var(--pool-c, rgba(0,0,0,0)) 0%, rgba(0,0,0,0) 100%);
+}
+/* wood grain: coprime 17px/37px periods so it never reads as a regular comb.
+   Alphas are deliberately below the visible threshold at dpr 3 — at landscape
+   widths a stronger setting reads as a visible comb across the whole sill.
+   high only. */
+body.fx-high #sill {
+  background-image:
+    linear-gradient(180deg, var(--sill-hot, rgba(0,0,0,0)) 0%, rgba(0,0,0,0) 46%),
+    radial-gradient(ellipse 46% 140% at var(--pool-x, 50%) 30%,
+      var(--pool-c, rgba(0,0,0,0)) 0%, rgba(0,0,0,0) 100%),
+    repeating-linear-gradient(90deg,
+      rgba(120,96,74,.020) 0 2px,
+      rgba(120,96,74,0)    2px 15px,
+      rgba(120,96,74,.012) 15px 17px,
+      rgba(120,96,74,0)    17px 37px);
+}
+
+/* ---------- 6. .wall — 창빛 스필 + 태양 반대쪽 감쇠 ------------------------
+   --wash-len is inversely proportional to sun elevation: the lower the sun,
+   the deeper the light runs down the wall.
+   -------------------------------------------------------------------------- */
+body.fx-high #wall, body.fx-low #wall {
+  background-image:
+    linear-gradient(180deg, var(--wash-c, rgba(0,0,0,0)) 0%,
+      rgba(0,0,0,0) var(--wash-len, 50%)),
+    /* bounce — the third lamp in the rig, light coming back off the floor of
+       the room. It warms the bottom of the wall, which is also the backdrop
+       for "잠시 함께 앉아요", so it is what buys that line its contrast. */
+    linear-gradient(0deg, var(--bounce-c, rgba(0,0,0,0)) 0%, rgba(0,0,0,0) 28%);
+}
+/* side falloff — the wall away from the sun is darker. high only. */
+body.fx-high #wall {
+  background-image:
+    linear-gradient(180deg, var(--wash-c, rgba(0,0,0,0)) 0%,
+      rgba(0,0,0,0) var(--wash-len, 50%)),
+    linear-gradient(0deg, var(--bounce-c, rgba(0,0,0,0)) 0%, rgba(0,0,0,0) 28%),
+    linear-gradient(90deg, var(--side-c, rgba(0,0,0,0)) 0%, rgba(0,0,0,0) 58%);
+}
+
+/* ---------- 7. .lx-cast — 벽 캐스트 로브 (주인공) --------------------------
+   The pot blocks the wall wash; the block runs down, blurs, and leans away
+   from the sun. skewX with transform-origin 50% 0% is the whole trick: tight
+   to the pot at the sill, leaning further the lower it goes — the silhouette
+   a real soft shadow has as it spreads with distance.
+   No filter:blur() anywhere. Blur destroyed the silhouette and turned this
+   into a generic smudge; a five-stop falloff is what makes it read as the
+   pot's shadow. There is no convolution in this layer at all.
+   -------------------------------------------------------------------------- */
+.lx-cast {
+  left:50%; top:calc(var(--sill-y) + var(--sill-h) - 2px);
+  width:var(--cast-w); height:var(--cast-h);
+  margin-left:calc(var(--cast-w) / -2);
+  transform:translateX(var(--cast-dx)) skewX(var(--cast-skew));
+  transform-origin:50% 0%;
+  mix-blend-mode:multiply;
+  background:radial-gradient(ellipse 50% 62% at 50% 0%,
+    var(--cast-g0, rgba(0,0,0,0))  0%,
+    var(--cast-g1, rgba(0,0,0,0)) 18%,
+    var(--cast-g2, rgba(0,0,0,0)) 44%,
+    var(--cast-g3, rgba(0,0,0,0)) 68%,
+    rgba(44,33,25,0)              92%);
+}
+
+/* ---------- 8. 접지 그림자 — 페넘브라 + AO 코어 ---------------------------
+   The single most important effect: with these two the pot stops floating.
+   A real contact shadow is two parts — a wide soft penumbra and an almost
+   opaque core at the last millimetre of contact. One ellipse always reads
+   as a smudge.
+   The penumbra must be WIDER than the pot rim (124.6px at 390x844) and
+   offset away from the sun, or the pot hides its own shadow completely.
+   The core sits at 35% of the penumbra's offset: the contact patch barely
+   moves, only the penumbra streams.
+   Both live in #lx (z0), behind .stage (z1), so the pot buries the top of
+   its own shadow the way it should.
+   -------------------------------------------------------------------------- */
+.lx-contact {
+  left:50%; top:calc(var(--sill-y) - 1px);
+  width:var(--con-w); height:var(--con-h);
+  margin-left:calc(var(--con-w) / -2);
+  transform:translateX(var(--con-dx));
+  mix-blend-mode:multiply;
+  background:radial-gradient(ellipse 50% 50% at 50% 50%,
+    var(--con-g0, rgba(0,0,0,0))  0%,
+    var(--con-g1, rgba(0,0,0,0)) 30%,
+    var(--con-g2, rgba(0,0,0,0)) 58%,
+    rgba(46,34,26,0)             82%);
+}
+.lx-core {
+  left:50%; top:calc(var(--sill-y) - 2px);
+  width:var(--core-w); height:var(--core-h);
+  margin-left:calc(var(--core-w) / -2);
+  transform:translateX(var(--core-dx));
+  border-radius:50%;
+  mix-blend-mode:multiply;
+  background:radial-gradient(ellipse 50% 50% at 50% 50%,
+    var(--core-g0, rgba(0,0,0,0))  0%,
+    var(--core-g1, rgba(0,0,0,0)) 46%,
+    rgba(46,34,26,0)              88%);
+}
+
+/* ---------- 9. 림 라이트 + 그늘면 ------------------------------------------
+   #plant never gets a filter: it is composited (will-change:transform) and
+   breathes for ten seconds at a time, so a filter there would turn the
+   breath into a permanent per-frame re-raster.
+   The chain goes on .plant-svg instead — one composited layer, GPU path, and
+   the rim runs around the COMBINED pot+plant silhouette, which is what a
+   backlit object actually does (overlapping leaves do not each get an edge).
+   Rules kept: blur >= 1.5x |offset| and alpha <= 0.45, or the shadow stays a
+   crisp band and reads as a sticker outline rather than a rim.
+   The list NEVER contains url(): a filter list with url() in it stops
+   interpolating, which would silently kill the thirst cross-fade elsewhere.
+   brightness()/saturate() are always present (at 1 by day) so the list shape
+   never changes and the night transition interpolates.
+   No will-change:filter, anywhere.
+   -------------------------------------------------------------------------- */
+body.fx-high #plantSvg, body.fx-low #plantSvg { filter:var(--lx-plant-f, none); }
+
+/* ---------- 10. .lx-wet — 젖은 흙 광택 -------------------------------------
+   Same coordinates as the existing .drops::after soil wash.
+   NO mix-blend-mode: .stage's translateX(-50%) makes it a stacking context,
+   so a blended child there would blend against .stage's transparent
+   background and draw nothing at all. Plain alpha over wet soil reads as
+   gloss perfectly well.
+   -------------------------------------------------------------------------- */
+.lx-wet {
+  position:absolute; pointer-events:none;
+  left:29%; right:29%; top:73.4%; height:5.6%;
+  border-radius:50%;
+  background:radial-gradient(ellipse 60% 100% at var(--pool-x, 55%) 40%,
+    var(--wet-c, rgba(255,252,244,0)) 0%, rgba(255,252,244,0) 100%);
+  opacity:var(--wet-o, 0);
+  transition:opacity 400ms var(--ease);
+}
+body.holding .lx-wet { --wet-o:1; }
+
+/* ---------- 11. .lx-grade — 필믹 그레이드 + 비네트 -------------------------
+   The only full-screen blend in the entire design. The split-tone highlight
+   leg is already done, for free and locally, by .lx-sky + the sill hot edge
+   + the sill pool + the wall wash — all warm key-coloured lifts. What is
+   left is the shadow leg and the vignette, both multiply, so they fold into
+   two backgrounds on one element.
+   --grade-top is alpha 0 in every band: the top of the frame, where
+   "함께한 날 N일" lives, is never touched. That is half of the contrast
+   guarantee. The other half is that #lxg sits before .top in the DOM.
+   Vignette is transparent for the inner 40% and never exceeds .10 by day
+   (.16 at night, where the headroom is 9:1). If anyone can point at a corner
+   and say "that's dark", it is twice too strong.
+   -------------------------------------------------------------------------- */
+.lx-grade {
+  inset:0;
+  mix-blend-mode:multiply;
+  background:
+    radial-gradient(ellipse 92% 88% at 50% 40%,
+      rgba(0,0,0,0) 46%, var(--vig-c, rgba(0,0,0,0)) 100%),
+    linear-gradient(180deg, var(--grade-top, rgba(0,0,0,0)) 0%,
+      var(--grade-bot, rgba(0,0,0,0)) 100%);
+}
+
+/* ---------- 12. scene ink ---------------------------------------------------
+   #6A645E on the scene is already a live WCAG failure in the evening band
+   (4.46:1 / 4.13:1 measured on HEAD) with only 0.03 of headroom by day — no
+   lighting layer can be added on top of it. --scene-ink is the existing
+   --ink token (#5B554F) by day, the unchanged #E9E4DC at night, blended by
+   nightness. Visually indistinguishable at 13px Gowun Dodum.
+   Scoped to the fx tiers here so quality 'off' stays pixel-identical; the
+   permanent fix belongs in PALETTES.onScene and is not a lighting feature.
+   -------------------------------------------------------------------------- */
+body.fx-high #days,  body.fx-low #days,
+body.fx-high #btnSit, body.fx-low #btnSit,
+body.fx-high .icon-btn, body.fx-low .icon-btn { color:var(--scene-ink, #5B554F); }
+
+/* ---------- 13. body.rm — 빛이 아니라 움직임을 줄인다 ----------------------
+   Reduced motion means less movement, not less light. Erasing the static
+   lighting would punish reduced-motion users with a visibly uglier game;
+   static light actually reads better when nothing moves. One line.
+   (scenefx.js additionally never starts the mote loop under body.rm.)
+   -------------------------------------------------------------------------- */
+body.rm .lx-shaft::before { animation:none; }
+
+/* body.hidden needs no new code: style.css already pauses every CSS
+   animation, and lxDrift is the only one this file adds. The mote loop is
+   cancelled in JS on the same event. */

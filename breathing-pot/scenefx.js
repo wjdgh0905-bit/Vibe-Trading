@@ -689,20 +689,23 @@
     var times = [], prev = 0, raf = 0, n = 0;
     function step(ts) {
       if (S.dead || S.hidden) { if (raf) W.cancelAnimationFrame(raf); return; }
-      if (prev) times.push(ts - prev);
+      if (prev && n > 16) times.push(ts - prev);   /* 초기 정착 프레임은 버린다 */
       prev = ts;
-      if (++n < 42) { raf = W.requestAnimationFrame(step); return; }
+      if (++n < 76) { raf = W.requestAnimationFrame(step); return; }
       raf = 0;
       times.sort(function (a, b) { return a - b; });
       var med = times[Math.floor(times.length / 2)] || 0;
       var p90 = times[Math.floor(times.length * 0.9)] || 0;
       /* median은 프레임 드롭을 보지 못한다 — 드롭이 3프레임에 1번이면
          중앙값은 여전히 16.7ms다. p90이 그것을 본다. */
-      if (med > 20 || p90 > 40) {
+      if (med > 20 || p90 > 44) {
+        /* 기기 등급 판정이다 — 이것만 저장한다. */
         S.capLow = true; S.capMotes = true; writeCap('low');
         try { applyQuality(); } catch (e) { }
-      } else if (p90 > 24 && !S.capMotes) {
-        S.capMotes = true; writeCap('nomotes');
+      } else if (p90 > 28 && !S.capMotes) {
+        /* 먼지만 내린다. 한 번의 운 나쁜 부팅이 이 기기에서 먼지를 영원히
+           없애면 안 되므로 이 판정은 저장하지 않는다 — 이번 세션만이다. */
+        S.capMotes = true;
         try { ensureMotes(false); sync(); } catch (e) { }
       }
     }

@@ -139,7 +139,7 @@ body.fx-ready #scene {
 /* ---------- 3. .lx-shaft — 볼류메트릭 (하늘 영역 한정, high 전용) -----------
    118px period with a 6px core and 28px of feather: never crisp enough to
    count the bands. If you find yourself counting them, it has failed.
-   Only one animation exists in this whole file, and this is it.
+   Static — see the note under the ::before for why the drift came out.
    scenefx.js does not create this element at all when mask-image is
    unsupported — an ignored mask would stripe the entire sky.
    -------------------------------------------------------------------------- */
@@ -157,13 +157,17 @@ body.fx-ready #scene {
     #000 0%, rgba(0,0,0,.38) 42%, rgba(0,0,0,0) 78%);
           mask-image:radial-gradient(ellipse 44% 70% at var(--sun-x) var(--sun-y),
     #000 0%, rgba(0,0,0,.38) 42%, rgba(0,0,0,0) 78%);
-  animation:lxDrift 34s ease-in-out infinite alternate;
-  will-change:transform;
 }
-@keyframes lxDrift {
-  from { transform:translate3d(0,0,0); }
-  to   { transform:translate3d(-14px,6px,0); }
-}
+/* The 34s drift this layer was specified with is gone, and it was measured
+   out, not dropped for taste. "compositor-only translate3d" is not true for
+   a masked element: the mask blocks layer promotion, so the drift repainted
+   the whole window every frame. On its own that was survivable; together
+   with the rim drop-shadow on a plant that breathes for ten seconds at a
+   time it cost about 30 dropped frames in every 6 seconds (p95 33.3ms vs
+   16.7ms). Removing it puts the frame back — and it moved 14px over 34
+   seconds, which is 0.4px per second, which nobody was ever going to see.
+   The air in the window is carried by the dust instead, which after losing
+   its blend mode costs 0.09ms/frame. */
 
 /* ---------- 4. .lx-motes — 먼지 (high 전용, 16개, 20fps) -------------------
    NO mix-blend-mode. A blended canvas has to be re-composited every time
@@ -365,11 +369,11 @@ body.fx-high .icon-btn, body.fx-low .icon-btn { color:var(--scene-ink, #5B554F);
 /* ---------- 13. body.rm — 빛이 아니라 움직임을 줄인다 ----------------------
    Reduced motion means less movement, not less light. Erasing the static
    lighting would punish reduced-motion users with a visibly uglier game;
-   static light actually reads better when nothing moves. One line.
-   (scenefx.js additionally never starts the mote loop under body.rm.)
+   static light reads better, if anything, when nothing else moves.
+   So every layer in this file stays exactly where it is under body.rm.
+   The one thing that moves is the dust, and scenefx.js simply never starts
+   that loop — it removes the canvas altogether. There is no CSS animation
+   left in this file to pause, which is also why body.hidden needs no new
+   rule here: style.css already pauses every animation, and the mote loop is
+   cancelled in JS on the same event.
    -------------------------------------------------------------------------- */
-body.rm .lx-shaft::before { animation:none; }
-
-/* body.hidden needs no new code: style.css already pauses every CSS
-   animation, and lxDrift is the only one this file adds. The mote loop is
-   cancelled in JS on the same event. */

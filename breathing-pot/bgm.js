@@ -58,7 +58,13 @@
 
   /* ═══════════════════════════ 1. constants ═══════════════════════════ */
 
-  var BGM_MASTER = 0.050;        // worst-case coherent peak lands at 0.0144 = exactly chime level
+  /* Calibrated by ear, which is what the design said this constant was waiting for.
+     At 0.050 the realised bed measured peak 0.0047 / rms 0.0014 — about -57 dBFS,
+     inaudible on a phone speaker in any real room. The whole mix was scaled the
+     same way: audio.js MASTER_GAIN moved 0.12 -> 2.2 in the same pass, so the
+     ratio the headroom table protects (music under the sound effects) is intact
+     — the music just stopped being 30 dB under the floor of hearing too. */
+  var BGM_MASTER = 1.80;
   var XFADE_S = 8.0, XFADE_NIGHT_S = 12.0;
   var SCHED_MS = 200, HORIZON_S = 1.2, RESYNC_GAP_S = 5.0;
   var DUCK_FLOOR = 0.30;

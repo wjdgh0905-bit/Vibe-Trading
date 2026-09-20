@@ -14,7 +14,12 @@
 (function () {
   'use strict';
 
-  var MASTER_GAIN = 0.12;
+  /* 0.12 put a chime at 0.0144 peak — roughly 30 dB under where a UI sound wants
+     to sit, and it read as "the sound is too quiet" the first time anyone heard it
+     on a phone. 2.2 lands the chime at 0.26 peak, the pour at 0.20 and the room
+     tone at 0.09; everything downstream is a fraction of this, so the internal
+     balance the file was tuned with is unchanged. */
+  var MASTER_GAIN = 2.2;
   var ROOM_GAIN = 0.04;
   var POUR_MAX = 0.10;
   var POUR_FLOOR = 0.02;     // pour is never fully silent while held

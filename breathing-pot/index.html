@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no, interactive-widget=resizes-content">
+  <meta name="theme-color" id="themeColor" content="#F6EFE6">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="숨결">
+  <meta name="description" content="숨결 화분 · 창가의 작은 식물이 숨결에 맞춰 천천히 자라요. 잃을 것도, 서두를 일도 없는 힐링 키우기.">
+  <title>숨결 화분</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icon-180.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Gowun+Batang:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="cinematic.css">
+</head>
+<body>
+  <!-- ───────── 창가 · main scene ───────── -->
+  <main id="scene" class="scene" aria-label="창가">
+    <div class="sky" id="sky" aria-hidden="true"></div>
+    <div class="rain" id="rain" aria-hidden="true"></div>
+    <div class="sill" id="sill" aria-hidden="true"></div>
+    <div class="wall" id="wall" aria-hidden="true"></div>
+
+    <header class="top chrome" id="top">
+      <span class="days" id="days"><span class="days-k">함께한 날 </span><span class="days-n">1일</span></span>
+      <div class="top-actions">
+        <button class="icon-btn" id="btnJournal" type="button" aria-label="일기장">
+          <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 4.5h10a2 2 0 0 1 2 2v13H7.5A1.5 1.5 0 0 1 6 18V4.5Z"/><path d="M6 17.5A1.5 1.5 0 0 1 7.5 16H18"/><path d="M9.5 8.5h5M9.5 11.5h5"/>
+          </svg>
+        </button>
+        <button class="icon-btn" id="btnSettings" type="button" aria-label="설정">
+          <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 7.5h16M4 12h16M4 16.5h16"/><path d="M9 5.5v4M15 10v4M10.5 14.5v4"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="stage" id="stage">
+      <div class="ring" id="ring" aria-hidden="true"></div>
+      <div class="drops" id="drops" aria-hidden="true"></div>
+      <svg id="plantSvg" class="plant-svg" viewBox="0 0 200 260" role="img" tabindex="0" aria-label="화분 속 식물">
+        <g id="pot"></g>
+        <g id="plant"></g>
+        <g id="fx"></g>
+      </svg>
+    </div>
+
+    <div class="bottom" id="bottom">
+      <div class="bubble" id="bubble" role="status" aria-live="polite" aria-atomic="true"><span id="bubbleText"></span></div>
+      <button class="sit-btn chrome" id="btnSit" type="button">잠시 함께 앉아요</button>
+      <button class="hold" id="btnHold" type="button" aria-label="꾹 눌러 물 주기" aria-pressed="false"><span id="holdLabel">꾹 눌러 물 주기</span><i class="hold-fill" aria-hidden="true"></i></button>
+    </div>
+  </main>
+
+  <!-- ───────── shared scrim ───────── -->
+  <div class="scrim" id="scrim" hidden></div>
+
+  <!-- ───────── 일기장 · journal sheet ───────── -->
+  <section class="sheet journal" id="sheetJournal" role="dialog" aria-modal="true" aria-labelledby="journalTitle" hidden>
+    <div class="handle" aria-hidden="true"></div>
+    <div class="sheet-head">
+      <h2 class="sheet-title" id="journalTitle" tabindex="-1">일기장</h2>
+      <button class="text-btn close" type="button" data-close>닫기</button>
+    </div>
+    <div class="sheet-body">
+      <section class="block">
+        <p class="label">지금 식물</p>
+        <p class="plant-line" id="jPlantLine">강낭콩 · 씨앗</p>
+        <div class="bar" aria-hidden="true"><div class="bar-fill" id="jBar"></div></div>
+        <p class="phrase" id="jGrowth">이제 막 시작했어요</p>
+        <p class="phrase" id="jHyd">물은 충분해요</p>
+        <button class="pill secondary gather" id="btnGather" type="button" hidden><span>씨앗 받을까요? 언제든 좋아요.</span><i class="gather-ring" aria-hidden="true"></i></button>
+      </section>
+
+      <section class="cards">
+        <div class="card"><p class="label">함께한 날</p><p class="num" id="jDays">1일</p></div>
+        <div class="card"><p class="label">함께한 숨</p><p class="num" id="jBreaths">0번</p></div>
+      </section>
+
+      <section class="block" id="moodBlock">
+        <p class="label">마음 날씨</p>
+        <p class="phrase">오늘 마음은 어떤 날씨였어요?</p>
+        <div class="chips" id="moodChips" role="group" aria-label="오늘의 마음 날씨">
+          <button class="chip" type="button" data-mood="sun" aria-pressed="false">맑음</button>
+          <button class="chip" type="button" data-mood="cloud" aria-pressed="false">구름</button>
+          <button class="chip" type="button" data-mood="rain" aria-pressed="false">비</button>
+          <button class="chip" type="button" data-mood="wind" aria-pressed="false">바람</button>
+        </div>
+        <div class="dots" id="moodDots" role="list" aria-label="최근 14일 마음 날씨"></div>
+      </section>
+
+      <section class="block">
+        <p class="label">들려준 말</p>
+        <ul class="whisper-list" id="whisperList"></ul>
+        <p class="empty" id="whisperEmpty">아직 들려준 말이 없어요.</p>
+        <button class="text-btn" id="btnMoreWhispers" type="button" hidden>더 보기</button>
+      </section>
+
+      <section class="block">
+        <p class="label">눌러 말린 꽃</p>
+        <div class="pressed-grid" id="pressedGrid"></div>
+        <p class="empty" id="pressedEmpty">아직 없어요. 서두르지 않아도 돼요.</p>
+        <div class="pressed-detail" id="pressedDetail" hidden>
+          <div class="pressed-plate" aria-hidden="true"><svg class="pressed-svg" id="pressedDetailSvg" viewBox="0 0 200 260" aria-hidden="true"></svg></div>
+          <p class="phrase" id="pressedDetailMeta"></p>
+          <div class="note-wrap">
+            <input class="note" id="pressedNote" type="text" maxlength="40" placeholder="한 줄 남길까요?" autocomplete="off">
+            <span class="counter" id="pressedNoteCount" aria-live="polite"></span>
+          </div>
+        </div>
+      </section>
+    </div>
+  </section>
+
+  <!-- ───────── 씨앗 고르기 · seed picker sheet ───────── -->
+  <section class="sheet seeds" id="sheetSeeds" role="dialog" aria-modal="true" aria-labelledby="seedsTitle" hidden>
+    <div class="handle" aria-hidden="true"></div>
+    <div class="sheet-head">
+      <h2 class="sheet-title" id="seedsTitle" tabindex="-1">씨앗 고르기</h2>
+      <button class="text-btn close" type="button" data-close>닫기</button>
+    </div>
+    <p class="sub">다음은 누구와 함께할까요? 급하지 않아요.</p>
+    <div class="seed-scroller" id="seedScroller"></div>
+  </section>
+
+  <!-- ───────── 설정 · settings sheet ───────── -->
+  <section class="sheet settings" id="sheetSettings" role="dialog" aria-modal="true" aria-labelledby="settingsTitle" hidden>
+    <div class="handle" aria-hidden="true"></div>
+    <div class="sheet-head">
+      <h2 class="sheet-title" id="settingsTitle" tabindex="-1">설정</h2>
+      <button class="text-btn close" type="button" data-close>닫기</button>
+    </div>
+    <div class="sheet-body">
+      <div class="row">
+        <span class="row-label" id="lblSound">소리</span>
+        <button class="toggle" id="setSound" type="button" role="switch" aria-checked="false" aria-labelledby="lblSound"><span class="knob"></span></button>
+      </div>
+      <div class="row" id="rowBgm">
+        <span class="row-label" id="lblBgm">배경 음악</span>
+        <button class="toggle" id="setBgm" type="button" role="switch" aria-checked="false" aria-labelledby="lblBgm"><span class="knob"></span></button>
+      </div>
+      <div class="row">
+        <span class="row-label" id="lblFx">화면 효과</span>
+        <button class="toggle" id="setFx" type="button" role="switch" aria-checked="true" aria-labelledby="lblFx"><span class="knob"></span></button>
+      </div>
+      <div class="row" id="rowHaptic">
+        <span class="row-label" id="lblHaptic">손끝 느낌 (진동)</span>
+        <button class="toggle" id="setHaptic" type="button" role="switch" aria-checked="true" aria-labelledby="lblHaptic"><span class="knob"></span></button>
+      </div>
+      <div class="row col">
+        <span class="row-label" id="lblMotion">움직임 줄이기</span>
+        <div class="seg" id="setMotion" role="radiogroup" aria-labelledby="lblMotion">
+          <button type="button" role="radio" data-value="auto" aria-checked="true">기기 설정대로</button>
+          <button type="button" role="radio" data-value="on" aria-checked="false">켜요</button>
+          <button type="button" role="radio" data-value="off" aria-checked="false">꺼요</button>
+        </div>
+      </div>
+      <div class="row col">
+        <span class="row-label" id="lblText">글자 크기</span>
+        <div class="seg" id="setText" role="radiogroup" aria-labelledby="lblText">
+          <button type="button" role="radio" data-value="0" aria-checked="true">보통</button>
+          <button type="button" role="radio" data-value="1" aria-checked="false">크게</button>
+          <button type="button" role="radio" data-value="2" aria-checked="false">더 크게</button>
+        </div>
+      </div>
+
+      <hr class="divider">
+
+      <details class="expander" id="expHome">
+        <summary>홈 화면에 추가하는 법</summary>
+        <div class="expander-body">
+          <p class="phrase" id="homeHintIos">Safari 아래 공유 버튼을 누르고 '홈 화면에 추가'를 선택해요.</p>
+          <p class="phrase" id="homeHintAndroid">브라우저 메뉴에서 '홈 화면에 추가'를 눌러요.</p>
+          <p class="hint">홈 화면에 두면 기록이 더 안전하게 남아요.</p>
+        </div>
+      </details>
+
+      <details class="expander" id="expTransfer">
+        <summary>기록 옮기기</summary>
+        <div class="expander-body">
+          <button class="pill secondary" id="btnExport" type="button"><span id="exportLabel">복사하기</span></button>
+          <textarea class="import" id="importText" rows="3" placeholder="다른 기기에서 복사한 글을 여기에 붙여 주세요" autocomplete="off" autocapitalize="off" spellcheck="false"></textarea>
+          <button class="pill secondary" id="btnImport" type="button"><span>불러오기</span></button>
+        </div>
+      </details>
+
+      <hr class="divider">
+
+      <p class="label">되돌릴 수 없어요</p>
+      <button class="text-btn danger-soft" id="btnReplant" type="button">이 화분만 다시 심기</button>
+      <button class="text-btn danger-soft" id="btnResetAll" type="button">처음부터 다시 시작하기</button>
+      <p class="danger-note">기록이 모두 지워져요.</p>
+
+      <p class="footer">천천히 자라는 게 맞아요. · 숨결 화분 1.0</p>
+    </div>
+  </section>
+
+  <!-- ───────── 가만히 앉기 · sit-together overlay ───────── -->
+  <div class="sit" id="sitOverlay" role="dialog" aria-modal="true" aria-label="가만히 앉기" tabindex="-1" hidden>
+    <div class="breath-circle" id="breathCircle" aria-hidden="true">
+      <svg class="breath-arc" viewBox="0 0 200 200" aria-hidden="true"><circle id="breathArc" cx="100" cy="100" r="92" /></svg>
+    </div>
+    <p class="breath-text" id="breathText" role="status" aria-live="polite" aria-atomic="true">들이쉬어요…</p>
+    <div class="sit-progress" aria-hidden="true"><div class="sit-progress-fill" id="sitProgress"></div></div>
+    <p class="hint on-scrim">언제든 톡 하면 끝나요</p>
+  </div>
+
+  <!-- ───────── inline confirm (small centered card) ───────── -->
+  <div class="confirm-scrim" id="confirmScrim" hidden></div>
+  <div class="confirm" id="confirm" role="alertdialog" aria-modal="true" aria-labelledby="confirmText" hidden>
+    <p class="phrase" id="confirmText"></p>
+    <div class="confirm-actions">
+      <button class="pill" id="confirmNo" type="button"><span>아니에요</span></button>
+      <button class="text-btn" id="confirmYes" type="button">네</button>
+    </div>
+  </div>
+
+  <script src="plants.js"></script>
+  <script src="whispers.js"></script>
+  <script src="audio.js"></script>
+  <script src="bgm.js"></script>
+  <script src="scenefx.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

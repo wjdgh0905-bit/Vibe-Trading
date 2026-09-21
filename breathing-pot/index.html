@@ -15,7 +15,7 @@
   <link rel="apple-touch-icon" href="icon-180.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Gowun+Batang:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="cinematic.css">
 </head>
@@ -28,16 +28,16 @@
     <div class="wall" id="wall" aria-hidden="true"></div>
 
     <header class="top chrome" id="top">
-      <span class="days" id="days">함께한 날 1일</span>
+      <span class="days" id="days"><span class="days-k">함께한 날 </span><span class="days-n">1일</span></span>
       <div class="top-actions">
         <button class="icon-btn" id="btnJournal" type="button" aria-label="일기장">
-          <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
             <path d="M6 4.5h10a2 2 0 0 1 2 2v13H7.5A1.5 1.5 0 0 1 6 18V4.5Z"/><path d="M6 17.5A1.5 1.5 0 0 1 7.5 16H18"/><path d="M9.5 8.5h5M9.5 11.5h5"/>
           </svg>
         </button>
         <button class="icon-btn" id="btnSettings" type="button" aria-label="설정">
-          <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
-            <path d="M5 8h14M5 12h14M5 16h14"/><circle cx="9" cy="8" r="1.8" fill="currentColor" stroke="none"/><circle cx="15" cy="12" r="1.8" fill="currentColor" stroke="none"/><circle cx="10" cy="16" r="1.8" fill="currentColor" stroke="none"/>
+          <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 7.5h16M4 12h16M4 16.5h16"/><path d="M9 5.5v4M15 10v4M10.5 14.5v4"/>
           </svg>
         </button>
       </div>
@@ -56,7 +56,7 @@
     <div class="bottom" id="bottom">
       <div class="bubble" id="bubble" role="status" aria-live="polite" aria-atomic="true"><span id="bubbleText"></span></div>
       <button class="sit-btn chrome" id="btnSit" type="button">잠시 함께 앉아요</button>
-      <button class="hold" id="btnHold" type="button" aria-label="꾹 눌러 물 주기" aria-pressed="false"><span id="holdLabel">꾹 눌러 물 주기</span></button>
+      <button class="hold" id="btnHold" type="button" aria-label="꾹 눌러 물 주기" aria-pressed="false"><span id="holdLabel">꾹 눌러 물 주기</span><i class="hold-fill" aria-hidden="true"></i></button>
     </div>
   </main>
 
@@ -109,7 +109,7 @@
         <div class="pressed-grid" id="pressedGrid"></div>
         <p class="empty" id="pressedEmpty">아직 없어요. 서두르지 않아도 돼요.</p>
         <div class="pressed-detail" id="pressedDetail" hidden>
-          <svg class="pressed-svg" id="pressedDetailSvg" viewBox="0 0 200 260" aria-hidden="true"></svg>
+          <div class="pressed-plate" aria-hidden="true"><svg class="pressed-svg" id="pressedDetailSvg" viewBox="0 0 200 260" aria-hidden="true"></svg></div>
           <p class="phrase" id="pressedDetailMeta"></p>
           <div class="note-wrap">
             <input class="note" id="pressedNote" type="text" maxlength="40" placeholder="한 줄 남길까요?" autocomplete="off">
@@ -158,7 +158,7 @@
       <div class="row col">
         <span class="row-label" id="lblMotion">움직임 줄이기</span>
         <div class="seg" id="setMotion" role="radiogroup" aria-labelledby="lblMotion">
-          <button type="button" role="radio" data-value="auto" aria-checked="true">기기 설정 따라요</button>
+          <button type="button" role="radio" data-value="auto" aria-checked="true">기기 설정대로</button>
           <button type="button" role="radio" data-value="on" aria-checked="false">켜요</button>
           <button type="button" role="radio" data-value="off" aria-checked="false">꺼요</button>
         </div>
@@ -194,8 +194,10 @@
 
       <hr class="divider">
 
+      <p class="label">되돌릴 수 없어요</p>
       <button class="text-btn danger-soft" id="btnReplant" type="button">이 화분만 다시 심기</button>
       <button class="text-btn danger-soft" id="btnResetAll" type="button">처음부터 다시 시작하기</button>
+      <p class="danger-note">기록이 모두 지워져요.</p>
 
       <p class="footer">천천히 자라는 게 맞아요. · 숨결 화분 1.0</p>
     </div>
@@ -212,6 +214,7 @@
   </div>
 
   <!-- ───────── inline confirm (small centered card) ───────── -->
+  <div class="confirm-scrim" id="confirmScrim" hidden></div>
   <div class="confirm" id="confirm" role="alertdialog" aria-modal="true" aria-labelledby="confirmText" hidden>
     <p class="phrase" id="confirmText"></p>
     <div class="confirm-actions">

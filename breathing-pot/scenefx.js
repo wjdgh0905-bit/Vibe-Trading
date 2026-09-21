@@ -649,8 +649,12 @@
     set('--grade-bot', rgba(c('gradeBot')));
     set('--vig-c', rgba([VIG_RGB[0], VIG_RGB[1], VIG_RGB[2], n('vigA')]));
 
-    /* 씬 잉크 */
-    set('--scene-ink', rgba(mixc(SCENE_INK_DAY, SCENE_INK_NIGHT, night)));
+    /* 씬 잉크 — 보간하지 않고 한 번에 넘긴다.
+       이 잉크는 뒤에 아무 판때기 없이 벽 위에 바로 읽힌다. 어두운 잉크에서 밝은 잉크로
+       보간하면 벽이 중간 밝기를 지나는 그 시간 동안 잉크도 같이 중간 회색이라, 하루 두 번
+       ~48분씩 대비가 3:1 아래로 떨어진다. 벽은 계속 섞이고 잉크만 한가운데서 뒤집는다.
+       app.js updateSky()의 onScene / veil 스냅과 짝이다. */
+    set('--scene-ink', rgba(night < 0.5 ? SCENE_INK_DAY : SCENE_INK_NIGHT));
 
     /* 림 + 그늘면.
        blur >= 1.5 x |offset|, alpha <= 0.45 — 이 규칙을 어기면 잎마다 뚜렷한

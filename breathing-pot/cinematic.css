@@ -407,9 +407,34 @@ body.holding .lx-wet { --wet-o:1; }
      night         8.48  7.81       7.39  8.74
 
    Worst cell 5.05, was 2.09. The non-idle scene is strictly better again.
+
+   #bubble and #btnHold are now bare ink on the wall too (the whisper lost its capsule,
+   the hold button lost its fill, and its frame, wash and water rule are all currentColor),
+   so the obvious move is to add them to this list. Measured, that is wrong, and the list
+   deliberately stays as it is.
+
+   Settled, it buys nothing: with #bubble/#btnHold left on --on-scene, all five chrome
+   elements resolve to exactly the same colour in every band and every tier —
+   rgb(82,76,70) by day, rgb(233,228,220) at night, identical to var(--scene-ink).
+   The two files already agree; pinning only changes the ROUTE.
+
+   And the route costs. --scene-ink is a registered @property that itself transitions
+   1.2s (line 112), so a pinned element cross-fades twice — the property, then the colour
+   off it — and takes roughly double the time to settle after a band change. On the two
+   elements that carry the longest text on the wall that lag is measurable: with the pin,
+   fx-verify's own 4.5:1 sweep fails 6 of 24 cells mid-cross-fade (worst 1.39, the ink
+   still half a band behind the wall); without it, the same sweep passes everywhere,
+   worst cell 5.08. Leaving them on --on-scene means app.js's per-band value drives the
+   element's own colour transition directly, and the whisper is legible sooner.
+
+   The idle fade no longer touches ink at all (style.css), so every idle cell now equals
+   its live cell. Re-measured with the new chrome, 390x844, both fx tiers, four bands,
+   idle and live: worst text cell 4.63 (잠시 함께 앉아요, evening, 화면 효과 켬). The
+   left-set position is load-bearing — right-set, that cell lands in the vignette's dark
+   corner and drops below 4.5.
    -------------------------------------------------------------------------- */
-body.fx-high #days,  body.fx-low #days,
-body.fx-high #btnSit, body.fx-low #btnSit,
+body.fx-high #days,    body.fx-low #days,
+body.fx-high #btnSit,  body.fx-low #btnSit,
 body.fx-high .icon-btn, body.fx-low .icon-btn { color:var(--scene-ink, #524C46); }
 
 /* ---------- 13. body.rm — 빛이 아니라 움직임을 줄인다 ----------------------

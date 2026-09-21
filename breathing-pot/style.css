@@ -2,26 +2,79 @@
    숨결 화분 — style.css
    Spec §4 layouts · §6 tokens/type/shape/motion · §7 ring/drops/ripple
    §8 reduced motion (body.rm) · §13 mobile shell
-   Scene layer is retinted by JS writing CSS vars on #scene; sheets, bubble
-   and buttons stay light at night on purpose.
+
+   The SCENE chrome is part of the room and is retinted with it: #bubble, #btnSit and
+   #btnHold are drawn entirely in currentColor, which is --on-scene, so the frame, the
+   wash, the rule and the water level all invert with the band for free.
+   The SHEETS stay light on purpose and are lit to say so: after dark the page warms one
+   notch to --paper-night and the scrim deepens, so the eye gets a graded step from a
+   #2E3446 room to a #FBF4EA page instead of a hard cut. A notebook under a lamp, not a modal.
    ========================================================================== */
 
 /* ---------- 6.1 tokens ---------- */
 :root {
-  --cream:#F6EFE6; --paper:#FFFDF9; --ink:#5B554F; --muted:#6F6963; --divider:#EEE9E1;
-  --blush:#E7B7A6; --blush-press:#DDA894;
+  /* --- ink: three steps, each ≥1.5x apart in ratio --- */
+  --ink-900:#39332D;   /* 12.26:1 on paper — titles, numbers, subjects, control labels, input text */
+  --ink-700:#554F49;   /*  7.95:1 — reading copy: phrases, whisper log, expander body */
+  --ink-500:#726A61;   /*  5.23:1 — kickers, meta, hints, empty states, unselected labels */
+  --ink:var(--ink-700); --muted:var(--ink-500);   /* aliases: no un-rewritten rule may break */
+
+  /* --- surfaces --- */
+  --paper:#FFFDF9;        /* the sheet */
+  --paper-night:#FBF4EA;  /* the same sheet after dark */
+  --sand:#EFE6D8;         /* the ONE secondary surface. NEVER carries --ink-500 (4.30:1) */
+  --cream:var(--sand);
+
+  /* --- lines: three weights with assigned jobs --- */
+  --rule:#DCD1C0;    /* row/list dividers, section tops — decorative */
+  --rule-2:#C6B8A5;  /* structural: the stat vertical, the specimen baseline, the detail top */
+  --edge:#938A7D;    /* 3.35:1 on paper — every boundary WCAG 1.4.11 counts */
+  --divider:var(--rule);
+
+  /* --- the one accent: "the app is pointing at this" --- */
+  --accent:#9C5430;       /* 5.55:1 on paper, 5.16:1 night */
+  --accent-wash:#F7E3D8;
+  --blush:var(--accent-wash); --blush-press:#F2D8CA; --on-blush:var(--ink-900);
+
+  /* --- mood: one chroma budget, one lightness band, all ≥3:1 --- */
+  --m-sun:#AD8029; --m-cloud:#8E857A; --m-rain:#4E86AC; --m-wind:#598A64;
+
+  /* --- plant + scene tokens (app.js and plants.js write/read these) --- */
   --leaf-light:#9CC5A1; --leaf-mid:#6FA37A; --leaf-deep:#4F7F5C; --thirsty:#B9BFA9;
+  --water-ink:#6E93A8;    /* the hold button's level — its own hue, so it cannot be read as the frame */
   --pot:#D9A08A; --pot-shadow:#C08A76; --soil-wet:#6B5546; --soil-dry:#8A7361;
   --water:rgba(169,211,230,.6); --ripple:#DCEFF7;
   --pine-tuft:#6F8F73; --pine-needle:#4F7F5C;
-  /* scene layer, retinted by time of day (JS writes these on #scene) */
   --sky-a:#F6EFE6; --sky-b:#E8EEF2; --wall:#F3ECE3; --sill:#E9DCCF; --sill-line:#DCCBB9;
   --on-scene:#6A645E; --ring:rgba(231,183,166,.8);
-  --ease:cubic-bezier(.33,0,.2,1);
-  --shadow:0 8px 24px rgba(91,85,79,.08);
 
-  /* extras (not in §6.1) */
-  --on-blush:#4A443E;                 /* ink for text on --blush (≥4.5:1) */
+  /* --- type: two families, ten roles --- */
+  --font-ui:'Gowun Dodum','Apple SD Gothic Neo','Noto Sans KR',sans-serif;
+  --font-text:'Gowun Batang','Apple SD Gothic Neo','Nanum Myeongjo',serif;
+  --fz-display:2rem; --fz-title:1.5rem; --fz-subject:1.375rem; --fz-lead:1.1875rem;
+  --fz-body:1rem;    --fz-log:1.0625rem; --fz-ui:1rem;         --fz-ui-sm:.9375rem;
+  --fz-kicker:.75rem; --fz-meta:.75rem;  --fz-hint:.8125rem;   --fz-micro:.6875rem;
+
+  /* --- space: base 4, seven steps, one gutter --- */
+  --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s6:24px; --s8:32px; --s12:48px;
+  --col:24px;
+
+  /* --- radius: derived from size, four steps (999px survives only as a capsule) --- */
+  --r-xs:2px; --r-sm:8px; --r-md:12px; --r-lg:20px; --r-sheet:24px;
+
+  /* --- elevation: two shadows, warm brown only --- */
+  --e3:0 2px 4px rgba(74,62,50,.10), 0 28px 56px -14px rgba(74,62,50,.30);
+  --e-sheet:0 -1px 0 rgba(74,62,50,.07), 0 -14px 36px -10px rgba(74,62,50,.20);
+  --shadow:none;   /* alias: the old single shadow is retired, not redefined */
+
+  /* --- motion: three curves, five durations --- */
+  --e-out:cubic-bezier(.2,.8,.3,1);    /* arrives and stays */
+  --e-inout:cubic-bezier(.5,0,.2,1);   /* goes and comes back in one gesture */
+  --e-soft:cubic-bezier(.4,0,.4,1);    /* ambient, no visible start or stop */
+  --ease:cubic-bezier(.33,0,.2,1);     /* KEPT VERBATIM — breath keyframes, plants.js, cinematic.css */
+  --t-tap:120ms; --t-state:260ms; --t-sheet:420ms; --t-fade:600ms; --t-amb:1200ms;
+
+  /* extras */
   --on-scrim:#F6EFE6;                 /* text over the sit scrim */
   --breath:10s;                       /* master cycle; body.night → 12s */
   --sill-y:58%;                       /* sill top edge */
@@ -35,15 +88,15 @@ body.night { --breath:12s; }
 
 /* ---------- 13 shell ---------- */
 html, body {
-  height:100%; margin:0; background:var(--cream);
+  height:100%; margin:0; background:var(--sand);
   overscroll-behavior:none; -webkit-text-size-adjust:100%; -webkit-tap-highlight-color:transparent;
 }
 body {
   position:fixed; inset:0; height:100vh; height:100dvh; overflow:hidden;
   touch-action:manipulation; user-select:none; -webkit-user-select:none; -webkit-touch-callout:none;
-  font-family:'Gowun Dodum','Apple SD Gothic Neo','Noto Sans KR',sans-serif;
-  font-size:1rem; line-height:1.55; letter-spacing:-0.01em; word-break:keep-all;
-  color:var(--ink);
+  font-family:var(--font-ui);
+  font-size:1rem; line-height:1.5; letter-spacing:-.005em; word-break:keep-all;
+  color:var(--ink-700);
 }
 *, *::before, *::after { box-sizing:border-box; }
 [hidden] { display:none !important; }
@@ -56,11 +109,14 @@ button {
   cursor:pointer; -webkit-tap-highlight-color:transparent; touch-action:manipulation;
   -webkit-user-select:none; user-select:none;
 }
-input, textarea { font-family:inherit; letter-spacing:inherit; color:var(--ink); -webkit-user-select:text; user-select:text; }
-input::placeholder, textarea::placeholder { color:var(--muted); opacity:1; }
+input, textarea { font-family:inherit; letter-spacing:inherit; color:var(--ink-900); -webkit-user-select:text; user-select:text; }
+input::placeholder, textarea::placeholder { color:var(--ink-500); opacity:1; }
 
 :focus { outline:none; }
-:focus-visible { outline:2px solid var(--leaf-mid); outline-offset:3px; }
+:focus-visible { outline:2px solid var(--accent); outline-offset:3px; }
+/* on the scene the accent is not legible against a night wall; the chrome's own ink is */
+#scene :focus-visible, .plant-svg:focus-visible { outline-color:currentColor; }
+.plant-svg { color:var(--on-scene); }
 
 /* ---------- 4.1 scene ---------- */
 .scene {
@@ -76,28 +132,81 @@ input::placeholder, textarea::placeholder { color:var(--muted); opacity:1; }
 }
 .wall { top:calc(var(--sill-y) + var(--sill-h)); bottom:0; background:var(--wall); transition:background-color 1.2s var(--ease); }
 
-/* top chrome: meta + two 48px icon buttons */
+/* ---------- 4.1 top bar: one left margin at --col, icons optically flush right ---------- */
 .top {
-  position:absolute; left:calc(16px + env(safe-area-inset-left, 0px)); right:calc(8px + env(safe-area-inset-right, 0px)); top:calc(env(safe-area-inset-top, 0px) + 8px);
-  display:flex; align-items:center; justify-content:space-between; z-index:2;
+  position:absolute; z-index:2; display:flex; align-items:center; justify-content:space-between;
+  left:calc(var(--col) + env(safe-area-inset-left, 0px));
+  right:calc(12px + env(safe-area-inset-right, 0px));
+  top:calc(env(safe-area-inset-top, 0px) + 10px);
 }
-.days { font-size:.8125rem; color:var(--on-scene); transition:color 1.2s var(--ease); }
-.top-actions { display:flex; gap:16px; }
-.icon-btn {
-  width:48px; height:48px; border-radius:50%; display:grid; place-items:center;
-  color:var(--on-scene); transition:color 1.2s var(--ease), transform 150ms var(--ease), background-color 150ms;
+/* A film frame darkens or lightens at its edges so the titles hold whatever is behind them.
+   Same job here, and it is load-bearing: the wall cross-fades through mid-luminance twice a
+   day, and at that luminance neither a dark nor a light ink reaches 4.5:1 on its own. Tinted
+   away from the ink, full-bleed, no edge — it reads as depth, not as a panel. */
+.top::before, .bottom::before {
+  content:''; position:absolute; left:-100vw; right:-100vw; pointer-events:none; z-index:-1;
+  transition:background-image 1.2s var(--e-inout);
 }
-.icon-btn:active { transform:scale(.98); background:rgba(91,85,79,.06); }
+.top::before {
+  top:calc(env(safe-area-inset-top, 0px) * -1 - 24px); height:132px;
+  background-image:linear-gradient(180deg, var(--scene-veil, transparent) 0%,
+    color-mix(in srgb, var(--scene-veil, transparent) 55%, transparent) 46%, transparent 100%);
+}
+.bottom::before {
+  bottom:calc(env(safe-area-inset-bottom, 0px) * -1 - 24px); top:-40px;
+  background-image:linear-gradient(0deg, var(--scene-veil, transparent) 0%,
+    color-mix(in srgb, var(--scene-veil, transparent) 62%, transparent) 58%, transparent 100%);
+}
+@supports not (color: color-mix(in srgb, red 50%, blue)) {
+  .top::before { background-image:linear-gradient(180deg, var(--scene-veil, transparent), transparent); }
+  .bottom::before { background-image:linear-gradient(0deg, var(--scene-veil, transparent), transparent); }
+}
 
-/* idle chrome */
-.chrome { transition:opacity 600ms var(--ease); }
+/* .days MUST be display:flex — as an inline span with block children it measures 0x0 */
+.days {
+  display:flex; flex-direction:column; align-items:flex-start; font-size:0; line-height:1;
+  color:var(--on-scene); transition:color var(--t-amb) var(--e-soft);
+}
+.days .days-k { font-family:var(--font-ui); font-size:var(--fz-micro); letter-spacing:.14em; }
+.days .days-n { font-family:var(--font-text); font-weight:700; font-size:1.25rem; letter-spacing:-.02em; margin-top:3px; }
+
+.top-actions { display:flex; gap:var(--s1); }
+.icon-btn {
+  position:relative; width:48px; height:48px; border-radius:50%; display:grid; place-items:center;
+  color:var(--on-scene);
+  transition:color var(--t-amb) var(--e-soft), opacity var(--t-fade) var(--e-out);
+}
+/* the press wash is currentColor: a dark disc on the day wall, a light one at night */
+.icon-btn::before {
+  content:''; position:absolute; inset:6px; border-radius:50%; background:currentColor;
+  opacity:0; transition:opacity var(--t-tap) var(--e-inout);
+}
+.icon-btn:active { transform:none; background:none; }
+.icon-btn:active::before { opacity:.14; }
+.icon-btn svg { position:relative; }
+
+/* ---------- idle chrome ---------- */
+.chrome { transition:opacity var(--t-fade) var(--e-out); }
 /* The chrome steps back while you just watch. It used to fade to .55, which put
    함께한 날 and 잠시 함께 앉아요 at 2.1-2.4:1 against every daytime sky — and because
    the blend is against a light background, no ink colour fixes it (pure black
    measures 4.4 at .55). The idle state persists for as long as someone sits
    watching, so it is real text, not a transient. .93 is the highest-contrast-cost
    fade that still clears 4.5:1 everywhere. */
-.chrome.idle { opacity:.93; }
+/* .93 bought nothing: 7% is below the perceptual threshold, and anything lower fails
+   contrast for the reason the comment above records. So the idle state no longer touches
+   text at all. What recedes is the frame: the icon glyphs, the rule under 잠시 함께 앉아요,
+   and the hold field's border and wash. Every idle cell measures IDENTICALLY to its
+   live cell, bit for bit — same ink, same backdrop, same alpha.
+   The top bar is NOT taken to opacity:0. Measured: with pointer-events:none at opacity 0,
+   document.elementFromPoint over the journal icon returns #scene, so the app's resting
+   state — which it enters after every touch and then holds indefinitely — would have no
+   visible or reachable route to 일기장 or 설정. Receding is not the same as leaving. */
+.chrome.idle { opacity:1; }
+.chrome.idle .icon-btn { opacity:.85; }        /* .70 read 3.26:1 at dusk — under the 3:1 non-text floor */
+.sit-btn.chrome.idle::after { opacity:.16; }
+body:has(.chrome.idle) .hold::after { opacity:.34; }
+body:has(.chrome.idle) .hold::before { opacity:.03; }
 
 /* stage: the plant svg sits so its pot bottom (viewBox y 256/260) rests on the sill */
 .stage {
@@ -142,43 +251,88 @@ body.holding .drop { animation-play-state:running; }
   border-radius:50%; background:var(--water); opacity:0; transition:opacity 800ms var(--ease);
 }
 
-/* bottom stack: bubble → 12 → sit → 12 → hold */
+/* ---------- 4.2 bottom stack: a paragraph, a caption, a rule ---------- */
 .bottom {
-  position:absolute; left:0; right:0; bottom:calc(env(safe-area-inset-bottom, 0px) + 16px);
-  display:flex; flex-direction:column; align-items:center; gap:12px; z-index:2;
-  padding:0 calc(24px + env(safe-area-inset-right, 0px)) 0 calc(24px + env(safe-area-inset-left, 0px));
+  position:absolute; left:0; right:0;
+  bottom:calc(env(safe-area-inset-bottom, 0px) + var(--s6));
+  display:flex; flex-direction:column; align-items:stretch; gap:0; z-index:2;
+  padding:0 calc(var(--col) + env(safe-area-inset-right, 0px))
+          0 calc(var(--col) + env(safe-area-inset-left, 0px));
 }
+/* the whisper is a line of serif type set on the wall, in the room's own ink */
 .bubble {
-  width:100%; max-width:320px; min-height:72px; padding:14px 20px;
-  display:flex; align-items:center; justify-content:center; text-align:center;
-  background:rgba(255,253,249,.85); color:var(--ink); border-radius:22px; box-shadow:var(--shadow);
-  font-size:1.0625rem; line-height:1.55; word-break:keep-all;
-  opacity:0; transition:opacity 600ms var(--ease); pointer-events:none;
+  width:auto; max-width:none; min-height:0; padding:0 0 var(--s4);
+  display:block; text-align:left;
+  background:none; box-shadow:none; border-radius:0;
+  font-family:var(--font-text); font-size:var(--fz-lead); line-height:1.68; letter-spacing:-.015em;
+  word-break:keep-all; color:var(--on-scene);
+  opacity:0; pointer-events:none;
+  transition:opacity var(--t-fade) var(--e-out), color var(--t-amb) var(--e-soft);
 }
 .bubble.show { opacity:1; }
+
+/* left-set on the 24px spine: right-set lands in the vignette's dark corner (4.33:1) */
 .sit-btn {
-  min-height:44px; padding:0 16px; border-radius:999px; font-size:1.0625rem;
-  color:var(--on-scene); transition:opacity 600ms var(--ease), color 1.2s var(--ease), transform 150ms var(--ease);
+  position:relative; align-self:flex-start;
+  min-height:48px; padding:0 var(--s4) 0 0; margin:0 0 var(--s2);
+  border-radius:0; font-family:var(--font-ui); font-size:var(--fz-ui-sm); letter-spacing:.02em;
+  color:var(--on-scene);
+  transition:opacity var(--t-fade) var(--e-out), color var(--t-amb) var(--e-soft);
 }
-.sit-btn:active { transform:scale(.98); }
+.sit-btn:active { transform:none; }
+.sit-btn::after {
+  content:''; position:absolute; left:0; right:var(--s4); bottom:12px; height:1px;
+  background:currentColor; opacity:.34; transition:opacity var(--t-tap) var(--e-inout);
+}
+.sit-btn:active::after { opacity:.90; }
+
+/* the hold field: a quiet framed field lit by the room; the accent it used to spend on
+   its own fill now lives in the journal, where it marks growth */
 .hold {
-  width:100%; height:64px; border-radius:999px; background:var(--blush); color:var(--on-blush);
-  font-size:1.0625rem; display:flex; align-items:center; justify-content:center;
+  position:relative; width:100%; height:64px; border-radius:var(--r-md); overflow:hidden;
+  background:none; box-shadow:none; color:var(--on-scene);
+  font-family:var(--font-ui); font-size:var(--fz-ui); letter-spacing:.02em;
+  display:flex; align-items:center; justify-content:center;
   touch-action:none; -webkit-touch-callout:none;
-  transition:transform 150ms var(--ease), background-color 150ms var(--ease), opacity 600ms var(--ease);
-  box-shadow:var(--shadow);
+  transition:transform var(--t-tap) var(--e-inout),
+             color var(--t-amb) var(--e-soft), opacity var(--t-fade) var(--e-out);
 }
-.hold span { pointer-events:none; transition:opacity 300ms var(--ease); }
-.hold:active, .hold[aria-pressed="true"] { transform:scale(.98); background:var(--blush-press); }
-.hold.full span { color:#524C46; }        /* 충분히 마셨어요 label state (dimmed by colour, ≥4.5:1) */
-body.thirsty .hold { animation:thirstyPulse 3s var(--ease) infinite; }
+/* the interior wash — a fixed-opacity currentColor layer, NOT color-mix */
+.hold::before {
+  content:''; position:absolute; inset:0; background:currentColor; opacity:.06;
+  pointer-events:none; transition:opacity var(--t-tap) var(--e-inout);
+}
+/* the frame — .72, measured 3.55–5.17:1; at .30 it is not a boundary */
+.hold::after {
+  content:''; position:absolute; inset:0; border:1.5px solid currentColor;
+  border-radius:inherit; opacity:.72; pointer-events:none; transition:opacity var(--t-tap) var(--e-inout);
+}
+.hold span { pointer-events:none; position:relative; }
+/* the water level — width written by app.js as --hold-fill.
+   NOT --fill: scenefx.js writes --fill on #scene as an rgba colour and #btnHold inherits it. */
+.hold-fill {
+  position:absolute; left:1.5px; bottom:1.5px; height:2px; width:var(--hold-fill, 0%);
+  max-width:calc(100% - 3px); border-radius:1px;
+  background:var(--water-ink, #6E93A8); opacity:.78; pointer-events:none;
+  transition:width var(--t-state) var(--e-out), opacity var(--t-tap) var(--e-inout);
+}
+.hold:active, .hold[aria-pressed="true"] { transform:translateY(1px); background:none; }
+.hold:active::before, .hold[aria-pressed="true"]::before { opacity:.10; }
+.hold:active::after,  .hold[aria-pressed="true"]::after  { opacity:.90; }
+.hold[aria-pressed="true"] .hold-fill { opacity:.88; }
+.hold.full::after { opacity:.40; }        /* 충분히 마셨어요 — the frame recedes, the ink does not */
+.hold.full span { color:inherit; }
+
+/* the thirst cue lives on the frame, never on the label: it costs nothing in contrast */
+body.thirsty .hold { animation:none; }
+body.thirsty .hold::after { animation:thirstyEdge 3s var(--ease) infinite; }
 
 /* first run: chrome + buttons hidden until JS adds .reveal */
 body.onboarding .chrome:not(.reveal),
 body.onboarding .hold:not(.reveal) { opacity:0; pointer-events:none; }
-/* only the fade-in is slow; press feedback stays 150 ms */
-body.onboarding .chrome.reveal { transition:opacity 1200ms var(--ease); }
-body.onboarding .hold.reveal { transition:transform 150ms var(--ease), background-color 150ms var(--ease), opacity 1200ms var(--ease); }
+/* only the fade-in is slow; press feedback stays fast */
+body.onboarding .chrome.reveal { transition:opacity 1200ms var(--e-out); }
+body.onboarding .hold.reveal { transition:transform var(--t-tap) var(--e-inout), opacity 1200ms var(--e-out); }
 
 /* ---------- 5/6.4 plant svg animation classes ---------- */
 #plant, #plant .breath { transform-box:view-box; transform-origin:100px 196px; }
@@ -226,182 +380,354 @@ body.onboarding .hold.reveal { transition:transform 150ms var(--ease), backgroun
 
 /* ---------- 4.3–4.5 sheets + scrim ---------- */
 .scrim {
-  position:fixed; inset:0; z-index:10; background:rgba(58,46,38,.42);
-  opacity:0; transition:opacity 500ms var(--ease);
+  position:fixed; inset:0; z-index:10; background:rgba(48,38,30,.46);
+  opacity:0; transition:opacity var(--t-sheet) var(--e-out);
 }
 .scrim.show { opacity:1; }
+body.night .scrim { background:rgba(22,19,25,.64); }
 .sheet {
   position:fixed; left:0; right:0; bottom:0; z-index:20; height:72%; max-height:100%;
-  background:var(--paper); color:var(--ink); border-radius:28px 28px 0 0; box-shadow:0 -8px 32px rgba(91,85,79,.10);
-  padding:0 24px calc(env(safe-area-inset-bottom, 0px) + 24px);
+  background:var(--paper); color:var(--ink-700);
+  border-radius:var(--r-sheet) var(--r-sheet) 0 0; box-shadow:var(--e-sheet);
+  padding:0 calc(var(--col) + env(safe-area-inset-right, 0px))
+            calc(env(safe-area-inset-bottom, 0px) + var(--s8))
+            calc(var(--col) + env(safe-area-inset-left, 0px));
   overflow-y:auto; overflow-x:hidden; -webkit-overflow-scrolling:touch; overscroll-behavior:contain;
-  transform:translateY(100%); transition:transform 500ms var(--ease);
+  transform:translateY(100%); transition:transform var(--t-sheet) var(--e-out);
   -webkit-user-select:text; user-select:text;
 }
 .sheet.open { transform:translateY(0); }
 .sheet.dragging { transition:none; }
+body.night .sheet { background:var(--paper-night); }
+.sheet.journal { height:72%; }
 .sheet.settings { height:60%; }
-.sheet.seeds { height:80%; min-height:min(480px, 100%); }
-/* grip: a 20px-tall transparent hit area drawing the 36×4 bar; touch-action:none so a
+/* only the seed sheet becomes content-height: at a fixed 80% it left 228px of dead paper */
+.sheet.seeds { height:auto; max-height:82%; min-height:0; }
+/* grip: a 24px-tall transparent hit area drawing the 28×3 bar; touch-action:none so a
    downward pan reaches wireDrag() as pointermove instead of being taken as a scroll */
-.handle { position:relative; width:96px; height:20px; margin:0 auto; touch-action:none; }
-.handle::after { content:''; position:absolute; left:50%; top:10px; width:36px; height:4px; margin-left:-18px; border-radius:2px; background:var(--divider); }
-.sheet-head { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:4px 0 14px; touch-action:none; }
-.sheet-title { font-size:1.375rem; font-weight:400; line-height:1.3; }
+/* sticky, and on an opaque paper band: the sheet is one scroll box, so without this the corner
+   arc guillotines whatever is passing under it — half dots, sliced hairlines, amputated rules. */
+.handle {
+  position:sticky; top:0; z-index:2; width:auto; height:24px; margin:0 calc(var(--col) * -1);
+  background:var(--paper); touch-action:none;
+  border-radius:var(--r-sheet) var(--r-sheet) 0 0;
+}
+.handle::after { content:''; position:absolute; left:50%; top:12px; width:28px; height:3px; margin-left:-14px; border-radius:var(--r-xs); background:var(--edge); }
+.sheet-head {
+  position:sticky; top:24px; z-index:2; margin:0 calc(var(--col) * -1);
+  padding:var(--s2) var(--col) var(--s6); background:var(--paper);
+  display:flex; align-items:baseline; justify-content:space-between; gap:var(--s3); touch-action:none;
+}
+/* and a short fade below it, so a line does not simply appear at the masthead's edge */
+.sheet-head::after {
+  content:''; position:absolute; left:0; right:0; top:100%; height:var(--s4);
+  background:linear-gradient(180deg, var(--paper), rgba(255,253,249,0)); pointer-events:none;
+}
+.sheet-title { font-family:var(--font-text); font-weight:700; font-size:var(--fz-title); line-height:1.3; letter-spacing:-.03em; color:var(--ink-900); }
 .sheet-title:focus { outline:none; }
-.sub { font-size:.9375rem; color:var(--muted); margin:-6px 0 16px; }
+.sub { font-family:var(--font-text); font-size:var(--fz-body); line-height:1.75; color:var(--ink-500); margin:-22px 0 var(--s6); }
 
-.block { margin-bottom:28px; }
-.label { font-size:.9375rem; color:var(--muted); margin:0 0 8px; }
-.plant-line { font-size:1.0625rem; margin:0 0 10px; }
-.bar { height:6px; border-radius:3px; background:var(--divider); overflow:hidden; margin:0 0 12px; }
-.bar-fill { height:100%; width:0; border-radius:3px; background:var(--leaf-light); transition:width 800ms var(--ease); }
-.phrase { font-size:.9375rem; margin:0 0 4px; }
-.empty { font-size:.9375rem; color:var(--muted); }
-.empty:not([hidden]) { padding:4px 0; }
-.gather { margin-top:14px; width:100%; touch-action:none; -webkit-touch-callout:none; }   /* 1.5 s hold must never turn into a sheet scroll */
+/* ---------- 4.7 section rhythm ---------- */
+.block { margin-bottom:var(--s8); }
+.label {
+  font-family:var(--font-ui); font-size:var(--fz-kicker); line-height:1.2; letter-spacing:0;
+  color:var(--ink-500); margin:0 0 var(--s3);
+}
+.plant-line {
+  font-family:var(--font-text); font-weight:700; font-size:var(--fz-subject); line-height:1.3;
+  letter-spacing:-.03em; color:var(--ink-900); margin:0 0 var(--s3);
+}
+.phrase { font-family:var(--font-text); font-size:var(--fz-body); line-height:1.75; color:var(--ink-700); margin:0; }
+/* the growth note and the water state are two different readings, not one wrapped paragraph:
+   step the second one back so it reads as status rather than as a second sentence */
+#jHyd { margin-top:var(--s3); color:var(--ink-500); }
+/* an empty state is a RESERVED place, not a failed one: the rule the filled version would have had */
+.empty { font-family:var(--font-text); font-size:var(--fz-body); line-height:1.75; color:var(--ink-500); }
+.empty:not([hidden]) { padding:var(--s4) 0 0; border-top:1px solid var(--rule); }
+/* growth: a measured rule under the subject, not a capsule */
+/* 4px on its own sand track, not 2px on a hairline: a 2px accent rule anchored left is the
+   selection mark this file uses everywhere else, and growth is not a selection. */
+.bar { height:4px; border-radius:2px; background:var(--sand); overflow:hidden; margin:0 0 var(--s3); }
+.bar-fill { height:4px; width:0; border-radius:2px; background:var(--leaf-mid); transition:width 800ms var(--e-out); }
+.gather { margin-top:var(--s6); width:100%; touch-action:none; -webkit-touch-callout:none; }   /* 1.5 s hold must never turn into a sheet scroll */
 
-.cards { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:0 0 28px; }
-.card { background:var(--cream); border-radius:20px; padding:16px 18px; }
-.card .label { margin-bottom:4px; }
-.num { font-size:1.375rem; line-height:1.3; }
+/* ---------- 4.8 the stat pair: set, not boxed ---------- */
+.cards { display:flex; gap:0; margin:0 0 var(--s8); border-top:1px solid var(--rule); padding-top:var(--s4); }
+.card { flex:1 1 0; background:none; border-radius:0; padding:0; }
+.card + .card { border-left:1px solid var(--rule); padding-left:var(--s6); }
+.card .label { margin-bottom:var(--s2); }
+.num { font-family:var(--font-text); font-weight:700; font-size:var(--fz-display); line-height:1.1; letter-spacing:-.03em; color:var(--ink-900); }
 
-.chips { display:grid; grid-template-columns:repeat(4, 1fr); gap:8px; margin-top:10px; }
+/* ---------- 4.9 mood chips ---------- */
+.chips { display:grid; grid-template-columns:repeat(4, 1fr); gap:0; margin-top:var(--s3); box-shadow:inset 0 -1px 0 var(--rule); }
 .chip {
-  height:56px; border-radius:999px; background:var(--cream); font-size:.9375rem; color:var(--ink);
-  transition:background-color 300ms var(--ease), color 300ms var(--ease), transform 150ms var(--ease);
+  position:relative; height:52px; border-radius:0; background:none;
+  font-family:var(--font-ui); font-size:var(--fz-ui-sm); color:var(--ink-500);
+  transition:color var(--t-state) var(--e-inout), background-color var(--t-tap) var(--e-inout);
 }
-.chip:active { transform:scale(.98); }
-.chip[aria-pressed="true"] { background:var(--blush); color:var(--on-blush); }
-.dots { display:flex; justify-content:space-between; align-items:center; padding:16px 4px 0; }
-.dot, .dots > * { width:10px; height:10px; border-radius:50%; background:var(--divider); flex:none; }
-.dot.sun   { background:#F5D77A; }
-.dot.cloud { background:#C9C4BD; }
-.dot.rain  { background:#A9D3E6; }
-.dot.wind  { background:var(--leaf-light); }
-.dot.today { box-shadow:0 0 0 2px var(--paper), 0 0 0 3.5px var(--blush); }
+/* selection is colour AND a 2px mark, so it is not colour-alone */
+.chip::after {
+  content:''; position:absolute; left:0; right:0; bottom:0; height:2px; background:var(--accent);
+  transform:scaleX(0); transform-origin:50% 50%; transition:transform var(--t-state) var(--e-out);
+}
+/* the ink steps with the wash: --ink-500 on --sand is 4.30:1, the one forbidden pairing,
+   and a press state is still text someone is looking at */
+.chip:active { transform:none; background:var(--sand); color:var(--ink-900); }
+.chip[aria-pressed="true"] { background:none; color:var(--ink-900); }
+.chip[aria-pressed="true"]::after { transform:scaleX(1); }
 
+/* ---------- 4.10 mood history: a 14-day weather calendar ----------
+   맑음 a disc · 구름 a low lozenge · 비 a falling stroke · 바람 a crossing stroke,
+   each in its own hue, all standing on one rule. Redundant encoding (shape AND colour).
+   .dots must NOT carry a fixed height together with padding-top — box-sizing:border-box
+   collapses the content box to zero and the strip overlaps the next section. */
+.dots {
+  display:grid; grid-template-columns:repeat(14, 1fr); align-items:end; justify-items:center;
+  height:auto; padding:var(--s6) 0 0; margin:0; border-bottom:1px solid var(--rule);
+}
+.dot, .dots > * { position:relative; width:100%; height:26px; border-radius:0; background:none; flex:none; }
+.dot::before {
+  content:''; position:absolute; left:50%; bottom:0; transform:translateX(-50%);
+  width:4px; height:4px; border-radius:50%; background:var(--edge);   /* 기록 없음: quiet, not missing */
+}
+.dot.sun::before   { width:12px; height:12px; border-radius:50%;   background:var(--m-sun); }
+.dot.cloud::before { width:15px; height:8px;  border-radius:999px; background:var(--m-cloud); }
+.dot.rain::before  { width:3px;  height:20px; border-radius:1.5px; background:var(--m-rain); }
+.dot.wind::before  { width:15px; height:3px;  border-radius:1.5px; bottom:9px; background:var(--m-wind); }
+/* 오늘 is a tick BELOW the baseline, which is where "now" lives on a timeline */
+.dot.today { box-shadow:none; }
+.dot.today::after {
+  content:''; position:absolute; left:50%; bottom:-5px; transform:translateX(-50%);
+  width:14px; height:2px; background:var(--ink-900);
+}
+
+/* ---------- 4.11 whisper log: a serif line, a sans date, a real hairline ---------- */
 .whisper-list li, .whisper-list > * {
-  display:flex; align-items:baseline; justify-content:space-between; gap:12px;
-  padding:10px 0; font-size:.9375rem; border-bottom:1px solid var(--divider);
+  display:grid; grid-template-columns:1fr auto; align-items:baseline; gap:var(--s4);
+  padding:var(--s3) 0; border-bottom:1px solid var(--rule);
+  font-family:var(--font-text); font-size:var(--fz-log); line-height:1.6; color:var(--ink-700);
 }
-.whisper-list .date { font-size:.75rem; color:var(--muted); white-space:nowrap; }
-#btnMoreWhispers { margin-top:4px; }
+.whisper-list li:first-child, .whisper-list > *:first-child { border-top:1px solid var(--rule); }
+.whisper-list .date { font-family:var(--font-ui); font-size:var(--fz-meta); letter-spacing:.02em; color:var(--ink-500); white-space:nowrap; }
+#btnMoreWhispers {
+  margin-top:var(--s3); padding:0; border-radius:0; justify-content:flex-start;
+  font-family:var(--font-ui); font-size:var(--fz-hint); letter-spacing:0; color:var(--ink-500);
+}
 
-.pressed-grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:12px; }
+/* ---------- 4.12 pressed flowers: a specimen sheet ----------
+   plants.js:603 puts the pot rim at y=190 of a 0 0 200 260 viewBox, so the plant occupies
+   the top 73.08%; with width:100% the SVG height is 1.3 × w, and −35% of w removes exactly
+   the pot. What is left is a cut stem standing on a hairline — a herbarium sheet. */
+.pressed-grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:var(--s3); }
 .pressed-grid:empty { display:none; }
 .pressed-grid > * {
-  aspect-ratio:1 / 1; min-height:96px; padding:8px; display:flex; align-items:center; justify-content:center;
-  background:#FFFDF9; border:1px solid var(--divider); border-radius:20px;
-  transition:transform 150ms var(--ease), border-color 300ms var(--ease);
+  display:block; aspect-ratio:auto; min-height:0; padding:0; border:0; border-radius:0;
+  overflow:hidden; background:none; box-shadow:inset 0 -1px 0 var(--rule-2);
+  transition:box-shadow var(--t-state) var(--e-inout), background-color var(--t-state) var(--e-inout);
 }
-.pressed-grid > *:active { transform:scale(.98); }
-.pressed-grid > [aria-expanded="true"], .pressed-grid > .selected { border-color:var(--blush); }
-.pressed-grid svg { width:100%; height:100%; filter:saturate(.7); }
-.pressed-grid > .ink { animation:inkBlot 1.5s var(--ease) both; }
+.pressed-grid > *:active { transform:none; background:var(--sand); }
+.pressed-grid > [aria-expanded="true"], .pressed-grid > .selected {
+  background:var(--accent-wash); box-shadow:inset 0 -2px 0 var(--accent);
+}
+.pressed-grid svg { width:100%; height:auto; aspect-ratio:200/260; margin:0 0 -35%; filter:saturate(.55) contrast(1.04); }
+.pressed-grid > .ink { animation:inkBlot 1.5s var(--e-out) both; }
 .pressed-detail {
-  margin-top:12px; padding:16px; background:var(--cream); border-radius:20px;
-  display:flex; flex-direction:column; align-items:center; gap:8px; text-align:center;
-  animation:fadeIn 500ms var(--ease) both;
+  margin-top:var(--s4); padding:var(--s6) 0 0; background:none; border-radius:0;
+  border-top:1px solid var(--rule-2);
+  display:flex; flex-direction:column; align-items:flex-start; text-align:left; gap:var(--s3);
+  animation:fadeIn 500ms var(--e-out) both;
 }
-.pressed-svg { width:120px; height:156px; filter:saturate(.7); }
-.note-wrap { width:100%; display:flex; flex-direction:column; gap:4px; margin-top:4px; }
+/* the crop needs its own containing block: a percentage margin resolves against the
+   PARENT's inline size, so -35% on a 150px svg inside a 342px column would remove 120px,
+   not 52.5, and drop the pot through the caption below. The plate is 150px wide and
+   clips, so -35% means what it says and nothing paints outside. */
+.pressed-plate { width:150px; align-self:center; overflow:hidden; }
+.pressed-svg { width:100%; height:auto; aspect-ratio:200/260; margin-bottom:-35%; filter:saturate(.55); }
+.pressed-detail .phrase {
+  font-family:var(--font-ui); font-size:var(--fz-kicker); letter-spacing:0;
+  line-height:1.6; color:var(--ink-500);   /* a specimen label, not another sentence */
+}
+.note-wrap { width:100%; display:flex; flex-direction:column; gap:var(--s1); margin-top:var(--s1); }
+/* the one writing surface in the app: a ruled line under a caption, not a signup field */
 .note {
-  width:100%; height:48px; padding:0 14px; font-size:1rem; border-radius:14px;
-  border:1px solid var(--divider); background:var(--paper); -webkit-appearance:none; appearance:none;
+  width:100%; height:52px; padding:0 0 0 2px;
+  border:0; border-bottom:1.5px solid var(--edge); border-radius:0; background:none;
+  font-family:var(--font-text); font-size:var(--fz-log); color:var(--ink-900);
+  -webkit-appearance:none; appearance:none;
 }
-.note:focus-visible { outline-offset:0; }
-.counter { font-size:.75rem; color:var(--muted); text-align:right; min-height:1em; }
+.note:focus-visible { outline:none; border-bottom-color:var(--accent); box-shadow:0 1px 0 var(--accent); }
+.counter { font-family:var(--font-ui); font-size:var(--fz-micro); letter-spacing:.06em; color:var(--ink-500); text-align:right; min-height:1em; }
 
-/* seeds */
+/* ---------- 4.17 seeds: a catalogue entry — a plate, a name, a line, an action ---------- */
 .seed-scroller {
-  display:flex; gap:16px; margin:0 -24px; padding:4px 24px 24px;
-  overflow-x:auto; overflow-y:hidden; scroll-snap-type:x mandatory; scroll-padding:0 24px;
+  display:flex; gap:var(--s4); margin:0 calc(var(--col) * -1);
+  padding:var(--s1) var(--col) var(--s6);
+  overflow-x:auto; overflow-y:hidden; scroll-snap-type:x mandatory; scroll-padding:0 var(--col);
   -webkit-overflow-scrolling:touch; scrollbar-width:none;
+  -webkit-mask-image:linear-gradient(90deg,#000 0,#000 calc(100% - 56px),rgba(0,0,0,.08) 100%);
+          mask-image:linear-gradient(90deg,#000 0,#000 calc(100% - 56px),rgba(0,0,0,.08) 100%);
 }
 .seed-scroller::-webkit-scrollbar { display:none; }
 .seed-card, .seed-scroller > * {
-  flex:0 0 240px; width:240px; min-height:300px; scroll-snap-align:start;
-  background:var(--cream); border-radius:24px; padding:16px;
-  display:flex; flex-direction:column; align-items:center; text-align:center; gap:6px;
+  flex:0 0 228px; width:228px; min-height:0; scroll-snap-align:start;
+  background:none; border-radius:0; padding:0;
+  display:flex; flex-direction:column; align-items:stretch; text-align:left; gap:0;
+  transition:transform var(--t-tap) var(--e-inout);
 }
-.seed-card svg, .seed-scroller > * > svg { width:120px; height:120px; flex:none; transition:opacity 600ms var(--ease); }
-.seed-card .name { font-size:1.0625rem; }
-.seed-card .personality { font-size:.9375rem; color:var(--muted); }
-.seed-card .hint { font-size:.8125rem; color:var(--muted); margin-top:auto; padding-bottom:8px; }
-.seed-card .pill { width:100%; margin-top:auto; padding:0 12px; font-size:.9375rem; }
+.seed-card:active { transform:translateY(1px); }
+.seed-card svg, .seed-scroller > * > svg {
+  width:100%; height:176px; flex:none; padding:var(--s4) 0; margin-bottom:var(--s4);
+  background:var(--sand); border-radius:var(--r-md);
+  transition:opacity var(--t-fade) var(--e-out);
+}
+.seed-card .name { font-family:var(--font-text); font-weight:700; font-size:1.25rem; letter-spacing:-.03em; color:var(--ink-900); margin-bottom:var(--s1); }
+.seed-card .personality { font-family:var(--font-text); font-size:var(--fz-ui-sm); line-height:1.6; color:var(--ink-500); padding-bottom:var(--s4); }
+/* the scroller stretches every card to the tallest, so the action is pinned to the shared
+   bottom edge: a two-line 소개 on one card must not stagger the row of actions */
+.seed-card .hint { margin-top:auto; padding-bottom:0; }
+/* the commit affordance: looks exactly like a .pill, is a <span> — a <button> inside a
+   <button> is invalid HTML and swallows the click */
+.seed-card .cta {
+  display:flex; align-items:center; justify-content:center; width:100%;
+  margin-top:auto; min-height:52px; border-radius:var(--r-md);
+  background:var(--accent-wash); color:var(--ink-900); box-shadow:inset 0 0 0 1.5px var(--accent);
+  font-family:var(--font-ui); font-size:var(--fz-ui-sm); letter-spacing:.01em; pointer-events:none;
+}
+.seed-card:active .cta { background:var(--blush-press); }
 .seed-card.locked svg { opacity:.4; }
 
-/* settings */
-.row { display:flex; align-items:center; justify-content:space-between; gap:16px; min-height:56px; font-size:1.0625rem; }
-.row.col { flex-direction:column; align-items:stretch; gap:10px; padding:10px 0; }
-.row-label { font-size:1.0625rem; }
+/* ---------- 4.14 settings rows: the whole row is the control, with zero JS ---------- */
+.row {
+  position:relative; display:flex; align-items:center; justify-content:space-between;
+  gap:var(--s4); min-height:60px; font-family:var(--font-ui); font-size:var(--fz-ui);
+  border-bottom:1px solid var(--rule);
+}
+/* a stacked row ends in a .seg, which draws its own bottom rule — a second one 16px
+   below it is the kind of doubled hairline this direction exists to delete */
+.row.col { flex-direction:column; align-items:stretch; gap:var(--s3); padding:var(--s4) 0; border-bottom:0; }
+.row-label { font-family:var(--font-ui); font-size:var(--fz-ui); letter-spacing:-.005em; color:var(--ink-900); }
+/* a label that heads a control BELOW it is a kicker, not a row label */
+.row.col .row-label { font-size:var(--fz-kicker); letter-spacing:0; color:var(--ink-500); }
+
+/* outlined off, ink-filled on — the accent is not spent on booleans */
 .toggle {
-  position:relative; flex:none; width:52px; height:32px; border-radius:999px; background:var(--divider);
-  transition:background-color 300ms var(--ease);
+  position:absolute; inset:0; width:auto; height:auto; flex:none;
+  border-radius:0; background:none;
+  transition:opacity var(--t-state) var(--e-inout);
+}
+.toggle[aria-checked="true"] { background:none; }
+.toggle::before {
+  content:''; position:absolute; right:0; top:50%; margin-top:-16px;
+  width:56px; height:32px; border-radius:999px; background:none;
+  box-shadow:inset 0 0 0 1.5px var(--edge);
+  transition:background-color var(--t-state) var(--e-inout), box-shadow var(--t-state) var(--e-inout);
 }
 .toggle .knob {
-  position:absolute; top:2px; left:2px; width:28px; height:28px; border-radius:50%; background:#fff;
-  box-shadow:0 1px 3px rgba(91,85,79,.18); transition:transform 300ms var(--ease);
+  position:absolute; top:50%; left:auto; right:29px; margin-top:-11px;
+  width:22px; height:22px; border-radius:50%; background:var(--edge); box-shadow:none;
+  transition:transform var(--t-state) var(--e-out), background-color var(--t-state) var(--e-inout);
 }
-.toggle[aria-checked="true"] { background:var(--leaf-mid); }
+.toggle[aria-checked="true"]::before { background:var(--ink-900); box-shadow:inset 0 0 0 1.5px var(--ink-900); }
+.toggle[aria-checked="true"] .knob { transform:translateX(24px); background:var(--paper); }
 .toggle[aria-disabled="true"] { opacity:.45; pointer-events:none; }   /* the music can't start on this device */
-.toggle[aria-checked="true"] .knob { transform:translateX(20px); }
-.seg { display:flex; gap:4px; padding:4px; border-radius:999px; background:var(--cream); }
+.toggle:focus-visible { outline-offset:-3px; border-radius:var(--r-md); }
+
+/* ---------- 4.15 segmented control: equal thirds, a 2px accent underline ---------- */
+.seg { display:grid; grid-template-columns:repeat(3, 1fr); gap:0; padding:0; border-radius:0; background:none; box-shadow:inset 0 -1px 0 var(--rule); }
 .seg button {
-  flex:1 1 auto; min-height:48px; padding:0 10px; border-radius:999px; font-size:.9375rem; color:var(--muted); white-space:nowrap;
-  transition:background-color 300ms var(--ease), color 300ms var(--ease), box-shadow 300ms var(--ease);
+  position:relative; min-height:52px; padding:0 var(--s1); border-radius:0;
+  background:none; box-shadow:none; white-space:nowrap;
+  font-family:var(--font-ui); font-size:.875rem; letter-spacing:-.01em; color:var(--ink-500);
+  transition:color var(--t-state) var(--e-inout);
 }
-.seg button[aria-checked="true"] { background:var(--paper); color:var(--ink); box-shadow:0 1px 3px rgba(91,85,79,.12); }
-hr.divider { border:0; border-top:1px solid var(--divider); margin:12px 0; }
+.seg button::after {
+  content:''; position:absolute; left:0; right:0; bottom:0; height:2px; background:var(--accent);
+  transform:scaleX(0); transform-origin:50% 50%; transition:transform var(--t-state) var(--e-out);
+}
+.seg button[aria-checked="true"] { background:none; box-shadow:none; color:var(--ink-900); }
+.seg button[aria-checked="true"]::after { transform:scaleX(1); }
+
+/* ---------- 4.16 expanders, transfer, destructive actions, footer ---------- */
+hr.divider { border:0; border-top:1px solid var(--rule); margin:var(--s8) 0 var(--s6); }
 details.expander summary {
-  min-height:56px; display:flex; align-items:center; justify-content:space-between; gap:12px;
-  font-size:1.0625rem; list-style:none; cursor:pointer;
+  min-height:60px; display:flex; align-items:center; justify-content:space-between; gap:var(--s3);
+  font-family:var(--font-ui); font-size:var(--fz-ui); color:var(--ink-900);
+  border-bottom:1px solid var(--rule); list-style:none; cursor:pointer;
 }
+details.expander[open] summary { border-bottom-color:transparent; }
 details.expander summary::-webkit-details-marker { display:none; }
 details.expander summary::after {
   content:''; flex:none; width:8px; height:8px; margin-right:6px;
-  border-right:1.5px solid var(--muted); border-bottom:1.5px solid var(--muted);
-  transform:translateY(-2px) rotate(45deg); transition:transform 300ms var(--ease);
+  border-right:1.5px solid var(--ink-500); border-bottom:1.5px solid var(--ink-500);
+  transform:translateY(-2px) rotate(45deg); transition:transform var(--t-state) var(--e-out);
 }
 details.expander[open] summary::after { transform:translateY(2px) rotate(-135deg); }
-.expander-body { display:flex; flex-direction:column; gap:12px; padding:2px 0 18px; }
-.hint { font-size:.8125rem; color:var(--muted); }
+.expander-body { display:flex; flex-direction:column; gap:var(--s3); padding:var(--s2) 0 var(--s6); }
+.hint { font-family:var(--font-ui); font-size:var(--fz-hint); line-height:1.6; letter-spacing:-.005em; color:var(--ink-500); }
+/* 기록 옮기기: the input is the only recessed thing in the app, so "type here" and
+   "press this" differ. This is the one place a raised/recessed rule is worth keeping. */
 textarea.import {
-  width:100%; min-height:88px; padding:12px 14px; font-size:1rem; line-height:1.5; border-radius:16px;
-  border:1px solid var(--divider); background:var(--cream); resize:vertical; -webkit-appearance:none; appearance:none;
+  width:100%; min-height:96px; padding:var(--s3) var(--s4);
+  border:0; border-radius:var(--r-sm);
+  box-shadow:inset 0 0 0 1px var(--edge), inset 0 2px 3px rgba(74,62,50,.07);
+  background:var(--paper);
+  font-family:var(--font-text); font-size:var(--fz-body); line-height:1.7; color:var(--ink-900);
+  resize:vertical; -webkit-appearance:none; appearance:none;
 }
-.text-btn.danger-soft { display:flex; width:100%; min-height:48px; padding:0; font-size:.8125rem; color:var(--muted); justify-content:flex-start; }
-.footer { font-size:.8125rem; color:var(--muted); text-align:center; padding-top:24px; }
+/* fine print becomes a statement of fact: 16px ink-900 at 56px, each with a 2px margin mark */
+.text-btn.danger-soft {
+  position:relative; display:flex; width:100%; min-height:56px;
+  padding:0 0 0 var(--s3); border-radius:0; justify-content:flex-start;
+  font-family:var(--font-ui); font-size:var(--fz-ui); letter-spacing:-.005em; color:var(--ink-900);
+  border-bottom:1px solid var(--rule);
+}
+.text-btn.danger-soft::before {
+  content:''; position:absolute; left:0; top:50%; margin-top:-8px;
+  width:2px; height:16px; background:var(--accent);
+}
+.text-btn.danger-soft:active { color:var(--accent); }
+.danger-note { font-family:var(--font-ui); font-size:var(--fz-hint); line-height:1.5; color:var(--ink-500); margin:var(--s2) 0 0; }
+.footer { font-family:var(--font-ui); font-size:var(--fz-meta); letter-spacing:0; color:var(--ink-500); text-align:left; padding-top:var(--s8); }
 
-/* ---------- shared buttons ---------- */
+/* ---------- 4.13 shared buttons ---------- */
+/* an object with an edge, not a saturated slab: the accent appears as a line, not a field */
 .pill {
-  position:relative; display:inline-flex; align-items:center; justify-content:center; gap:8px;
-  min-height:56px; padding:0 24px; border-radius:999px; background:var(--blush); color:var(--on-blush);
-  font-size:1.0625rem; transition:transform 150ms var(--ease), background-color 150ms var(--ease);
+  position:relative; display:inline-flex; align-items:center; justify-content:center; gap:var(--s2);
+  min-height:56px; padding:0 var(--s6); border-radius:var(--r-md);
+  background:var(--accent-wash); color:var(--ink-900);
+  box-shadow:inset 0 0 0 1.5px var(--accent);
+  font-family:var(--font-ui); font-size:var(--fz-ui); letter-spacing:.01em;
+  transition:background-color var(--t-tap) var(--e-inout), transform var(--t-tap) var(--e-inout);
 }
-.pill:active { transform:scale(.98); background:var(--blush-press); }
-.pill.secondary { background:var(--cream); color:var(--ink); border:1px solid var(--divider); }
-.pill.secondary:active { background:var(--divider); }
+.pill:active { transform:translateY(1px); background:var(--blush-press); }
+.pill.secondary { background:none; color:var(--ink-700); border:0; box-shadow:inset 0 0 0 1px var(--edge); }
+.pill.secondary:active { background:var(--sand); }
 .pill span { pointer-events:none; }
 .text-btn {
-  display:inline-flex; align-items:center; justify-content:center; min-height:48px; min-width:48px; padding:0 12px;
-  border-radius:999px; font-size:.9375rem; color:var(--ink); transition:transform 150ms var(--ease), opacity 300ms var(--ease);
+  display:inline-flex; align-items:center; justify-content:center;
+  min-height:48px; min-width:48px; padding:0 var(--s2); border-radius:0;
+  font-family:var(--font-ui); font-size:var(--fz-ui-sm); letter-spacing:.02em; color:var(--ink-700);
+  transition:color var(--t-tap) var(--e-inout);
 }
-.text-btn:active { transform:scale(.98); }
+.text-btn:active { transform:none; color:var(--ink-900); }
+.text-btn.close {
+  min-height:48px; min-width:48px; padding:0; margin-right:-2px; border-radius:0;
+  justify-content:flex-end; font-family:var(--font-ui); font-size:.875rem;
+  letter-spacing:0; color:var(--ink-500);
+}
 /* gather hold ring (1.5 s) */
 .gather-ring {
-  position:absolute; inset:-6px; border-radius:999px; border:2px solid var(--ring); opacity:0;
-  pointer-events:none; transition:opacity 600ms var(--ease);
+  position:absolute; inset:-5px; border-radius:calc(var(--r-md) + 5px); border:1.5px solid var(--accent); opacity:0;
+  pointer-events:none; transition:opacity var(--t-fade) var(--e-out);
 }
 .gather.holding .gather-ring, .gather[aria-pressed="true"] .gather-ring { opacity:1; animation:gatherRing 1.5s linear forwards; }
 
-/* ---------- 4.6 sit overlay ---------- */
+/* ---------- 4.18 sit overlay: three zones, one anchor ---------- */
 .sit {
   position:fixed; inset:0; z-index:30; color:var(--on-scrim);
   background:radial-gradient(ellipse 64% 34% at 50% 38%,
     rgba(44,36,31,.14) 0%, rgba(44,36,31,.34) 46%, rgba(44,36,31,.74) 78%, rgba(44,36,31,.80) 100%);
-  opacity:0; transition:opacity 800ms var(--ease); touch-action:manipulation;
+  opacity:0; transition:opacity 800ms var(--e-out); touch-action:manipulation;
 }
 .sit.show { opacity:1; }
 .breath-circle {
@@ -413,34 +739,59 @@ textarea.import {
 .breath-arc { display:none; position:absolute; inset:-2px; width:calc(100% + 4px); height:calc(100% + 4px); transform:rotate(-90deg); }
 .breath-arc circle { fill:none; stroke:rgba(246,239,230,.9); stroke-width:3; stroke-linecap:round; stroke-dasharray:578.05; stroke-dashoffset:578.05; }
 .breath-text {
-  position:absolute; left:24px; right:24px; top:calc(var(--sill-y) + var(--sill-h) + 28px); text-align:center;
-  font-size:1.375rem; color:var(--on-scrim); transition:opacity 600ms var(--ease);
+  position:absolute; left:var(--col); right:var(--col);
+  top:calc(var(--sill-y) + var(--sill-h) + 72px); text-align:center;
+  font-family:var(--font-text); font-weight:700; font-size:1.75rem; letter-spacing:-.03em;
+  color:var(--on-scrim); transition:opacity var(--t-fade) var(--e-out);
 }
 .breath-text.fade { opacity:0; }
+/* no track: a visible empty channel announces an end, and this session has none.
+   The rule grows out from the centre and you only ever see what has happened. */
 .sit-progress {
-  position:absolute; left:20%; width:60%; top:calc(var(--sill-y) + var(--sill-h) + 96px); height:3px;
-  border-radius:2px; background:rgba(246,239,230,.25); overflow:hidden;
+  position:absolute; left:var(--col); right:var(--col); width:auto;
+  top:calc(var(--sill-y) + var(--sill-h) + 132px);
+  height:1px; border-radius:0; background:none; overflow:visible;
+  display:flex; justify-content:center;
+  opacity:0;   /* see .sit-progress-fill */
 }
-.sit-progress-fill { height:100%; width:0; border-radius:2px; background:rgba(246,239,230,.85); transition:width 1s linear; }
+/* hidden, not deleted: app.js still writes its width and the element keeps the DOM contract.
+   At its real size it rendered as an 8.6x1px dash under a 28px headline and read as a typo —
+   and a session with no deadline should not be drawing a progress bar in the first place. */
+.sit-progress-fill { flex:0 0 auto; width:0; height:1px; border-radius:0; background:rgba(246,239,230,.5); transition:width 1s linear; }
 .hint.on-scrim {
-  position:absolute; left:24px; right:24px; top:calc(var(--sill-y) + var(--sill-h) + 112px);
-  text-align:center; font-size:.8125rem; color:var(--on-scrim);
+  position:absolute; left:var(--col); right:var(--col); top:auto;
+  bottom:calc(env(safe-area-inset-bottom, 0px) + var(--s8)); text-align:center;
+  font-family:var(--font-ui); font-size:var(--fz-meta); letter-spacing:.14em;
+  color:var(--on-scrim); opacity:1;
 }
 /* while sitting, the chrome and bottom stack step back (no JS needed; :has is Safari 15.4+/Chrome 105+) */
-body:has(.sit:not([hidden])) .top, body:has(.sit:not([hidden])) .bottom { opacity:0; transition:opacity 800ms var(--ease); }
+body:has(.sit:not([hidden])) .top, body:has(.sit:not([hidden])) .bottom { opacity:0; transition:opacity 800ms var(--e-out); }
 
 
-/* ---------- confirm card ---------- */
+/* ---------- 4.19 confirm card, with a real scrim element ----------
+   .confirm carries transform:translate(-50%,-50%), so it is the containing block for its
+   position:fixed descendants: a ::before at inset:0 paints a rectangle the size of the card.
+   z-index 35 lands above the sheet (20) and the sit overlay (30), below the card (40).
+   pointer-events:none — the sheet behind is already inert via updateModalInert(). */
+.confirm-scrim {
+  position:fixed; inset:0; z-index:35; background:rgba(40,31,25,.52);
+  pointer-events:none; animation:fadeIn var(--t-state) var(--e-out) both;
+}
 .confirm {
   position:fixed; left:50%; top:50%; z-index:40; width:min(320px, calc(100% - 48px));
-  transform:translate(-50%, -50%); padding:24px; background:var(--paper); color:var(--ink);
-  border-radius:24px; box-shadow:0 16px 48px rgba(46,52,70,.25);
-  animation:confirmIn 300ms var(--ease) both;
+  transform:translate(-50%, -50%); padding:var(--s8) var(--s6) var(--s6);
+  background:var(--paper); color:var(--ink-700);
+  border-radius:var(--r-lg); box-shadow:var(--e3);
+  animation:confirmIn var(--t-state) var(--e-out) both;
 }
-.confirm .phrase { font-size:1.0625rem; margin:0 0 20px; text-align:center; }
-.confirm-actions { display:flex; align-items:center; justify-content:center; gap:8px; flex-wrap:wrap; }
-.confirm-actions .pill { flex:1 1 auto; }
-.confirm-actions .text-btn { flex:0 0 auto; color:var(--muted); }
+body.night .confirm { background:var(--paper-night); }
+.confirm .phrase { font-family:var(--font-text); font-size:var(--fz-lead); line-height:1.68; color:var(--ink-900); text-align:left; margin:0 0 var(--s6); }
+.confirm-actions { display:flex; flex-direction:column; align-items:stretch; gap:var(--s2); flex-wrap:nowrap; }
+/* #confirmNo is the SAFE choice and comes first in the DOM — neutral, not accented */
+.confirm-actions .pill { flex:none; width:100%; min-height:52px; background:var(--sand); color:var(--ink-900); box-shadow:inset 0 0 0 1px var(--edge); }
+.confirm-actions .pill:active { background:var(--rule); }
+/* #confirmYes is the irreversible one — same size, same shape, accent-ringed */
+.confirm-actions .text-btn { flex:none; width:100%; min-height:52px; border-radius:var(--r-md); color:var(--accent); box-shadow:inset 0 0 0 1px var(--accent); }
 
 /* ---------- 8 reduced motion (body.rm) ---------- */
 body.rm #plant { transition-duration:200ms; }
@@ -450,7 +801,7 @@ body.rm #plant [data-appear] { transition:opacity 800ms var(--ease); }
 body.rm .drop { display:none; }
 body.rm.holding .drops::after { opacity:.6; }
 body.rm.holding .ring { animation-name:ringRm; }   /* static circle, opacity follows the breath */
-body.rm .sheet { transform:none; opacity:0; transition:opacity 200ms var(--ease); }
+body.rm .sheet { transform:none; opacity:0; transition:opacity 200ms var(--e-out); }
 body.rm .sheet.open { opacity:1; }
 body.rm .scrim, body.rm .sit { transition-duration:200ms; }
 body.rm .breath-circle { animation:none; border-color:rgba(246,239,230,.25); }
@@ -460,23 +811,38 @@ body.rm #fx .petal, body.rm #rain { display:none; }
 body.rm .pappus, body.rm #fx .pappus { animation:fadeOut 800ms var(--ease) forwards; }
 body.rm .gather-ring { animation:none; }
 body.rm .scene { animation-duration:600ms; }
+/* new chrome: every animation above has a branch */
+body.rm .hold::after { animation:none; opacity:.72; }      /* thirsty edge → a fixed frame */
+body.rm .hold-fill { transition:none; }
+body.rm .bar-fill { transition:none; }
+body.rm .hold:active, body.rm .pill:active, body.rm .seed-card:active { transform:none; }
+body.rm .hold:active::before { opacity:.14; }              /* the wash carries the whole press */
+body.rm .chip::after, body.rm .seg button::after {
+  transform:scaleX(1); opacity:0; transition:opacity 200ms var(--e-out);
+}
+body.rm .chip[aria-pressed="true"]::after,
+body.rm .seg button[aria-checked="true"]::after { opacity:1; }
+body.rm .confirm-scrim { animation:none; }
+body.rm .icon-btn::before { transition-duration:0ms; }
+body.rm .toggle .knob { transition:transform var(--t-state) var(--e-out); }  /* 24px of travel IS the state */
 
 /* ambient loops pause when the tab is hidden */
 body.hidden *, body.hidden *::before, body.hidden *::after { animation-play-state:paused !important; }
 
+/* ---------- 4.20 responsive ---------- */
 /* short screens: tighten the bottom stack */
 @media (max-height: 640px) {
-  .bottom { gap:8px; }
-  .bubble { min-height:60px; padding:10px 16px; }
-  .sit-btn { min-height:44px; }
+  .bottom { gap:0; bottom:calc(env(safe-area-inset-bottom, 0px) + var(--s4)); }
+  .bubble { font-size:var(--fz-log); min-height:0; padding:0 0 var(--s3); }
+  .sit-btn { min-height:48px; margin-bottom:var(--s1); }
 }
 /* phone held sideways: raise the sill and shrink the plant so the bottom stack never covers the pot */
 @media (orientation: landscape) and (max-height: 480px) {
   :root { --sill-y:44%; --stage-h:min(30dvh, 416px); }
   @supports not (height: 1dvh) { :root { --stage-h:min(30vh, 416px); } }
-  .bottom { gap:6px; bottom:calc(env(safe-area-inset-bottom, 0px) + 8px); }
-  .bubble { min-height:48px; padding:8px 14px; }
-  .sit-btn { min-height:44px; }
+  .bottom { bottom:calc(env(safe-area-inset-bottom, 0px) + var(--s3)); }
+  .bubble { font-size:var(--fz-ui); line-height:1.5; min-height:0; padding:0 0 var(--s2); }
+  .sit-btn { min-height:48px; margin-bottom:0; }
   .hold { height:52px; }
 }
 
@@ -502,7 +868,8 @@ body.hidden *, body.hidden *::before, body.hidden *::after { animation-play-stat
   100% { transform:rotate(var(--tilt)); }
 }
 @keyframes stageUp { 0% { transform:rotate(var(--tilt)) scale(.96); } 100% { transform:rotate(var(--tilt)) scale(1); } }
-@keyframes thirstyPulse { 0% { opacity:1; } 50% { opacity:.86; } 100% { opacity:1; } }
+/* the thirst cue: the frame breathes, the label never does */
+@keyframes thirstyEdge { 0%, 100% { opacity:.72; } 50% { opacity:.96; } }
 
 @keyframes ringBreath { 0% { transform:scale(1); } 40% { transform:scale(1.18); } 100% { transform:scale(1); } }
 @keyframes ringRm     { 0% { opacity:.55; } 40% { opacity:1; } 100% { opacity:.55; } }

@@ -28,7 +28,7 @@
 
   var BUBBLE_FADE_MS = 600, BUBBLE_MIN_MS = 5000, BUBBLE_QUIET_MS = 25000;
   var TAP_WHISPER_COOLDOWN = 20000;
-  var IDLE_MS = 3000;
+  var IDLE_MS = 6000;
   var GATHER_HOLD_MS = 1500;
   var DAY_MS = 86400000;
 
@@ -36,10 +36,10 @@
   var SUNSET = [17.6, 18.1, 18.6, 19.0, 19.4, 19.8, 19.8, 19.4, 18.7, 18.0, 17.4, 17.3];
 
   var PALETTES = {
-    morning: { skyA: '#FBEFE4', skyB: '#F3E6DD', wall: '#F5ECE2', sill: '#EADCCD', sillLine: '#DCCBB9', onScene: '#524C46', ring: 'rgba(231,183,166,.8)' },
-    day:     { skyA: '#F6EFE6', skyB: '#E8EEF2', wall: '#F3ECE3', sill: '#E9DCCF', sillLine: '#DCCBB9', onScene: '#524C46', ring: 'rgba(231,183,166,.8)' },
-    evening: { skyA: '#F4DFD8', skyB: '#D9CFE3', wall: '#EFE3E0', sill: '#E4D3C7', sillLine: '#DCCBB9', onScene: '#524C46', ring: 'rgba(231,183,166,.8)' },
-    night:   { skyA: '#2E3446', skyB: '#4A4F66', wall: '#3A3F52', sill: '#55596E', sillLine: '#3F4356', onScene: '#E9E4DC', ring: 'rgba(233,228,220,.6)' }
+    morning: { veil: 'rgba(255,252,246,.86)', skyA: '#FBEFE4', skyB: '#F3E6DD', wall: '#F5ECE2', sill: '#EADCCD', sillLine: '#DCCBB9', onScene: '#524C46', ring: 'rgba(231,183,166,.8)' },
+    day:     { veil: 'rgba(255,252,246,.86)', skyA: '#F6EFE6', skyB: '#E8EEF2', wall: '#F3ECE3', sill: '#E9DCCF', sillLine: '#DCCBB9', onScene: '#524C46', ring: 'rgba(231,183,166,.8)' },
+    evening: { veil: 'rgba(255,250,244,.88)', skyA: '#F4DFD8', skyB: '#D9CFE3', wall: '#EFE3E0', sill: '#E4D3C7', sillLine: '#DCCBB9', onScene: '#524C46', ring: 'rgba(231,183,166,.8)' },
+    night:   { veil: 'rgba(14,16,26,.80)', skyA: '#2E3446', skyB: '#4A4F66', wall: '#3A3F52', sill: '#55596E', sillLine: '#3F4356', onScene: '#E9E4DC', ring: 'rgba(233,228,220,.6)' }
   };
   var MOOD_GREY = '#D8D6D2';
 
@@ -446,6 +446,14 @@
     var mood = skyMood(dayKey(d));
     var out = {};
     Object.keys(A).forEach(function (k) { out[k] = mixColor(A[k], B[k], mix.t); });
+    // onScene is the one channel that must NOT be interpolated. Since the UI lost its backing
+    // surfaces, this ink is read directly against the wall — and a lerp from dark ink to light
+    // ink passes through the wall's own mid-grey, taking the bubble, the hold label, 함께한 날
+    // and 잠시 함께 앉아요 to ~1.1:1 for the middle of every dawn and dusk cross-fade. Snap it.
+    out.onScene = (mix.t < 0.5 ? A : B).onScene;
+    // ...and the wall still crosses mid-luminance where no ink works, so the top and bottom
+    // edges get a falloff tinted away from whichever ink just won. See .top::before in style.css.
+    out.veil = (mix.t < 0.5 ? A : B).veil;
     if (mood !== 'clear' && nightness < 1) {
       var m = 0.2 * (1 - nightness);
       out.skyA = mixColor(out.skyA, MOOD_GREY, m);
@@ -458,6 +466,7 @@
     st.setProperty('--sill', out.sill);
     st.setProperty('--sill-line', out.sillLine);
     st.setProperty('--on-scene', out.onScene);
+    st.setProperty('--scene-veil', out.veil);
     st.setProperty('--ring', out.ring);
     var meta = $('themeColor');
     if (meta) meta.setAttribute('content', out.skyA);
@@ -486,8 +495,17 @@
     }
     var days = $('days');
     if (days) {
-      var dtxt = '함께한 날 ' + state.daysTogether + '일';
-      if (days.textContent !== dtxt) days.textContent = dtxt;
+      // two spans: a tracked micro kicker over a serif numeral. The accessible name is
+      // still the textContent '함께한 날 12일', so the trailing space in .days-k matters.
+      var dnum = state.daysTogether + '일';
+      var dk = days.firstChild, dn = days.lastChild;
+      if (!dk || dk === dn || dk.className !== 'days-k') {
+        days.textContent = '';
+        dk = document.createElement('span'); dk.className = 'days-k'; dk.textContent = '함께한 날 ';
+        dn = document.createElement('span'); dn.className = 'days-n';
+        days.appendChild(dk); days.appendChild(dn);
+      }
+      if (dn.textContent !== dnum) dn.textContent = dnum;
     }
     // the scene has no text: the plant's name carries species / stage / thirst (no numbers, spec §8)
     var svg = $('plantSvg');
@@ -506,6 +524,12 @@
     // the accessible name must match the visible label in every state (WCAG 2.5.3)
     if (btn.getAttribute('aria-label') !== txt) btn.setAttribute('aria-label', txt);
     btn.classList.toggle('full', !holding && state.hydration >= 98);
+    // the water level is the one number the game has; the hold field carries it as a rule.
+    // NOTE: the property is --hold-fill, NOT --fill. scenefx.js writes --fill on #scene as an
+    // rgba colour (the fill light), #btnHold inherits it, and width:var(--fill) would be
+    // invalid at computed-value time with its 0% fallback dead.
+    var pct = Math.round(Math.max(0, Math.min(100, state.hydration)));
+    btn.style.setProperty('--hold-fill', pct + '%');
   }
   function renderAll() {
     renderScene();
@@ -1021,6 +1045,7 @@
     confirmCb = onYes;
     confirmLastFocus = document.activeElement;
     c.hidden = false;
+    var cs = $('confirmScrim'); if (cs) cs.hidden = false;
     if (!sheets.current) scrim(true);
     updateModalInert();
     raf(function () { try { $('confirmNo').focus({ preventScroll: true }); } catch (e) { /* ignore */ } });
@@ -1029,6 +1054,7 @@
     var c = $('confirm');
     if (!c || c.hidden) return;
     c.hidden = true;
+    var cs = $('confirmScrim'); if (cs) cs.hidden = true;
     confirmCb = null;
     if (!sheets.current) scrim(false);
     updateModalInert();
@@ -1271,8 +1297,14 @@
     var list = hasPlants() && Array.isArray(window.Plants.LIST) ? window.Plants.LIST : [{ id: 'bean', name: '강낭콩', personality: '가장 먼저 만나는 친구예요', unlockHint: '' }];
     list.forEach(function (p) {
       var unlocked = state.unlocked.indexOf(p.id) !== -1;
-      var card = document.createElement('div');
+      var card = document.createElement(unlocked ? 'button' : 'div');
       card.className = 'seed-card' + (unlocked ? '' : ' locked');
+      if (unlocked) {
+        card.type = 'button';
+        card.setAttribute('data-plant', p.id);
+        // the accessible name still carries the action, not just the species
+        card.setAttribute('aria-label', p.name + ' · ' + p.personality + ' · 이 씨앗으로 시작해요');
+      }
       var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
       svg.setAttribute('viewBox', '0 0 200 260');
       svg.setAttribute('aria-hidden', 'true');
@@ -1281,11 +1313,11 @@
       var name = document.createElement('p'); name.className = 'name'; name.textContent = p.name; card.appendChild(name);
       var pers = document.createElement('p'); pers.className = 'personality'; pers.textContent = p.personality; card.appendChild(pers);
       if (unlocked) {
-        var b = document.createElement('button');
-        b.type = 'button'; b.className = 'pill';
-        b.setAttribute('data-plant', p.id);
-        var sp = document.createElement('span'); sp.textContent = '이 씨앗으로 시작해요'; b.appendChild(sp);
-        card.appendChild(b);
+        // a <button> inside a <button> is invalid HTML and swallows the click, so the
+        // commit affordance is a span styled exactly like a .pill
+        var cta = document.createElement('span'); cta.className = 'cta';
+        cta.textContent = '이 씨앗으로 시작해요';
+        card.appendChild(cta);
       } else {
         var hint = document.createElement('p'); hint.className = 'hint'; hint.textContent = p.unlockHint || ''; card.appendChild(hint);
       }

@@ -600,6 +600,9 @@
     el('path', { d: POT_SHADOW_D, fill: C.potShadow, 'class': 'pot-shadow' }, g);
     el('rect', { x: 122, y: 208, width: 5, height: 36, rx: 2.5, fill: '#FFFFFF', 'fill-opacity': 0.14 }, g);
     el('rect', { x: 56, y: 200, width: 88, height: 3.5, fill: C.potShadow, 'fill-opacity': 0.4 }, g);
+    // y:190 of the 0 0 200 260 viewBox is also a style.css dependency: .pressed-grid svg and
+    // .pressed-svg crop the pot away with margin-bottom:-35% ((260-190)/260 * 1.3). Change the
+    // pot geometry and that crop shows terracotta or clips the stem.
     el('rect', { x: 52, y: 190, width: 96, height: 10, rx: 5, fill: C.pot, 'class': 'pot-rim' }, g);
     el('path', { d: RIM_SHADOW_D, fill: C.potShadow, 'class': 'pot-shadow' }, g);
     var soil = el('ellipse', { cx: 100, cy: 198, rx: 42, ry: 7, fill: C.soilWet, 'class': 'soil' }, g);

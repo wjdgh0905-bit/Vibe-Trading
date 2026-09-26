@@ -478,6 +478,62 @@
   };
 
   // 작은 소나무 — cone → needle whorl → trunk with tufts → S-curve + moss → tiny cone
+  /* ───────────────────────── pine branch pad ─────────────────────────
+     A pine pad is NOT a filled ellipse with spokes radiating from its centre —
+     that construction is, exactly, a parasol, and it is what this looked like
+     before. A pad is a branchlet with fascicles of needles along it, every
+     needle sweeping outward from the trunk, longer near the tip, with the
+     whole thing far wider than it is tall and the trunk visible through the
+     gaps. Built here as three paths (mass, back needles, front needles) so a
+     pad still costs the same three nodes the ellipse version did.
+
+     Jitter is hashed from (pad id, index) rather than drawn from a generator:
+     these run inside B.dyn on every growth update and must land in the same
+     place every time, or the tree shimmers as it grows. */
+  function hash1(a) { var x = Math.sin(a * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); }
+
+  function pinePad(dx, dy, rx, id) {
+    var dir = dx === 0 ? 0 : (dx > 0 ? 1 : -1);
+    var ry = rx * 0.52;                          // pads are flat: half as tall as they are wide
+    // the branchlet: out from the trunk, drooping a little, as a young pine's does
+    // the branchlet stops short of the pad's edge so the needles cover its tip
+    var ex = dx + dir * rx * 0.26, ey = dy + ry * 0.34;
+    var cx = dx * 0.5 + dir * rx * 0.10, cy = (1 + ey) / 2 - ry * 0.30;
+    // the leader is a candle, not a pad: upright, and its needles stay near vertical
+    var lead = dir === 0;
+    if (lead) { ex = 0; ey = dy - ry * 0.55; cx = 0; cy = (1 + ey) / 2; }
+    var NK = 7, A0 = lead ? -38 : -62, SPREAD = (lead ? 76 : 108) / (NK - 1);
+
+    var n = Math.max(4, Math.min(9, Math.round(rx * (lead ? 0.40 : 0.62))));
+    var back = '', front = '', top = '', bot = [];
+    for (var i = 0; i < n; i++) {
+      var u = 0.26 + 0.74 * (n === 1 ? 1 : i / (n - 1));
+      var p = qpt(0, 1, cx, cy, ex, ey, u);
+      var q = qpt(0, 1, cx, cy, ex, ey, Math.min(1, u + 0.05));
+      var tan = Math.atan2(q.y - p.y, q.x - p.x);
+      // fascicles get longer toward the tip, the way a candle does
+      var L = rx * (lead ? 0.44 : 0.33 + 0.27 * u) * (0.86 + 0.28 * hash1(id * 7 + i));
+      for (var k = 0; k < NK; k++) {
+        // every needle points away from the trunk; none folds back over it
+        var off = rad(A0 + k * SPREAD + 9 * (hash1(id * 31 + i * 5 + k) - 0.5));
+        var a = tan + off;
+        var len = L * (k === (NK >> 1) ? 1 : 0.82 + 0.2 * hash1(id * 13 + i * 3 + k));
+        var tx = p.x + Math.cos(a) * len, ty = p.y + Math.sin(a) * len;
+        // needle tips lift slightly — a pine's do, and it stops the fan reading as a star
+        var seg = 'M' + n2(p.x) + ' ' + n2(p.y) + ' Q' + n2((p.x + tx) / 2) + ' ' +
+                  n2((p.y + ty) / 2 - len * 0.10) + ' ' + n2(tx) + ' ' + n2(ty) + ' ';
+        if (k === 0 || k === NK - 1) back += seg; else front += seg;
+        if (k === 1) top += (top ? ' L' : 'M') + n2(p.x + Math.cos(a) * len * 0.62) + ' ' + n2(p.y + Math.sin(a) * len * 0.62);
+        if (k === NK - 2) bot.push([p.x + Math.cos(a) * len * 0.62, p.y + Math.sin(a) * len * 0.62]);
+      }
+    }
+    // the mass is the envelope of the needles, not a curve drawn under them
+    var mass = top;
+    for (var b = bot.length - 1; b >= 0; b--) mass += ' L' + n2(bot[b][0]) + ' ' + n2(bot[b][1]);
+    return { mass: mass + ' Z', back: back, front: front,
+             branch: 'M0 1 Q' + n2(cx) + ' ' + n2(cy) + ' ' + n2(ex) + ' ' + n2(ey) };
+  }
+
   SP.pine = function (B, root, s) {
     var needle = s >= 5 ? C.pineNeedleOld : C.pineNeedle;
     if (s === 0) {
@@ -512,24 +568,24 @@
     B.stroke(sw, { d: trunkD(0.8), w: 2.4, color: C.barkLight, cls: 'trunk', opacity: 0.8 });
     if (s >= 4) el('ellipse', { cx: 100, cy: 196.5, rx: 9, ry: 2.5, fill: '#8FB89C' }, root);
     // tufts: [u along trunk, dx, dy, base rx, appear, id]; lower ones first
-    var TF = s === 2 ? [{ u: 0.6, dx: -9, dy: 1, rx: 10, ap: 0.4, id: 32 }, { u: 1, dx: 0, dy: 0, rx: 12, ap: 0, id: 31 }]
-      : s === 3 ? [{ u: 0.6, dx: -11, dy: 1, rx: [10, 11], ap: -1, id: 32 }, { u: 0.8, dx: 11, dy: 0, rx: 11, ap: 0.3, id: 33 }, { u: 1, dx: 0, dy: 0, rx: [12, 13], ap: -1, id: 31 }]
-      : [{ u: 0.42, dx: 11, dy: 1, rx: s === 4 ? 12 : 12, ap: s === 4 ? 0.3 : -1, id: 34 }, { u: 0.62, dx: -12, dy: 1, rx: s === 4 ? [11, 13] : 13, ap: -1, id: 32 }, { u: 0.8, dx: 12, dy: 0, rx: s === 4 ? [11, 14] : 14, ap: -1, id: 33 }, { u: 1, dx: 0, dy: 0, rx: s === 4 ? [13, 16] : 16, ap: -1, id: 31 }];
+    var TF = s === 2 ? [{ u: 0.55, dx: -10, dy: 1, rx: 12, ap: 0.4, id: 32 }, { u: 1, dx: 0, dy: 0, rx: 13, ap: 0, id: 31 }]
+      : s === 3 ? [{ u: 0.48, dx: -12, dy: 1, rx: [13, 15], ap: -1, id: 32 }, { u: 0.74, dx: 12, dy: 0, rx: 14, ap: 0.3, id: 33 }, { u: 1, dx: 0, dy: 0, rx: [13, 15], ap: -1, id: 31 }]
+      : [{ u: 0.30, dx: 12, dy: 1, rx: s === 4 ? 15 : 19, ap: s === 4 ? 0.3 : -1, id: 34 }, { u: 0.52, dx: -13, dy: 1, rx: s === 4 ? [13, 16] : 20, ap: -1, id: 32 }, { u: 0.74, dx: 13, dy: 0, rx: s === 4 ? [13, 17] : 19, ap: -1, id: 33 }, { u: 1, dx: 0, dy: 0, rx: s === 4 ? [12, 15] : 16, ap: -1, id: 31 }];
     TF.forEach(function (F) {
       // the group sits ON the trunk and the tuft is drawn at (dx,dy) inside it, so unfolding
       // grows the branch out of the trunk instead of detaching the tuft from it
       var g = B.group(sw, { pos: function (c) { var p = tpt(c, F.u); return { x: p.x, y: p.y, a: 0 }; }, appear: F.ap, id: F.id, jitter: true, cls: 'tuft' });
-      if (F.dx) el('path', { d: 'M0 1 L' + n2(F.dx) + ' ' + n2(F.dy), stroke: C.bark, 'stroke-width': 2, 'stroke-linecap': 'round' }, g);
-      var body = el('ellipse', { cx: n2(F.dx), cy: n2(F.dy), fill: C.pineTuft }, g);
-      var hi = el('ellipse', { fill: '#7FA083' }, g);
-      var nd = el('path', { stroke: needle, 'stroke-width': 1.2, 'stroke-linecap': 'round', fill: 'none' }, g);
+      var br = el('path', { stroke: C.bark, 'stroke-width': 1.6, 'stroke-linecap': 'round', fill: 'none' }, g);
+      var mass = el('path', { fill: C.pineTuft, 'fill-opacity': 0.30, 'stroke-linejoin': 'round' }, g);
+      var ndB = el('path', { stroke: C.pineNeedleOld, 'stroke-width': 0.85, 'stroke-linecap': 'round', fill: 'none', 'stroke-opacity': 0.85 }, g);
+      var ndF = el('path', { stroke: needle, 'stroke-width': 0.95, 'stroke-linecap': 'round', fill: 'none' }, g);
       B.dyn(function (c) {
-        var rx = Array.isArray(F.rx) ? lerp(F.rx[0], F.rx[1], c.t) : F.rx, ry = rx * 0.66;
-        body.setAttribute('rx', n2(rx)); body.setAttribute('ry', n2(ry));
-        hi.setAttribute('cx', n2(F.dx - rx * 0.2)); hi.setAttribute('cy', n2(F.dy - ry * 0.28)); hi.setAttribute('rx', n2(rx * 0.55)); hi.setAttribute('ry', n2(ry * 0.5));
-        var d = '';
-        for (var i = 0; i < 14; i++) { var a = rad(i * 360 / 14 + 7); d += 'M' + n2(F.dx) + ' ' + n2(F.dy) + ' L' + n2(F.dx + Math.cos(a) * rx * 0.86) + ' ' + n2(F.dy + Math.sin(a) * ry * 0.86) + ' '; }
-        nd.setAttribute('d', d);
+        var rx = Array.isArray(F.rx) ? lerp(F.rx[0], F.rx[1], c.t) : F.rx;
+        var P = pinePad(F.dx, F.dy, rx, F.id);
+        br.setAttribute('d', F.dx ? P.branch : '');
+        mass.setAttribute('d', P.mass);
+        ndB.setAttribute('d', P.back);
+        ndF.setAttribute('d', P.front);
       });
     });
     if (s === 5) {   // a tiny cone hanging from the right branch

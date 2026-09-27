@@ -418,6 +418,28 @@ h3 {
   display: block;
 }
 
+.social-link {
+  background: none;
+  border: 1px solid var(--line);
+  color: var(--muted);
+  width: 40px;
+  height: 40px;
+  flex: none;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.2s var(--ease), color 0.2s var(--ease);
+}
+.social-link:hover {
+  border-color: var(--blue);
+  color: var(--blue);
+}
+.social-icon {
+  width: 18px;
+  height: 18px;
+}
+
 .nav-toggle {
   display: none;
   flex-direction: column;
@@ -1589,17 +1611,45 @@ blockquote.instagram-media a:hover {
    breakpoint below for display:flex. Sits above safe-area insets
    for notched phones.
    ============================================================ */
-.sticky-cta {
+.sticky-bar {
   display: none;
   position: fixed;
   left: 0;
   right: 0;
   bottom: 0;
   z-index: 90;
-  align-items: center;
-  justify-content: center;
+  align-items: stretch;
+  gap: 1px;
   height: 56px;
   padding-bottom: env(safe-area-inset-bottom, 0px);
+  border-top: 1px solid color-mix(in srgb, var(--blue-deep) 40%, transparent);
+  box-shadow: inset 0 1px 0 color-mix(in srgb, #fff 14%, transparent),
+    0 -8px 24px -12px rgba(22, 24, 28, 0.35), 0 0 20px -8px color-mix(in srgb, var(--blue) 40%, transparent);
+}
+.sticky-social {
+  flex: none;
+  width: 56px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in srgb, var(--card) 92%, transparent);
+  color: var(--ink);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  backdrop-filter: blur(18px) saturate(160%);
+  transition: color 0.2s var(--ease);
+}
+.sticky-social svg {
+  width: 20px;
+  height: 20px;
+}
+.sticky-social:hover {
+  color: var(--blue);
+}
+.sticky-cta {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
   background: linear-gradient(
     180deg,
     color-mix(in srgb, var(--blue) 88%, transparent),
@@ -1607,14 +1657,11 @@ blockquote.instagram-media a:hover {
   );
   -webkit-backdrop-filter: blur(18px) saturate(160%);
   backdrop-filter: blur(18px) saturate(160%);
-  border-top: 1px solid color-mix(in srgb, var(--blue-deep) 40%, transparent);
   color: #fff;
   font-size: 0.86rem;
   font-weight: 700;
   letter-spacing: 0.03em;
   text-transform: uppercase;
-  box-shadow: inset 0 1px 0 color-mix(in srgb, #fff 14%, transparent),
-    0 -8px 24px -12px rgba(22, 24, 28, 0.35), 0 0 20px -8px color-mix(in srgb, var(--blue) 40%, transparent);
 }
 .sticky-cta:hover {
   background: linear-gradient(
@@ -1679,10 +1726,19 @@ blockquote.instagram-media a:hover {
   .nav-cta {
     display: none;
   }
+  /* Below this width the sticky bottom bar (with its own Instagram
+     icon) is always on screen, so the header doesn't also need to
+     carry one — the extra 40px circle was tight enough to push the
+     hamburger button off-screen around 390–460px wide (iPhone
+     standard/Pro Max sizes), the same class of bug as the Inquire
+     pill overflow fixed earlier. */
+  .social-link {
+    display: none;
+  }
   .nav-toggle {
     display: flex;
   }
-  .sticky-cta {
+  .sticky-bar {
     display: flex;
   }
 }

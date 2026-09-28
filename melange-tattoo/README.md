@@ -39,13 +39,17 @@ Add confirmed trips to `GUEST_SPOTS` at the top of `script.js`:
 
 ```js
 var GUEST_SPOTS = [
-  { region: "AU", city: { en: "Melbourne", ko: "멜버른" }, start: "2026-11-03", end: "2026-11-15" },
+  { region: "AU", where: { en: "Melbourne", ko: "멜버른" },
+    cities: { en: "Melbourne", ko: "멜버른" },
+    when: { en: "Dec 1 – 9", ko: "12월 1일 ~ 9일" }, start: "2026-12-01", end: "2026-12-09" },
 ];
 ```
 
-`region` is `KR`, `AU`, `US`, `UK` or `EU`. That row of the Guest spots table then shows the
-city and dates, and a bar across the top of both pages announces the soonest upcoming trip.
-Entries hide themselves after their end date; with no entries the bar stays hidden.
+`region` is `KR`, `AU`, `US`, `UK` or `EU`. That row of the Guest spots table shows `cities` and
+`when`, and scheduled rows move to the top in date order. The bar across the top of both pages
+lists every upcoming trip (`where` + `when`). `when` is shown exactly as written, so use months
+("Oct – early Nov") when exact dates aren't fixed; `start`/`end` are only used for sorting and to
+hide an entry once it's over. With no upcoming entries the bar stays hidden.
 
 ## Booking form
 

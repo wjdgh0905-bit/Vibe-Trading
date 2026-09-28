@@ -3,14 +3,24 @@
   "use strict";
 
   /* ------------------------------------------------------------
-     Guest spots — add an entry once a trip is actually confirmed.
-     The banner at the top of both pages and the Guest spots table
-     update from this list; entries disappear after their end date.
+     Schedule — add a trip once it's confirmed. The Guest spots table
+     and the bar at the top of both pages update from this list.
        region: KR | AU | US | UK | EU (matches the table rows)
-       { region: "AU", city: { en: "Melbourne", ko: "멜버른" },
-         start: "2026-11-03", end: "2026-11-15" }
+       where:  shown in the banner       cities: shown in the table
+       when:   shown as written (use months when exact dates aren't fixed)
+       start/end: only used to sort and to hide the entry once it's over
      ------------------------------------------------------------ */
-  var GUEST_SPOTS = [];
+  var GUEST_SPOTS = [
+    { region: "US", where: { en: "United States", ko: "미국" },
+      cities: { en: "Seattle → San Jose → LA → Denver", ko: "시애틀 → 산호세 → LA → 덴버" },
+      when: { en: "Oct – early Nov", ko: "10월 ~ 11월 초" }, start: "2026-10-01", end: "2026-11-15" },
+    { region: "KR", where: { en: "Korea", ko: "한국" },
+      cities: { en: "Home studio", ko: "홈 스튜디오" },
+      when: { en: "November", ko: "11월" }, start: "2026-11-01", end: "2026-11-30" },
+    { region: "AU", where: { en: "Melbourne", ko: "멜버른" },
+      cities: { en: "Melbourne", ko: "멜버른" },
+      when: { en: "Dec 1 – 9", ko: "12월 1일 ~ 9일" }, start: "2026-12-01", end: "2026-12-09" }
+  ];
 
   var FORMSPREE_ENDPOINT = "https://formspree.io/f/mwlkpjyw";
 
@@ -28,8 +38,7 @@
       sending: "Sending…",
       ok: "Thanks — your inquiry is in. We usually reply within 1–2 days.",
       fail: "It didn't send. Try again, or DM @melange.tattoo on Instagram.",
-      announce: function (s) { return "Guest spot: " + s.city + " · " + s.dates + " — booking open →"; },
-      open: "Booking open"
+      announce: function (list) { return "Now booking — " + list + " →"; }
     },
     ko: {
       cats: { all: "전체", dragon: "용", snake: "뱀", koi: "잉어", animal: "동물", floral: "꽃", pattern: "패턴(파도 등)", character: "캐릭터", more: "기타" },
@@ -42,8 +51,7 @@
       sending: "보내는 중…",
       ok: "문의가 접수됐어요. 보통 1~2일 안에 답장드려요.",
       fail: "전송되지 않았어요. 다시 시도하시거나 인스타그램 @melange.tattoo로 DM 주세요.",
-      announce: function (s) { return "게스트 일정: " + s.city + " · " + s.dates + " — 예약 받는 중 →"; },
-      open: "예약 가능"
+      announce: function (list) { return "예약 받는 중 — " + list + " →"; }
     }
   }[L];
 
@@ -212,20 +220,28 @@
     var today = new Date().toISOString().slice(0, 10);
     var upcoming = GUEST_SPOTS.filter(function (s) { return s.end >= today; })
       .sort(function (a, b) { return a.start < b.start ? -1 : 1; });
-    var fmt = new Intl.DateTimeFormat(L === "ko" ? "ko-KR" : "en-GB", { month: "short", day: "numeric", timeZone: "UTC" });
-    function dates(s) { return fmt.format(new Date(s.start + "T00:00:00Z")) + " – " + fmt.format(new Date(s.end + "T00:00:00Z")); }
     upcoming.forEach(function (s) {
       var row = $('.tbl tr[data-region="' + s.region + '"]');
       if (!row || row.dataset.filled) return; // first (soonest) trip per region wins
       row.dataset.filled = "1";
-      $(".d", row).textContent = s.city[L] + " · " + dates(s);
+      $(".d", row).textContent = s.cities[L];
       $(".st", row).innerHTML = '<span class="pill"></span>';
-      $(".pill", row).textContent = TXT.open;
+      $(".pill", row).textContent = s.when[L];
     });
+    // scheduled trips first, in date order; regions without dates keep their place below
+    var tbody = $(".tbl tbody");
+    if (tbody) {
+      var rows = $$("tr", tbody), dated = rows.filter(function (r) { return r.dataset.filled; });
+      dated.sort(function (a, b) {
+        var ia = upcoming.findIndex(function (s) { return s.region === a.dataset.region; });
+        var ib = upcoming.findIndex(function (s) { return s.region === b.dataset.region; });
+        return ia - ib;
+      });
+      dated.concat(rows.filter(function (r) { return !r.dataset.filled; })).forEach(function (r) { tbody.appendChild(r); });
+    }
     var bar = $("#announce");
     if (bar && upcoming.length) {
-      var s = upcoming[0];
-      bar.textContent = TXT.announce({ city: s.city[L], dates: dates(s) });
+      bar.textContent = TXT.announce(upcoming.map(function (s) { return s.where[L] + " " + s.when[L]; }).join(" · "));
       bar.hidden = false;
     }
   })();
@@ -337,14 +353,23 @@
     grid.addEventListener("pointerleave", function () { cur.classList.remove("on"); });
   }
 
-  /* ---------- scroll: progress, compact nav, hero parallax ---------- */
+  /* ---------- scroll: progress, pinned nav, back-to-top, hero parallax ---------- */
   var progress = $(".progress"), mini = $(".mini"), heroEl = $(".hero"), heroGrid = $(".hero-grid"), ghost = $(".ghost");
-  var ticking = false;
+  var heroNav = $(".hero .nav"), toTop = $(".totop");
+  var ticking = false, miniOn = null;
   function onScroll() {
     ticking = false;
     var y = window.scrollY, max = document.documentElement.scrollHeight - innerHeight, hh = heroEl.offsetHeight;
     progress.style.transform = "scaleX(" + (max > 0 ? y / max : 0) + ")";
-    mini.classList.toggle("show", y > hh - 40);
+    // the pinned bar takes over as soon as the page's own nav scrolls out of view
+    var on = heroNav.getBoundingClientRect().bottom < 0;
+    if (on !== miniOn) {
+      miniOn = on;
+      mini.classList.toggle("is-on", on);
+      mini.inert = !on;
+      mini.setAttribute("aria-hidden", String(!on));
+    }
+    toTop.classList.toggle("is-on", y > innerHeight * .8);
     if (!reduce && y <= hh) {
       heroGrid.style.transform = "translateY(" + (y * .18) + "px)";
       heroGrid.style.opacity = String(Math.max(0, 1 - y / (hh * .85)));
@@ -353,6 +378,10 @@
   }
   addEventListener("scroll", function () { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } }, { passive: true });
   onScroll();
+  toTop.addEventListener("click", function () {
+    window.scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" });
+    var brand = $(".hero .brand"); if (brand) brand.focus({ preventScroll: true });
+  });
 
   /* ---------- reveals (only below the first screen, so the page is complete at rest) ---------- */
   if ("IntersectionObserver" in window && !reduce) {
@@ -369,19 +398,24 @@
   }
 
   /* ---------- mobile menu ---------- */
-  var menu = $("#menu"), burger = $(".hero .burger");
+  // opened from the page's own nav or from the pinned bar
+  var menu = $("#menu"), burgers = $$('.burger[aria-controls="menu"]'), opener = null;
   function closeMenu() {
     if (!menu.classList.contains("open")) return;
     menu.classList.remove("open");
-    burger.setAttribute("aria-expanded", "false");
+    burgers.forEach(function (b) { b.setAttribute("aria-expanded", "false"); });
     document.body.style.overflow = "";
+    if (opener) opener.focus({ preventScroll: true });
   }
-  burger.addEventListener("click", function () {
-    menu.classList.add("open");
-    burger.setAttribute("aria-expanded", "true");
-    document.body.style.overflow = "hidden";
-    var first = $(".menu-links a", menu);
-    if (first) first.focus({ preventScroll: true });
+  burgers.forEach(function (b) {
+    b.addEventListener("click", function () {
+      opener = b;
+      menu.classList.add("open");
+      b.setAttribute("aria-expanded", "true");
+      document.body.style.overflow = "hidden";
+      var first = $(".menu-links a", menu);
+      if (first) first.focus({ preventScroll: true });
+    });
   });
   menu.addEventListener("click", function (e) { if (e.target.closest("a, [data-close]")) closeMenu(); });
   document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeMenu(); });

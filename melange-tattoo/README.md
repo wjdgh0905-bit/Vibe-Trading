@@ -30,7 +30,8 @@ Korean in `ko/index.html`. When you change one, change the other so they stay in
    `cat` is one of `dragon`, `koi`, `snake`, `wave`, `floral`, `character` or `more`, and sets which filter
    chip the photo shows under. `w`/`h` are the original pixel size (used for the aspect ratio).
 
-The first nine photos under "All" are chosen by the `FEATURED` list in `script.js`.
+"All" deals one photo per subject in turn (order set by `MIX_ORDER` in `script.js`); within each
+subject, the photos in the `FEATURED` list come first.
 
 ## Guest spots and the announcement bar
 

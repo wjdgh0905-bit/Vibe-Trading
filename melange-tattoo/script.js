@@ -14,7 +14,7 @@
 
   var FORMSPREE_ENDPOINT = "https://formspree.io/f/mwlkpjyw";
 
-  // Shown first under "All", in this order; everything else follows.
+  // Shown first within each subject (and so early under "All"); everything else follows.
   var FEATURED = ["custom-080", "custom-070", "custom-037", "custom-108", "custom-088", "custom-061", "custom-058", "custom-049", "custom-074"];
 
   var L = document.documentElement.lang === "ko" ? "ko" : "en";
@@ -73,6 +73,17 @@
   FEATURED.forEach(function (id, i) { rank[id] = i; });
   ALL.sort(function (a, b) { return (a.id in rank ? rank[a.id] : 999) - (b.id in rank ? rank[b.id] : 999); });
 
+  // "All" deals one photo per subject in turn, so the same subject never runs back to back
+  // until the smaller subjects run out.
+  var MIX_ORDER = ["dragon", "wave", "koi", "floral", "character", "snake", "more"];
+  var MIXED = (function () {
+    var piles = MIX_ORDER.map(function (c) { return ALL.filter(function (d) { return d.cat === c; }); });
+    var extra = ALL.filter(function (d) { return MIX_ORDER.indexOf(d.cat) < 0; });
+    var out = [];
+    while (piles.some(function (p) { return p.length; })) piles.forEach(function (p) { if (p.length) out.push(p.shift()); });
+    return out.concat(extra);
+  })();
+
   var grid = $("#grid"), chips = $(".chips"), moreBtn = $("#more"), countEl = $(".count");
   var PAGE = 8, filter = "all", shown = 0, list = [];
 
@@ -114,7 +125,7 @@
   }
   function setFilter(cat) {
     filter = cat;
-    list = cat === "all" ? ALL : ALL.filter(function (d) { return d.cat === cat; });
+    list = cat === "all" ? MIXED : ALL.filter(function (d) { return d.cat === cat; });
     grid.textContent = ""; shown = 0;
     grid.scrollLeft = 0;
     renderMore();

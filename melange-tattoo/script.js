@@ -20,7 +20,8 @@
   var L = document.documentElement.lang === "ko" ? "ko" : "en";
   var TXT = {
     en: {
-      cats: { all: "All", dragon: "Dragon", koi: "Koi", snake: "Snake", wave: "Wave", floral: "Floral", character: "Character", more: "More" },
+      cats: { all: "All", dragon: "Dragon", snake: "Snake", koi: "Koi", animal: "Animals", floral: "Flowers", pattern: "Pattern", character: "Character", more: "More" },
+      custom: "Custom",
       count: function (n, total) { return "Showing " + n + " of " + total; },
       more: "See more",
       required: "Please fill this in.",
@@ -33,7 +34,8 @@
       open: "Booking open"
     },
     ko: {
-      cats: { all: "전체", dragon: "용", koi: "잉어", snake: "뱀", wave: "파도", floral: "꽃", character: "캐릭터", more: "기타" },
+      cats: { all: "전체", dragon: "용", snake: "뱀", koi: "잉어", animal: "동물", floral: "꽃", pattern: "패턴", character: "캐릭터", more: "기타" },
+      custom: "커스텀",
       count: function (n, total) { return "전체 " + total + "개 중 " + n + "개"; },
       more: "더 보기",
       required: "이 항목을 입력해주세요.",
@@ -75,7 +77,7 @@
 
   // "All" deals one photo per subject in turn, so the same subject never runs back to back
   // until the smaller subjects run out.
-  var MIX_ORDER = ["dragon", "wave", "koi", "floral", "character", "snake", "more"];
+  var MIX_ORDER = ["dragon", "pattern", "floral", "animal", "character", "snake", "koi", "more"];
   var MIXED = (function () {
     var piles = MIX_ORDER.map(function (c) { return ALL.filter(function (d) { return d.cat === c; }); });
     var extra = ALL.filter(function (d) { return MIX_ORDER.indexOf(d.cat) < 0; });
@@ -94,9 +96,10 @@
   }
   function shortTitle(d) {
     if (d.cat === "character") return (L === "ko" && d.ko ? d.ko : d.en).split(",")[0];
-    if (d.cat !== "more") return TXT.cats[d.cat];
-    if (L === "en" && d.en && d.en.indexOf(" ") < 0) return d.en; // single-word tag like "Phoenix"
-    return TXT.cats.more;
+    if (d.cat === "more") return TXT.custom;
+    if (d.cat === "animal") return L === "ko" ? "동물" : "Animal";
+    if (d.cat === "floral") return L === "ko" ? "꽃" : "Flower";
+    return TXT.cats[d.cat] || TXT.custom;
   }
 
   function card(d, k) {
@@ -135,7 +138,7 @@
   if (grid && ALL.length) {
     var counts = { all: ALL.length };
     ALL.forEach(function (d) { counts[d.cat] = (counts[d.cat] || 0) + 1; });
-    ["all", "dragon", "koi", "snake", "wave", "floral", "character", "more"].forEach(function (c) {
+    ["all", "dragon", "snake", "koi", "animal", "floral", "pattern", "character", "more"].forEach(function (c) {
       if (!counts[c]) return;
       var b = document.createElement("button");
       b.type = "button"; b.className = "chip"; b.dataset.cat = c;

@@ -38,7 +38,7 @@
       sending: "Sending…",
       ok: "Thanks — your inquiry is in. We usually reply within 1–2 days.",
       fail: "It didn't send. Try again, or DM @melange.tattoo on Instagram.",
-      announce: function (list) { return "Now booking — " + list + " →"; }
+      announce: { label: "Now booking", go: "See dates" }
     },
     ko: {
       cats: { all: "전체", dragon: "용", snake: "뱀", koi: "잉어", animal: "동물", floral: "꽃", pattern: "패턴(파도 등)", character: "캐릭터", more: "기타" },
@@ -51,7 +51,7 @@
       sending: "보내는 중…",
       ok: "문의가 접수됐어요. 보통 1~2일 안에 답장드려요.",
       fail: "전송되지 않았어요. 다시 시도하시거나 인스타그램 @melange.tattoo로 DM 주세요.",
-      announce: function (list) { return "예약 받는 중 — " + list + " →"; }
+      announce: { label: "예약 중", go: "일정 보기" }
     }
   }[L];
 
@@ -241,7 +241,17 @@
     }
     var bar = $("#announce");
     if (bar && upcoming.length) {
-      bar.textContent = TXT.announce(upcoming.map(function (s) { return s.where[L] + " " + s.when[L]; }).join(" · "));
+      var el = function (tag, cls, text) { var n = document.createElement(tag); n.className = cls; if (text) n.textContent = text; return n; };
+      bar.appendChild(el("span", "an-lbl", TXT.announce.label));
+      var items = el("span", "an-items");
+      upcoming.forEach(function (s) {
+        var it = el("span", "an-item");
+        it.appendChild(el("b", "", s.where[L]));
+        it.appendChild(document.createTextNode(" " + s.when[L]));
+        items.appendChild(it);
+      });
+      bar.appendChild(items);
+      bar.appendChild(el("span", "an-go", TXT.announce.go + " →"));
       bar.hidden = false;
     }
   })();

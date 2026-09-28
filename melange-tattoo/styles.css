@@ -61,9 +61,16 @@ html[lang="ko"] .btn { font: 700 14px/1 var(--ko); letter-spacing: 0; text-trans
 .on-blue .btn-line { color: var(--white); }
 .on-blue .btn-line:hover { background: var(--white); color: var(--blue); }
 
-/* ---------- announcement (next guest spot) ---------- */
-.announce { display: block; background: var(--blue); color: var(--white); text-align: center; text-decoration: none; padding: 10px var(--gut); font: 700 12px/1.4 var(--sans); letter-spacing: .06em; text-transform: uppercase; }
-html[lang="ko"] .announce { font: 500 14px/1.4 var(--ko); letter-spacing: 0; text-transform: none; }
+/* ---------- announcement (upcoming schedule) ---------- */
+.announce { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 6px 16px; background: var(--blue); color: var(--white); text-decoration: none; padding: 10px var(--gut); font: 400 14px/1.4 var(--sans); }
+html[lang="ko"] .announce { font-family: var(--ko); }
+.an-lbl { padding: 3px 8px; background: rgba(255, 255, 255, .16); font: 700 11px/1.3 var(--sans); letter-spacing: .1em; text-transform: uppercase; }
+html[lang="ko"] .an-lbl { font: 700 12px/1.3 var(--ko); letter-spacing: 0; }
+.an-items { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 0; }
+.an-item { padding: 0 14px; white-space: nowrap; color: rgba(255, 255, 255, .85); }
+.an-item + .an-item { border-left: 1px solid rgba(255, 255, 255, .35); }
+.an-item b { margin-right: 4px; font-weight: 700; color: var(--white); }
+.an-go { font-weight: 600; text-decoration: underline; text-underline-offset: 3px; white-space: nowrap; }
 .announce:hover { background: var(--blue-deep); }
 
 /* ---------- nav ---------- */
@@ -372,6 +379,11 @@ html[lang="ko"] .cursor { font: 500 12px/1 var(--ko); letter-spacing: 0; }
   .lb img { max-height: calc(100svh - 190px); }
 }
 @media (max-width: 560px) {
+  .announce { gap: 7px; padding-block: 9px; font-size: 13px; }
+  .an-items { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); width: 100%; }
+  .an-item { display: flex; flex-direction: column; align-items: center; padding: 0 6px; white-space: normal; text-align: center; line-height: 1.3; }
+  .an-item b { margin: 0 0 1px; }
+  .an-go { display: none; }
   .steps { grid-template-columns: 1fr; }
   .steps li { border-right: 0; margin-right: 0; border-bottom: 1px solid var(--rule-light); }
   .tbl tr { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 12px; border-top: 1px solid var(--rule-blue); }

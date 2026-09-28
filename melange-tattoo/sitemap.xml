@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://melangetattoo.ink/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://melangetattoo.ink/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://melangetattoo.ink/ko/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://melangetattoo.ink/"/>
+  </url>
+  <url>
+    <loc>https://melangetattoo.ink/ko/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://melangetattoo.ink/"/>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://melangetattoo.ink/ko/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://melangetattoo.ink/"/>
   </url>
 </urlset>

@@ -30,8 +30,8 @@ Korean in `ko/index.html`. When you change one, change the other so they stay in
    `cat` is one of `dragon`, `snake`, `koi`, `animal`, `floral`, `pattern`, `character` or `more`, and sets which filter
    chip the photo shows under. `w`/`h` are the original pixel size (used for the aspect ratio).
 
-"All" deals one photo per subject in turn (order set by `MIX_ORDER` in `script.js`); within each
-subject, the photos in the `FEATURED` list come first.
+The gallery order and the six hero slideshow photos are shuffled on every visit. "All" deals one
+photo per subject in turn (order set by `MIX_ORDER` in `script.js`).
 
 ## Guest spots and the announcement bar
 

@@ -14,13 +14,11 @@
 
   var FORMSPREE_ENDPOINT = "https://formspree.io/f/mwlkpjyw";
 
-  // Shown first within each subject (and so early under "All"); everything else follows.
-  var FEATURED = ["custom-080", "custom-070", "custom-037", "custom-108", "custom-088", "custom-061", "custom-058", "custom-049", "custom-074"];
 
   var L = document.documentElement.lang === "ko" ? "ko" : "en";
   var TXT = {
     en: {
-      cats: { all: "All", dragon: "Dragon", snake: "Snake", koi: "Koi", animal: "Animals", floral: "Flowers", pattern: "Pattern", character: "Character", more: "More" },
+      cats: { all: "All", dragon: "Dragon", snake: "Snake", koi: "Koi", animal: "Animals", floral: "Flowers", pattern: "Pattern (wave etc.)", character: "Character", more: "More" },
       custom: "Custom",
       count: function (n, total) { return "Showing " + n + " of " + total; },
       more: "See more",
@@ -34,7 +32,7 @@
       open: "Booking open"
     },
     ko: {
-      cats: { all: "전체", dragon: "용", snake: "뱀", koi: "잉어", animal: "동물", floral: "꽃", pattern: "패턴", character: "캐릭터", more: "기타" },
+      cats: { all: "전체", dragon: "용", snake: "뱀", koi: "잉어", animal: "동물", floral: "꽃", pattern: "패턴(파도 등)", character: "캐릭터", more: "기타" },
       custom: "커스텀",
       count: function (n, total) { return "전체 " + total + "개 중 " + n + "개"; },
       more: "더 보기",
@@ -70,14 +68,17 @@
   $$(".h2").forEach(function (h) { split(h, "w2"); });
 
   /* ---------- gallery ---------- */
-  var ALL = (window.MELANGE_GALLERY || []).slice();
-  var rank = {};
-  FEATURED.forEach(function (id, i) { rank[id] = i; });
-  ALL.sort(function (a, b) { return (a.id in rank ? rank[a.id] : 999) - (b.id in rank ? rank[b.id] : 999); });
+  // A fresh random order on every visit; the flash sheet always sits at the end.
+  function shuffle(a) {
+    for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)), t = a[i]; a[i] = a[j]; a[j] = t; }
+    return a;
+  }
+  var ALL = shuffle((window.MELANGE_GALLERY || []).filter(function (d) { return d.id !== "flash-01"; }))
+    .concat((window.MELANGE_GALLERY || []).filter(function (d) { return d.id === "flash-01"; }));
 
   // "All" deals one photo per subject in turn, so the same subject never runs back to back
   // until the smaller subjects run out.
-  var MIX_ORDER = ["dragon", "pattern", "floral", "animal", "character", "snake", "koi", "more"];
+  var MIX_ORDER = ["pattern", "dragon", "floral", "animal", "character", "snake", "koi", "more"];
   var MIXED = (function () {
     var piles = MIX_ORDER.map(function (c) { return ALL.filter(function (d) { return d.cat === c; }); });
     var extra = ALL.filter(function (d) { return MIX_ORDER.indexOf(d.cat) < 0; });
@@ -99,6 +100,7 @@
     if (d.cat === "more") return TXT.custom;
     if (d.cat === "animal") return L === "ko" ? "동물" : "Animal";
     if (d.cat === "floral") return L === "ko" ? "꽃" : "Flower";
+    if (d.cat === "pattern") return L === "ko" ? "패턴" : "Pattern";
     return TXT.cats[d.cat] || TXT.custom;
   }
 
@@ -138,7 +140,7 @@
   if (grid && ALL.length) {
     var counts = { all: ALL.length };
     ALL.forEach(function (d) { counts[d.cat] = (counts[d.cat] || 0) + 1; });
-    ["all", "dragon", "snake", "koi", "animal", "floral", "pattern", "character", "more"].forEach(function (c) {
+    ["all", "pattern", "dragon", "snake", "koi", "animal", "floral", "character", "more"].forEach(function (c) {
       if (!counts[c]) return;
       var b = document.createElement("button");
       b.type = "button"; b.className = "chip"; b.dataset.cat = c;
@@ -271,6 +273,18 @@
   $$(".show").forEach(function (sh) {
     var imgs = $$(".show-frame img", sh), i = 0, dur = 3800, bar = $(".show-bar i", sh);
     var tt = $(".show-t", sh), pl = $(".show-p", sh), num = $(".show-num", sh);
+    // Pick a different set of pieces on every visit (only ones with a known placement,
+    // so the caption always reads "subject — placement").
+    var pool = ALL.filter(function (d) { return d.id !== "flash-01" && place(d); });
+    shuffle(pool.slice()).slice(0, imgs.length).forEach(function (d, k) {
+      var im = imgs[k];
+      im.srcset = "/assets/work/" + d.id + "-480.webp 480w, /assets/work/" + d.id + "-1080.webp 1080w";
+      im.src = "/assets/work/" + d.id + "-1080.webp";
+      im.width = 1080; im.height = Math.round(d.h * 1080 / d.w);
+      im.dataset.cap = shortTitle(d); im.dataset.pl = place(d);
+      im.alt = shortTitle(d) + ", " + place(d);
+    });
+    tt.textContent = imgs[0].dataset.cap; pl.textContent = imgs[0].dataset.pl;
     function run() { bar.classList.remove("run"); void bar.offsetWidth; bar.style.setProperty("--dur", dur + "ms"); bar.classList.add("run"); }
     function next() {
       var prev = imgs[i]; i = (i + 1) % imgs.length; var cur = imgs[i];

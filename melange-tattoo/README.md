@@ -27,7 +27,7 @@ Korean in `ko/index.html`. When you change one, change the other so they stay in
    ```js
    {"id": "custom-121", "cat": "dragon", "w": 1600, "h": 2000, "en": "forearm dragon, blue ink", "ko": "팔뚝 용, 파란색 잉크", "placeEn": "Forearm", "placeKo": "팔뚝"},
    ```
-   `cat` is one of `dragon`, `koi`, `snake`, `wave`, `floral` or `more`, and sets which filter
+   `cat` is one of `dragon`, `koi`, `snake`, `wave`, `floral`, `character` or `more`, and sets which filter
    chip the photo shows under. `w`/`h` are the original pixel size (used for the aspect ratio).
 
 The first nine photos under "All" are chosen by the `FEATURED` list in `script.js`.

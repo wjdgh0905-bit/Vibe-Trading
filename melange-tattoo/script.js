@@ -20,7 +20,7 @@
   var L = document.documentElement.lang === "ko" ? "ko" : "en";
   var TXT = {
     en: {
-      cats: { all: "All", dragon: "Dragon", koi: "Koi", snake: "Snake", wave: "Wave", floral: "Floral", more: "More" },
+      cats: { all: "All", dragon: "Dragon", koi: "Koi", snake: "Snake", wave: "Wave", floral: "Floral", character: "Character", more: "More" },
       count: function (n, total) { return "Showing " + n + " of " + total; },
       more: "See more",
       required: "Please fill this in.",
@@ -33,7 +33,7 @@
       open: "Booking open"
     },
     ko: {
-      cats: { all: "전체", dragon: "용", koi: "잉어", snake: "뱀", wave: "파도", floral: "꽃", more: "기타" },
+      cats: { all: "전체", dragon: "용", koi: "잉어", snake: "뱀", wave: "파도", floral: "꽃", character: "캐릭터", more: "기타" },
       count: function (n, total) { return "전체 " + total + "개 중 " + n + "개"; },
       more: "더 보기",
       required: "이 항목을 입력해주세요.",
@@ -82,6 +82,7 @@
     return desc || shortTitle(d) + (L === "ko" ? " 타투, 멜란지 작업" : " tattoo by Melange");
   }
   function shortTitle(d) {
+    if (d.cat === "character") return (L === "ko" && d.ko ? d.ko : d.en).split(",")[0];
     if (d.cat !== "more") return TXT.cats[d.cat];
     if (L === "en" && d.en && d.en.indexOf(" ") < 0) return d.en; // single-word tag like "Phoenix"
     return TXT.cats.more;
@@ -123,7 +124,7 @@
   if (grid && ALL.length) {
     var counts = { all: ALL.length };
     ALL.forEach(function (d) { counts[d.cat] = (counts[d.cat] || 0) + 1; });
-    ["all", "dragon", "koi", "snake", "wave", "floral", "more"].forEach(function (c) {
+    ["all", "dragon", "koi", "snake", "wave", "floral", "character", "more"].forEach(function (c) {
       if (!counts[c]) return;
       var b = document.createElement("button");
       b.type = "button"; b.className = "chip"; b.dataset.cat = c;

@@ -140,7 +140,21 @@ New-Item -ItemType Directory -Force -Path (Split-Path $globalSettingsPath) | Out
 $settings | ConvertTo-Json -Depth 20 | Set-Content -Path $globalSettingsPath -Encoding utf8
 Write-Host "  ok ($globalSettingsPath)"
 
+Write-Host "==> 6/6 영상 도구 설치 (yt-dlp 영상받기 / FFmpeg 컷편집 / faster-whisper 원고전사)"
+foreach ($id in @("yt-dlp.yt-dlp", "Gyan.FFmpeg")) {
+    Write-Host "  winget: $id"
+    winget install -e --id $id --accept-source-agreements --accept-package-agreements --silent | Out-Null
+}
+if (Get-Command python -ErrorAction SilentlyContinue) {
+    Write-Host "  pip: faster-whisper"
+    python -m pip install -U --quiet faster-whisper
+    if ($LASTEXITCODE -ne 0) { Write-Host "  경고: faster-whisper 설치 실패 (파이썬 확인 필요)" }
+} else {
+    Write-Host "  경고: python 없음 - faster-whisper 건너뜀 (python.org에서 설치 후 재실행)"
+}
+
 Write-Host ""
 Write-Host "완료. 열려 있는 Claude Code 세션은 재시작해야 반영됩니다."
+Write-Host "새로 설치한 도구(yt-dlp/ffmpeg)는 PowerShell을 새로 열어야 PATH에 잡힙니다."
 Write-Host "다시 동기화하고 싶으면 이 스크립트를 그냥 다시 실행하면 됩니다."
 Write-Host "이제 이 컴퓨터의 모든 프로젝트에서 스킬·플러그인·고급기능이 동일하게 적용됩니다."

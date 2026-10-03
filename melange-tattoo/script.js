@@ -288,6 +288,7 @@
         .then(function (r) {
           if (!r.ok) throw new Error(r.status);
           statusEl.className = "status ok"; statusEl.textContent = TXT.ok; form.reset();
+          if (typeof window.fbq === "function") window.fbq("track", "Lead"); // Meta Pixel: inquiry sent
         })
         .catch(function () { statusEl.className = "status fail"; statusEl.textContent = TXT.fail; })
         .then(function () { btn.disabled = false; });

@@ -258,6 +258,33 @@
 
   /* ---------- booking form ---------- */
   var form = $("#form"), statusEl = $("#status");
+
+  // "Where you want it done": one option per stop on the upcoming schedule
+  (function () {
+    var sel = $("#f-location");
+    if (!sel) return;
+    var today = new Date().toISOString().slice(0, 10), other = sel.options[sel.options.length - 1];
+    GUEST_SPOTS.filter(function (s) { return s.end >= today; })
+      .sort(function (a, b) { return a.start < b.start ? -1 : 1; })
+      .forEach(function (s) {
+        var stops = s.region === "KR" ? [s.where] : s.cities.en.split("→").map(function (en, i) {
+          return { en: en.trim(), ko: s.cities.ko.split("→")[i].trim() };
+        });
+        stops.forEach(function (st) {
+          var o = document.createElement("option");
+          o.value = st.en + " (" + s.when.en + ")";
+          o.textContent = st[L] + " · " + s.when[L];
+          sel.insertBefore(o, other);
+        });
+      });
+  })();
+
+  // Arriving from the flash page ("Book this design")
+  (function () {
+    var d = new URLSearchParams(location.search).get("design");
+    var idea = form && form.elements.idea;
+    if (d && idea && !idea.value) idea.value = (L === "ko" ? "플래시 도안으로 예약하고 싶어요: " : "I'd like to book a flash design: ");
+  })();
   function setErr(name, msg) {
     var input = form.elements[name], err = $("#err-" + name);
     input.closest(".field").classList.toggle("bad", !!msg);

@@ -2,6 +2,9 @@
    Newest first. To add a photo: put <id>-480.webp and <id>-1080.webp in assets/work/
    and add a line at the top. cat is one of: dragon, snake, koi, animal, floral, pattern, character, more. */
 window.MELANGE_GALLERY = [
+  {"id": "custom-117", "cat": "animal", "w": 1501, "h": 2000, "en": "Phoenix tattoo in red ink on the forearm, by Melange", "ko": "봉황 타투, 붉은 잉크 · 팔뚝 · 멜란지 작업", "placeEn": "Forearm", "placeKo": "팔뚝"},
+  {"id": "custom-115", "cat": "floral", "w": 1501, "h": 2000, "en": "Flower tattoo in blue ink on the shoulder, by Melange", "ko": "꽃 타투, 푸른 잉크 · 어깨 · 멜란지 작업", "placeEn": "Shoulder", "placeKo": "어깨"},
+  {"id": "custom-116", "cat": "pattern", "w": 1501, "h": 2000, "en": "Pattern tattoo in blue ink on the forearm, by Melange", "ko": "패턴 타투, 푸른 잉크 · 팔뚝 · 멜란지 작업", "placeEn": "Forearm", "placeKo": "팔뚝"},
   {"id": "custom-109", "cat": "character", "w": 1600, "h": 2000, "en": "Stitch, blue ink character tattoo", "ko": "스티치, 푸른 잉크 캐릭터 타투", "placeEn": "", "placeKo": ""},
   {"id": "custom-110", "cat": "character", "w": 1501, "h": 2000, "en": "Blastoise, blue ink character tattoo", "ko": "거북왕, 푸른 잉크 캐릭터 타투", "placeEn": "", "placeKo": ""},
   {"id": "custom-111", "cat": "character", "w": 1602, "h": 2000, "en": "Oshawott, blue ink character tattoo", "ko": "수댕이, 푸른 잉크 캐릭터 타투", "placeEn": "", "placeKo": ""},
@@ -91,7 +94,7 @@ window.MELANGE_GALLERY = [
   {"id": "custom-070", "cat": "snake", "w": 1600, "h": 2000, "en": "Snake tattoo in blue ink on the upper arm, by Melange", "ko": "뱀 타투, 푸른 잉크 · 팔 위쪽 · 멜란지 작업", "placeEn": "Upper arm", "placeKo": "팔 위쪽"},
   {"id": "custom-071", "cat": "dragon", "w": 1602, "h": 2000, "en": "Dragon tattoo in blue ink on the back, by Melange", "ko": "용 타투, 푸른 잉크 · 등 · 멜란지 작업", "placeEn": "Back", "placeKo": "등"},
   {"id": "custom-072", "cat": "pattern", "w": 1125, "h": 2000, "en": "Pattern tattoo in blue ink on the ribs, by Melange", "ko": "패턴 타투, 푸른 잉크 · 옆구리 · 멜란지 작업", "placeEn": "Ribs", "placeKo": "옆구리"},
-  {"id": "custom-073", "cat": "pattern", "w": 1501, "h": 2000, "en": "Pattern tattoo in blue ink on the leg, by Melange", "ko": "패턴 타투, 푸른 잉크 · 다리 · 멜란지 작업", "placeEn": "Leg", "placeKo": "다리"},
+  {"id": "custom-073", "cat": "pattern", "w": 1125, "h": 2000, "en": "Pattern tattoo in blue ink on the leg, by Melange", "ko": "패턴 타투, 푸른 잉크 · 다리 · 멜란지 작업", "placeEn": "Leg", "placeKo": "다리"},
   {"id": "custom-074", "cat": "pattern", "w": 1602, "h": 2000, "en": "Pattern tattoo in blue ink on the forearm, by Melange", "ko": "패턴 타투, 푸른 잉크 · 팔뚝 · 멜란지 작업", "placeEn": "Forearm", "placeKo": "팔뚝"},
   {"id": "custom-075", "cat": "character", "w": 1333, "h": 2000, "en": "Dragonair, blue ink character tattoo on the upper arm", "ko": "신뇽, 푸른 잉크 캐릭터 타투 (팔 위쪽)", "placeEn": "Upper arm", "placeKo": "팔 위쪽"},
   {"id": "custom-076", "cat": "more", "w": 1600, "h": 2000, "en": "Custom tattoo in blue ink on the upper arm, by Melange", "ko": "커스텀 타투, 푸른 잉크 · 팔 위쪽 · 멜란지 작업", "placeEn": "Upper arm", "placeKo": "팔 위쪽"},

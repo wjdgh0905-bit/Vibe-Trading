@@ -4,6 +4,7 @@ Static site, no build step. Netlify publishes this folder as-is.
 
 ```
 index.html        # English page  (/)
+404.html          # shown for any address that doesn't exist
 ko/index.html     # Korean page   (/ko/)
 styles.css        # shared styles — cobalt "blue ink on paper"
 gallery.js        # gallery data (120 photos, subject + placement per photo)
@@ -29,6 +30,9 @@ Korean in `ko/index.html`. When you change one, change the other so they stay in
    ```
    `cat` is one of `dragon`, `snake`, `koi`, `animal`, `floral`, `pattern`, `character` or `more`, and sets which filter
    chip the photo shows under. `w`/`h` are the original pixel size (used for the aspect ratio).
+
+To replace a photo, give the new file a new id (e.g. `custom-073b`): files under `assets/` are
+cached by browsers for a year, so reusing a name can keep showing the old photo.
 
 The gallery order and the six hero slideshow photos are shuffled on every visit. "All" deals one
 photo per subject in turn (order set by `MIX_ORDER` in `script.js`).

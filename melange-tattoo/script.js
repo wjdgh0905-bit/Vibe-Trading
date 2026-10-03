@@ -104,7 +104,7 @@
     return desc || shortTitle(d) + (L === "ko" ? " 타투, 멜란지 작업" : " tattoo by Melange");
   }
   function shortTitle(d) {
-    if (d.cat === "character") return (L === "ko" && d.ko ? d.ko : d.en).split(",")[0];
+    if (d.cat === "character") return (L === "ko" ? d.nameKo : d.nameEn) || TXT.cats.character;
     if (d.cat === "more") return TXT.custom;
     if (d.cat === "animal") return L === "ko" ? "동물" : "Animal";
     if (d.cat === "floral") return L === "ko" ? "꽃" : "Flower";

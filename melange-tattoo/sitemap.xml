@@ -1,49 +1,317 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://melangetattoo.ink/</loc>
+    <lastmod>2026-10-03</lastmod>
     <xhtml:link rel="alternate" hreflang="en" href="https://melangetattoo.ink/"/>
     <xhtml:link rel="alternate" hreflang="ko" href="https://melangetattoo.ink/ko/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://melangetattoo.ink/"/>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-117-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-115-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-116-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-109-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-110-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-111-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-112-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-113-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-114-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/dragon-01-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/snake-01-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/phoenix-01-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/flowers-01-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/clouds-01-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/lightning-01-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/pattern-01-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/dragon-02-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/phoenix-02-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/pattern-02-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/pattern-03-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-001-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-002-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-003-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-004-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-005-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-006-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-007-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-008-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-009-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-010-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-011-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-012-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-013-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-014-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-015-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-016-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-017-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-018-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-019-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-020-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-021-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-022-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-023-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-024-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-025-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-026-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-027-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-028-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-029-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-030-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-031-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-032-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-033-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-034-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-035-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-036-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-037-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-038-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-039-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-040-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-041-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-042-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-043-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-044-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-045-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-046-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-047-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-048-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-049-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-050-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-051-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-052-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-053-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-054-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-055-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-056-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-057-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-058-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-059-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-060-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-061-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-062-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-063-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-064-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-065-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-066-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-067-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-068-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-069-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-070-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-071-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-072-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-073b-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-074-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-075-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-076-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-077-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-078-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-079-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-080-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-081-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-082-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-083-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-084-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-085-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-086-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-087-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-088-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-089-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-090-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-091-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-092-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-093-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-094-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-095-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-096-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-097-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-098-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-099-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-100-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-101-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-102-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-103-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-104-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-105-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-106-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-107-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-108-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/flash-01-1080.webp</image:loc></image:image>
   </url>
   <url>
     <loc>https://melangetattoo.ink/ko/</loc>
+    <lastmod>2026-10-03</lastmod>
     <xhtml:link rel="alternate" hreflang="en" href="https://melangetattoo.ink/"/>
     <xhtml:link rel="alternate" hreflang="ko" href="https://melangetattoo.ink/ko/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://melangetattoo.ink/"/>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-117-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-115-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-116-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-109-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-110-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-111-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-112-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-113-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-114-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/dragon-01-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/snake-01-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/phoenix-01-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/flowers-01-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/clouds-01-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/lightning-01-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/pattern-01-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/dragon-02-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/phoenix-02-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/pattern-02-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/pattern-03-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-001-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-002-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-003-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-004-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-005-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-006-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-007-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-008-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-009-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-010-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-011-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-012-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-013-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-014-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-015-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-016-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-017-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-018-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-019-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-020-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-021-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-022-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-023-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-024-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-025-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-026-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-027-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-028-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-029-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-030-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-031-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-032-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-033-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-034-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-035-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-036-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-037-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-038-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-039-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-040-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-041-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-042-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-043-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-044-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-045-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-046-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-047-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-048-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-049-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-050-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-051-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-052-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-053-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-054-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-055-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-056-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-057-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-058-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-059-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-060-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-061-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-062-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-063-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-064-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-065-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-066-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-067-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-068-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-069-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-070-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-071-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-072-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-073b-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-074-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-075-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-076-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-077-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-078-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-079-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-080-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-081-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-082-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-083-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-084-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-085-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-086-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-087-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-088-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-089-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-090-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-091-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-092-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-093-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-094-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-095-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-096-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-097-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-098-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-099-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-100-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-101-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-102-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-103-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-104-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-105-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-106-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-107-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/custom-108-1080.webp</image:loc></image:image>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/flash-01-1080.webp</image:loc></image:image>
   </url>
   <url>
     <loc>https://melangetattoo.ink/flash/</loc>
+    <lastmod>2026-10-03</lastmod>
     <xhtml:link rel="alternate" hreflang="en" href="https://melangetattoo.ink/flash/"/>
     <xhtml:link rel="alternate" hreflang="ko" href="https://melangetattoo.ink/ko/flash/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://melangetattoo.ink/flash/"/>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/flash-01-1080.webp</image:loc></image:image>
   </url>
   <url>
     <loc>https://melangetattoo.ink/ko/flash/</loc>
+    <lastmod>2026-10-03</lastmod>
     <xhtml:link rel="alternate" hreflang="en" href="https://melangetattoo.ink/flash/"/>
     <xhtml:link rel="alternate" hreflang="ko" href="https://melangetattoo.ink/ko/flash/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://melangetattoo.ink/flash/"/>
+    <image:image><image:loc>https://melangetattoo.ink/assets/work/flash-01-1080.webp</image:loc></image:image>
   </url>
   <url>
     <loc>https://melangetattoo.ink/aftercare/</loc>
+    <lastmod>2026-10-03</lastmod>
     <xhtml:link rel="alternate" hreflang="en" href="https://melangetattoo.ink/aftercare/"/>
     <xhtml:link rel="alternate" hreflang="ko" href="https://melangetattoo.ink/ko/aftercare/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://melangetattoo.ink/aftercare/"/>
   </url>
   <url>
     <loc>https://melangetattoo.ink/ko/aftercare/</loc>
+    <lastmod>2026-10-03</lastmod>
     <xhtml:link rel="alternate" hreflang="en" href="https://melangetattoo.ink/aftercare/"/>
     <xhtml:link rel="alternate" hreflang="ko" href="https://melangetattoo.ink/ko/aftercare/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://melangetattoo.ink/aftercare/"/>
   </url>
   <url>
     <loc>https://melangetattoo.ink/privacy/</loc>
+    <lastmod>2026-10-03</lastmod>
     <xhtml:link rel="alternate" hreflang="en" href="https://melangetattoo.ink/privacy/"/>
     <xhtml:link rel="alternate" hreflang="ko" href="https://melangetattoo.ink/ko/privacy/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://melangetattoo.ink/privacy/"/>
   </url>
   <url>
     <loc>https://melangetattoo.ink/ko/privacy/</loc>
+    <lastmod>2026-10-03</lastmod>
     <xhtml:link rel="alternate" hreflang="en" href="https://melangetattoo.ink/privacy/"/>
     <xhtml:link rel="alternate" hreflang="ko" href="https://melangetattoo.ink/ko/privacy/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://melangetattoo.ink/privacy/"/>

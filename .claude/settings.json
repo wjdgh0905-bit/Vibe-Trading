@@ -1,0 +1,166 @@
+{
+  "env": {
+    "PONYTAIL_DEFAULT_MODE": "full"
+  },
+  "permissions": {
+    "defaultMode": "auto"
+  },
+  "skillOverrides": {
+    "marketing-skills:ab-testing": "name-only",
+    "marketing-skills:ad-creative": "name-only",
+    "marketing-skills:ads": "name-only",
+    "marketing-skills:ai-seo": "name-only",
+    "marketing-skills:analytics": "name-only",
+    "marketing-skills:aso": "name-only",
+    "marketing-skills:attribution": "name-only",
+    "marketing-skills:churn-prevention": "name-only",
+    "marketing-skills:co-marketing": "name-only",
+    "marketing-skills:cold-email": "name-only",
+    "marketing-skills:community-marketing": "name-only",
+    "marketing-skills:competitor-profiling": "name-only",
+    "marketing-skills:competitors": "name-only",
+    "marketing-skills:content-strategy": "name-only",
+    "marketing-skills:copy-editing": "name-only",
+    "marketing-skills:copywriting": "name-only",
+    "marketing-skills:cro": "name-only",
+    "marketing-skills:customer-research": "name-only",
+    "marketing-skills:directory-submissions": "name-only",
+    "marketing-skills:emails": "name-only",
+    "marketing-skills:events": "name-only",
+    "marketing-skills:free-tools": "name-only",
+    "marketing-skills:image": "name-only",
+    "marketing-skills:influencer-marketing": "name-only",
+    "marketing-skills:launch": "name-only",
+    "marketing-skills:lead-magnets": "name-only",
+    "marketing-skills:marketing-council": "name-only",
+    "marketing-skills:marketing-ideas": "name-only",
+    "marketing-skills:marketing-loops": "name-only",
+    "marketing-skills:marketing-plan": "name-only",
+    "marketing-skills:marketing-psychology": "name-only",
+    "marketing-skills:offers": "name-only",
+    "marketing-skills:onboarding": "name-only",
+    "marketing-skills:paywalls": "name-only",
+    "marketing-skills:popups": "name-only",
+    "marketing-skills:pricing": "name-only",
+    "marketing-skills:product-marketing": "name-only",
+    "marketing-skills:programmatic-seo": "name-only",
+    "marketing-skills:prospecting": "name-only",
+    "marketing-skills:public-relations": "name-only",
+    "marketing-skills:referrals": "name-only",
+    "marketing-skills:revops": "name-only",
+    "marketing-skills:sales-enablement": "name-only",
+    "marketing-skills:schema": "name-only",
+    "marketing-skills:seo-audit": "name-only",
+    "marketing-skills:signup": "name-only",
+    "marketing-skills:site-architecture": "name-only",
+    "marketing-skills:sms": "name-only",
+    "marketing-skills:social": "name-only",
+    "marketing-skills:video": "name-only",
+    "ui-ux-pro-max:banner-design": "name-only",
+    "ui-ux-pro-max:brand": "name-only",
+    "ui-ux-pro-max:design": "name-only",
+    "ui-ux-pro-max:design-system": "name-only",
+    "ui-ux-pro-max:slides": "name-only",
+    "ui-ux-pro-max:ui-styling": "name-only",
+    "ui-ux-pro-max:ui-ux-pro-max": "name-only",
+    "taste-skill:brandkit": "name-only",
+    "taste-skill:brutalist-skill": "name-only",
+    "taste-skill:gpt-tasteskill": "name-only",
+    "taste-skill:image-to-code-skill": "name-only",
+    "taste-skill:imagegen-frontend-mobile": "name-only",
+    "taste-skill:imagegen-frontend-web": "name-only",
+    "taste-skill:minimalist-skill": "name-only",
+    "taste-skill:output-skill": "name-only",
+    "taste-skill:redesign-skill": "name-only",
+    "taste-skill:soft-skill": "name-only",
+    "taste-skill:stitch-skill": "name-only",
+    "taste-skill:taste-skill-v1": "name-only",
+    "remotion-captions": "name-only",
+    "remotion-create": "name-only",
+    "remotion-docs": "name-only",
+    "remotion-interactivity": "name-only",
+    "remotion-maps": "name-only",
+    "remotion-markup": "name-only",
+    "remotion-multimedia": "name-only",
+    "remotion-render": "name-only",
+    "remotion-saas": "name-only",
+    "remotion-studio": "name-only",
+    "remotion-upgrade": "name-only"
+  },
+  "enableArtifact": true,
+  "enableWorkflows": true,
+  "workflowSizeGuideline": "large",
+  "enabledPlugins": {
+    "superpowers@superpowers-marketplace": true,
+    "marketing-skills@marketingskills": true,
+    "ui-ux-pro-max@ui-ux-pro-max-skill": true,
+    "claude-mem@thedotmack": true,
+    "taste-skill@taste-skill": true,
+    "impeccable@impeccable": true,
+    "claude-code-setup@claude-plugins-official": true,
+    "headroom@headroom-marketplace": true,
+    "ponytail@ponytail": true
+  },
+  "extraKnownMarketplaces": {
+    "superpowers-marketplace": {
+      "source": {
+        "source": "github",
+        "repo": "obra/superpowers-marketplace"
+      }
+    },
+    "marketingskills": {
+      "source": {
+        "source": "github",
+        "repo": "coreyhaines31/marketingskills"
+      }
+    },
+    "ui-ux-pro-max-skill": {
+      "source": {
+        "source": "github",
+        "repo": "nextlevelbuilder/ui-ux-pro-max-skill"
+      }
+    },
+    "thedotmack": {
+      "source": {
+        "source": "github",
+        "repo": "thedotmack/claude-mem"
+      }
+    },
+    "taste-skill": {
+      "source": {
+        "source": "github",
+        "repo": "Leonxlnx/taste-skill"
+      }
+    },
+    "impeccable": {
+      "source": {
+        "source": "github",
+        "repo": "pbakaus/impeccable"
+      }
+    },
+    "claude-plugins-official": {
+      "source": {
+        "source": "github",
+        "repo": "anthropics/claude-plugins-official"
+      }
+    },
+    "headroom-marketplace": {
+      "source": {
+        "source": "github",
+        "repo": "chopratejas/headroom"
+      }
+    },
+    "ponytail": {
+      "source": {
+        "source": "github",
+        "repo": "DietrichGebert/ponytail"
+      }
+    }
+  },
+  "promptCacheTtl": "1h",
+  "alwaysThinkingEnabled": true,
+  "ultracode": true,
+  "fastMode": true,
+  "autoCompactEnabled": true,
+  "precomputeCompactionEnabled": true
+}

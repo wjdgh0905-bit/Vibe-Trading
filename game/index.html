@@ -1,0 +1,643 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#080a0f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="상한가">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="icon-192.png">
+<style>*,*::before,*::after{box-sizing:border-box}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);height:100%}body{margin:0;font-size:14px;overscroll-behavior:none}[hidden]{display:none!important}</style>
+</head><body>
+<title>상한가 따라잡기</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@400;500;700;900&family=JetBrains+Mono:wght@500;700;800&display=swap">
+<style>
+/* Layout: one-screen HTS (증권사 앱) — ticker tape, account, quote, candle chart + 호가창, 종토방, picker, hold button */
+:root{
+  --bg:#080a0f;--panel:#0f131a;--panel2:#151a23;--line:#1e2531;--fg:#e9edf3;--muted:#9aa4b7;
+  --up:#f2313f;--down:#2f7bff;--gold:#ffc63a;--rumor:#b58cff;
+  --display:"Black Han Sans","Noto Sans KR",sans-serif;
+  --body:"Noto Sans KR",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,monospace;
+  color-scheme:dark;
+}
+html,body{height:100%}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);overflow:hidden;user-select:none;-webkit-user-select:none;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.app{height:100%;box-sizing:border-box;max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:6px;padding-block:6px 10px;padding-left:max(12px,env(safe-area-inset-left,0px));padding-right:max(12px,env(safe-area-inset-right,0px))}
+@media (min-width:420px){.app{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.up{color:var(--up)}.dn{color:var(--down)}.gd{color:var(--gold)}.mu{color:var(--muted)}
+
+/* ticker tape */
+.tape{overflow:hidden;border-block:1px solid var(--line);height:22px;flex:none;mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
+.tape div{display:inline-flex;gap:22px;white-space:nowrap;line-height:22px;font-size:11px;animation:tape 38s linear infinite;padding-right:22px}
+.tape span{color:var(--muted)}.tape b{font-family:var(--mono);font-weight:700;margin-left:4px}
+@keyframes tape{to{transform:translateX(-50%)}}
+
+/* header */
+header{display:flex;align-items:center;justify-content:space-between;gap:8px;flex:none}
+h1{font-family:var(--display);font-weight:400;font-size:20px;margin:0;letter-spacing:.3px;white-space:nowrap}
+h1 b{color:var(--up);font-weight:400}
+.hb{display:flex;gap:5px;align-items:center}
+.ib{font:700 12px var(--mono);background:var(--panel);color:var(--fg);border:1px solid var(--line);border-radius:8px;height:28px;padding:0 8px;cursor:pointer;white-space:nowrap}
+.ib.gd{color:var(--gold)}
+.rank{display:flex;flex-direction:column;gap:3px;min-width:0;flex:1;max-width:150px}
+.rank span{font-size:11px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rank i{display:block;height:3px;background:var(--line);border-radius:2px;overflow:hidden}
+.rank i b{display:block;height:100%;background:var(--gold);transition:width .4s}
+
+/* account */
+.acct{display:grid;grid-template-columns:1.5fr 1fr 1fr;flex:none;background:var(--panel);border:1px solid var(--line);border-radius:10px}
+.acct div{padding:5px 10px;min-width:0}
+.acct div+div{border-left:1px solid var(--line)}
+.acct small{display:block;font-size:11px;color:var(--muted)}
+.acct span{display:block;font-family:var(--mono);font-weight:800;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-variant-numeric:tabular-nums}
+
+/* quote */
+.quote{display:flex;justify-content:space-between;align-items:flex-end;gap:8px;flex:none;padding:2px 2px 0}
+.qn{min-width:0}
+.qn b{display:block;font-size:16px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.qn small{font-size:11px;color:var(--muted);font-family:var(--mono)}
+.qn .tier{display:inline-block;font-family:var(--body);font-size:10px;font-weight:700;border:1px solid var(--line);border-radius:4px;padding:0 4px;margin-left:4px;color:var(--fg)}
+.qp{text-align:right}
+#qPrice{font-family:var(--mono);font-weight:800;font-size:clamp(24px,7.5vw,34px);line-height:1;font-variant-numeric:tabular-nums}
+#qChg{font-family:var(--mono);font-size:12px;margin-top:3px;font-variant-numeric:tabular-nums}
+
+/* main: chart + book */
+.main{position:relative;flex:1;min-height:150px;display:grid;grid-template-columns:minmax(0,1fr) 118px;gap:6px}
+.chart{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.app.fever .chart{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold),0 0 22px color-mix(in srgb,var(--gold) 35%,transparent)}
+.chart.shake{animation:shake .45s}
+@keyframes shake{20%{transform:translate(-7px,3px)}40%{transform:translate(6px,-4px)}60%{transform:translate(-4px,2px)}80%{transform:translate(3px,-1px)}}
+canvas{position:absolute;inset:0;width:100%;height:100%}
+#pnl{position:absolute;left:8px;top:6px;font-family:var(--mono);font-size:12px;font-weight:700;pointer-events:none;background:color-mix(in srgb,var(--panel) 80%,transparent);padding:2px 6px;border-radius:6px;font-variant-numeric:tabular-nums}
+#fever{position:absolute;right:62px;top:6px;font:900 12px var(--body);color:#1a1200;background:var(--gold);padding:2px 8px;border-radius:999px;pointer-events:none;animation:pulse .5s infinite alternate}
+.book{background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden;display:flex;flex-direction:column;font-family:var(--mono);font-size:12px;font-variant-numeric:tabular-nums}
+.book .hd{font-family:var(--body);font-size:11px;color:var(--muted);text-align:center;padding:3px 0;border-bottom:1px solid var(--line)}
+.ob{position:relative;flex:1;display:flex;flex-direction:column;justify-content:center;padding:0 5px;min-height:0;border-bottom:1px solid color-mix(in srgb,var(--line) 50%,transparent)}
+.ob.ask{background:color-mix(in srgb,var(--down) 7%,transparent)}
+.ob.bid{background:color-mix(in srgb,var(--up) 7%,transparent)}
+.ob i{position:absolute;top:2px;bottom:2px;right:0;opacity:.22}
+.ob.ask i{background:var(--down)}.ob.bid i{background:var(--up)}
+.ob .p{position:relative;font-weight:800;font-size:13.5px;line-height:1.15}
+.ob .q{position:relative;color:var(--fg);opacity:.75;font-size:11px;line-height:1.15}
+.ob.now{outline:2px solid var(--gold);outline-offset:-2px;background:color-mix(in srgb,var(--gold) 14%,transparent)}
+.book .ft{font-size:11px;text-align:center;padding:3px 0;color:var(--muted);font-family:var(--body)}
+.book .ft b{font-family:var(--mono)}
+
+#news{position:absolute;left:8px;right:126px;top:36px;padding:9px 10px;border-radius:8px;font-weight:700;font-size:14px;text-align:center;pointer-events:none;animation:slide .25s ease-out;z-index:2}
+#news.bear{background:color-mix(in srgb,var(--down) 32%,var(--bg));border:1px solid var(--down)}
+#news.bull{background:color-mix(in srgb,var(--up) 30%,var(--bg));border:1px solid var(--up)}
+#news.rumor{background:color-mix(in srgb,var(--rumor) 30%,var(--bg));border:1px solid var(--rumor)}
+@keyframes slide{from{transform:translateY(10px);opacity:0}}
+#toast{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 34px);transform:translateX(-50%);background:var(--gold);color:#1a1300;font-weight:900;font-size:13px;padding:8px 14px;border-radius:999px;white-space:nowrap;pointer-events:none;animation:slide .3s ease-out;z-index:30;box-shadow:0 6px 20px #0008}
+
+.card{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(330px,92%);max-height:96%;overflow:auto;box-sizing:border-box;background:color-mix(in srgb,var(--bg) 92%,transparent);border:1px solid var(--line);border-radius:14px;padding:14px 16px;text-align:center;backdrop-filter:blur(8px);animation:pop .22s ease-out;z-index:3}
+@keyframes pop{from{transform:translate(-50%,-44%);opacity:.3}}
+.card .grade{font-family:var(--display);font-size:30px;line-height:1.1}
+.card .sub{font-size:12.5px;color:var(--muted);margin-top:5px;line-height:1.5}
+.card .big{font-family:var(--mono);font-weight:800;font-size:20px;margin-top:6px;font-variant-numeric:tabular-nums}
+.card .bar{height:7px;border-radius:4px;background:var(--line);margin-top:9px;overflow:hidden}
+.card .bar i{display:block;height:100%;background:var(--gold)}
+.card .row{display:flex;justify-content:space-between;gap:8px;font-family:var(--mono);font-size:11.5px;color:var(--muted);margin-top:5px}
+.card .btns{display:flex;gap:6px;justify-content:center;margin-top:10px}
+.card button{font:inherit;font-size:13px;font-weight:700;background:var(--panel2);color:var(--fg);border:1px solid var(--line);border-radius:9px;padding:8px 14px;cursor:pointer}
+.card button.pri{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.card ul{text-align:left;font-size:12.5px;line-height:1.6;padding-left:18px;margin:8px 0 0;color:var(--fg)}
+
+/* 종토방 */
+.talk{flex:none;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:4px 10px;height:26px;box-sizing:border-box;overflow:hidden;font-size:12.5px;display:flex;flex-direction:column;justify-content:flex-end}
+.talk p{margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:16px;animation:slide .2s ease-out}
+.talk p b{color:var(--muted);font-weight:500;margin-right:6px}
+.talk p:first-child{opacity:.55}
+
+/* pickers */
+.offers{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;flex:none}
+.chip{font:inherit;text-align:left;background:var(--panel);color:var(--fg);border:1px solid var(--line);border-radius:9px;padding:5px 7px;cursor:pointer;min-width:0;line-height:1.25}
+.chip b{display:block;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chip small{display:block;font-size:10px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chip[aria-pressed="true"]{border-color:var(--gold);background:color-mix(in srgb,var(--gold) 12%,var(--panel))}
+.chip:disabled{opacity:.4;cursor:default}
+.items{display:flex;gap:5px;overflow-x:auto;flex:none;scrollbar-width:none}
+.items::-webkit-scrollbar{display:none}
+.items .chip{flex:0 0 auto;min-width:100px}
+.chip:focus-visible,.ib:focus-visible,.card button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+
+#hold{height:68px;flex:none;border:0;border-radius:16px;background:var(--up);color:#fff;font-family:var(--display);font-size:24px;letter-spacing:1px;cursor:pointer;touch-action:none;box-shadow:0 5px 0 color-mix(in srgb,var(--up) 50%,#000);transition:transform .06s,box-shadow .06s}
+.app.fever #hold{background:linear-gradient(90deg,var(--up),#ff7a1a,var(--up));background-size:200% 100%;animation:flow 1.2s linear infinite}
+@keyframes flow{to{background-position:200% 0}}
+#hold:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+#hold.on{transform:translateY(4px);box-shadow:0 1px 0 color-mix(in srgb,var(--up) 50%,#000);animation:pulse .45s infinite alternate}
+#hold.wait{background:var(--panel2);color:var(--muted);box-shadow:0 5px 0 #040508;animation:none}
+@keyframes pulse{to{filter:brightness(1.25)}}
+
+.modal{position:fixed;inset:0;background:color-mix(in srgb,var(--bg) 82%,transparent);display:grid;place-items:center;z-index:20;padding:16px}
+.modal .box{width:min(380px,100%);max-height:80vh;overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;box-sizing:border-box}
+.modal h2{font-family:var(--display);font-weight:400;margin:0 0 4px;font-size:22px}
+.modal .note{font-size:12px;color:var(--muted);margin:0 0 8px}
+.li{display:flex;gap:10px;align-items:center;padding:8px 0;border-top:1px solid var(--line)}
+.li>i{font-style:normal;font-size:20px;width:26px;text-align:center;flex:none}
+.li div{flex:1;min-width:0}
+.li b{display:block;font-size:13.5px}.li small{color:var(--muted);font-size:11.5px}
+.li .pb{height:4px;background:var(--line);border-radius:2px;margin-top:4px;overflow:hidden}.li .pb u{display:block;height:100%;background:var(--gold)}
+.li.lock{opacity:.35}.li.lock>i{filter:grayscale(1)}
+.li.done b{color:var(--gold)}
+.modal button{margin-top:12px;width:100%;font:inherit;font-weight:700;background:var(--fg);color:var(--bg);border:0;border-radius:10px;padding:10px;cursor:pointer}
+@media (max-height:700px){.talk{display:none}#hold{height:60px}}
+@media (prefers-reduced-motion:reduce){.chart.shake,#hold.on,.card,#news,#toast,#fever,.app.fever #hold{animation:none}}
+</style>
+
+<div class="app" id="app">
+  <header>
+    <h1><b>상한가</b> 따라잡기</h1>
+    <div class="rank"><span id="rankName">주린이 Lv.1</span><i><b id="rankBar" style="width:0"></b></i></div>
+    <div class="hb">
+      <button class="ib" id="snd" type="button" aria-label="사운드">🔊</button>
+      <button class="ib gd" id="misBtn" type="button">📋 0/3</button>
+      <button class="ib gd" id="achBtn" type="button">🏆 0</button>
+    </div>
+  </header>
+  <div class="acct">
+    <div><small>예수금</small><span id="bal">1,000,000원</span></div>
+    <div><small>연속 익절</small><span id="streak">0</span></div>
+    <div><small>최고 자산</small><span id="best">-</span></div>
+  </div>
+  <div class="quote">
+    <div class="qn"><b id="qName">-</b><small id="qCode">-</small></div>
+    <div class="qp"><div id="qPrice" class="num">-</div><div id="qChg" class="mu">-</div></div>
+  </div>
+  <div class="main" id="main">
+    <div class="chart" id="chart"><canvas id="cv"></canvas><div id="pnl" hidden></div><div id="fever" hidden>🔥 FEVER</div></div>
+    <div class="book" id="book"></div>
+    <div id="news" hidden></div>
+    <div id="card" class="card" hidden></div>
+  </div>
+  <div class="talk" id="talk"></div>
+  <div class="offers" id="offers"></div>
+  <div class="items" id="items"></div>
+  <button id="hold" type="button">꾹 눌러서 매수</button>
+</div>
+<div id="toast" hidden></div>
+<div class="modal" id="modal" hidden><div class="box"><div id="modalBody"></div><button id="modalClose" type="button">닫기</button></div></div>
+
+<script>
+(()=>{
+const $=id=>document.getElementById(id);
+const cv=$('cv'),ctx=cv.getContext('2d'),chart=$('chart'),btn=$('hold'),card=$('card'),app=$('app');
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const C={up:css('--up'),down:css('--down'),gold:css('--gold'),line:css('--line'),muted:css('--muted'),rumor:css('--rumor'),fg:css('--fg'),panel:css('--panel')};
+const won=n=>Math.floor(n).toLocaleString('ko-KR')+'원';
+const sw=n=>(n>=0?'+':'-')+won(Math.abs(n));
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const rnd=(a,b)=>a+Math.random()*(b-a);
+const store={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const START=1000000,CD=0.35;
+// 한국 주식 호가 단위
+const tickOf=p=>p<2000?1:p<5000?5:p<20000?10:p<50000?50:p<200000?100:p<500000?500:1000;
+const roundTick=p=>{const k=tickOf(p);return Math.max(k,Math.round(p/k)*k)};
+const fmtP=p=>p.toLocaleString('ko-KR');
+
+const TIERS={
+  blue:{label:'우량주',stars:'★☆☆',rate:.7,scale:.6,loss:.25,instant:.01,limit:true,p:[30000,180000],
+    names:['한빛전자','대한중공업','삼진화학','국민통신','동방제철','미래금융지주','태평양건설','한국전력망']},
+  theme:{label:'테마주',stars:'★★★',rate:1,scale:1,loss:.5,instant:.04,limit:true,p:[1500,25000],
+    names:['초전도랩','대성로보틱스','한강바이오','K배터리텍','우주항공테크','AI반도체솔루션','양자컴퓨팅','비만치료제랩']},
+  meme:{label:'코인',stars:'★★★★★',rate:1.5,scale:1.8,loss:.75,instant:.1,limit:false,p:[200,3000],
+    names:[['도지킹','DOGK'],['개구리코인','PEPEK'],['김치토큰','KIMCH'],['문샷','MOON'],['냥냥코인','NYANG'],['가즈아','GAZUA'],['한강코인','HGANG']]}
+};
+const ITEMS={
+  shield:{name:'🛡 손절보험',cost:.08,desc:'폭락 손실 -10%',lv:1},
+  insider:{name:'🔍 찌라시',cost:.05,desc:'폭락가 힌트(70%)',lv:2},
+  slow:{name:'⏱ 슬로모션',cost:.06,desc:'차트 속도 0.6배',lv:3},
+  lev:{name:'⚡ 레버리지',cost:0,desc:'수익 2배 · 손실↑',lv:4}
+};
+const RANKS=[[0,'주린이'],[150,'개미'],[400,'단타충'],[800,'슈퍼개미'],[1400,'전업투자자'],[2400,'큰손'],[4000,'세력'],[6500,'여의도 전설']];
+const ACH=[
+  ['first','💰','첫 익절','처음으로 수익 실현'],
+  ['god','🙏','신의 손','고점 근접도 95% 이상'],
+  ['ten','🔟','텐배거','x10(+900%) 이상에서 매도'],
+  ['streak5','🔥','불장','5연속 익절로 피버 돌입'],
+  ['escape','🏃','간발의 탈출','폭락 0.2초 전 매도'],
+  ['diamond','💎','다이아몬드 손','15초 이상 버티고 익절'],
+  ['paper','🧻','종이 손','+5% 미만에서 매도'],
+  ['shake','🪤','개미털기 당함','악재에 팔았는데 2배 더 감'],
+  ['fake','🤡','찌라시 피해자','가짜 찌라시 믿다 폭락'],
+  ['insider','🕵️','내부자','진짜 찌라시로 x3 이상 익절'],
+  ['meme5','🐸','밈의 왕','코인으로 x5 이상 매도'],
+  ['mission','📋','성실한 개미','일일 미션 첫 완료'],
+  ['billion','🏢','건물주','자산 1억 돌파'],
+  ['comeback','🧟','기사회생','10만 원 밑에서 100만 원 회복'],
+  ['hangang','🌊','한강 엔딩','자산 1만 원 미만'],
+  ['legend','👑','여의도 전설','최고 계급 달성']
+];
+const MISSIONS=[
+  {id:'w20',t:'익절 20번',n:20,f:r=>r.win},
+  {id:'meme8',t:'코인으로 익절 8번',n:8,f:r=>r.win&&r.key==='meme'},
+  {id:'x3',t:'x3(+200%) 이상에서 매도 3번',n:3,f:r=>r.win&&r.m>=3},
+  {id:'p90',t:'고점 근접도 90% 이상 4번',n:4,f:r=>r.win&&r.pct>=90},
+  {id:'s3',t:'3연속 익절 4번',n:4,f:r=>r.win&&r.streak>=3},
+  {id:'ins',t:'찌라시 쓰고 익절 5번',n:5,f:r=>r.win&&r.insider},
+  {id:'blue10',t:'우량주로 익절 10번',n:10,f:r=>r.win&&r.key==='blue'},
+  {id:'hodl',t:'악재 뉴스 버티고 익절 5번',n:5,f:r=>r.win&&r.sawDip},
+  {id:'lim12',t:'상한가(+30%) 넘겨서 매도 12번',n:12,f:r=>r.win&&r.m>=1.3},
+  {id:'r30',t:'30판 플레이',n:30,f:()=>true}
+];
+const BEAR=['속보: 대표이사 횡령설','공매도 리포트 발표','루머: 임상 3상 실패','거래소 조회공시 요구','대주주 블록딜 소문','세력 물량 출회 감지','유상증자 결정 공시','금감원 불공정거래 조사설'];
+const BULL=['공시: 1조 원 규모 수주','속보: 글로벌 빅테크 인수설','구독자 300만 유튜버 언급','외국인 순매수 폭발','정부 정책 수혜주 지정','FDA 승인 기대감','거래소 상장 확정 공지'];
+const TALK={
+  hype:['가즈아!!!!','상한가 간다 ㅋㅋㅋ','세력 들어왔다','지금 타도 안 늦음?','10배 간다 진짜로','와 이거 뭐냐','풀매수 박았다','익절각 재는 중','내일 점상이다','아직 무릎임','이번엔 진짜다'],
+  fear:['설거지 시작이다','물렸다 살려줘','손절 ㄱ?','개미털기임 버텨','악재 떴다 튀어','세력 던지는 중','팔까 말까 팔까 말까'],
+  crash:['한강 물 온도 몇 도냐','내 돈…','고점에 산 사람 손','이게 주식이다','ㅋㅋㅋ 설거지 당함','다시는 안 한다 (내일 또 함)','엄마 미안해'],
+  sold:['팔았냐? 더 간다 ㅋㅋ','익절은 언제나 옳다','팔고 나니까 오르네','수익은 수익이다'],
+  idle:['오늘 뭐 사냐','어제 상한가 놓침','코인은 무섭다','우량주가 답이다','밈코인 한 번만 더…','시드 복구 중','점심값 벌러 왔다']
+};
+const NICK=['개미','존버','단타왕','물린자','한강수영','부자될래','익절요정','세력아님','손절장인','풀매수'];
+
+/* ---------- persistent ---------- */
+const today=(()=>{const d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()})();
+let best=store.get('shg_best',0),ach=store.get('shg_ach',[]),xp=store.get('shg_xp',0),muted=store.get('shg_mute',false);
+let daily=store.get('shg_daily',null);
+if(!daily||daily.date!==today||daily.v!==2){
+  let h=0;for(const ch of today)h=(h*31+ch.charCodeAt(0))>>>0;
+  const pool=MISSIONS.map(m=>m.id),ids=[];
+  while(ids.length<3){h=(h*1103515245+12345)>>>0;const id=pool[h%pool.length];if(!ids.includes(id))ids.push(id);}
+  daily={date:today,v:2,ids,prog:{},done:[]};store.set('shg_daily',daily);
+}
+
+/* ---------- state ---------- */
+let state='ready',balance=START,streak=0,round=1,tierSel='theme',sel={shield:false,insider:false,slow:false,lev:false};
+let offers=makeOffers(),run=null,candles=[],t=0,cur=1,peak=1,sell=null,crashed=false,crashT=0,readyAt=0,lastTs=0;
+let events=[],warned=false,newsTimer=0,talkT=0,bookT=0,lowFlag=false,volTotal=0;
+
+function makeOffers(){
+  return Object.entries(TIERS).map(([k,T])=>{
+    const n=pick(T.names),name=Array.isArray(n)?n[0]:n;
+    const code=Array.isArray(n)?n[1]+'/KRW':String(Math.floor(rnd(100000,999999)));
+    return {k,name,code,p0:roundTick(rnd(T.p[0],T.p[1]))};
+  });
+}
+const offer=()=>run?run.offer:offers.find(o=>o.k===tierSel);
+const priceOf=m=>roundTick(offer().p0*m);
+
+/* ---------- audio ---------- */
+let ac=null;
+function au(){if(!ac){try{ac=new(window.AudioContext||window.webkitAudioContext)()}catch(e){}}if(ac&&ac.state==='suspended')ac.resume();return ac}
+function beep(f,d=.06,type='square',vol=.035,to){
+  if(muted)return;const a=au();if(!a)return;
+  const o=a.createOscillator(),g=a.createGain(),n=a.currentTime;
+  o.type=type;o.frequency.setValueAtTime(f,n);if(to)o.frequency.exponentialRampToValueAtTime(to,n+d);
+  g.gain.setValueAtTime(vol,n);g.gain.exponentialRampToValueAtTime(.0001,n+d);
+  o.connect(g).connect(a.destination);o.start(n);o.stop(n+d+.02);
+}
+const sfx={
+  tick:m=>beep(Math.min(1800,240*Math.pow(m,.75)),.04,'triangle',.025),
+  sell:()=>{beep(988,.07,'square',.04);setTimeout(()=>beep(1319,.18,'square',.04),70)},
+  crash:()=>{beep(420,.7,'sawtooth',.06,45);beep(90,.5,'square',.05,40)},
+  up:()=>[523,659,784,1047].forEach((f,i)=>setTimeout(()=>beep(f,.12,'square',.035),i*90)),
+  news:()=>beep(660,.05,'sine',.04)
+};
+$('snd').onclick=()=>{muted=!muted;store.set('shg_mute',muted);$('snd').textContent=muted?'🔇':'🔊';if(!muted)au();};
+$('snd').textContent=muted?'🔇':'🔊';
+
+/* ---------- ui helpers ---------- */
+function toast(txt){
+  const el=$('toast');el.textContent=txt;el.hidden=false;el.style.animation='none';void el.offsetWidth;el.style.animation='';
+  clearTimeout(toast.tm);toast.tm=setTimeout(()=>el.hidden=true,2300);
+}
+function unlock(id){
+  if(ach.includes(id))return;ach.push(id);store.set('shg_ach',ach);
+  const a=ACH.find(a=>a[0]===id);setTimeout(()=>toast('업적 달성 '+a[1]+' '+a[2]),350);paintTop();
+}
+function news(text,kind){
+  const el=$('news');el.textContent=text;el.className=kind;el.hidden=false;el.style.animation='none';void el.offsetWidth;el.style.animation='';
+  clearTimeout(newsTimer);newsTimer=setTimeout(()=>el.hidden=true,1700);sfx.news();
+}
+const talkLines=[];
+function talk(kind){
+  talkLines.push('<b>'+pick(NICK)+Math.floor(rnd(1,999))+'</b>'+pick(TALK[kind]));
+  while(talkLines.length>1)talkLines.shift();
+  $('talk').innerHTML=talkLines.map(s=>'<p>'+s+'</p>').join('');
+}
+function rankOf(x){let i=0;RANKS.forEach((r,j)=>{if(x>=r[0])i=j});return i}
+function gainXp(n){
+  const before=rankOf(xp);xp+=n;store.set('shg_xp',xp);const after=rankOf(xp);
+  if(after>before){setTimeout(()=>{toast('🎉 승급! '+RANKS[after][1]);sfx.up();},900);if(after===RANKS.length-1)unlock('legend');}
+}
+
+function paintTop(){
+  $('bal').textContent=won(balance);
+  $('streak').innerHTML=streak?(streak>=5?'<span class="gd">'+streak+'연속 🔥</span>':streak+'연속'):'0';
+  $('best').textContent=best?won(best):'-';
+  const ri=rankOf(xp),nx=RANKS[ri+1];
+  $('rankName').textContent=RANKS[ri][1];
+  $('rankBar').style.width=nx?((xp-RANKS[ri][0])/(nx[0]-RANKS[ri][0])*100).toFixed(0)+'%':'100%';
+  $('achBtn').textContent='🏆 '+ach.length+'/'+ACH.length;
+  $('misBtn').textContent='📋 '+daily.done.length+'/3';
+}
+function paintPickers(){
+  const lock=state==='holding'||state==='ghost'||state==='over';
+  $('offers').innerHTML=offers.map(o=>{const T=TIERS[o.k];return `<button class="chip" type="button" data-k="${o.k}" aria-pressed="${o.k===tierSel}" ${lock?'disabled':''}><b>${o.name}</b><small>${T.label} ${T.stars} · -${T.loss*100}%</small></button>`}).join('');
+  const ri=rankOf(xp);
+  $('offers').hidden=$('items').hidden=state==='holding'||state==='ghost';
+  $('items').innerHTML=Object.entries(ITEMS).map(([k,it])=>{const lk=ri<it.lv;if(lk)sel[k]=false;return `<button class="chip" type="button" data-i="${k}" aria-pressed="${sel[k]}" ${lock||lk?'disabled':''}><b>${lk?'🔒 '+it.name.slice(2):it.name}</b><small>${lk?RANKS[it.lv][1]+' 계급에서 해금':(it.cost?won(balance*it.cost):'무료')+' · '+it.desc}</small></button>`}).join('');
+}
+function paintQuote(){
+  const o=offer(),T=TIERS[o.k];
+  $('qName').textContent=o.name;
+  $('qCode').innerHTML=o.code+'<span class="tier">'+T.label+'</span> · 거래량 '+Math.floor(volTotal*1373).toLocaleString('ko-KR');
+  const m=state==='ready'||!run?1:(crashed&&!sell?Math.min(cur,run.crashAt*.62):cur);
+  const p=priceOf(m),d=p-o.p0,pc=d/o.p0*100;
+  const cls=d>0?'up':d<0?'dn':'mu';
+  $('qPrice').className='num '+cls;$('qPrice').textContent=fmtP(p);
+  $('qChg').className=cls;$('qChg').textContent=(d>0?'▲ ':d<0?'▼ ':'')+fmtP(Math.abs(d))+'  '+(pc>=0?'+':'')+pc.toFixed(2)+'%';
+}
+function renderBook(){
+  const m=state==='ready'||!run?1:(crashed&&!sell?Math.min(cur,run.crashAt*.62):cur);
+  const p=priceOf(m),tk=tickOf(p),o=offer();
+  const rising=state==='holding'&&!events.some(e=>e.amp<0&&t>=e.t0&&t<=e.t0+1.4);
+  const bw=rising?1.5:.8,aw=rising?.8:1.4;
+  const rows=[];for(let k=5;k>=1;k--)rows.push([p+tk*k,1]);for(let k=0;k<5;k++)rows.push([p-tk*k,0]);
+  const qs=rows.map(r=>Math.round(Math.exp(rnd(0,2.6))*(r[1]?aw:bw)*(o.k==='blue'?40:o.k==='meme'?900:180)));
+  const mx=Math.max(...qs);
+  const str=Math.round(100*bw/aw*rnd(.85,1.15));
+  $('book').innerHTML='<div class="hd">호가</div>'+rows.map((r,i)=>`<div class="ob ${r[1]?'ask':'bid'} ${i===5?'now':''}"><i style="width:${(qs[i]/mx*100).toFixed(0)}%"></i><span class="p ${r[0]>o.p0?'up':r[0]<o.p0?'dn':''}">${fmtP(r[0])}</span><span class="q">${qs[i].toLocaleString('ko-KR')}</span></div>`).join('')+
+    `<div class="ft">체결강도 <b class="${str>=100?'up':'dn'}">${str}%</b></div>`;
+}
+function setBtn(){
+  const cool=state==='result'&&performance.now()<readyAt;
+  btn.className=state==='holding'?'on':(state==='ghost'||cool||state==='over')?'wait':'';
+  btn.textContent=state==='holding'?'떼면 매도!':state==='ghost'?'차트 끝까지 보는 중…':state==='over'?'한강에서 올라오는 중…':state==='result'?'꾹 눌러서 다음 종목 매수':'꾹 눌러서 매수';
+}
+
+$('offers').addEventListener('click',e=>{const b=e.target.closest('[data-k]');if(b&&!b.disabled){tierSel=b.dataset.k;paintPickers();paintQuote();renderBook();buildChartIdle();}});
+$('items').addEventListener('click',e=>{const b=e.target.closest('[data-i]');if(b&&!b.disabled){sel[b.dataset.i]=!sel[b.dataset.i];paintPickers();}});
+
+/* ---------- game ---------- */
+const base=x=>Math.exp(run.T.rate*(0.11*x+0.003*x*x));
+const wig=x=>1+0.014*Math.sin(x*8.3)+0.009*Math.sin(x*21.7+1.3)+0.006*Math.sin(x*47+2);
+const shape=x=>x<0||x>1?0:x<.15?x/.15:1-(x-.15)/.85;
+const newsF=x=>events.reduce((f,e)=>f*(1+e.amp*shape((x-e.t0)/1.4)),1);
+const inDip=x=>events.some(e=>e.amp<0&&x>=e.t0&&x<=e.t0+1.4);
+
+function start(){
+  if(!$('modal').hidden||state==='ghost'||state==='over'||state==='holding')return;
+  if(state==='result'&&performance.now()<readyAt)return;
+  au();
+  if(state==='result')round++;
+  const o=offers.find(x=>x.k===tierSel),T=TIERS[o.k];
+  let cost=0;for(const k in sel)if(sel[k])cost+=balance*ITEMS[k].cost;
+  balance-=cost;
+  const raw=Math.random()<T.instant?1+Math.random()*.06:Math.min(60,Math.max(1.01,.97/(1-Math.random())));
+  const crashAt=Math.max(1.01,1+(raw-1)*T.scale);
+  const it={...sel};let hint=null;
+  if(it.insider){const real=Math.random()<.7;hint={real,v:real?Math.max(1.02,crashAt*rnd(.88,.98)):crashAt*rnd(1.4,3)};}
+  run={offer:o,T,key:o.k,crashAt,it,hint,sawDip:false};
+  card.hidden=true;$('news').hidden=true;
+  candles=[];t=0;cur=1;peak=1;sell=null;crashed=false;events=[];warned=false;volTotal=0;talkT=0;
+  state='holding';paintTop();paintPickers();setBtn();
+  $('pnl').hidden=false;
+  if(hint)news('🔍 찌라시: "'+fmtP(priceOf(hint.v))+'원 근처에서 세력 턴다"','rumor');
+}
+function release(){
+  if(state!=='holding')return;
+  const lev=run.it.lev?2:1;
+  sell={t,m:cur,dip:inDip(t),idx:candles.length-1};
+  const gain=balance*(cur-1)*lev;
+  streak++;
+  const fever=streak>=5;
+  const bonus=streak>=3?gain*.05*(streak-2)*(fever?2:1):0;
+  sell.gain=gain;sell.bonus=bonus;sell.fever=fever;
+  balance+=gain+bonus;
+  if(balance>best){best=balance;store.set('shg_best',Math.floor(best));}
+  state='ghost';sfx.sell();talk('sold');
+  app.classList.toggle('fever',fever);$('fever').hidden=!fever;
+  paintTop();paintPickers();setBtn();
+  $('pnl').innerHTML='<span class="dn">매도 체결</span> <span class="up">'+sw(gain+bonus)+'</span>';
+  unlock('first');
+  if(cur>=10)unlock('ten');
+  if(fever)unlock('streak5');
+  if(run.key==='meme'&&cur>=5)unlock('meme5');
+  if(balance>=1e8)unlock('billion');
+  if(t>=15)unlock('diamond');
+  if(cur<1.05)unlock('paper');
+  if(run.hint&&run.hint.real&&cur>=3)unlock('insider');
+  if(lowFlag&&balance>=START){unlock('comeback');lowFlag=false;}
+}
+function crash(){
+  crashed=true;crashT=t;$('news').hidden=true;
+  const last=candles[candles.length-1],bot=run.crashAt*.62;
+  candles.push({o:last?last.c:run.crashAt,h:last?last.c:run.crashAt,l:bot,c:bot,v:(last?last.v:1)*4+6,crash:true,ghost:!!sell});
+  chart.classList.remove('shake');void chart.offsetWidth;chart.classList.add('shake');
+  try{navigator.vibrate&&navigator.vibrate(sell?40:[80,40,140])}catch(e){}
+  sfx.crash();talk('crash');setTimeout(()=>talk('crash'),500);
+  let res;
+  if(state==='holding'){
+    let L=run.T.loss;if(run.it.lev)L=Math.min(.9,L*1.6);if(run.it.shield)L=.1;
+    const loss=balance*L;balance-=loss;streak=0;app.classList.remove('fever');$('fever').hidden=true;
+    if(run.hint&&!run.hint.real)unlock('fake');
+    if(balance<100000)lowFlag=true;
+    res={win:false,key:run.key,m:0,pct:0,streak:0,insider:run.it.insider,sawDip:run.sawDip};
+    const xg=3;gainXp(xg);
+    $('pnl').innerHTML='<span class="dn">반대매매 '+sw(-loss)+'</span>';
+    if(balance<10000){state='over';unlock('hangang');showOver();}
+    else{state='result';showBust(loss,L,xg);}
+  }else{
+    state='result';
+    if(crashT-sell.t<.2)unlock('escape');
+    if(sell.dip&&peak>=sell.m*2)unlock('shake');
+    const pct=Math.min(100,sell.m/peak*100);
+    if(pct>=95)unlock('god');
+    res={win:true,key:run.key,m:sell.m,pct,streak,insider:run.it.insider,sawDip:run.sawDip&&!sell.dip};
+    const xg=Math.round((8+pct/10+Math.min(30,(sell.m-1)*5))*(sell.fever?2:1));gainXp(xg);
+    showWin(pct,xg);
+  }
+  missionsUpdate(res);
+  offers=makeOffers();
+  readyAt=performance.now()+800;
+  paintTop();paintPickers();setBtn();setTimeout(setBtn,820);
+}
+function missionsUpdate(r){
+  daily.ids.forEach(id=>{
+    if(daily.done.includes(id))return;
+    const m=MISSIONS.find(x=>x.id===id);
+    if(m.f(r)){daily.prog[id]=(daily.prog[id]||0)+1;
+      if(daily.prog[id]>=m.n){daily.done.push(id);balance+=1000000;gainXp(150);unlock('mission');
+        setTimeout(()=>{toast('📋 미션 완료! '+m.t+' · +1,000,000원');sfx.up();},1500);}}
+  });
+  store.set('shg_daily',daily);
+}
+
+/* ---------- result cards ---------- */
+let shareText='';
+function shareBtn(){return '<div class="btns"><button type="button" id="share">결과 복사</button></div>'}
+function bindShare(){const b=$('share');if(!b)return;b.onclick=()=>{
+  navigator.clipboard.writeText(shareText).then(()=>toast('결과를 복사했습니다'),()=>toast('복사가 막혀 있습니다. 화면을 캡처해 주세요'));};}
+function showWin(pct,xg){
+  const g=pct>=95?['신의 손','gd','고점에서 정확히 던졌습니다.']:pct>=80?['고수','up','꼭지 근처에서 잘 팔았습니다.']:pct>=50?['개미','','반은 먹었습니다. 나머지는 세력 몫.']:['새가슴','dn','너무 일찍 팔았습니다. 더 갔어요…'];
+  const close=(crashT-sell.t)<.4?'<div class="sub gd">폭락 '+(crashT-sell.t).toFixed(2)+'초 전 탈출!</div>':'';
+  const shook=sell.dip&&peak>=sell.m*1.5?'<div class="sub dn">그 악재 뉴스는 개미털기였습니다.</div>':'';
+  const o=run.offer,pp=x=>((x-1)*100).toFixed(1)+'%';
+  shareText=`[상한가 따라잡기] ${o.name} +${pp(sell.m)} 매도 · 고점 근접도 ${pct.toFixed(0)}% · ${g[0]} ${streak>=5?'🔥'+streak+'연속':''}\n자산 ${won(balance)}`;
+  card.innerHTML='<div class="grade '+g[1]+'">'+g[0]+'</div><div class="sub">'+g[2]+'</div>'+close+shook+
+   '<div class="big up">'+sw(sell.gain+sell.bonus)+'</div>'+
+   (run.it.lev?'<div class="sub gd">⚡ 레버리지 2배 적용</div>':'')+
+   (sell.bonus?'<div class="sub gd">'+(sell.fever?'🔥 FEVER ':'')+streak+'연속 보너스 '+sw(sell.bonus)+'</div>':'')+
+   '<div class="bar"><i style="width:'+pct.toFixed(0)+'%"></i></div>'+
+   '<div class="row"><span>매도 '+fmtP(priceOf(sell.m))+' (+'+pp(sell.m)+')</span><span>고점 +'+pp(peak)+'</span></div>'+
+   '<div class="row"><span>고점 근접도 '+pct.toFixed(0)+'%</span><span class="gd">+'+xg+' XP</span></div>'+hintLine()+shareBtn();
+  card.hidden=false;bindShare();
+}
+function hintLine(){return run.hint?'<div class="row"><span>찌라시</span><span>'+(run.hint.real?'진짜였음 🕵️':'가짜였음 🤡')+'</span></div>':'';}
+function showBust(loss,L,xg){
+  const early=peak<1.1;
+  shareText=`[상한가 따라잡기] ${run.offer.name} 고점 +${((peak-1)*100).toFixed(1)}%에서 못 팔고 물림 ${Math.round(L*100)}% 손실 🫠\n자산 ${won(balance)}`;
+  card.innerHTML='<div class="grade dn">'+(early?'시초가 폭락':'물렸습니다')+'</div>'+
+   '<div class="sub">'+(early?'사자마자 터졌습니다. 운이 없었어요.':'+'+((peak-1)*100).toFixed(1)+'%까지 갔는데 욕심을 부렸습니다.')+'</div>'+
+   '<div class="big dn">'+sw(-loss)+' ('+Math.round(L*100)+'%)</div>'+
+   (run.it.shield?'<div class="sub gd">🛡 손절보험이 손실을 줄였습니다.</div>':'')+
+   '<div class="row"><span>연속 익절 끊김</span><span class="gd">+'+xg+' XP</span></div>'+hintLine()+shareBtn();
+  card.hidden=false;bindShare();
+}
+function showOver(){
+  card.innerHTML='<div class="grade dn">한강 엔딩 🌊</div><div class="sub">자산이 1만 원 아래로 떨어졌습니다.<br>'+round+'라운드 버텼고, 최고 자산은 '+won(best||START)+'입니다.<br>계급과 업적은 그대로 남아 있습니다.</div><div class="btns"><button class="pri" id="again" type="button">시드 100만 원으로 다시</button></div>';
+  card.hidden=false;
+  $('again').onclick=()=>{balance=START;streak=0;round=1;state='ready';card.hidden=true;candles=[];sell=null;crashed=false;run=null;lowFlag=false;
+    $('pnl').hidden=true;paintTop();paintPickers();paintQuote();setBtn();buildChartIdle();};
+}
+function showIntro(){
+  const ms=daily.ids.map(id=>MISSIONS.find(m=>m.id===id).t);
+  card.innerHTML='<div class="grade"><span class="up">상한가</span> 따라잡기</div>'+
+   '<ul><li>버튼을 <b>누르는 동안 보유</b>, 손을 떼면 <b>매도</b>합니다.</li><li>언젠가 반드시 폭락합니다. 그 전에 떼세요.</li><li>악재 뉴스는 진짜 신호일 수도, 개미털기일 수도 있습니다.</li><li>5연속 익절하면 <b class="gd">FEVER</b>로 보너스가 2배입니다.</li><li>아이템은 계급이 오를 때마다 하나씩 열립니다.</li></ul>'+
+   '<div class="sub" style="text-align:left;margin-top:10px"><b class="gd">오늘의 미션</b><br>· '+ms.join('<br>· ')+'</div>';
+  card.hidden=false;
+}
+
+/* ---------- modals ---------- */
+function openModal(html){$('modalBody').innerHTML=html;$('modal').hidden=false;}
+$('modalClose').onclick=()=>$('modal').hidden=true;
+$('achBtn').onclick=()=>openModal('<h2>🏆 업적</h2><p class="note">'+ach.length+' / '+ACH.length+' 달성</p>'+ACH.map(a=>`<div class="li ${ach.includes(a[0])?'':'lock'}"><i>${a[1]}</i><div><b>${a[2]}</b><small>${a[3]}</small></div></div>`).join(''));
+$('misBtn').onclick=()=>openModal('<h2>📋 오늘의 미션</h2><p class="note">자정에 새 미션으로 바뀝니다. 하루 30판 이상은 해야 다 깰 수 있습니다. 완료할 때마다 1,000,000원과 150 XP를 받습니다.</p>'+daily.ids.map(id=>{
+  const m=MISSIONS.find(x=>x.id===id),p=Math.min(m.n,daily.prog[id]||0),d=daily.done.includes(id);
+  return `<div class="li ${d?'done':''}"><i>${d?'✅':'⬜'}</i><div><b>${m.t}</b><small>${p} / ${m.n}</small><div class="pb"><u style="width:${p/m.n*100}%"></u></div></div></div>`}).join('')+
+  '<h2 style="margin-top:14px">계급</h2>'+RANKS.map((r,i)=>`<div class="li ${xp>=r[0]?'':'lock'}"><i>${i===RANKS.length-1?'👑':'Lv'}</i><div><b>${r[1]}</b><small>${r[0]} XP${Object.values(ITEMS).filter(it=>it.lv===i).map(it=>' · '+it.name+' 해금').join('')}</small></div></div>`).join(''));
+
+/* ---------- input ---------- */
+btn.addEventListener('pointerdown',e=>{e.preventDefault();try{btn.setPointerCapture(e.pointerId)}catch(_){}start();});
+['pointerup','pointercancel','lostpointercapture'].forEach(ev=>btn.addEventListener(ev,release));
+window.addEventListener('blur',release);
+document.addEventListener('keydown',e=>{if(e.code==='Space'&&!e.repeat){e.preventDefault();start();}});
+document.addEventListener('keyup',e=>{if(e.code==='Space'){e.preventDefault();release();}});
+btn.addEventListener('contextmenu',e=>e.preventDefault());
+
+/* ---------- chart ---------- */
+let W=0,H=0;
+function resize(){const r=cv.getBoundingClientRect(),d=window.devicePixelRatio||1;W=r.width;H=r.height;cv.width=Math.round(W*d);cv.height=Math.round(H*d);ctx.setTransform(d,0,0,d,0,0);}
+new ResizeObserver(resize).observe(chart);resize();
+let idleCandles=[];
+function buildChartIdle(){ // 장 시작 전: 전일 흐름 미리보기
+  idleCandles=[];let m=1;for(let i=0;i<34;i++){const o=m;m*=1+rnd(-.012,.012);idleCandles.push({o,c:m,h:Math.max(o,m)*(1+rnd(0,.006)),l:Math.min(o,m)*(1-rnd(0,.006)),v:rnd(.3,1.4),ghost:true});}
+  const f=idleCandles[idleCandles.length-1].c;idleCandles.forEach(c=>{c.o/=f;c.c/=f;c.h/=f;c.l/=f;});
+}
+function draw(){
+  ctx.clearRect(0,0,W,H);
+  const padR=50,volH=Math.max(24,H*.15),plotT=24,plotB=H-volH-14,plotL=6,plotR=W-padR;
+  const cw=9,N=Math.max(10,Math.floor((plotR-plotL)/cw));
+  const all=state==='ready'||!run?idleCandles:candles;
+  const vis=all.slice(-N);
+  let lo=.97,hi=1.12;vis.forEach(c=>{lo=Math.min(lo,c.l);hi=Math.max(hi,c.h)});
+  if(run&&run.hint&&state!=='ready')hi=Math.max(hi,Math.min(run.hint.v*1.05,hi*1.6));
+  const L0=Math.log(lo)-.03,L1=Math.log(hi)+.05;
+  const Y=m=>plotB-(Math.log(m)-L0)/(L1-L0)*(plotB-plotT);
+  const X=i=>plotL+i*cw+cw/2;
+  ctx.font='500 11px "JetBrains Mono",monospace';ctx.textBaseline='middle';ctx.textAlign='left';ctx.lineWidth=1;
+  for(let i=0;i<=4;i++){const m=Math.exp(L0+(L1-L0)*(i+.5)/5),y=Y(m);
+    ctx.strokeStyle=C.line;ctx.beginPath();ctx.moveTo(plotL,y);ctx.lineTo(plotR,y);ctx.stroke();
+    ctx.fillStyle=C.muted;ctx.fillText(fmtP(priceOf(m)),plotR+4,y);}
+  const T=TIERS[offer().k];
+  const hl=(m,col,label,dash)=>{if(m<Math.exp(L0)||m>Math.exp(L1))return;const y=Y(m);ctx.strokeStyle=col;ctx.setLineDash(dash);ctx.globalAlpha=.75;
+    ctx.beginPath();ctx.moveTo(plotL,y);ctx.lineTo(plotR,y);ctx.stroke();ctx.setLineDash([]);ctx.globalAlpha=1;
+    ctx.fillStyle=col;ctx.font='700 10px "Noto Sans KR",sans-serif';ctx.fillText(label,plotL+4,y-7);ctx.font='500 10px "JetBrains Mono",monospace';};
+  hl(1,C.muted,'기준가',[2,3]);
+  if(T.limit)hl(1.3,C.gold,'상한가 +30%',[4,4]);
+  if(run&&run.hint&&state!=='ready'){ctx.lineWidth=2;hl(run.hint.v,C.rumor,'찌라시 목표가',[2,5]);ctx.lineWidth=1;}
+  // volume
+  const vmax=Math.max(1,...vis.map(c=>c.v));
+  vis.forEach((c,i)=>{const h=c.v/vmax*volH;ctx.fillStyle=c.c>=c.o?C.up:C.down;ctx.globalAlpha=c.ghost?.25:.55;ctx.fillRect(X(i)-(cw-2)/2,H-6-h,cw-2,h);});
+  ctx.globalAlpha=1;
+  // MA5
+  const off=all.length-vis.length;
+  ctx.strokeStyle=C.gold;ctx.lineWidth=1.2;ctx.globalAlpha=.7;ctx.beginPath();let st=false;
+  vis.forEach((c,i)=>{const j=off+i;if(j<4)return;let s=0;for(let k=j-4;k<=j;k++)s+=all[k].c;const y=Y(s/5);st?ctx.lineTo(X(i),y):(ctx.moveTo(X(i),y),st=true);});
+  ctx.stroke();ctx.globalAlpha=1;ctx.lineWidth=1;
+  // candles
+  vis.forEach((c,i)=>{
+    const up=c.c>=c.o&&!c.crash,col=up?C.up:C.down,x=X(i);
+    ctx.globalAlpha=c.ghost&&!c.crash?(state==='ready'?.45:.32):1;
+    ctx.strokeStyle=col;ctx.fillStyle=col;
+    ctx.beginPath();ctx.moveTo(x+.5,Y(c.h));ctx.lineTo(x+.5,Y(Math.max(c.l,Math.exp(L0))));ctx.stroke();
+    const yo=Y(c.o),yc=Y(Math.max(c.c,Math.exp(L0)));ctx.fillRect(x-(cw-2)/2,Math.min(yo,yc),cw-2,Math.max(1,Math.abs(yc-yo)));
+  });
+  ctx.globalAlpha=1;
+  if(!vis.length)return;
+  // sell marker
+  if(sell){const i=sell.idx-off;if(i>=0&&i<vis.length){const x=X(i),y=Y(vis[i].h)-8;
+    ctx.fillStyle=C.down;ctx.beginPath();ctx.moveTo(x-5,y-8);ctx.lineTo(x+5,y-8);ctx.lineTo(x,y);ctx.closePath();ctx.fill();
+    ctx.font='700 11px "Noto Sans KR",sans-serif';ctx.textAlign='center';ctx.fillText('매도',Math.max(16,x),y-16);ctx.textAlign='left';}}
+  // peak marker after crash
+  if(crashed){let pi=-1,pm=0;vis.forEach((c,i)=>{if(c.h>pm&&!c.crash){pm=c.h;pi=i}});
+    if(pi>=0){ctx.fillStyle=C.gold;ctx.font='700 10px "Noto Sans KR",sans-serif';ctx.textAlign='center';
+      ctx.fillText('고점 '+fmtP(priceOf(pm)),Math.min(plotR-34,Math.max(34,X(pi))),Y(pm)-10);ctx.textAlign='left';}}
+  // current price tag
+  const last=vis[vis.length-1],ly=Y(Math.max(last.c,Math.exp(L0)));
+  const tagCol=last.crash||last.c<1?C.down:C.up;
+  ctx.strokeStyle=tagCol;ctx.setLineDash([3,3]);ctx.beginPath();ctx.moveTo(plotL,ly);ctx.lineTo(plotR,ly);ctx.stroke();ctx.setLineDash([]);
+  ctx.fillStyle=tagCol;ctx.fillRect(plotR,ly-8,padR,16);
+  ctx.fillStyle='#fff';ctx.font='700 10px "JetBrains Mono",monospace';ctx.fillText(fmtP(priceOf(last.c)),plotR+3,ly);
+  if(state==='holding'){ctx.fillStyle=C.up;ctx.shadowColor=C.up;ctx.shadowBlur=14;ctx.beginPath();ctx.arc(X(vis.length-1)+.5,ly,3,0,7);ctx.fill();ctx.shadowBlur=0;}
+}
+
+/* ---------- loop ---------- */
+function frame(ts){
+  const dt=Math.min(.05,(ts-lastTs)/1000||0);lastTs=ts;
+  if(state==='holding'||state==='ghost'){
+    const prev=cur;
+    t+=dt*(state==='ghost'?3:(run.it.slow?.6:1));
+    const b=base(t);
+    if(state==='holding'){
+      if(!warned&&base(t+1)>=run.crashAt){warned=true;if(Math.random()<.4)news('⚠ '+pick(BEAR),'bear');}
+      else if(t>.8&&!events.some(e=>t<e.t0+1.6)&&Math.random()<dt*.2){
+        const bull=Math.random()<.45;events.push({t0:t,amp:bull?.12:-.14});if(!bull)run.sawDip=true;
+        news(bull?'📈 '+pick(BULL):'⚠ '+pick(BEAR),bull?'bull':'bear');talk(bull?'hype':'fear');
+      }
+      talkT+=dt;if(talkT>1.8){talkT=0;talk(inDip(t)?'fear':cur>1.15?'hype':pick(['hype','idle']));}
+    }
+    if(b>=run.crashAt){cur=run.crashAt;peak=Math.max(peak,cur);crash();}
+    else{
+      cur=Math.max(.85,b*wig(t)*newsF(t));peak=Math.max(peak,cur);
+      const idx=Math.floor(t/CD);
+      while(candles.length<=idx){const pc=candles.length?candles[candles.length-1].c:1;candles.push({o:pc,h:pc,l:pc,c:pc,v:0,ghost:state==='ghost'});if(state==='holding')sfx.tick(cur);}
+      const c=candles[candles.length-1];c.h=Math.max(c.h,cur);c.l=Math.min(c.l,cur);c.c=cur;
+      const dv=dt*(1+Math.abs(cur-prev)/prev*300+(events.some(e=>t>=e.t0&&t<=e.t0+1.4)?3:0))*rnd(.6,1.4);c.v+=dv;volTotal+=dv*(1+cur);
+      if(state==='holding'){const lev=run.it.lev?2:1,g=balance*(cur-1)*lev;
+        $('pnl').innerHTML='평가손익 <span class="'+(g>=0?'up':'dn')+'">'+sw(g)+'</span>'+(lev>1?' <span class="gd">x2</span>':'');}
+    }
+    paintQuote();
+  }else if(state==='ready'){
+    talkT+=dt;if(talkT>2.6){talkT=0;talk('idle');}
+  }
+  bookT+=dt;if(bookT>(state==='holding'?.25:1)){bookT=0;renderBook();}
+  draw();requestAnimationFrame(frame);
+}
+
+buildChartIdle();paintTop();paintPickers();paintQuote();renderBook();setBtn();showIntro();talk('idle');talk('idle');
+requestAnimationFrame(frame);
+})();
+</script>
+
+<script>
+if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+</script>
+</body></html>

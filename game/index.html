@@ -130,7 +130,7 @@ canvas{position:absolute;inset:0;width:100%;height:100%}
 .app.fever #hold{background:linear-gradient(90deg,var(--up),#ff7a1a,var(--up));background-size:200% 100%;animation:flow 1.2s linear infinite}
 @keyframes flow{to{background-position:200% 0}}
 #hold:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
-#hold.on{transform:translateY(4px);box-shadow:0 1px 0 color-mix(in srgb,var(--up) 50%,#000);animation:pulse .45s infinite alternate}
+#hold.on{transform:translateY(4px);box-shadow:0 1px 0 color-mix(in srgb,var(--up) 50%,#000),0 0 calc(var(--heat,0) * 46px) color-mix(in srgb,var(--up) 80%,transparent);animation:pulse .45s infinite alternate}
 #hold.wait{background:var(--panel2);color:var(--muted);box-shadow:0 5px 0 #040508;animation:none}
 @keyframes pulse{to{filter:brightness(1.25)}}
 
@@ -147,7 +147,18 @@ canvas{position:absolute;inset:0;width:100%;height:100%}
 .li.done b{color:var(--gold)}
 .modal button{margin-top:12px;width:100%;font:inherit;font-weight:700;background:var(--fg);color:var(--bg);border:0;border-radius:10px;padding:10px;cursor:pointer}
 @media (max-height:700px){.talk{display:none}#hold{height:60px}}
-@media (prefers-reduced-motion:reduce){.chart.shake,#hold.on,.card,#news,#toast,#fever,.app.fever #hold{animation:none}}
+#vign{position:absolute;inset:0;pointer-events:none;z-index:1;border-radius:10px}
+.stamp{position:absolute;left:50%;top:40%;font-family:var(--display);font-size:clamp(36px,12vw,60px);color:var(--gold);text-shadow:0 0 22px color-mix(in srgb,var(--gold) 60%,transparent),0 3px 0 #000;pointer-events:none;white-space:nowrap;animation:stamp 1s cubic-bezier(.2,1.6,.4,1) forwards;z-index:4}
+.stamp.dn{color:var(--down);text-shadow:0 0 22px color-mix(in srgb,var(--down) 60%,transparent),0 3px 0 #000}
+@keyframes stamp{0%{transform:translate(-50%,-50%) scale(2.6) rotate(-6deg);opacity:0}14%{transform:translate(-50%,-50%) scale(1) rotate(-3deg);opacity:1}72%{transform:translate(-50%,-50%) scale(1.04) rotate(-3deg);opacity:1}100%{transform:translate(-50%,-80%) scale(1) rotate(-3deg);opacity:0}}
+.pop{position:fixed;font-family:var(--mono);font-weight:800;font-size:28px;color:var(--up);pointer-events:none;z-index:26;text-shadow:0 2px 0 #000,0 0 16px color-mix(in srgb,var(--up) 50%,transparent);white-space:nowrap;animation:popup 1.3s ease-out forwards}
+@keyframes popup{0%{transform:translate(-50%,0) scale(.5);opacity:0}18%{transform:translate(-50%,-40px) scale(1.3);opacity:1}100%{transform:translate(-50%,-150px) scale(1);opacity:0}}
+#fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:25}
+.flash{position:fixed;inset:0;pointer-events:none;z-index:24;animation:flash .4s ease-out forwards}
+@keyframes flash{from{opacity:.5}to{opacity:0}}
+#bal.bump{animation:bump .5s ease-out}
+@keyframes bump{30%{transform:scale(1.12);color:var(--gold)}}
+@media (prefers-reduced-motion:reduce){.stamp,.pop,.flash{animation-duration:.01s}.chart.shake,#hold.on,.card,#news,#toast,#fever,.app.fever #hold{animation:none}}
 </style>
 
 <div class="app" id="app">
@@ -161,7 +172,7 @@ canvas{position:absolute;inset:0;width:100%;height:100%}
     </div>
   </header>
   <div class="acct">
-    <div><small>예수금</small><span id="bal">1,000,000원</span></div>
+    <div><small>예수금</small><span id="bal" class="num">1,000,000원</span></div>
     <div><small>연속 익절</small><span id="streak">0</span></div>
     <div><small>최고 자산</small><span id="best">-</span></div>
   </div>
@@ -170,7 +181,7 @@ canvas{position:absolute;inset:0;width:100%;height:100%}
     <div class="qp"><div id="qPrice" class="num">-</div><div id="qChg" class="mu">-</div></div>
   </div>
   <div class="main" id="main">
-    <div class="chart" id="chart"><canvas id="cv"></canvas><div id="pnl" hidden></div><div id="fever" hidden>🔥 FEVER</div></div>
+    <div class="chart" id="chart"><canvas id="cv"></canvas><div id="vign"></div><div id="pnl" hidden></div><div id="fever" hidden>🔥 FEVER</div></div>
     <div class="book" id="book"></div>
     <div id="news" hidden></div>
     <div id="card" class="card" hidden></div>
@@ -181,6 +192,7 @@ canvas{position:absolute;inset:0;width:100%;height:100%}
   <button id="hold" type="button">꾹 눌러서 매수</button>
 </div>
 <div id="toast" hidden></div>
+<canvas id="fx"></canvas>
 <div class="modal" id="modal" hidden><div class="box"><div id="modalBody"></div><button id="modalClose" type="button">닫기</button></div></div>
 
 <script>
@@ -328,7 +340,7 @@ function gainXp(n){
 }
 
 function paintTop(){
-  $('bal').textContent=won(balance);
+  animBal();
   $('streak').innerHTML=streak?(streak>=5?'<span class="gd">'+streak+'연속 🔥</span>':streak+'연속'):'0';
   $('best').textContent=best?won(best):'-';
   const ri=rankOf(xp),nx=RANKS[ri+1];
@@ -396,7 +408,7 @@ function start(){
   if(it.insider){const real=Math.random()<.7;hint={real,v:real?Math.max(1.02,crashAt*rnd(.88,.98)):crashAt*rnd(1.4,3)};}
   run={offer:o,T,key:o.k,crashAt,it,hint,sawDip:false};
   card.hidden=true;$('news').hidden=true;
-  candles=[];t=0;cur=1;peak=1;sell=null;crashed=false;events=[];warned=false;volTotal=0;talkT=0;
+  candles=[];t=0;cur=1;peak=1;sell=null;crashed=false;events=[];warned=false;volTotal=0;talkT=0;hbT=0;vigA=0;run.mi=0;
   state='holding';paintTop();paintPickers();setBtn();
   $('pnl').hidden=false;
   if(hint)news('🔍 찌라시: "'+fmtP(priceOf(hint.v))+'원 근처에서 세력 턴다"','rumor');
@@ -412,7 +424,7 @@ function release(){
   sell.gain=gain;sell.bonus=bonus;sell.fever=fever;
   balance+=gain+bonus;
   if(balance>best){best=balance;store.set('shg_best',Math.floor(best));}
-  state='ghost';sfx.sell();talk('sold');
+  state='ghost';sfx.sell();talk('sold');freezeT=.14;sellJuice(gain+bonus);
   app.classList.toggle('fever',fever);$('fever').hidden=!fever;
   paintTop();paintPickers();setBtn();
   $('pnl').innerHTML='<span class="dn">매도 체결</span> <span class="up">'+sw(gain+bonus)+'</span>';
@@ -432,7 +444,9 @@ function crash(){
   candles.push({o:last?last.c:run.crashAt,h:last?last.c:run.crashAt,l:bot,c:bot,v:(last?last.v:1)*4+6,crash:true,ghost:!!sell});
   chart.classList.remove('shake');void chart.offsetWidth;chart.classList.add('shake');
   try{navigator.vibrate&&navigator.vibrate(sell?40:[80,40,140])}catch(e){}
-  sfx.crash();talk('crash');setTimeout(()=>talk('crash'),500);
+  sfx.crash();talk('crash');setTimeout(()=>talk('crash'),500);vigA=0;$('vign').style.boxShadow='none';btn.style.setProperty('--heat',0);
+  if(!sell){flash(C.down);stamp('💥 폭락','dn');shards();}
+  else if(crashT-sell.t<.6){stamp('탈출 성공!');sfx.up();}
   let res;
   if(state==='holding'){
     let L=run.T.loss;if(run.it.lev)L=Math.min(.9,L*1.6);if(run.it.shield)L=.1;
@@ -599,9 +613,60 @@ function draw(){
   if(state==='holding'){ctx.fillStyle=C.up;ctx.shadowColor=C.up;ctx.shadowBlur=14;ctx.beginPath();ctx.arc(X(vis.length-1)+.5,ly,3,0,7);ctx.fill();ctx.shadowBlur=0;}
 }
 
+
+/* ---------- juice ---------- */
+const MS=[[1.3,'상한가 돌파!'],[2,'따블!'],[3,'3배!!'],[4,'따따블!!'],[5,'5배 실화?'],[7,'7배 가즈아'],[10,'텐배거!!!'],[20,'20배…신?']];
+let hbT=0,vigA=0,freezeT=0,shownBal=balance,balAnim=0,parts=[];
+const fx=$('fx'),fctx=fx.getContext('2d');
+function fxResize(){const d=window.devicePixelRatio||1;fx.width=innerWidth*d;fx.height=innerHeight*d;fctx.setTransform(d,0,0,d,0,0);}
+addEventListener('resize',fxResize);fxResize();
+function stamp(text,cls){
+  const el=document.createElement('div');el.className='stamp '+(cls||'');el.textContent=text;chart.appendChild(el);
+  setTimeout(()=>el.remove(),1050);
+  if(!cls){beep(784,.08,'square',.04);setTimeout(()=>beep(1175,.14,'square',.04),70);}
+  try{navigator.vibrate&&navigator.vibrate(20)}catch(e){}
+}
+function flash(col){const el=document.createElement('div');el.className='flash';el.style.background=col;document.body.appendChild(el);setTimeout(()=>el.remove(),420);}
+function burst(x,y,n,col,up){
+  for(let i=0;i<n;i++){const a=up?(-Math.PI/2+rnd(-1.1,1.1)):rnd(0,Math.PI*2),v=rnd(4,11);
+    parts.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v-(up?3:0),life:rnd(.7,1.3),col:col||pick([C.gold,'#ffe08a','#ffb703']),r:rnd(3,6),sq:!up});}
+}
+function shards(){const r=chart.getBoundingClientRect();for(let i=0;i<26;i++)parts.push({x:rnd(r.left,r.right),y:r.top+rnd(0,r.height*.4),vx:rnd(-1.5,1.5),vy:rnd(0,3),life:rnd(.8,1.4),col:C.down,r:rnd(3,7),sq:true});}
+function stepFx(dt){
+  fctx.clearRect(0,0,innerWidth,innerHeight);if(!parts.length)return;
+  parts=parts.filter(p=>(p.life-=dt)>0);
+  parts.forEach(p=>{p.vy+=dt*28;p.x+=p.vx*dt*60*.5;p.y+=p.vy*dt*60*.5;fctx.globalAlpha=Math.min(1,p.life*1.6);fctx.fillStyle=p.col;
+    if(p.sq)fctx.fillRect(p.x,p.y,p.r,p.r*.6);else{fctx.beginPath();fctx.arc(p.x,p.y,p.r,0,7);fctx.fill();}});
+  fctx.globalAlpha=1;
+}
+function sellJuice(amt){
+  vigA=0;$('vign').style.boxShadow='none';btn.style.setProperty('--heat',0);
+  const r=btn.getBoundingClientRect(),x=r.left+r.width/2,y=r.top;
+  const el=document.createElement('div');el.className='pop';el.textContent=sw(amt);el.style.left=x+'px';el.style.top=(y-10)+'px';document.body.appendChild(el);
+  setTimeout(()=>el.remove(),1350);
+  burst(x,y+10,Math.min(70,14+Math.round(Math.log2(1+amt/50000)*8)),null,true);
+  flash(C.gold);try{navigator.vibrate&&navigator.vibrate([25,30,25])}catch(e){}
+  const b=$('bal');b.classList.remove('bump');void b.offsetWidth;b.classList.add('bump');
+}
+function animBal(){
+  const from=shownBal,to=balance,t0=performance.now();cancelAnimationFrame(balAnim);
+  if(Math.abs(to-from)<1){$('bal').textContent=won(to);shownBal=to;return;}
+  const step=n=>{const k=Math.min(1,(n-t0)/650),e=1-Math.pow(1-k,3);shownBal=from+(to-from)*e;$('bal').textContent=won(shownBal);if(k<1)balAnim=requestAnimationFrame(step);};
+  balAnim=requestAnimationFrame(step);
+}
+function tension(dt){ // 심장 박동: 오래 들고 있을수록, 많이 오를수록 빨라짐
+  const heat=Math.min(1,(cur-1)/2.2+t/30);btn.style.setProperty('--heat',heat.toFixed(2));
+  const iv=Math.max(.3,1-heat*.7);hbT+=dt;
+  if(hbT>=iv){hbT=0;vigA=.25+heat*.55;beep(60,.1,'sine',.09+heat*.08);setTimeout(()=>beep(52,.09,'sine',.06+heat*.06),120);
+    if(heat>.5)try{navigator.vibrate&&navigator.vibrate(10)}catch(e){}}
+  vigA*=Math.pow(.04,dt);
+  $('vign').style.boxShadow='inset 0 0 '+(30+heat*50).toFixed(0)+'px '+(heat*14).toFixed(0)+'px rgba(242,49,63,'+vigA.toFixed(3)+')';
+}
 /* ---------- loop ---------- */
 function frame(ts){
   const dt=Math.min(.05,(ts-lastTs)/1000||0);lastTs=ts;
+  stepFx(dt);
+  if(freezeT>0){freezeT-=dt;draw();requestAnimationFrame(frame);return;}
   if(state==='holding'||state==='ghost'){
     const prev=cur;
     t+=dt*(state==='ghost'?3:(run.it.slow?.6:1));
@@ -621,6 +686,7 @@ function frame(ts){
       while(candles.length<=idx){const pc=candles.length?candles[candles.length-1].c:1;candles.push({o:pc,h:pc,l:pc,c:pc,v:0,ghost:state==='ghost'});if(state==='holding')sfx.tick(cur);}
       const c=candles[candles.length-1];c.h=Math.max(c.h,cur);c.l=Math.min(c.l,cur);c.c=cur;
       const dv=dt*(1+Math.abs(cur-prev)/prev*300+(events.some(e=>t>=e.t0&&t<=e.t0+1.4)?3:0))*rnd(.6,1.4);c.v+=dv;volTotal+=dv*(1+cur);
+      if(state==='holding'){tension(dt);while(run.mi<MS.length&&cur>=MS[run.mi][0]){if(!(MS[run.mi][0]===1.3&&!run.T.limit))stamp(MS[run.mi][1]);run.mi++;}}
       if(state==='holding'){const lev=run.it.lev?2:1,g=balance*(cur-1)*lev;
         $('pnl').innerHTML='평가손익 <span class="'+(g>=0?'up':'dn')+'">'+sw(g)+'</span>'+(lev>1?' <span class="gd">x2</span>':'');}
     }

@@ -109,7 +109,7 @@ canvas{position:absolute;inset:0;width:100%;height:100%}
 .card ul{text-align:left;font-size:12.5px;line-height:1.6;padding-left:18px;margin:8px 0 0;color:var(--fg)}
 
 /* 종토방 */
-.talk{flex:none;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:4px 10px;height:26px;box-sizing:border-box;overflow:hidden;font-size:12.5px;display:flex;flex-direction:column;justify-content:flex-end}
+.talk{flex:none;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:4px 10px;height:42px;box-sizing:border-box;overflow:hidden;font-size:12.5px;display:flex;flex-direction:column;justify-content:flex-end}
 .talk p{margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:16px;animation:slide .2s ease-out}
 .talk p b{color:var(--muted);font-weight:500;margin-right:6px}
 .talk p:first-child{opacity:.55}
@@ -168,6 +168,15 @@ canvas{position:absolute;inset:0;width:100%;height:100%}
 .card .opts button:active{background:var(--gold);color:#1a1300}
 .card .emo{font-size:56px;line-height:1.1}
 .card .perk{display:inline-block;margin-top:8px;font-size:12px;font-weight:700;color:var(--gold);border:1px solid var(--gold);border-radius:999px;padding:3px 10px}
+.ob.fl .q{color:var(--gold);opacity:1}
+.ob.fl i{opacity:.4}
+.trs{border-top:1px solid var(--line);padding:2px 5px;font-size:10.5px;flex:none}
+.trs .th,.tr{display:flex;justify-content:space-between;line-height:13px}
+.trs .th{font-family:var(--body);font-size:9.5px;color:var(--muted)}
+.tr span:last-child{color:var(--fg);opacity:.7}
+.tr:first-of-type{animation:slide .15s ease-out}
+#news small{display:block;font-size:10.5px;font-weight:500;opacity:.8;margin-bottom:2px}
+.talk em{font-style:normal;color:var(--muted);font-size:11px}
 @media (prefers-reduced-motion:reduce){#coach{animation:none}.stamp,.pop,.flash{animation-duration:.01s}.chart.shake,#hold.on,.card,#news,#toast,#fever,.app.fever #hold{animation:none}}
 </style>
 
@@ -334,15 +343,29 @@ function unlock(id){
   if(ach.includes(id))return;ach.push(id);store.set('shg_ach',ach);
   const a=ACH.find(a=>a[0]===id);setTimeout(()=>toast('업적 달성 '+a[1]+' '+a[2]),350);paintTop();
 }
+const SRC=['한경','매경','연합뉴스','이데일리','머니투데이','뉴스1','서울경제'];
+const clock=()=>{const d=new Date();return [d.getHours(),d.getMinutes(),d.getSeconds()].map(n=>String(n).padStart(2,'0')).join(':')};
 function news(text,kind){
-  const el=$('news');el.textContent=text;el.className=kind;el.hidden=false;el.style.animation='none';void el.offsetWidth;el.style.animation='';
-  clearTimeout(newsTimer);newsTimer=setTimeout(()=>el.hidden=true,1700);sfx.news();
+  const el=$('news');
+  el.innerHTML='<small>'+(kind==='rumor'?'찌라시':(kind==='bull'?'[단독] ':'[속보] ')+pick(SRC))+' · '+clock()+'</small>'+text;
+  el.className=kind;el.hidden=false;el.style.animation='none';void el.offsetWidth;el.style.animation='';
+  clearTimeout(newsTimer);newsTimer=setTimeout(()=>el.hidden=true,2000);sfx.news();
+  talkLines.push('<b class="gd">[뉴스]</b>'+text.replace(/^[^ ]+ /,''));renderTalk();
 }
 const talkLines=[];
+const NEUTRAL=['코스피 외국인 순매도 지속','美 금리 동결 전망 우세','환율 1,390원대 등락','2차전지주 일제히 약세','반도체 업황 회복 기대감','개인 신용잔고 사상 최대','공매도 잔고 증가세','기관 프로그램 매수 유입'];
+function dynTalk(kind){
+  const pc=((cur-1)*100).toFixed(1),pr=fmtP(priceOf(cur)),n=Math.floor(rnd(10,3000));
+  const H=[`+${pc}% 실화냐`,`${pr}원 뚫었다 ㄷㄷ`,`방금 ${n}주 추매함`,`여기서 더 감?`,`호가창 빨간 거 봐라`,`체결 속도 미쳤다`,`${pr}원에 물린 사람 탈출각`,`매수벽 두껍다`];
+  const F=[`${pr}원 지지 되나?`,`매도 물량 쏟아진다`,`방금 ${n}주 던짐`,`호가 비었다 조심`,`파란불 무섭다`];
+  return pick(kind==='fear'?F:H);
+}
+function renderTalk(){while(talkLines.length>2)talkLines.shift();$('talk').innerHTML=talkLines.map(x=>'<p>'+x+'</p>').join('');}
 function talk(kind){
-  talkLines.push('<b>'+pick(NICK)+Math.floor(rnd(1,999))+'</b>'+pick(TALK[kind]));
-  while(talkLines.length>1)talkLines.shift();
-  $('talk').innerHTML=talkLines.map(s=>'<p>'+s+'</p>').join('');
+  let msg;
+  if(state==='holding'&&Math.random()<.12)msg='<b class="gd">[뉴스]</b>'+pick(NEUTRAL);
+  else msg='<b>'+pick(NICK)+Math.floor(rnd(1,999))+'</b>'+(state==='holding'&&(kind==='hype'||kind==='fear')&&Math.random()<.55?dynTalk(kind):pick(TALK[kind]))+(Math.random()<.4?' <em>👍'+Math.floor(rnd(1,99))+'</em>':'');
+  talkLines.push(msg);renderTalk();
 }
 function rankOf(x){let i=0;RANKS.forEach((r,j)=>{if(x>=r[0])i=j});return i}
 function gainXp(n){
@@ -377,17 +400,28 @@ function paintQuote(){
   $('qPrice').className='num '+cls;$('qPrice').textContent=fmtP(p);
   $('qChg').className=cls;$('qChg').textContent=(d>0?'▲ ':d<0?'▼ ':'')+fmtP(Math.abs(d))+'  '+(pc>=0?'+':'')+pc.toFixed(2)+'%';
 }
+let bookQ={},trades=[],tradeT=0,tradeM=1;
 function renderBook(){
   const m=state==='ready'||!run?1:(crashed&&!sell?Math.min(cur,run.crashAt*.62):cur);
   const p=priceOf(m),tk=tickOf(p),o=offer();
   const rising=state==='holding'&&!events.some(e=>e.amp<0&&t>=e.t0&&t<=e.t0+1.4);
-  const bw=rising?1.5:.8,aw=rising?.8:1.4;
+  const bw=rising?1.5:.8,aw=rising?.8:1.4,unit=o.k==='blue'?40:o.k==='meme'?900:180;
   const rows=[];for(let k=5;k>=1;k--)rows.push([p+tk*k,1]);for(let k=0;k<5;k++)rows.push([p-tk*k,0]);
-  const qs=rows.map(r=>Math.round(Math.exp(rnd(0,2.6))*(r[1]?aw:bw)*(o.k==='blue'?40:o.k==='meme'?900:180)));
-  const mx=Math.max(...qs);
-  const str=Math.round(100*bw/aw*rnd(.85,1.15));
-  $('book').innerHTML='<div class="hd">호가</div>'+rows.map((r,i)=>`<div class="ob ${r[1]?'ask':'bid'} ${i===5?'now':''}"><i style="width:${(qs[i]/mx*100).toFixed(0)}%"></i><span class="p ${r[0]>o.p0?'up':r[0]<o.p0?'dn':''}">${fmtP(r[0])}</span><span class="q">${qs[i].toLocaleString('ko-KR')}</span></div>`).join('')+
-    `<div class="ft">체결강도 <b class="${str>=100?'up':'dn'}">${str}%</b></div>`;
+  const nq={},fl=[];
+  const qs=rows.map(([rp,ask],i)=>{const old=bookQ[rp],tgt=Math.exp(rnd(0,2.6))*(ask?aw:bw)*unit;
+    const q=old==null?Math.round(tgt):Math.max(1,Math.round(old+(tgt-old)*.2+old*rnd(-.1,.1)));
+    fl[i]=old!=null&&Math.abs(q-old)>old*.15;nq[rp]=q;return q;});
+  bookQ=nq;
+  const mx=Math.max(...qs),str=Math.round(100*bw/aw*rnd(.94,1.06));
+  const askSum=qs.slice(0,5).reduce((a,b)=>a+b,0),bidSum=qs.slice(5).reduce((a,b)=>a+b,0);
+  $('book').innerHTML='<div class="hd">호가 · 잔량</div>'+rows.map((r,i)=>`<div class="ob ${r[1]?'ask':'bid'} ${i===5?'now':''} ${fl[i]?'fl':''}"><i style="width:${(qs[i]/mx*100).toFixed(0)}%"></i><span class="p ${r[0]>o.p0?'up':r[0]<o.p0?'dn':''}">${fmtP(r[0])}</span><span class="q">${qs[i].toLocaleString('ko-KR')}</span></div>`).join('')+
+    '<div class="trs"><div class="th"><span>체결</span><span>수량</span></div>'+trades.map(x=>`<div class="tr ${x.up?'up':'dn'}"><span>${fmtP(x.p)}</span><span>${x.q.toLocaleString('ko-KR')}</span></div>`).join('')+'</div>'+
+    `<div class="ft">체결강도 <b class="${str>=100?'up':'dn'}">${str}%</b><br><span class="dn">${askSum.toLocaleString('ko-KR')}</span> · <span class="up">${bidSum.toLocaleString('ko-KR')}</span></div>`;
+}
+function pushTrade(m){
+  const o=offer(),unit=o.k==='blue'?40:o.k==='meme'?900:180;
+  trades.unshift({p:priceOf(m),q:Math.max(1,Math.round(Math.exp(rnd(0,3))*unit/8)),up:m>=tradeM});tradeM=m;
+  if(trades.length>5)trades.length=5;
 }
 function setBtn(){
   const cool=state==='result'&&performance.now()<readyAt;
@@ -757,11 +791,11 @@ function frame(ts){
     const b=base(t);
     if(state==='holding'){
       if(!run.tut&&!warned&&base(t+1)>=run.crashAt){warned=true;if(Math.random()<(profile==='fox'?.65:.4))news('⚠ '+pick(BEAR),'bear');}
-      else if(!run.tut&&t>.8&&!events.some(e=>t<e.t0+1.6)&&Math.random()<dt*.2){
+      else if(!run.tut&&t>.8&&!events.some(e=>t<e.t0+1.6)&&Math.random()<dt*.3){
         const bull=Math.random()<.45;events.push({t0:t,amp:bull?.12:-.14});if(!bull)run.sawDip=true;
         news(bull?'📈 '+pick(BULL):'⚠ '+pick(BEAR),bull?'bull':'bear');talk(bull?'hype':'fear');
       }
-      talkT+=dt;if(talkT>1.8){talkT=0;talk(inDip(t)?'fear':cur>1.15?'hype':pick(['hype','idle']));}
+      talkT+=dt;if(talkT>.4+Math.random()*.5){talkT=0;talk(inDip(t)?'fear':cur>1.15?'hype':pick(['hype','idle']));}
     }
     if(b>=run.crashAt){cur=run.crashAt;peak=Math.max(peak,cur);crash();}
     else{
@@ -776,9 +810,10 @@ function frame(ts){
     }
     paintQuote();
   }else if(state==='ready'){
-    talkT+=dt;if(talkT>2.6){talkT=0;talk('idle');}
+    talkT+=dt;if(talkT>1.6){talkT=0;talk('idle');}
   }
-  bookT+=dt;if(bookT>(state==='holding'?.25:1)){bookT=0;renderBook();}
+  tradeT+=dt;if(tradeT>(state==='holding'?rnd(.04,.16):state==='ghost'?.12:rnd(.4,.9))){tradeT=0;pushTrade(state==='ready'||!run?1+rnd(-.003,.003):cur);}
+  bookT+=dt;if(bookT>(state==='holding'||state==='ghost'?.12:.5)){bookT=0;renderBook();}
   draw();requestAnimationFrame(frame);
 }
 

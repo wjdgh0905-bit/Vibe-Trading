@@ -386,18 +386,20 @@ const TALK={
 const NICK=['개미','존버','단타왕','물린자','한강수영','부자될래','익절요정','세력아님','손절장인','풀매수'];
 
 /* ---------- persistent ---------- */
-const today=(()=>{const d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()})();
+const dayKey=()=>{const d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()};
 let best=store.get('shg_best',0),ach=store.get('shg_ach',[]),xp=store.get('shg_xp',0);
 const SET=Object.assign({sound:true,vib:true,heart:true,fx:true,slow:false},store.get('shg_set',{}));
 let muted=!SET.sound;
 const vib=pat=>{if(!SET.vib)return;try{navigator.vibrate&&navigator.vibrate(pat)}catch(e){}};
 let daily=store.get('shg_daily',null);
-if(!daily||daily.date!==today||daily.v!==2){
+function ensureDaily(){
+  const today=dayKey();if(daily&&daily.date===today&&daily.v===2)return;
   let h=0;for(const ch of today)h=(h*31+ch.charCodeAt(0))>>>0;
   const pool=MISSIONS.map(m=>m.id),ids=[];
   while(ids.length<3){h=(h*1103515245+12345)>>>0;const id=pool[h%pool.length];if(!ids.includes(id))ids.push(id);}
   daily={date:today,v:2,ids,prog:{},done:[]};store.set('shg_daily',daily);
 }
+ensureDaily();
 
 /* ---------- state ---------- */
 let state='ready',balance=START,streak=0,round=1,tierSel='theme',sel={shield:false,insider:false,slow:false,lev:false};
@@ -473,6 +475,8 @@ function gainXp(n){
 }
 
 function paintTop(){
+  if(balance>best){best=balance;store.set('shg_best',Math.floor(best));}
+  if(lowFlag&&balance>=START&&state!=='holding'){unlock('comeback');lowFlag=false;}
   animBal();
   $('streak').innerHTML=streak?(streak>=5?'<span class="gd">'+streak+'연속 🔥</span>':streak+'연속'):'0';
   $('best').textContent=best?won(best):'-';
@@ -543,6 +547,7 @@ function start(){
   if(state==='result'&&performance.now()<readyAt)return;
   au();
   if(state==='result')round++;
+  ensureDaily();
   const tut=!tutDone;if(tut)for(const k in sel)sel[k]=false;hideCoach();
   const o=offers.find(x=>x.k===tierSel),T=TIERS[o.k];
   let cost=0;for(const k in sel)if(sel[k])cost+=balance*ITEMS[k].cost;
@@ -551,7 +556,7 @@ function start(){
   const crashAt=tut?1.85:Math.max(1.01,1+(raw-1)*T.scale);
   const it={...sel};let hint=null;
   if(it.insider){const real=Math.random()<.7;hint={real,v:real?Math.max(1.02,crashAt*rnd(.88,.98)):crashAt*rnd(1.4,3)};}
-  run={offer:o,T,key:o.k,crashAt,it,hint,sawDip:false,tut};tutStep=0;
+  run={offer:o,T,key:o.k,crashAt,it,hint,sawDip:false,tut,cost};tutStep=0;
   card.hidden=true;$('news').hidden=true;
   candles=[];t=0;cur=1;peak=1;sell=null;crashed=false;events=[];warned=false;volTotal=0;talkT=0;hbT=0;vigA=0;run.mi=0;
   state='holding';paintTop();paintPickers();setBtn();
@@ -626,8 +631,8 @@ function missionsUpdate(r){
     if(daily.done.includes(id))return;
     const m=MISSIONS.find(x=>x.id===id);
     if(m.f(r)){daily.prog[id]=(daily.prog[id]||0)+1;
-      if(daily.prog[id]>=m.n){daily.done.push(id);balance+=1000000*(1+.2*skl('mission'));gainXp(150);unlock('mission');
-        setTimeout(()=>{toast('📋 미션 완료! '+m.t+' · +1,000,000원');sfx.up();},1500);}}
+      if(daily.prog[id]>=m.n){const rw=1000000*(1+.2*skl('mission'));daily.done.push(id);balance+=rw;gainXp(150);unlock('mission');
+        setTimeout(()=>{toast('📋 미션 완료! '+m.t+' · +'+won(rw));sfx.up();},1500);}}
   });
   store.set('shg_daily',daily);
 }
@@ -680,11 +685,12 @@ function showIntro(){
 /* ---------- modals ---------- */
 function openModal(html){$('modalBody').innerHTML=html;$('modal').hidden=false;}
 $('modalClose').onclick=()=>$('modal').hidden=true;
-document.addEventListener('click',e=>{if(e.target&&e.target.id==='retake'){$('modal').hidden=true;if(state==='ready'||state==='result')startQuiz();}});
 /* ---------- input ---------- */
 btn.addEventListener('pointerdown',e=>{e.preventDefault();try{btn.setPointerCapture(e.pointerId)}catch(_){}start();});
 ['pointerup','pointercancel','lostpointercapture'].forEach(ev=>btn.addEventListener(ev,release));
 window.addEventListener('blur',release);
+document.addEventListener('visibilitychange',()=>{if(document.hidden)release();});
+addEventListener('pagehide',release);
 document.addEventListener('keydown',e=>{if(e.code==='Space'&&!e.repeat){e.preventDefault();start();}});
 document.addEventListener('keyup',e=>{if(e.code==='Space'){e.preventDefault();release();}});
 btn.addEventListener('contextmenu',e=>e.preventDefault());
@@ -895,7 +901,7 @@ const spFree=()=>spEarned()-spUsed();
 let stats=Object.assign({rounds:0,wins:0,bestM:0,bestPct:0,net:0,maxStreak:0,bankrupts:0,hist:[]},store.get('shg_stats',{}));
 function recordRound(r){
   stats.rounds++;if(r.win){stats.wins++;stats.bestM=Math.max(stats.bestM,r.m);stats.bestPct=Math.max(stats.bestPct,r.pct);}
-  stats.maxStreak=Math.max(stats.maxStreak,streak);stats.net+=lastAmt;
+  lastAmt-=run.cost||0;stats.maxStreak=Math.max(stats.maxStreak,streak);stats.net+=lastAmt;
   stats.hist.unshift({n:run.offer.name,w:r.win,m:r.win?r.m:peak,a:lastAmt});stats.hist=stats.hist.slice(0,20);
   store.set('shg_stats',stats);
 }

@@ -17,7 +17,7 @@
 <style>
 /* Layout: one-screen HTS (증권사 앱) — ticker tape, account, quote, candle chart + 호가창, 종토방, picker, hold button */
 :root{
-  --bg:#080a0f;--panel:#0f131a;--panel2:#151a23;--line:#1e2531;--fg:#e9edf3;--muted:#9aa4b7;
+  --bg:#07090d;--panel:#11161f;--panel2:#18202b;--line:#283142;--fg:#f2f5f9;--muted:#b0b9c9;
   --up:#f2313f;--down:#2f7bff;--gold:#ffc63a;--rumor:#b58cff;
   --display:"Black Han Sans","Noto Sans KR",sans-serif;
   --body:"Noto Sans KR",system-ui,sans-serif;
@@ -146,6 +146,53 @@ canvas{position:absolute;inset:0;width:100%;height:100%}
 .li.lock{opacity:.35}.li.lock>i{filter:grayscale(1)}
 .li.done b{color:var(--gold)}
 .modal button{margin-top:12px;width:100%;font:inherit;font-weight:700;background:var(--fg);color:var(--bg);border:0;border-radius:10px;padding:10px;cursor:pointer}
+
+/* readability pass */
+body{font-size:15px;line-height:1.45}
+.app{gap:8px}
+.acct small,.tile small{font-size:12px}
+.acct span{font-size:17px}
+.qn b{font-size:18px}
+.qn small{font-size:12.5px}
+#qChg{font-size:13.5px;font-weight:700}
+.main{grid-template-columns:minmax(0,1fr) 124px}
+.book .hd{font-size:12px;padding:4px 0}
+.ob{padding:0 7px}
+.ob .p{font-size:15px}
+.ob .q{font-size:12px}
+.trs{font-size:12px;padding:3px 7px}
+.trs .th{font-size:10.5px}
+.trs .th,.tr{line-height:15px}
+.book .ft{font-size:12px;line-height:1.4}
+#pnl{font-size:14px;padding:3px 8px}
+#news{font-size:15px;line-height:1.35}
+#news small{font-size:11.5px}
+.talk{font-size:13.5px;height:46px;padding:4px 12px}
+.talk p{line-height:18px}
+.chip{padding:7px 9px}
+.chip b{font-size:14px}
+.chip small{font-size:11.5px;margin-top:1px}
+.items .chip{min-width:132px}
+.tabs button{font-size:12px}
+.tabs button i{font-size:19px}
+.rank span{font-size:12.5px}
+.ib{font-size:13px;height:30px}
+.card .sub{font-size:14px}
+.card .row{font-size:12.5px}
+.card ul{font-size:14px}
+.card button{font-size:14px;padding:10px 16px}
+#coach{font-size:15px}
+.page .lead{font-size:14px}
+.sk p{font-size:12.5px}
+.setrow small,.li small{font-size:12.5px}
+.li b{font-size:15px}
+.hist{font-size:13.5px}
+.achgrid div{font-size:11.5px}
+.talk p{animation:none}.talk p:last-child{animation:slide .2s ease-out}
+.ob{flex-direction:row;align-items:center;justify-content:space-between;gap:4px}
+.ob .p{font-size:14.5px}
+.ob .q{font-size:12px;text-align:right}
+@media (max-height:760px){.trs{display:none}.ob .p{font-size:13.5px}.ob .q{font-size:11px}}
 @media (max-height:760px){.talk{display:none}#hold{height:58px}}
 #vign{position:absolute;inset:0;pointer-events:none;z-index:1;border-radius:10px}
 .stamp{position:absolute;left:50%;top:40%;font-family:var(--display);font-size:clamp(36px,12vw,60px);color:var(--gold);text-shadow:0 0 22px color-mix(in srgb,var(--gold) 60%,transparent),0 3px 0 #000;pointer-events:none;white-space:nowrap;animation:stamp 1s cubic-bezier(.2,1.6,.4,1) forwards;z-index:4}
@@ -436,7 +483,7 @@ function paintTop(){
 }
 function paintPickers(){
   const lock=state==='holding'||state==='ghost'||state==='over';
-  $('offers').innerHTML=offers.map(o=>{const T=TIERS[o.k];return `<button class="chip" type="button" data-k="${o.k}" aria-pressed="${o.k===tierSel}" ${lock?'disabled':''}><b>${o.name}</b><small>${T.label} ${T.stars} · -${T.loss*100}%</small></button>`}).join('');
+  $('offers').innerHTML=offers.map(o=>{const T=TIERS[o.k];return `<button class="chip" type="button" data-k="${o.k}" aria-pressed="${o.k===tierSel}" ${lock?'disabled':''}><b>${o.name}</b><small>${T.label} · 물리면 -${T.loss*100}%</small></button>`}).join('');
   const ri=rankOf(xp);
   $('offers').hidden=$('items').hidden=state==='holding'||state==='ghost';
   $('items').innerHTML=Object.entries(ITEMS).map(([k,it])=>{const lk=ri<it.lv;if(lk)sel[k]=false;return `<button class="chip" type="button" data-i="${k}" aria-pressed="${sel[k]}" ${lock||lk?'disabled':''}><b>${lk?'🔒 '+it.name.slice(2):it.name}</b><small>${lk?RANKS[it.lv][1]+' 계급에서 해금':(it.cost?won(balance*it.cost):'무료')+' · '+it.desc}</small></button>`}).join('');
@@ -457,15 +504,15 @@ function renderBook(){
   const p=priceOf(m),tk=tickOf(p),o=offer();
   const rising=state==='holding'&&!events.some(e=>e.amp<0&&t>=e.t0&&t<=e.t0+1.4);
   const bw=rising?1.5:.8,aw=rising?.8:1.4,unit=o.k==='blue'?40:o.k==='meme'?900:180;
-  const rows=[];for(let k=5;k>=1;k--)rows.push([p+tk*k,1]);for(let k=0;k<5;k++)rows.push([p-tk*k,0]);
+  const rows=[];for(let k=4;k>=1;k--)rows.push([p+tk*k,1]);for(let k=0;k<4;k++)rows.push([p-tk*k,0]);
   const nq={},fl=[];
   const qs=rows.map(([rp,ask],i)=>{const old=bookQ[rp],tgt=Math.exp(rnd(0,2.6))*(ask?aw:bw)*unit;
     const q=old==null?Math.round(tgt):Math.max(1,Math.round(old+(tgt-old)*.2+old*rnd(-.1,.1)));
     fl[i]=old!=null&&Math.abs(q-old)>old*.15;nq[rp]=q;return q;});
   bookQ=nq;
   const mx=Math.max(...qs),str=Math.round(100*bw/aw*rnd(.94,1.06));
-  const askSum=qs.slice(0,5).reduce((a,b)=>a+b,0),bidSum=qs.slice(5).reduce((a,b)=>a+b,0);
-  $('book').innerHTML='<div class="hd">호가 · 잔량</div>'+rows.map((r,i)=>`<div class="ob ${r[1]?'ask':'bid'} ${i===5?'now':''} ${fl[i]?'fl':''}"><i style="width:${(qs[i]/mx*100).toFixed(0)}%"></i><span class="p ${r[0]>o.p0?'up':r[0]<o.p0?'dn':''}">${fmtP(r[0])}</span><span class="q">${qs[i].toLocaleString('ko-KR')}</span></div>`).join('')+
+  const askSum=qs.slice(0,4).reduce((a,b)=>a+b,0),bidSum=qs.slice(4).reduce((a,b)=>a+b,0);
+  $('book').innerHTML='<div class="hd">호가 · 잔량</div>'+rows.map((r,i)=>`<div class="ob ${r[1]?'ask':'bid'} ${i===4?'now':''} ${fl[i]?'fl':''}"><i style="width:${(qs[i]/mx*100).toFixed(0)}%"></i><span class="p ${r[0]>o.p0?'up':r[0]<o.p0?'dn':''}">${fmtP(r[0])}</span><span class="q">${qs[i].toLocaleString('ko-KR')}</span></div>`).join('')+
     '<div class="trs"><div class="th"><span>체결</span><span>수량</span></div>'+trades.map(x=>`<div class="tr ${x.up?'up':'dn'}"><span>${fmtP(x.p)}</span><span>${x.q.toLocaleString('ko-KR')}</span></div>`).join('')+'</div>'+
     `<div class="ft">체결강도 <b class="${str>=100?'up':'dn'}">${str}%</b><br><span class="dn">${askSum.toLocaleString('ko-KR')}</span> · <span class="up">${bidSum.toLocaleString('ko-KR')}</span></div>`;
 }
@@ -654,7 +701,7 @@ function buildChartIdle(){ // 장 시작 전: 전일 흐름 미리보기
 function draw(){
   ctx.clearRect(0,0,W,H);
   const padR=50,volH=Math.max(24,H*.15),plotT=24,plotB=H-volH-14,plotL=6,plotR=W-padR;
-  const cw=9,N=Math.max(10,Math.floor((plotR-plotL)/cw));
+  const cw=10,N=Math.max(10,Math.floor((plotR-plotL)/cw));
   const all=state==='ready'||!run?idleCandles:candles;
   const vis=all.slice(-N);
   let lo=.97,hi=1.12;vis.forEach(c=>{lo=Math.min(lo,c.l);hi=Math.max(hi,c.h)});
@@ -662,7 +709,7 @@ function draw(){
   const L0=Math.log(lo)-.03,L1=Math.log(hi)+.05;
   const Y=m=>plotB-(Math.log(m)-L0)/(L1-L0)*(plotB-plotT);
   const X=i=>plotL+i*cw+cw/2;
-  ctx.font='500 11px "JetBrains Mono",monospace';ctx.textBaseline='middle';ctx.textAlign='left';ctx.lineWidth=1;
+  ctx.font='600 12px "JetBrains Mono",monospace';ctx.textBaseline='middle';ctx.textAlign='left';ctx.lineWidth=1;
   for(let i=0;i<=4;i++){const m=Math.exp(L0+(L1-L0)*(i+.5)/5),y=Y(m);
     ctx.strokeStyle=C.line;ctx.beginPath();ctx.moveTo(plotL,y);ctx.lineTo(plotR,y);ctx.stroke();
     ctx.fillStyle=C.muted;ctx.fillText(fmtP(priceOf(m)),plotR+4,y);}

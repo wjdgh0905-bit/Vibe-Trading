@@ -158,7 +158,17 @@ canvas{position:absolute;inset:0;width:100%;height:100%}
 @keyframes flash{from{opacity:.5}to{opacity:0}}
 #bal.bump{animation:bump .5s ease-out}
 @keyframes bump{30%{transform:scale(1.12);color:var(--gold)}}
-@media (prefers-reduced-motion:reduce){.stamp,.pop,.flash{animation-duration:.01s}.chart.shake,#hold.on,.card,#news,#toast,#fever,.app.fever #hold{animation:none}}
+#coach{position:fixed;left:50%;transform:translateX(-50%);width:min(340px,calc(100% - 32px));box-sizing:border-box;background:var(--gold);color:#1a1300;font-weight:700;font-size:14px;line-height:1.5;padding:11px 14px;border-radius:12px;z-index:27;pointer-events:none;box-shadow:0 8px 28px #000c;animation:slide .25s ease-out}
+#coach.above::after{content:"";position:absolute;left:50%;bottom:-8px;margin-left:-8px;border:8px solid transparent;border-bottom:0;border-top-color:var(--gold)}
+#coach b{font-weight:900}
+.glow{outline:3px solid var(--gold)!important;outline-offset:2px}
+.card .q{font-family:var(--display);font-size:22px;line-height:1.3;margin:6px 0 10px;text-wrap:balance}
+.card .opts{display:flex;flex-direction:column;gap:6px}
+.card .opts button{width:100%;text-align:left;padding:11px 14px;font-size:14px}
+.card .opts button:active{background:var(--gold);color:#1a1300}
+.card .emo{font-size:56px;line-height:1.1}
+.card .perk{display:inline-block;margin-top:8px;font-size:12px;font-weight:700;color:var(--gold);border:1px solid var(--gold);border-radius:999px;padding:3px 10px}
+@media (prefers-reduced-motion:reduce){#coach{animation:none}.stamp,.pop,.flash{animation-duration:.01s}.chart.shake,#hold.on,.card,#news,#toast,#fever,.app.fever #hold{animation:none}}
 </style>
 
 <div class="app" id="app">
@@ -192,6 +202,7 @@ canvas{position:absolute;inset:0;width:100%;height:100%}
   <button id="hold" type="button">꾹 눌러서 매수</button>
 </div>
 <div id="toast" hidden></div>
+<div id="coach" hidden></div>
 <canvas id="fx"></canvas>
 <div class="modal" id="modal" hidden><div class="box"><div id="modalBody"></div><button id="modalClose" type="button">닫기</button></div></div>
 
@@ -344,7 +355,7 @@ function paintTop(){
   $('streak').innerHTML=streak?(streak>=5?'<span class="gd">'+streak+'연속 🔥</span>':streak+'연속'):'0';
   $('best').textContent=best?won(best):'-';
   const ri=rankOf(xp),nx=RANKS[ri+1];
-  $('rankName').textContent=RANKS[ri][1];
+  $('rankName').textContent=(profile?TYPES[profile].e+' ':'')+RANKS[ri][1];
   $('rankBar').style.width=nx?((xp-RANKS[ri][0])/(nx[0]-RANKS[ri][0])*100).toFixed(0)+'%':'100%';
   $('achBtn').textContent='🏆 '+ach.length+'/'+ACH.length;
   $('misBtn').textContent='📋 '+daily.done.length+'/3';
@@ -395,18 +406,19 @@ const newsF=x=>events.reduce((f,e)=>f*(1+e.amp*shape((x-e.t0)/1.4)),1);
 const inDip=x=>events.some(e=>e.amp<0&&x>=e.t0&&x<=e.t0+1.4);
 
 function start(){
-  if(!$('modal').hidden||state==='ghost'||state==='over'||state==='holding')return;
+  if(!profile||!$('modal').hidden||state==='ghost'||state==='over'||state==='holding')return;
   if(state==='result'&&performance.now()<readyAt)return;
   au();
   if(state==='result')round++;
+  const tut=!tutDone;if(tut)for(const k in sel)sel[k]=false;hideCoach();
   const o=offers.find(x=>x.k===tierSel),T=TIERS[o.k];
   let cost=0;for(const k in sel)if(sel[k])cost+=balance*ITEMS[k].cost;
   balance-=cost;
   const raw=Math.random()<T.instant?1+Math.random()*.06:Math.min(60,Math.max(1.01,.97/(1-Math.random())));
-  const crashAt=Math.max(1.01,1+(raw-1)*T.scale);
+  const crashAt=tut?1.85:Math.max(1.01,1+(raw-1)*T.scale);
   const it={...sel};let hint=null;
   if(it.insider){const real=Math.random()<.7;hint={real,v:real?Math.max(1.02,crashAt*rnd(.88,.98)):crashAt*rnd(1.4,3)};}
-  run={offer:o,T,key:o.k,crashAt,it,hint,sawDip:false};
+  run={offer:o,T,key:o.k,crashAt,it,hint,sawDip:false,tut};tutStep=0;
   card.hidden=true;$('news').hidden=true;
   candles=[];t=0;cur=1;peak=1;sell=null;crashed=false;events=[];warned=false;volTotal=0;talkT=0;hbT=0;vigA=0;run.mi=0;
   state='holding';paintTop();paintPickers();setBtn();
@@ -417,7 +429,8 @@ function release(){
   if(state!=='holding')return;
   const lev=run.it.lev?2:1;
   sell={t,m:cur,dip:inDip(t),idx:candles.length-1};
-  const gain=balance*(cur-1)*lev;
+  if(run.tut)hideCoach();
+  const gain=balance*(cur-1)*lev*(profile==='lion'?1.05:1);
   streak++;
   const fever=streak>=5;
   const bonus=streak>=3?gain*.05*(streak-2)*(fever?2:1):0;
@@ -447,9 +460,11 @@ function crash(){
   sfx.crash();talk('crash');setTimeout(()=>talk('crash'),500);vigA=0;$('vign').style.boxShadow='none';btn.style.setProperty('--heat',0);
   if(!sell){flash(C.down);stamp('💥 폭락','dn');shards();}
   else if(crashT-sell.t<.6){stamp('탈출 성공!');sfx.up();}
+  hideCoach();
+  if(run.tut){tutEnd(!!sell);readyAt=performance.now()+800;paintTop();paintPickers();setBtn();setTimeout(setBtn,820);return;}
   let res;
   if(state==='holding'){
-    let L=run.T.loss;if(run.it.lev)L=Math.min(.9,L*1.6);if(run.it.shield)L=.1;
+    let L=run.T.loss;if(run.it.lev)L=Math.min(.9,L*1.6);if(run.it.shield)L=.1;if(profile==='turtle'&&!run.it.shield)L*=.8;
     const loss=balance*L;balance-=loss;streak=0;app.classList.remove('fever');$('fever').hidden=true;
     if(run.hint&&!run.hint.real)unlock('fake');
     if(balance<100000)lowFlag=true;
@@ -465,7 +480,7 @@ function crash(){
     const pct=Math.min(100,sell.m/peak*100);
     if(pct>=95)unlock('god');
     res={win:true,key:run.key,m:sell.m,pct,streak,insider:run.it.insider,sawDip:run.sawDip&&!sell.dip};
-    const xg=Math.round((8+pct/10+Math.min(30,(sell.m-1)*5))*(sell.fever?2:1));gainXp(xg);
+    const xg=Math.round((8+pct/10+Math.min(30,(sell.m-1)*5))*(sell.fever?2:1)*(profile==='squirrel'?1.2:1));gainXp(xg);
     showWin(pct,xg);
   }
   missionsUpdate(res);
@@ -532,11 +547,12 @@ function showIntro(){
 /* ---------- modals ---------- */
 function openModal(html){$('modalBody').innerHTML=html;$('modal').hidden=false;}
 $('modalClose').onclick=()=>$('modal').hidden=true;
+document.addEventListener('click',e=>{if(e.target&&e.target.id==='retake'){$('modal').hidden=true;if(state==='ready'||state==='result')startQuiz();}});
 $('achBtn').onclick=()=>openModal('<h2>🏆 업적</h2><p class="note">'+ach.length+' / '+ACH.length+' 달성</p>'+ACH.map(a=>`<div class="li ${ach.includes(a[0])?'':'lock'}"><i>${a[1]}</i><div><b>${a[2]}</b><small>${a[3]}</small></div></div>`).join(''));
 $('misBtn').onclick=()=>openModal('<h2>📋 오늘의 미션</h2><p class="note">자정에 새 미션으로 바뀝니다. 하루 30판 이상은 해야 다 깰 수 있습니다. 완료할 때마다 1,000,000원과 150 XP를 받습니다.</p>'+daily.ids.map(id=>{
   const m=MISSIONS.find(x=>x.id===id),p=Math.min(m.n,daily.prog[id]||0),d=daily.done.includes(id);
   return `<div class="li ${d?'done':''}"><i>${d?'✅':'⬜'}</i><div><b>${m.t}</b><small>${p} / ${m.n}</small><div class="pb"><u style="width:${p/m.n*100}%"></u></div></div></div>`}).join('')+
-  '<h2 style="margin-top:14px">계급</h2>'+RANKS.map((r,i)=>`<div class="li ${xp>=r[0]?'':'lock'}"><i>${i===RANKS.length-1?'👑':'Lv'}</i><div><b>${r[1]}</b><small>${r[0]} XP${Object.values(ITEMS).filter(it=>it.lv===i).map(it=>' · '+it.name+' 해금').join('')}</small></div></div>`).join(''));
+  '<button id="retake" type="button">🧪 투자 성향 테스트 다시 하기</button><h2 style="margin-top:14px">계급</h2>'+RANKS.map((r,i)=>`<div class="li ${xp>=r[0]?'':'lock'}"><i>${i===RANKS.length-1?'👑':'Lv'}</i><div><b>${r[1]}</b><small>${r[0]} XP${Object.values(ITEMS).filter(it=>it.lv===i).map(it=>' · '+it.name+' 해금').join('')}</small></div></div>`).join(''));
 
 /* ---------- input ---------- */
 btn.addEventListener('pointerdown',e=>{e.preventDefault();try{btn.setPointerCapture(e.pointerId)}catch(_){}start();});
@@ -662,6 +678,74 @@ function tension(dt){ // 심장 박동: 오래 들고 있을수록, 많이 오�
   vigA*=Math.pow(.04,dt);
   $('vign').style.boxShadow='inset 0 0 '+(30+heat*50).toFixed(0)+'px '+(heat*14).toFixed(0)+'px rgba(242,49,63,'+vigA.toFixed(3)+')';
 }
+
+/* ---------- onboarding: 투자 성향 테스트 + 튜토리얼 ---------- */
+const TYPES={
+  lion:{e:'🦁',n:'야수의 심장',d:'한 방을 노리는 공격형. 겁 없이 들고 가지만 그만큼 자주 물려요.',perk:'익절 수익 +5%',tier:'meme'},
+  squirrel:{e:'🐿',n:'단타 다람쥐',d:'작게, 자주, 확실하게. 욕심보다 손에 쥔 수익을 좋아해요.',perk:'익절 XP +20%',tier:'theme'},
+  turtle:{e:'🐢',n:'존버 거북이',d:'느려도 꾸준히. 큰 손실을 무엇보다 싫어하는 안정형이에요.',perk:'폭락 손실 20% 감소',tier:'blue'},
+  fox:{e:'🦊',n:'눈치 여우',d:'뉴스와 분위기를 읽는 전략가. 남들보다 먼저 냄새를 맡아요.',perk:'진짜 폭락 경고 확률 ↑',tier:'theme'}
+};
+const QUIZ=[
+  ['보유 주식이 -10% 떨어졌다. 나는?',[['물타기 간다. 싸게 살 기회!','lion'],['그냥 존버. 언젠간 오른다','turtle'],['바로 손절. 더 잃기 싫다','squirrel'],['일단 뉴스부터 찾아본다','fox']]],
+  ['+20% 수익 중이다. 나는?',[['바로 익절. 수익은 챙기는 것','squirrel'],['반만 팔고 반은 들고 간다','fox'],['풀매수 추가! 더 간다','lion'],['10년 들고 갈 거라 신경 안 씀','turtle']]],
+  ['친구가 "이거 무조건 오른다"고 한다',[['바로 산다. 기회는 지금','lion'],['근거부터 물어본다','fox'],['소액만 사 본다','squirrel'],['안 산다. 그런 말이 제일 위험','turtle']]],
+  ['내 투자 목표는?',[['한 방에 인생 역전','lion'],['매일 치킨값 벌기','squirrel'],['은행 이자보다 조금 더','turtle'],['남들보다 먼저 아는 것','fox']]],
+  ['잠들기 전 나는?',[['코인 차트 새로고침','lion'],['내일 매매 계획 정리','squirrel'],['그냥 잔다. 차트 안 봄','turtle'],['경제 뉴스 정독','fox']]]
+];
+let profile=store.get('shg_profile',null),tutDone=!!store.get('shg_tut',0),tutStep=0;
+if(profile&&!TYPES[profile])profile=null;
+function startQuiz(){quizStep(0,{lion:0,squirrel:0,turtle:0,fox:0});}
+function quizStep(i,sc){
+  if(i===QUIZ.length)return quizResult(sc);
+  const [q,opts]=QUIZ[i];
+  card.innerHTML='<div class="sub">🧪 투자 성향 테스트 '+(i+1)+' / '+QUIZ.length+'</div><div class="q">'+q+'</div><div class="opts">'+
+    opts.map((o,j)=>'<button type="button" data-j="'+j+'">'+o[0]+'</button>').join('')+'</div>';
+  card.hidden=false;
+  card.querySelectorAll('.opts button').forEach(b=>b.onclick=()=>{au();beep(660,.05,'sine',.04);sc[opts[+b.dataset.j][1]]++;quizStep(i+1,sc);});
+}
+function quizResult(sc){
+  const k=Object.keys(sc).reduce((a,b)=>sc[b]>sc[a]?b:a);
+  profile=k;store.set('shg_profile',k);const T=TYPES[k];
+  tierSel=T.tier;paintTop();paintPickers();paintQuote();renderBook();buildChartIdle();
+  card.innerHTML='<div class="sub">당신의 투자 성향은</div><div class="emo">'+T.e+'</div><div class="grade gd">'+T.n+'</div><div class="sub">'+T.d+'</div><div class="perk">특전 · '+T.perk+'</div>'+
+    '<div class="sub">추천 종목: '+TIERS[T.tier].label+'</div><div class="btns"><button class="pri" id="qGo" type="button">'+(tutDone?'게임으로':'튜토리얼 시작')+'</button></div>';
+  card.hidden=false;sfx.up();burst(innerWidth/2,innerHeight*.45,40);
+  $('qGo').onclick=()=>{card.hidden=true;if(!tutDone)coachReady();};
+}
+function coach(html,target,pos){
+  const el=$('coach');el.innerHTML=html;el.className=pos;el.hidden=false;
+  document.querySelectorAll('.glow').forEach(g=>g.classList.remove('glow'));target.classList.add('glow');
+  const r=target.getBoundingClientRect(),h=el.offsetHeight;
+  el.style.top=Math.max(8,pos==='above'?r.top-h-14:r.top+30)+'px';
+}
+function hideCoach(){$('coach').hidden=true;document.querySelectorAll('.glow').forEach(g=>g.classList.remove('glow'));}
+function coachReady(){coach('👇 이 버튼을 <b>꾹 누르고 있어 보세요.</b><br>누르는 동안 주식을 들고 있고, 손을 떼면 팔아요. (연습 판이라 돈을 잃지 않아요)',btn,'above');}
+function tutTick(){
+  if(tutStep<1&&t>.8){tutStep=1;coach('👉 오른쪽은 <b>호가창</b>이에요. 빨간 칸(사려는 사람)이 길고 체결강도가 100%를 넘으면 상승세예요. 계속 누르고 계세요!',$('book'),'below');}
+  else if(tutStep<2&&cur>=1.3){tutStep=2;coach('🔥 <b>상한가 돌파!</b> 지금 손을 떼면 +30% 수익 확정이에요. 더 버틸 수도 있지만…',btn,'above');}
+  else if(tutStep<3&&cur>=1.6){tutStep=3;coach('💓 심장 소리가 빨라지죠? 언제 터질지 몰라요. <b>지금 손을 떼세요!</b>',btn,'above');}
+}
+function tutEnd(won){
+  state='result';
+  if(won){
+    tutDone=true;store.set('shg_tut',1);balance+=500000;
+    card.innerHTML='<div class="grade gd">튜토리얼 완료 🎉</div><div class="big up">+500,000원 보너스</div>'+
+      '<ul><li>폭락 시점은 매판 랜덤이에요.</li><li>⚠ 악재 뉴스와 빨라지는 심장 소리를 보고 판단하세요. 악재 중엔 개미털기도 있어요.</li><li>계급이 오르면 아이템이 하나씩 열려요.</li><li>📋 일일 미션을 깨면 큰 보상이 있어요.</li></ul>'+
+      '<div class="sub">이제 진짜 시작! 버튼을 꾹 눌러 보세요.</div>';
+    burst(innerWidth/2,innerHeight*.4,60);sfx.up();
+  }else{
+    card.innerHTML='<div class="grade dn">💥 이게 폭락이에요</div><div class="sub">연습이라 돈은 그대로예요.<br><b>노란 상한가 줄을 넘으면</b> 손을 떼 보세요!</div>';
+    setTimeout(()=>{if(state==='result'&&!tutDone)coach('👇 다시 <b>꾹!</b> 이번엔 상한가 줄을 넘으면 손을 떼세요.',btn,'above');},900);
+  }
+  card.hidden=false;
+}
+function boot(){
+  if(!profile){card.innerHTML='<div class="grade"><span class="up">상한가</span> 따라잡기</div><div class="sub">누르는 동안 보유, 떼면 매도.<br>폭락 전에 팔면 이기는 게임이에요.</div><div class="sub">먼저 나는 어떤 투자자인지 알아볼까요?</div><div class="btns"><button class="pri" id="qStart" type="button">🧪 투자 성향 테스트 (5문항)</button></div>';
+    card.hidden=false;$('qStart').onclick=startQuiz;}
+  else if(!tutDone){card.hidden=true;coachReady();}
+  else showIntro();
+}
 /* ---------- loop ---------- */
 function frame(ts){
   const dt=Math.min(.05,(ts-lastTs)/1000||0);lastTs=ts;
@@ -672,8 +756,8 @@ function frame(ts){
     t+=dt*(state==='ghost'?3:(run.it.slow?.6:1));
     const b=base(t);
     if(state==='holding'){
-      if(!warned&&base(t+1)>=run.crashAt){warned=true;if(Math.random()<.4)news('⚠ '+pick(BEAR),'bear');}
-      else if(t>.8&&!events.some(e=>t<e.t0+1.6)&&Math.random()<dt*.2){
+      if(!run.tut&&!warned&&base(t+1)>=run.crashAt){warned=true;if(Math.random()<(profile==='fox'?.65:.4))news('⚠ '+pick(BEAR),'bear');}
+      else if(!run.tut&&t>.8&&!events.some(e=>t<e.t0+1.6)&&Math.random()<dt*.2){
         const bull=Math.random()<.45;events.push({t0:t,amp:bull?.12:-.14});if(!bull)run.sawDip=true;
         news(bull?'📈 '+pick(BULL):'⚠ '+pick(BEAR),bull?'bull':'bear');talk(bull?'hype':'fear');
       }
@@ -686,7 +770,7 @@ function frame(ts){
       while(candles.length<=idx){const pc=candles.length?candles[candles.length-1].c:1;candles.push({o:pc,h:pc,l:pc,c:pc,v:0,ghost:state==='ghost'});if(state==='holding')sfx.tick(cur);}
       const c=candles[candles.length-1];c.h=Math.max(c.h,cur);c.l=Math.min(c.l,cur);c.c=cur;
       const dv=dt*(1+Math.abs(cur-prev)/prev*300+(events.some(e=>t>=e.t0&&t<=e.t0+1.4)?3:0))*rnd(.6,1.4);c.v+=dv;volTotal+=dv*(1+cur);
-      if(state==='holding'){tension(dt);while(run.mi<MS.length&&cur>=MS[run.mi][0]){if(!(MS[run.mi][0]===1.3&&!run.T.limit))stamp(MS[run.mi][1]);run.mi++;}}
+      if(state==='holding'){tension(dt);if(run.tut)tutTick();while(run.mi<MS.length&&cur>=MS[run.mi][0]){if(!(MS[run.mi][0]===1.3&&!run.T.limit))stamp(MS[run.mi][1]);run.mi++;}}
       if(state==='holding'){const lev=run.it.lev?2:1,g=balance*(cur-1)*lev;
         $('pnl').innerHTML='평가손익 <span class="'+(g>=0?'up':'dn')+'">'+sw(g)+'</span>'+(lev>1?' <span class="gd">x2</span>':'');}
     }
@@ -698,7 +782,7 @@ function frame(ts){
   draw();requestAnimationFrame(frame);
 }
 
-buildChartIdle();paintTop();paintPickers();paintQuote();renderBook();setBtn();showIntro();talk('idle');talk('idle');
+buildChartIdle();paintTop();paintPickers();paintQuote();renderBook();setBtn();boot();talk('idle');talk('idle');
 requestAnimationFrame(frame);
 })();
 </script>

@@ -9,6 +9,14 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
+<meta name="description" content="폭락 전에 팔면 승리, 욕심내면 깡통. 레버리지·영끌·투자·컬렉션까지, 무료 주식 타이밍 게임 (가상 머니)">
+<meta property="og:type" content="website">
+<meta property="og:title" content="상한가 따라잡기 📈 폭락 전에 팔아라">
+<meta property="og:description" content="레버리지 20배, 전재산 영끌, 고시원에서 달 기지까지. 무료 · 설치 없음 · 가상 머니">
+<meta property="og:image" content="https://wjdgh0905-bit.github.io/Vibe-Trading/og.png">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta property="og:url" content="https://wjdgh0905-bit.github.io/Vibe-Trading/">
+<meta name="twitter:card" content="summary_large_image">
 <style>*,*::before,*::after{box-sizing:border-box}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);height:100%}body{margin:0;font-size:14px;overscroll-behavior:none}[hidden]{display:none!important}</style>
 </head><body>
 <title>상한가 따라잡기</title>
@@ -378,6 +386,60 @@ body{font-size:14px;line-height:1.4}
 .setbtn.ghost{background:var(--panel2);color:var(--fg);border:1px solid var(--line)}
 .setbtn:disabled{opacity:.35;cursor:default}
 #hold.re{background:linear-gradient(90deg,#ff7a1a,var(--up));box-shadow:0 5px 0 #7a2a00;animation:pulse .5s infinite alternate}
+.ipct button{padding:6px 0}
+.room{position:relative;container-type:inline-size;width:100%;aspect-ratio:4/3;border-radius:16px;overflow:hidden;border:2px solid var(--line);margin:8px 0 4px;background:#2a2f3a}
+.rwall{position:absolute;left:0;right:0;top:0;height:64%;background:repeating-linear-gradient(90deg,#3b4252 0 14px,#373e4d 14px 28px)}
+.room.nice .rwall{background:repeating-linear-gradient(90deg,#4a3f5c 0 14px,#453a57 14px 28px)}
+.room.lux .rwall{background:linear-gradient(#5a4520,#3d2e14),repeating-linear-gradient(90deg,#000 0 2px,transparent 2px 30px);background-blend-mode:overlay}
+.rfloor{position:absolute;left:0;right:0;bottom:0;height:36%;background:repeating-linear-gradient(115deg,#7a5534 0 22px,#6b4a2d 22px 44px);box-shadow:inset 0 6px 10px rgba(0,0,0,.35)}
+.room.lux .rfloor{background:repeating-conic-gradient(#ddd 0 25%,#999 0 50%) 0 0/36px 36px}
+.rwin{position:absolute;left:60%;right:4%;top:5%;height:46%;border:4px solid #c9b38a;border-radius:6px;background:linear-gradient(#7cc4ff,#cfe9ff 70%,#9ad18b 70%);overflow:hidden}
+.room.night .rwin{background:linear-gradient(#060a1f,#1b2550 70%,#20304f 70%)}
+.rwin .sun{position:absolute;right:8%;top:6%;font-size:5cqw}.rwin .stars{position:absolute;left:8%;top:30%;color:#fff;font-size:3cqw;opacity:.8}
+.rwin .sky{position:absolute;font-size:5cqw}
+.rcity{position:absolute;left:0;right:0;bottom:30%;height:22%;background:linear-gradient(90deg,#5b6b8a 0 12%,transparent 12% 16%,#4b5a78 16% 30%,transparent 30% 34%,#6a7a99 34% 52%,transparent 52% 56%,#55658a 56% 74%,transparent 74% 78%,#4b5a78 78%);opacity:.6}
+.room.night .rcity{opacity:.9;filter:brightness(.6)}
+.rframe{position:absolute;left:35%;top:12%;width:10%;aspect-ratio:1;border:3px solid #c9b38a;background:#1a1d24;border-radius:3px;opacity:.7}
+.rdesk{position:absolute;left:7%;top:58%;width:28%;height:4%;background:#a87a4c;border-radius:3px;box-shadow:0 8px 0 -2px #6b4a2d}
+.ri{position:absolute;transform:translate(-50%,-50%);background:none;border:0;padding:0;line-height:1;cursor:pointer;filter:drop-shadow(0 3px 2px rgba(0,0,0,.5))}
+.ri.no{color:rgba(255,255,255,.35);font-weight:900;border:2px dashed rgba(255,255,255,.25);border-radius:8px;width:1.4em;height:1.4em;font-size:3.5cqw!important;display:grid;place-items:center;filter:none}
+.ri.own{animation:bob 2.4s ease-in-out infinite}
+@keyframes bob{50%{transform:translate(-50%,-56%)}}
+.deco{position:absolute;font-size:7cqw;transform:translate(-0%,-50%)}
+.ava{position:absolute;transform:translate(-50%,-50%);text-align:center}.ava span{font-size:12cqw;display:block;line-height:1;filter:drop-shadow(0 4px 2px rgba(0,0,0,.5));animation:bob 1.8s ease-in-out infinite}
+.ava b{display:inline-block;background:#fff;color:#111;font-size:2.8cqw;padding:2px 7px;border-radius:9px;margin-bottom:3px;white-space:nowrap;position:relative}
+.ava b::after{content:"";position:absolute;left:50%;bottom:-5px;margin-left:-5px;border:5px solid transparent;border-bottom:0;border-top-color:#fff}
+.shelf{position:absolute;left:52%;right:3%;bottom:13%;display:grid;grid-template-columns:repeat(5,1fr);gap:1cqw;background:rgba(60,35,15,.75);border:2px solid #a87a4c;border-radius:6px;padding:1cqw}
+.si{background:none;border:0;padding:0;font-size:5cqw;line-height:1.2;cursor:pointer}.si.no{opacity:.25;filter:grayscale(1);font-size:3.5cqw}
+.rlabel{position:absolute;left:0;right:0;bottom:0;background:rgba(0,0,0,.55);color:#fff;font-size:2.9cqw;font-weight:700;padding:1cqw 2.5cqw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.room.s0 .rwall{background:linear-gradient(#5b5547,#4a4438);}
+.room.s0 .rfloor{background:repeating-linear-gradient(90deg,#6b6455 0 30px,#625b4c 30px 60px)}
+.room.s0 .rwin,.room.s1 .rwin{left:62%;right:12%;top:10%;height:26%}
+.room.s1 .rwall{background:linear-gradient(#4e5a52,#3f4a43)}
+.room.s1 .rwin{top:3%;height:18%}
+.room.s1 .rfloor{background:repeating-linear-gradient(90deg,#5d6e66 0 40px,#56665e 40px 80px)}
+.room.s3 .rwall{background:repeating-linear-gradient(90deg,#e8dcc8 0 18px,#e2d5bf 18px 36px)}
+.room.s3 .rfloor{background:repeating-linear-gradient(115deg,#b07f50 0 22px,#9d6f44 22px 44px)}
+.room.s4 .rwall{background:repeating-linear-gradient(90deg,#d9e4ee 0 18px,#d2dde8 18px 36px)}
+.room.s4 .rfloor{background:repeating-linear-gradient(115deg,#c49a6c 0 22px,#b88d60 22px 44px)}
+.room.s4 .rwin,.room.s5 .rwin,.room.s6 .rwin{left:52%;right:3%;height:52%}
+.room.s5 .rwall{background:linear-gradient(#2b2238,#1e1828)}.room.s5 .rfloor{background:repeating-conic-gradient(#eee 0 25%,#bbb 0 50%) 0 0/36px 36px}
+.room.s6 .rwall{background:linear-gradient(#5a4520,#3d2e14)}.room.s6 .rfloor{background:repeating-conic-gradient(#222 0 25%,#c9a227 0 50%) 0 0/36px 36px}
+.room.s7 .rwall{background:linear-gradient(#c8d0dc,#9aa6b8)}.room.s7 .rfloor{background:repeating-linear-gradient(90deg,#7d8796 0 30px,#6f7988 30px 60px)}
+.room.s7 .rwin{left:45%;right:3%;border-radius:40%;height:52%;border-color:#9aa6b8}
+.room.s8 .rwall{background:linear-gradient(#1a1d2e,#2a2d40)}.room.s8 .rfloor{background:radial-gradient(circle at 30% 40%,#aaa 0 6%,transparent 7%),radial-gradient(circle at 70% 60%,#999 0 5%,transparent 6%),#bdbdbd}
+.room.s8 .rwin{left:40%;right:3%;border-radius:50% 50% 8px 8px;height:55%;border-color:#666}
+.rwin.w-bars{background:linear-gradient(#8aa,#9bb)}.rwin .bars{position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 16%,#333 16% 20%)}
+.rwin.w-feet{background:linear-gradient(#8a8a8a 60%,#666 60%)}.rwin .feet{position:absolute;left:8%;bottom:34%;font-size:4cqw;white-space:nowrap;animation:walk 6s linear infinite}
+@keyframes walk{from{transform:translateX(-30%)}to{transform:translateX(110%)}}
+.rwin.w-night{background:linear-gradient(#060a1f,#1b2550 70%,#20304f 70%)}.rwin.w-night .rcity{opacity:.9;filter:brightness(.7)}
+.rwin.w-space,.rwin.w-moon{background:radial-gradient(circle at 70% 40%,#13204a,#02030a)}
+.rwin .river{position:absolute;left:0;right:0;bottom:0;height:30%;background:linear-gradient(#4a90d9,#2a6ab0)}
+.rwin .moonland{position:absolute;left:0;right:0;bottom:0;height:30%;background:#9a9a9a;border-radius:40% 60% 0 0}
+.crack{position:absolute;left:12%;top:8%;width:14%;height:20%;background:linear-gradient(60deg,transparent 48%,#2e2a22 49% 51%,transparent 52%),linear-gradient(-40deg,transparent 48%,#2e2a22 49% 51%,transparent 52%);opacity:.7}
+.room.s0 .deco,.room.s1 .deco{filter:saturate(.7)}
+.rprog{position:absolute;left:0;right:0;bottom:0;height:3px;background:rgba(255,255,255,.15)}.rprog u{display:block;height:100%;background:var(--gold)}
+.rlabel{bottom:3px!important}.rlabel b{color:var(--gold)}
 </style>
 
 <div class="app" id="app">
@@ -730,10 +792,10 @@ const regime=()=>{let r=0;try{r=stats.rounds}catch(e){}const b=Math.floor(r/5);r
 const betCap=()=>Math.round(1e6*(regime().cap||1)*Math.pow(1.22,lvlOf(xp).L-1)*(gear.car?1.1:1)*(gear.yacht?1.2:1)*(gear.firm?1.5:1)/1e4)*1e4;
 // 실제 베팅 한도: 레벨 한도와 예수금 5% 중 큰 쪽
 // 예수금 구간별 체감: 1,000억까지 5%, 1조까지 2%, 그 위는 0.5%
-const wealthCap=b=>.05*Math.min(b,1e11)+.02*Math.min(Math.max(b-1e11,0),9e11)+.003*Math.min(Math.max(b-1e12,0),99e13)+.0005*Math.max(b-1e15,0);
-const LIQ=1e14; // 시장 유동성 한도: 한 판 최대 100조 (영끌 포함)
+const wealthCap=b=>.1*Math.min(b,1e11)+.05*Math.min(Math.max(b-1e11,0),9e11)+.01*Math.min(Math.max(b-1e12,0),999e12)+.002*Math.max(b-1e15,0);
+const LIQ=1e16; // 시장 유동성 한도: 한 판 최대 1경 (영끌 포함)
 const stakeCap=()=>Math.min(LIQ,Math.max(betCap(),Math.round(wealthCap(balance)*(regime().cap||1)/1e4)*1e4));
-const maxStake=ai=>Math.min(LIQ,stakeCap()*(ai?10:1));
+const maxStake=ai=>ai?Math.min(LIQ,balance):stakeCap(); // 영끌 = 전재산
 // 부자세: 예수금 100억부터 수익에 세금 (최대 45%)
 // 아이템 가격: 판돈 비례 + 예수금 비례 할증
 const itemCost=(k,bet)=>{const c=ITEMS[k].cost;return (bet*c+Math.min(balance*c*.05,bet*c*2))*(1-.04*skl('discount'));}; // 할증은 판돈 기준 비용의 최대 2배
@@ -747,7 +809,7 @@ function gainXp(n){
   if(after>before){const nt=Object.values(TIERS).filter(T=>T.lv===after);setTimeout(()=>{toast('🎉 승급! '+RANKS[after][1]+(la>lb?' · Lv.'+la:'')+(nt.length?' · '+nt.map(T=>T.e+' '+T.label).join(', ')+' 해금':''));sfx.up();},900);if(after===RANKS.length-1)unlock('legend');}
 }
 
-function paintTop(){
+function paintTop(){try{checkHome()}catch(e){}
   store.set('shg_debt',Math.ceil(debt));store.set('shg_credit',credit);
   {const d=$('debtTag');d.hidden=debt<=0;if(debt>0)d.textContent='빚 '+won(debt)+' · 신용 '+credit+'등급';}
   if(balance<0)balance=0;
@@ -772,11 +834,11 @@ function paintPickers(){
   $('shList').innerHTML=offers.map(o=>{const T=TIERS[o.k];return `<button class="srow ${o.id===co.id?'on':''}" type="button" data-o="${o.id}"><span class="pe">${T.e}</span><span class="pt"><b>${o.name}</b><small>${T.label} · 물리면 -${Math.round(T.loss*100)}%${T.desc?' · '+T.desc:''}</small></span>${spark(o,64,26)}<span class="pr ${o.chg>=0?'up':'dn'}">${o.chg>=0?'+':''}${o.chg.toFixed(1)}%</span></button>`}).join('');
   const ri=rankOf(xp);
   $('offers').hidden=$('items').hidden=$('betrow').hidden=state==='holding'||state==='ghost';
-  const maxBet=Math.min(balance,maxStake(allin&&ri>=2));
-  $('betrow').innerHTML='<span>투자 비율</span>'+[.1,.25,.5,1].map(v=>`<button type="button" data-pct="${v}" aria-pressed="${betPct===v}" ${lock?'disabled':''}>${v*100}%</button>`).join('')+'<b>'+won(maxBet*betPct)+'</b>';
-  $('items').innerHTML=Object.entries(ITEMS).map(([k,it])=>{const lk=ri<it.lv;if(lk)sel[k]=false;return `<button class="chip ic" type="button" data-i="${k}" aria-pressed="${sel[k]}" ${lock||lk?'disabled':''} title="${it.desc}"><b>${lk?'🔒':it.name.split(' ')[0]} ${it.short}</b><small>${lk?RANKS[it.lv][1]:(it.cost?won(itemCost(k,Math.min(balance,maxStake(allin&&ri>=2))*betPct)):'무료')}</small></button>`}).join('')+
+  const AI=allin&&ri>=2,maxBet=AI?maxStake(1):Math.min(balance,maxStake(0))*betPct;
+  $('betrow').innerHTML='<span>투자 비율</span>'+[.1,.25,.5,1].map(v=>`<button type="button" data-pct="${v}" aria-pressed="${betPct===v}" ${lock?'disabled':''}>${v*100}%</button>`).join('')+'<b>'+won(maxBet)+'</b>';
+  $('items').innerHTML=Object.entries(ITEMS).map(([k,it])=>{const lk=ri<it.lv;if(lk)sel[k]=false;return `<button class="chip ic" type="button" data-i="${k}" aria-pressed="${sel[k]}" ${lock||lk?'disabled':''} title="${it.desc}"><b>${lk?'🔒':it.name.split(' ')[0]} ${it.short}</b><small>${lk?RANKS[it.lv][1]:(it.cost?won(itemCost(k,(allin&&ri>=2)?maxStake(1):Math.min(balance,maxStake(0))*betPct)):'무료')}</small></button>`}).join('')+
     `<button class="chip ic ${levSel>=5?'hot':''}" type="button" id="levBtn" ${lock?'disabled':''}><b>⚡ ${levSel}배</b><small>${levSel>1?'청산 -'+Math.round(85/levSel*(gear.jet?95/85:1))+'%':'레버리지'}</small></button>`+
-    `<button class="chip ic ${allin?'hot':''}" type="button" id="allinBtn" aria-pressed="${allin}" ${lock||ri<2?'disabled':''}><b>${ri<2?'🔒':'🎲'} 영끌</b><small>${ri<2?RANKS[2][1]:allin?won(Math.min(balance,betCap()*10)):'한도 10배'}</small></button>`;
+    `<button class="chip ic ${allin?'hot':''}" type="button" id="allinBtn" aria-pressed="${allin}" ${lock||ri<2?'disabled':''}><b>${ri<2?'🔒':'🎲'} 영끌</b><small>${ri<2?RANKS[2][1]:allin?won(maxStake(1)):'전재산 올인'}</small></button>`;
 }
 function paintQuote(){
   const o=offer(),T=TIERS[o.k];
@@ -828,7 +890,7 @@ $('sheet').addEventListener('click',e=>{if(e.target.id==='sheet'||e.target.id===
 $('betrow').addEventListener('click',e=>{const b=e.target.closest('[data-pct]');if(b&&!b.disabled){betPct=+b.dataset.pct;store.set('shg_pct',betPct);beep(520,.03,'sine',.03);paintPickers();}});
 $('items').addEventListener('click',e=>{
   const lb=e.target.closest('#levBtn');if(lb&&!lb.disabled){const ri=rankOf(xp),ok=LEVS.filter(l=>l[1]<=ri).map(l=>l[0]);levSel=ok[(ok.indexOf(levSel)+1)%ok.length];if(levSel>=10){vib(30);toast('⚠ '+levSel+'배: '+Math.round(85/levSel)+'%만 빠져도 강제청산');}paintPickers();return;}
-  const ab=e.target.closest('#allinBtn');if(ab&&!ab.disabled){allin=!allin;if(allin){vib([30,30,30]);toast('🎲 영끌 ON · 한도의 10배 '+won(Math.min(balance,maxStake(1)))+'까지 겁니다');}paintPickers();return;}
+  const ab=e.target.closest('#allinBtn');if(ab&&!ab.disabled){allin=!allin;if(allin){vib([30,30,30]);toast('🎲 영끌 ON · 전재산 '+won(maxStake(1))+' 올인!');}paintPickers();return;}
   const b=e.target.closest('[data-i]');if(b&&!b.disabled){sel[b.dataset.i]=!sel[b.dataset.i];paintPickers();}});
 
 /* ---------- game ---------- */
@@ -852,7 +914,7 @@ function start(){
   if(run||chartStock!==o){run=null;sell=null;crashed=false;eM=1;buildChartIdle();}
   eM=liveM;candles.forEach(c=>{c.o/=eM;c.h/=eM;c.l/=eM;c.c/=eM;});runBase=candles.length; // 지금 가격에 매수
   const lv=tut?1:levSel,ai=!tut&&allin&&rankOf(xp)>=2;
-  const bet=Math.min(balance,maxStake(ai))*(tut?1:betPct);
+  const bet=ai?Math.min(balance,maxStake(1)):Math.min(balance,maxStake(0))*(tut?1:betPct);
   let cost=0;for(const k in sel)if(sel[k])cost+=itemCost(k,bet);
   const fee=tut||gear.vip?0:bet*(.003+.002*(lv-1)); // 수수료·세금·레버리지 이자
   balance-=cost+fee;
@@ -989,9 +1051,12 @@ function missionsUpdate(r){
 
 /* ---------- result cards ---------- */
 let shareText='';
-function shareBtn(){return '<div class="btns"><button type="button" id="share">결과 복사</button></div>'}
-function bindShare(){const b=$('share');if(!b)return;b.onclick=()=>{
-  navigator.clipboard.writeText(shareText).then(()=>toast('결과를 복사했습니다'),()=>toast('복사가 막혀 있습니다. 화면을 캡처해 주세요'));};}
+const GAME_URL='https://wjdgh0905-bit.github.io/Vibe-Trading/';
+function shareOut(text){const full=text+'\n👉 '+GAME_URL;
+  if(navigator.share){navigator.share({title:'상한가 따라잡기',text,url:GAME_URL}).catch(()=>{});return;}
+  (navigator.clipboard?navigator.clipboard.writeText(full):Promise.reject()).then(()=>toast('링크와 함께 복사했습니다. 단톡방에 붙여넣기!'),()=>toast('복사가 막혀 있습니다. 화면을 캡처해 주세요'));}
+function shareBtn(){return '<div class="btns"><button type="button" id="share">📤 결과 공유</button></div>'}
+function bindShare(){const b=$('share');if(!b)return;b.onclick=()=>shareOut(shareText);}
 function showWin(pct,xg){
   const g=sell.m<1?['손절','dn','손해를 줄이고 빠져나왔습니다.']:pct>=95?['신의 손','gd','고점에서 정확히 던졌습니다.']:pct>=80?['고수','up','꼭지 근처에서 잘 팔았습니다.']:pct>=50?['개미','','반은 먹었습니다. 나머지는 세력 몫.']:['새가슴','dn','너무 일찍 팔았습니다. 더 갔어요…'];
   const close=(crashT-sell.t)<.4?'<div class="sub gd">폭락 '+(crashT-sell.t).toFixed(2)+'초 전 탈출!</div>':'';
@@ -1404,10 +1469,11 @@ const GEAR=[ // 비싸고, 계급 제한까지 있음
   {id:'building',e:'🏢',n:'강남 빌딩',d:'일일 미션 현금 보상 2배',p:1e13,lv:11},{id:'jet',e:'🛩',n:'전용기',d:'강제청산 라인 완화',p:8e13,lv:12},
   {id:'firm',e:'🏦',n:'증권사 인수',d:'투자 한도 +50%',p:5e14,lv:14}
 ];
-const cPrice=c=>Math.max(1e5,Math.round(Math.max(betCap()*c.p,balance*c.p*.03)/1e4)*1e4);
+// 많이 가질수록 비싸짐: 보유·사용 중 1개당 1.6배
+const cPrice=c=>Math.max(1e5,Math.round(Math.max(betCap()*c.p,balance*c.p*.03)*Math.pow(1.6,(inv[c.id]||0)+(armed[c.id]||0))/1e4)*1e4);
 function pageShop(){
   return '<h2>🛒 상점</h2><p class="lead">모은 돈은 여기서 쓰세요. 소모품은 한 판용, 장비는 영구 보너스입니다.</p>'+
-   '<div class="sphead"><div><small>예수금</small><b style="font-size:22px">'+won(balance)+'</b></div><div style="text-align:right"><small>소모품 가격은 투자 한도에 비례</small></div></div>'+
+   '<div class="sphead"><div><small>예수금</small><b style="font-size:22px">'+won(balance)+'</b></div><div style="text-align:right"><small>소모품은 예수금에 비례 · 많이 가질수록 1.6배씩 비싸짐</small></div></div>'+
    '<h3>🏦 은행</h3><div class="pan" style="padding:6px 14px 12px">'+[['빚',debt?won(debt):'없음'],['신용등급',credit+'등급'+(credit>=8?' · 사채':'')],['판당 이자',(loanRate()*100).toFixed(1)+'%'],['빚 한도',won(debtLimit())]].map(([k,v])=>`<div class="row" style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--line);font-size:14px"><span class="mu">${k}</span><b>${v}</b></div>`).join('')+
    '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:10px"><button class="setbtn" type="button" id="bLoan" '+(canLoan()?'':'disabled')+'>💳 대출<br>'+won(loanAmt())+'</button><button class="setbtn ghost" type="button" id="bHalf" '+(debt&&balance>0?'':'disabled')+'>절반 상환</button><button class="setbtn ghost" type="button" id="bAll" '+(debt&&balance>0?'':'disabled')+'>전액 상환</button></div>'+
    '<p class="lead" style="margin:8px 0 0">대출받으면 신용이 1등급 떨어지고, 다 갚으면 1등급 오릅니다. 빚이 한도를 넘으면 신용불량 · 장비 압류. 익절하면 수익의 30%가 자동 상환됩니다.</p></div>'+
@@ -1426,7 +1492,7 @@ function pageMission(){
 }
 function pageRecord(){
   const wr=stats.rounds?Math.round(stats.wins/stats.rounds*100):0,T=profile&&TYPES[profile];
-  return '<h2>📊 기록</h2>'+(T?'<div class="pan" style="padding:12px 14px"><div class="typecard"><i>'+T.e+'</i><div><b>'+T.n+'</b><br><small class="mu">'+T.perk+' · '+RANKS[rankOf(xp)][1]+' · '+xp+' XP</small></div></div></div>':'')+
+  return '<h2>📊 기록</h2>'+roomHtml()+(T?'<div class="pan" style="padding:12px 14px"><div class="typecard"><i>'+T.e+'</i><div><b>'+T.n+'</b><br><small class="mu">'+T.perk+' · '+RANKS[rankOf(xp)][1]+' · '+xp+' XP</small></div></div></div>':'')+
    '<h3>내 자산</h3><div class="tiles">'+[['현재 자산',won(balance)],['투자 평가금',won(invTotal())],['빚',debt?'-'+won(debt):'없음'],['순자산',sw(balance+invTotal()-debt)],['컬렉션',col.length+' / '+COL.length],['신용등급',credit+'등급'+(credit>=8?' 😱':credit<=3?' 😎':'')],['대출 한도',won(loanAmt())],['빚 한도',won(debtLimit())]].map(([k,v])=>`<div class="tile"><small>${k}</small><b>${v}</b></div>`).join('')+'</div>'+
    '<h3>통산 성적</h3><div class="tiles">'+
    [['플레이',stats.rounds+'판'],['승률',wr+'%'],['최고 배수','x'+(stats.bestM||0).toFixed(2)],['최고 근접도',Math.round(stats.bestPct)+'%'],['최장 연승',stats.maxStreak+'연속'],['파산',stats.bankrupts+'회'],['누적 손익',sw(stats.net)],['최고 자산',best?won(best):'-'],['캐릭터 레벨','Lv.'+lvlOf(xp).L],['보스 처치',(stats.bossLv||0)+'마리'],['업적 별',ACH.reduce((n,a)=>n+achStars(a[0]).st,0)+'/'+ACH.length*5]]
@@ -1446,11 +1512,12 @@ const PROD=[
   {id:'angel',e:'🚀',n:'스타트업 엔젤',d:'판마다 3% 확률 상장(x5) · 4% 확률 파산(0원)',angel:1,max:2e13,lv:8,fee:.03}
 ];
 const COL=[
-  {id:'pent',e:'🏙',n:'한강뷰 펜트하우스',p:1e10},{id:'team',e:'⚾',n:'프로야구단',p:3e11},{id:'air',e:'✈️',n:'항공사',p:1e13},
-  {id:'sat',e:'🛰',n:'인공위성',p:2e14},{id:'isl',e:'🏝',n:'개인 섬',p:1e15},{id:'iss',e:'🛸',n:'우주정거장',p:3e16},
-  {id:'moon',e:'🌕',n:'달 소유권',p:2e17,fic:1},{id:'mars',e:'🔴',n:'화성 식민지',p:2e18,fic:1},{id:'time',e:'⏳',n:'타임머신',p:2e19,fic:1},{id:'multi',e:'🌌',n:'평행우주 지분',p:1e20,fic:1}
+  {id:'pent',e:'🏙️',n:'한강뷰 펜트하우스',p:1e11},{id:'team',e:'⚾',n:'프로야구단',p:5e12},{id:'air',e:'✈️',n:'항공사',p:8e13},
+  {id:'sat',e:'🛰️',n:'인공위성',p:1e15},{id:'isl',e:'🏝️',n:'개인 섬',p:1e16},{id:'iss',e:'🛸',n:'우주정거장',p:2e17},
+  {id:'moon',e:'🌕',n:'달 소유권',p:3e18,fic:1},{id:'mars',e:'🔴',n:'화성 식민지',p:3e19,fic:1},{id:'time',e:'⏳',n:'타임머신',p:3e20,fic:1},{id:'multi',e:'🌌',n:'평행우주 지분',p:3e21,fic:1}
 ];
 let invest=store.get('shg_inv2',{}),col=store.get('shg_col',[]);
+let invPct=store.get('shg_ipct',.25);
 const invTotal=()=>Object.values(invest).reduce((n,h)=>n+(h.a||0),0);
 const colSP=()=>{try{return col.reduce((n,id)=>{const c=COL.find(x=>x.id===id);return n+(c&&c.fic?2:1);},0)}catch(e){return 0}};
 const gauss=()=>(Math.random()+Math.random()+Math.random()-1.5)*2;
@@ -1462,13 +1529,58 @@ function tickInvest(){
     d=Math.max(-h.a,d);h.a+=d;h.d=d;sum+=d;});
   if(sum){store.set('shg_inv2',invest);talkLines.push('<b class="gd">[투자]</b> 평가손익 <span class="'+(sum>=0?'up':'dn')+'">'+sw(sum)+'</span>');renderTalk();}
 }
+
+/* ---------- 미니룸: 단칸방에서 시작해 자산 따라 이사 ---------- */
+const AVA=['🐣','🐥','🐤','🐔','🦆','🦉','🦊','🐺','🦁','🐯','🐲','🦄','👑','🌟','🌌'];
+const HOMES=[
+  {n:'고시원 단칸방',min:0,win:'bars',deco:[['🍜',22,60,6],['🕯️',8,40,5],['📦',82,66,7]],bed:'🛌'},
+  {n:'반지하 원룸',min:1e7,win:'feet',deco:[['🍜',24,61,5],['🧺',84,66,7],['🪳',70,86,3.5]],bed:'🛏️'},
+  {n:'원룸 오피스텔',min:1e8,win:'day',deco:[['🛏️',84,62,11],['🪴',4,58,7]]},
+  {n:'국민평형 아파트',min:1e9,win:'day',deco:[['🛋️',22,80,11],['📺',22,30,7],['🪴',4,58,7]]},
+  {n:'한강뷰 아파트',min:1e10,win:'river',deco:[['🛋️',22,80,11],['🍷',8,82,5],['🪴',4,58,7],['🖼️',22,22,7]]},
+  {n:'강남 펜트하우스',min:1e12,win:'night',deco:[['🛋️',22,80,11],['🍾',8,82,5],['💎',22,22,6],['🎹',38,80,8]]},
+  {n:'빌딩 꼭대기 회장실',min:1e14,win:'night',deco:[['🗿',4,60,9],['🏆',22,22,7],['🛋️',22,80,11],['🥂',38,82,5]]},
+  {n:'우주정거장 스위트',min:1e16,win:'space',deco:[['👨‍🚀',22,80,9],['🛰️',22,22,7],['🧪',4,62,7]]},
+  {n:'달 기지',min:1e18,win:'moon',deco:[['🚀',20,78,11],['🏳️',22,22,7],['🌑',38,82,6]]}
+];
+const homeIdx=()=>{const w=balance+invTotal();let i=0;HOMES.forEach((h,j)=>{if(w>=h.min)i=j;});return i;};
+let lastHome=store.get('shg_home',0);
+function checkHome(){const h=homeIdx();if(h>lastHome){lastHome=h;store.set('shg_home',h);setTimeout(()=>{stamp('🏠 이사!');toast('🏠 '+HOMES[h].n+'(으)로 이사했습니다!');},400);}else if(h<lastHome){lastHome=h;store.set('shg_home',h);}}
+function roomHtml(){
+  const ri=rankOf(xp),G=id=>!!gear[id],C=id=>col.includes(id),hi=homeIdx(),H=HOMES[hi],nx=HOMES[hi+1];
+  const it=(e,x,y,sz,own,tip,cls='')=>`<button type="button" class="ri ${own?'own':'no'} ${cls}" style="left:${x}%;top:${y}%;font-size:${sz}cqw" data-tip="${tip}">${own?e:'?'}</button>`;
+  const gt=id=>{const g=GEAR.find(x=>x.id===id);return g.n+(gear[id]?' · '+g.d:' · 미보유 '+won(g.p));};
+  const ct=id=>{const c=COL.find(x=>x.id===id);return c.n+(C(id)?' · 보유':' · '+won(c.p));};
+  const win={bars:'<span class="bars"></span>',feet:'<span class="feet">👟 👠 👞</span>',day:'<span class="sun">☀️</span><div class="rcity"></div>',
+    river:'<span class="sun">☀️</span><div class="rcity"></div><div class="river"></div>',night:'<span class="stars">✦ · ✧ · ✦ ·</span><span class="sky" style="right:8%;top:6%">🌙</span><div class="rcity"></div>',
+    space:'<span class="stars">✦ · ✧ · ✦ · ✧</span><span class="sky" style="right:14%;top:30%;font-size:12cqw">🌍</span>',
+    moon:'<span class="stars">✦ · ✧ · ✦ · ✧</span><span class="sky" style="right:10%;top:8%;font-size:9cqw">🌍</span><div class="moonland"></div>'}[H.win];
+  const outdoor=hi>=2; // 창밖에 장비가 보이는 집부터
+  return '<div class="room s'+hi+'">'+
+    '<div class="rwall"></div><div class="rfloor"></div>'+
+    '<div class="rwin w-'+H.win+'">'+win+
+      (C('moon')&&H.win!=='moon'?'<span class="sky" style="left:8%;top:6%">🌕</span>':'')+(C('iss')&&hi<7?'<span class="sky" style="left:36%;top:6%">🛸</span>':'')+'</div>'+
+    (outdoor?it('🛩️',63,9,5.5,G('jet'),gt('jet'))+it('🏢',71,17,8,G('building'),gt('building'))+it('🏦',85,15,7,G('firm'),gt('firm'))+it('🏎️',64,40,6,G('car'),gt('car'))+it('🛥️',81,40,6,G('yacht'),gt('yacht')):'')+
+    (hi>=1?'<div class="rframe"></div>'+it('💳',39.5,16,4.5,G('vip'),gt('vip')):'')+
+    '<div class="rdesk"></div>'+it('🖥️',15,47,9,G('monitor'),gt('monitor'))+it('🪑',30,60,9,G('chair'),gt('chair'))+
+    H.deco.map(d=>`<span class="deco" style="left:${d[1]}%;top:${d[2]}%;font-size:${d[3]}cqw">${d[0]}</span>`).join('')+
+    (H.bed?`<span class="deco" style="left:70%;top:72%;font-size:10cqw">${H.bed}</span>`:'')+
+    (hi<2?'<span class="crack"></span>':'')+
+    '<div class="ava" style="left:46%;top:58%"><b>'+(hi===0?'라면 또 먹냐…':hi<3?RANKS[ri][1]:'성공했다 '+RANKS[ri][1])+'</b><span>'+AVA[Math.min(ri,AVA.length-1)]+'</span></div>'+
+    (hi>=3?'<div class="shelf">'+COL.map(c=>`<button type="button" class="si ${C(c.id)?'own':'no'}" data-tip="${ct(c.id)}">${C(c.id)?c.e:'🔒'}</button>`).join('')+'</div>':'')+
+    '<div class="rlabel">🏠 '+H.n+' · Lv.'+(hi+1)+'/'+HOMES.length+(nx?' · 다음 <b>'+nx.n+'</b>까지 '+won(Math.max(0,nx.min-balance-invTotal())):' · 최종 집!')+'</div>'+
+    (nx?'<div class="rprog"><u style="width:'+Math.min(100,(balance+invTotal())/nx.min*100)+'%"></u></div>':'')+
+  '</div>';
+}
+document.addEventListener('click',e=>{const t=e.target.closest('.room [data-tip]');if(t)toast(t.dataset.tip);});
 function pageInvest(){
   const ri=rankOf(xp),tot=invTotal(),last=Object.values(invest).reduce((n,h)=>n+(h.d||0),0);
-  return '<h2>💼 투자</h2><p class="lead">예수금을 넣어두면 <b>판을 할 때마다</b> 수익(또는 손실)이 붙어요. 상품마다 수익이 붙는 한도가 있어요. 빼면 수수료가 나가요.</p>'+
+  return '<h2>💼 투자</h2>'+roomHtml()+'<p class="lead" style="margin-top:10px">예수금을 넣어두면 <b>판을 할 때마다</b> 수익(또는 손실)이 붙어요. 상품마다 수익이 붙는 한도가 있어요. 빼면 수수료가 나가요.</p>'+
    '<div class="tiles"><div class="tile"><small>투자 평가금</small><b>'+won(tot)+'</b></div><div class="tile"><small>지난 판 손익</small><b class="'+(last>=0?'up':'dn')+'">'+sw(last)+'</b></div><div class="tile"><small>예수금</small><b>'+won(balance)+'</b></div></div>'+
+   '<h3>투자 비율</h3><div class="betrow ipct">'+[.05,.1,.25,.5,1].map(r=>'<button type="button" data-ipct="'+r+'" aria-pressed="'+(invPct===r)+'">'+(r*100)+'%</button>').join('')+'</div><p class="lead" style="margin-top:6px">입금은 예수금의 '+(invPct*100)+'%, 출금은 상품 잔액의 '+(invPct*100)+'%</p>'+
    '<h3>상품</h3><div class="pan">'+PROD.map(P=>{const h=invest[P.id]||{a:0},lk=ri<P.lv;
      return '<div class="li'+(lk?' lock':'')+'"><i>'+P.e+'</i><div><b>'+P.n+(h.a>0?' <span class="mu">· '+won(h.a)+'</span>':'')+'</b><small>'+(lk?'🔒 '+RANKS[P.lv][1]+' 계급부터':P.d+' · 수익 한도 '+won(P.max)+(P.fee?' · 출금 수수료 '+P.fee*100+'%':''))+(h.d?' · 지난 판 <span class="'+(h.d>=0?'up':'dn')+'">'+sw(h.d)+'</span>':'')+'</small>'+
-      (lk?'':'<div class="ivb"><button class="setbtn ghost" type="button" data-dep="'+P.id+'" data-r=".1">+10%</button><button class="setbtn ghost" type="button" data-dep="'+P.id+'" data-r=".5">+50%</button><button class="setbtn ghost" type="button" data-dep="'+P.id+'" data-r="1">+전부</button><button class="setbtn" type="button" data-wd="'+P.id+'"'+(h.a>0?'':' disabled')+'>출금</button></div>')+'</div></div>';}).join('')+'</div>'+
+      (lk?'':'<div class="ivb"><button class="setbtn" type="button" data-dep="'+P.id+'"'+(balance*invPct<1?' disabled':'')+'>입금 '+won(balance*invPct)+'</button><button class="setbtn ghost" type="button" data-wd="'+P.id+'"'+(h.a>0?'':' disabled')+'>출금 '+(invPct*100)+'%</button></div>')+'</div></div>';}).join('')+'</div>'+
    '<h3>🏆 컬렉션 '+col.length+' / '+COL.length+'</h3><p class="lead">돈으로만 살 수 있는 꿈. 하나 살 때마다 SP +1, 상상 속 물건은 SP +2.</p><div class="pan">'+COL.map(c=>{const own=col.includes(c.id);
      return '<div class="li'+(own?' done':'')+'"><i>'+c.e+'</i><div><b>'+c.n+(c.fic?' <span class="tg i">상상</span>':'')+'</b><small>'+(own?'✓ 보유 중':won(c.p)+' · 달성 '+Math.min(100,balance/c.p*100).toFixed(balance<c.p*.01?2:0)+'%')+'</small>'+(own?'':'<div class="xpbar" style="height:4px;margin-top:4px"><u style="width:'+Math.min(100,balance/c.p*100)+'%"></u></div>')+'</div>'+(own?'':'<button class="setbtn" type="button" data-col="'+c.id+'"'+(balance<c.p?' disabled':'')+'>구매</button>')+'</div>';}).join('')+'</div>';
 }
@@ -1477,12 +1589,12 @@ function glossary(){
   const G=(t,body,open)=>`<details class="gl"${open?' open':''}><summary>${t}</summary>${body}</details>`;
   return '<h3>📖 용어 · 아이콘 설명</h3><div class="pan">'+
   G('📈 화면 보는 법',
-    L('💵','예수금','지금 쓸 수 있는 내 돈')+L('🔥','연속 익절','수익으로 끝낸 판이 연속 몇 번인지. 5연속이면 피버')+L('🎯','투자 한도','한 판 최대 금액. 레벨 한도와 예수금 비율(1,000억까지 5% → 1조까지 2% → 1,000조까지 0.3% → 그 위 0.05%) 중 큰 쪽')+
+    L('💵','예수금','지금 쓸 수 있는 내 돈')+L('🔥','연속 익절','수익으로 끝낸 판이 연속 몇 번인지. 5연속이면 피버')+L('🎯','투자 한도','한 판 최대 금액. 레벨 한도와 예수금 비율(1,000억까지 10% → 1조까지 5% → 1,000조까지 1% → 그 위 0.2%) 중 큰 쪽')+
     L('<span style="color:var(--muted);font-weight:900">┅</span>','기준가 (회색 점선)','매수한 가격. 이 위면 수익, 아래면 손실')+L('<span style="color:var(--gold);font-weight:900">┅</span>','상한가 +30% (노란 점선)','하루 최대 상승폭. 일부 종목만 표시')+L('💀','청산가 (파란 점선)','레버리지를 쓰면 생김. 여기 닿으면 강제청산')+L('<span style="color:var(--rumor);font-weight:900">┅</span>','찌라시 목표가 (보라 점선)','찌라시가 알려준 폭락 지점. 가짜일 수도 있음')+
     L('📊','호가 · 잔량','사려는(빨강)·팔려는(파랑) 가격과 수량. 노란 칸이 현재가')+L('🧾','체결 · 체결강도','실제로 거래된 가격. 체결강도 100% 넘으면 사는 쪽이 셈')+L('📰','뉴스 바','호재(빨강)·악재(파랑)·찌라시(보라). 악재 뒤엔 출렁임이 옴')+L('🌡','장세 배지','5판마다 바뀌는 시장 분위기. 불장·폭락장 등'),1)+
   G('💰 매매 용어',
     L('🔴','매수 → 익절','버튼을 눌러 사고, 다시 눌러 팔아 수익 확정')+L('🔁','재진입','매도 후 폭락 전이면 한 번 더 같은 금액으로 들어갈 수 있음. 또 팔아야 함')+L('📉','저점 매수 · 추격 매수','매수 전 차트가 기준가보다 4% 아래면 폭락이 늦게, 5% 위면 빨리 옴')+L('🔵','물림 · 손절','못 팔고 폭락을 맞거나, 산 값보다 낮게 판 경우')+L('✖','배수 (x2.0)','산 가격 대비 몇 배인지. x2면 +100%')+L('🎯','근접도','폭락 직전 고점에 얼마나 가깝게 팔았는지')+
-    L('⚡','레버리지','수익·손실을 몇 배로 키움. 높을수록 청산 위험 ↑, 수수료 ↑')+L('🎲','영끌','투자 한도를 10배로 늘려 한 방. 잃으면 크게 잃음')+L('%','투자 비율','예수금 중 이번 판에 걸 비율')+L('🧾','수수료','매수할 때 떼는 비용. 레버리지가 높을수록 비쌈')+L('🏛','부자세','예수금 100억부터 수익에 세금. 100억 5% → 1조 25% → 100조 45% → 최대 65%')+L('🌊','유동성 한도','한 판에 걸 수 있는 돈은 영끌 포함 최대 100조')+L('📉','자산 리스크','예수금 10억부터 폭락이 빨라지고 즉시 폭락 확률↑. 1조면 약 10%, 최대 30%')+L('💀','고레벨 난이도','Lv.20부터 레벨마다 폭락이 조금씩 빨라짐 (최대 35%)'))+
+    L('⚡','레버리지','수익·손실을 몇 배로 키움. 높을수록 청산 위험 ↑, 수수료 ↑')+L('🎲','영끌','투자 비율 무시하고 전재산(최대 1경) 올인. 잃으면 크게 잃음')+L('%','투자 비율','예수금 중 이번 판에 걸 비율')+L('🧾','수수료','매수할 때 떼는 비용. 레버리지가 높을수록 비쌈')+L('🏛','부자세','예수금 100억부터 수익에 세금. 100억 5% → 1조 25% → 100조 45% → 최대 65%')+L('🌊','유동성 한도','한 판에 걸 수 있는 돈은 영끌 포함 최대 1경')+L('📉','자산 리스크','예수금 10억부터 폭락이 빨라지고 즉시 폭락 확률↑. 1조면 약 10%, 최대 30%')+L('💀','고레벨 난이도','Lv.20부터 레벨마다 폭락이 조금씩 빨라짐 (최대 35%)'))+
   G('🏷 종목 종류',Object.values(TIERS).filter(T=>!T.hidden).map(T=>L(T.e,T.label,`물리면 -${Math.round(T.loss*100)}% · 대박 크기 x${T.scale}`)).join('')+L('👹','보스전','10판마다 등장. 목표 배수까지 버티고 팔면 처치'))+
   G('🧰 아이템 · 성장',Object.values(ITEMS).map(it=>L(it.name.split(' ')[0],it.name.split(' ').slice(1).join(' '),it.desc+' · 판마다 비용')).join('')+
     L('🌳','SP · 스킬','레벨업·업적·미션으로 얻는 포인트. 스킬 탭에서 강화')+L('🎁','선물','하루 한 번 룰렛, 가끔 보물상자')+L('📋','미션','일일 8개 · 주간 10개 · 커리어 20개')+L('⭐','업적 별','반복 달성하면 ★1→★5, 그 뒤엔 색이 바뀜')+L('🛒','상점','소모품·장비 구매, 은행(대출·상환)'))+
@@ -1498,7 +1610,8 @@ function pageSet(){
   return '<h2>⚙️ 설정</h2><div class="pan">'+row('sound','효과음','버튼, 틱, 매도·폭락 소리')+row('bgm','배경음악','잔잔한 비트 · 매수 중엔 빨라짐')+row('heart','심장 박동','보유 중 긴장감 사운드')+row('vib','진동','지원하는 기기에서만 작동')+row('fx','화려한 효과','파티클, 섬광, 화면 흔들림')+row('slow','느린 차트','차트 속도 20% 감소')+'</div>'+glossary()+
    '<h3>다시 하기</h3><div style="display:grid;gap:8px"><button class="setbtn ghost" type="button" id="retake">🧪 투자 성향 테스트 다시 하기</button><button class="setbtn ghost" type="button" id="reTut">🎓 튜토리얼 다시 보기</button></div>'+
    '<h3>데이터</h3><button class="setbtn danger" type="button" id="wipe" style="width:100%">모든 기록 초기화</button><p class="lead" style="margin-top:8px">기록은 이 기기의 브라우저에만 저장됩니다. 초기화하면 계급, 스킬, 업적이 모두 사라집니다.</p>'+
-   '<p class="lead">상한가 따라잡기 v1.5 · 가상 게임이며 실제 투자와 무관합니다.</p>';
+   '<h3>친구 초대</h3><button class="setbtn" type="button" id="invite" style="width:100%">📤 친구에게 게임 공유하기</button>'+
+   '<p class="lead" style="margin-top:10px">상한가 따라잡기 v2.0 · 가상 머니 게임이며 실제 투자·현금과 무관합니다. 실제 돈은 쓰이지 않습니다.</p>';
 }
 function bindPage(name){
   const pg=$('page');
@@ -1508,9 +1621,11 @@ function bindPage(name){
     if(c.id==='bossT'&&state!=='holding'&&state!=='ghost'){offers=makeOffers();paintPickers();}toast(c.e+' '+c.n+' 사용 · 다음 판부터 적용');sfx.up();rerender('shop');});
   pg.querySelectorAll('[data-gear]').forEach(b=>b.onclick=()=>{const g=GEAR.find(x=>x.id===b.dataset.gear);if(gear[g.id]||balance<g.p||rankOf(xp)<g.lv)return;balance-=g.p;gear[g.id]=1;stats.c.gear++;store.set('shg_gear',gear);store.set('shg_stats',stats);unlock('gear1');careerCheck();
     sfx.up();burst(innerWidth/2,innerHeight*.4,60);toast(g.e+' '+g.n+' 구매! '+g.d);paintTop();rerender('shop');});
-  pg.querySelectorAll('[data-dep]').forEach(b=>b.onclick=()=>{const id=b.dataset.dep,v=Math.floor(balance*+b.dataset.r);if(v<1)return;balance-=v;invest[id]=invest[id]||{a:0};invest[id].a+=v;store.set('shg_inv2',invest);sfx.sell();toast('💼 '+PROD.find(x=>x.id===id).n+' 입금 '+won(v));paintTop();paintPickers();rerender('invest');});
-  pg.querySelectorAll('[data-wd]').forEach(b=>b.onclick=()=>{const P=PROD.find(x=>x.id===b.dataset.wd),h=invest[P.id];if(!h||!(h.a>0))return;const out=h.a*(1-P.fee);balance+=out;h.a=0;h.d=0;store.set('shg_inv2',invest);sfx.sell();toast('💼 출금 '+won(out)+(P.fee?' (수수료 '+P.fee*100+'%)':''));paintTop();paintPickers();rerender('invest');});
+  pg.querySelectorAll('[data-ipct]').forEach(b=>b.onclick=()=>{invPct=+b.dataset.ipct;store.set('shg_ipct',invPct);rerender('invest');});
+  pg.querySelectorAll('[data-dep]').forEach(b=>b.onclick=()=>{const id=b.dataset.dep,v=Math.floor(balance*invPct);if(v<1)return;balance-=v;invest[id]=invest[id]||{a:0};invest[id].a+=v;store.set('shg_inv2',invest);sfx.sell();toast('💼 '+PROD.find(x=>x.id===id).n+' 입금 '+won(v));paintTop();paintPickers();rerender('invest');});
+  pg.querySelectorAll('[data-wd]').forEach(b=>b.onclick=()=>{const P=PROD.find(x=>x.id===b.dataset.wd),h=invest[P.id];if(!h||!(h.a>0))return;const take=invPct>=1?h.a:h.a*invPct,out=take*(1-P.fee);balance+=out;h.a-=take;if(h.a<1){h.a=0;h.d=0;}store.set('shg_inv2',invest);sfx.sell();toast('💼 출금 '+won(out)+(P.fee?' (수수료 '+P.fee*100+'%)':''));paintTop();paintPickers();rerender('invest');});
   pg.querySelectorAll('[data-col]').forEach(b=>b.onclick=()=>{const c=COL.find(x=>x.id===b.dataset.col);if(col.includes(c.id)||balance<c.p)return;balance-=c.p;col.push(c.id);store.set('shg_col',col);sfx.up();burst(innerWidth/2,innerHeight*.4,80);stamp(c.e+' '+c.n+' 획득!');toast('🏆 컬렉션 '+col.length+'/'+COL.length+' · SP +'+(c.fic?2:1));paintTop();paintPickers();rerender('invest');});
+  const iv=$('invite');if(iv)iv.onclick=()=>shareOut('📈 상한가 따라잡기 — 폭락 전에 팔면 이기는 주식 게임. 내 자산 '+won(balance)+', 나보다 잘할 수 있음?');
   const bl=$('bLoan');if(bl)bl.onclick=()=>{if(takeLoan()){paintTop();paintPickers();rerender('shop');}};
   const bh=$('bHalf');if(bh)bh.onclick=()=>{repay(Math.ceil(debt/2));paintTop();paintPickers();rerender('shop');};
   const ba=$('bAll');if(ba)ba.onclick=()=>{repay(debt);paintTop();paintPickers();rerender('shop');};

@@ -184,6 +184,7 @@ canvas{position:absolute;inset:0;width:100%;height:100%}
 .shopb .setbtn{padding:6px 10px;font-size:12px;white-space:nowrap}
 .shopb .setbtn:disabled{opacity:.4}
 .tabs button{font-size:11px}
+.card .cx{position:absolute;top:8px;right:8px;width:34px;height:34px;margin:0!important;padding:0!important;border-radius:50%!important;font-size:16px!important;line-height:1;background:var(--panel2);color:var(--fg);border:1px solid var(--line);cursor:pointer;z-index:1}
 /* readability pass */
 body{font-size:15px;line-height:1.45}
 .app{gap:8px}
@@ -855,10 +856,15 @@ function showIntro(){
   const ms=daily.ids.map(id=>MISSIONS.find(m=>m.id===id).t);
   card.innerHTML='<div class="grade"><span class="up">상한가</span> 따라잡기</div>'+
    '<ul><li>버튼을 <b>누르는 동안 보유</b>, 손을 떼면 <b>매도</b>합니다.</li><li>언젠가 반드시 폭락합니다. 그 전에 떼세요.</li><li>악재 뉴스는 진짜 신호일 수도, 개미털기일 수도 있습니다.</li><li>한 판에 거는 돈은 <b>투자 한도</b>까지예요. 한도는 레벨이 오를수록 커집니다.</li><li>5연속 익절하면 <b class="gd">FEVER</b>로 보너스가 2배입니다.</li><li>아이템은 계급이 오를 때마다 하나씩 열립니다.</li></ul>'+
-   '<div class="sub" style="text-align:left;margin-top:10px"><b class="gd">오늘의 미션</b><br>· '+ms.join('<br>· ')+'</div>';
+   '<div class="sub" style="text-align:left;margin-top:10px"><b class="gd">오늘의 미션</b><br>· '+ms.slice(0,3).join('<br>· ')+(ms.length>3?'<br>· 외 '+(ms.length-3)+'개는 미션 탭에서':'')+'</div>'+
+   '<div class="btns"><button class="pri" type="button" data-close>닫고 시작하기</button></div>';
   card.hidden=false;
 }
 
+/* ---------- card close ---------- */
+new MutationObserver(()=>{if(card.hidden||card.querySelector('.cx')||card.querySelector('#again,.opts,#qStart,#qGo'))return;
+  card.insertAdjacentHTML('afterbegin','<button class="cx" type="button" data-close aria-label="닫기">✕</button>');}).observe(card,{childList:true,attributes:true,attributeFilter:['hidden']});
+card.addEventListener('click',e=>{if(e.target.closest('[data-close]')){card.hidden=true;hideCoach();if(!tutDone&&(state==='ready'||state==='result'))coachReady();}});
 /* ---------- modals ---------- */
 function openModal(html){$('modalBody').innerHTML=html;$('modal').hidden=false;}
 $('modalClose').onclick=()=>$('modal').hidden=true;

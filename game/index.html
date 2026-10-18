@@ -88,7 +88,9 @@ canvas{position:absolute;inset:0;width:100%;height:100%}
 .book .ft{font-size:11px;text-align:center;padding:3px 0;color:var(--muted);font-family:var(--body)}
 .book .ft b{font-family:var(--mono)}
 
-#news{position:absolute;left:8px;right:126px;top:36px;padding:9px 10px;border-radius:8px;font-weight:700;font-size:14px;text-align:center;pointer-events:none;animation:slide .25s ease-out;z-index:2}
+#news{flex:none;height:26px;line-height:24px;box-sizing:border-box;padding:0 10px;border-radius:8px;border:1px solid var(--line);background:var(--panel);font-weight:700;font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:none;animation:slide .25s ease-out}
+#news[hidden]{display:block;opacity:.45;animation:none}
+#news.idle{color:var(--muted);font-weight:500}
 #news.bear{background:color-mix(in srgb,var(--down) 32%,var(--bg));border:1px solid var(--down)}
 #news.bull{background:color-mix(in srgb,var(--up) 30%,var(--bg));border:1px solid var(--up)}
 #news.rumor{background:color-mix(in srgb,var(--rumor) 30%,var(--bg));border:1px solid var(--rumor)}
@@ -203,30 +205,28 @@ canvas{position:absolute;inset:0;width:100%;height:100%}
 .achgrid{grid-template-columns:repeat(3,minmax(0,1fr))!important}
 #debtTag{display:block;font-style:normal;font-size:11px;color:#ff6b7a;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 /* readability pass */
-body{font-size:15px;line-height:1.45}
+body{font-size:14px;line-height:1.4}
 .app{gap:8px}
 .acct small,.tile small{font-size:12px}
 .acct span{font-size:17px}
-.qn b{font-size:18px}
+.qn b{font-size:17px}
 .qn small{font-size:12.5px}
 #qChg{font-size:13.5px;font-weight:700}
-.main{grid-template-columns:minmax(0,1fr) 124px}
-.book .hd{font-size:12px;padding:4px 0}
-.ob{padding:0 7px}
-.ob .p{font-size:15px}
-.ob .q{font-size:12px}
-.trs{font-size:12px;padding:3px 7px}
-.trs .th{font-size:10.5px}
-.trs .th,.tr{line-height:15px}
-.book .ft{font-size:12px;line-height:1.4}
-#pnl{font-size:14px;padding:3px 8px}
-#news{font-size:15px;line-height:1.35}
-#news small{font-size:11.5px}
-.talk{font-size:13.5px;height:46px;padding:4px 12px}
-.talk p{line-height:18px}
+.main{grid-template-columns:minmax(0,1fr) 106px}
+.book .hd{font-size:10.5px;padding:3px 0}
+.ob{padding:0 5px}
+.ob .p{font-size:12.5px}
+.ob .q{font-size:10px}
+.trs{font-size:10.5px;padding:2px 5px}
+.trs .th{font-size:9.5px}
+.trs .th,.tr{line-height:13px}
+.book .ft{font-size:10.5px;line-height:1.3}
+#pnl{font-size:12.5px;padding:2px 7px}
+.talk{font-size:12.5px;height:40px;padding:3px 10px}
+.talk p{line-height:16px}
 .chip{padding:7px 9px}
-.chip b{font-size:14px}
-.chip small{font-size:11.5px;margin-top:1px}
+.chip b{font-size:13px}
+.chip small{font-size:10.5px;margin-top:1px}
 .items .chip{min-width:132px}
 .tabs button{font-size:12px}
 .tabs button i{font-size:19px}
@@ -245,12 +245,12 @@ body{font-size:15px;line-height:1.45}
 .achgrid div{font-size:11.5px}
 .talk p{animation:none}.talk p:last-child{animation:slide .2s ease-out}
 .ob{flex-direction:row;align-items:center;justify-content:space-between;gap:4px}
-.ob .p{font-size:14.5px}
-.ob .q{font-size:12px;text-align:right}
-@media (max-height:760px){.trs{display:none}.ob .p{font-size:13.5px}.ob .q{font-size:11px}}
+.ob .p{font-size:12.5px}
+.ob .q{font-size:10.5px;text-align:right}
+@media (max-height:760px){.trs{display:none}.ob .p{font-size:12px}.ob .q{font-size:10px}}
 @media (max-height:760px){.talk{display:none}#hold{height:58px}}
 #vign{position:absolute;inset:0;pointer-events:none;z-index:1;border-radius:10px}
-.stamp{position:absolute;left:50%;top:40%;font-family:var(--display);font-size:clamp(36px,12vw,60px);color:var(--gold);text-shadow:0 0 22px color-mix(in srgb,var(--gold) 60%,transparent),0 3px 0 #000;pointer-events:none;white-space:nowrap;animation:stamp 1s cubic-bezier(.2,1.6,.4,1) forwards;z-index:4}
+.stamp{position:absolute;left:50%;top:40%;font-family:var(--display);font-size:clamp(26px,8vw,42px);color:var(--gold);text-shadow:0 0 22px color-mix(in srgb,var(--gold) 60%,transparent),0 3px 0 #000;pointer-events:none;white-space:nowrap;animation:stamp 1s cubic-bezier(.2,1.6,.4,1) forwards;z-index:4}
 .stamp.dn{color:var(--down);text-shadow:0 0 22px color-mix(in srgb,var(--down) 60%,transparent),0 3px 0 #000}
 @keyframes stamp{0%{transform:translate(-50%,-50%) scale(2.6) rotate(-6deg);opacity:0}14%{transform:translate(-50%,-50%) scale(1) rotate(-3deg);opacity:1}72%{transform:translate(-50%,-50%) scale(1.04) rotate(-3deg);opacity:1}100%{transform:translate(-50%,-80%) scale(1) rotate(-3deg);opacity:0}}
 .pop{position:fixed;font-family:var(--mono);font-weight:800;font-size:28px;color:var(--up);pointer-events:none;z-index:26;text-shadow:0 2px 0 #000,0 0 16px color-mix(in srgb,var(--up) 50%,transparent);white-space:nowrap;animation:popup 1.3s ease-out forwards}
@@ -277,7 +277,7 @@ body{font-size:15px;line-height:1.45}
 .trs .th{font-family:var(--body);font-size:9.5px;color:var(--muted)}
 .tr span:last-child{color:var(--fg);opacity:.7}
 .tr:first-of-type{animation:slide .15s ease-out}
-#news small{display:block;font-size:10.5px;font-weight:500;opacity:.8;margin-bottom:2px}
+#news small{display:none}
 .talk em{font-style:normal;color:var(--muted);font-size:11px}
 .tabs{flex:none;display:grid;grid-template-columns:repeat(6,1fr);gap:2px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:3px;position:relative;z-index:16}
 .tabs button{font:inherit;font-size:11px;font-weight:700;background:none;color:var(--muted);border:0;border-radius:11px;padding:5px 0 4px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:1px;position:relative}
@@ -345,10 +345,10 @@ body{font-size:15px;line-height:1.45}
     <div class="qn"><b id="qName">-</b><small id="qCode">-</small></div>
     <div class="qp"><div id="qPrice" class="num">-</div><div id="qChg" class="mu">-</div></div>
   </div>
+  <div id="news" class="idle" hidden>📰 실시간 뉴스</div>
   <div class="main" id="main">
     <div class="chart" id="chart"><canvas id="cv"></canvas><div id="vign"></div><div id="pnl" hidden></div><div id="bossbar" hidden><b id="bossName"></b><i><u id="bossHp"></u></i><small id="bossGoal"></small></div><div id="regime"></div><div id="fever" hidden>🔥 FEVER</div></div>
     <div class="book" id="book"></div>
-    <div id="news" hidden></div>
     <div id="card" class="card" hidden></div>
   </div>
   <div class="talk" id="talk"></div>
@@ -609,7 +609,7 @@ function news(text,kind){
   const el=$('news');
   el.innerHTML='<small>'+(kind==='rumor'?'찌라시':(kind==='bull'?'[단독] ':'[속보] ')+pick(SRC))+' · '+clock()+'</small>'+text;
   el.className=kind;el.hidden=false;el.style.animation='none';void el.offsetWidth;el.style.animation='';
-  clearTimeout(newsTimer);newsTimer=setTimeout(()=>el.hidden=true,2000);sfx.news();
+  clearTimeout(newsTimer);newsTimer=setTimeout(()=>el.hidden=true,3500);sfx.news();
   talkLines.push('<b class="gd">[뉴스]</b>'+text.replace(/^[^ ]+ /,''));renderTalk();
 }
 const talkLines=[];

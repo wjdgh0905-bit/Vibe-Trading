@@ -128,9 +128,10 @@ canvas{position:absolute;inset:0;width:100%;height:100%}
 
 #hold{height:68px;flex:none;border:0;border-radius:16px;background:var(--up);color:#fff;font-family:var(--display);font-size:24px;letter-spacing:1px;cursor:pointer;touch-action:none;box-shadow:0 5px 0 color-mix(in srgb,var(--up) 50%,#000);transition:transform .06s,box-shadow .06s}
 .app.fever #hold{background:linear-gradient(90deg,var(--up),#ff7a1a,var(--up));background-size:200% 100%;animation:flow 1.2s linear infinite}
+.app.fever #hold.on{background:linear-gradient(90deg,var(--down),#7a5cff,var(--down));background-size:200% 100%}
 @keyframes flow{to{background-position:200% 0}}
 #hold:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
-#hold.on{transform:translateY(4px);box-shadow:0 1px 0 color-mix(in srgb,var(--up) 50%,#000),0 0 calc(var(--heat,0) * 46px) color-mix(in srgb,var(--up) 80%,transparent);animation:pulse .45s infinite alternate}
+#hold.on{background:var(--down);transform:translateY(4px);box-shadow:0 1px 0 color-mix(in srgb,var(--down) 50%,#000),0 0 calc(var(--heat,0) * 46px) color-mix(in srgb,var(--down) 80%,transparent);animation:pulse .45s infinite alternate}
 #hold.wait{background:var(--panel2);color:var(--muted);box-shadow:0 5px 0 #040508;animation:none}
 @keyframes pulse{to{filter:brightness(1.25)}}
 
@@ -317,6 +318,7 @@ body{font-size:15px;line-height:1.45}
 .setbtn.danger{background:color-mix(in srgb,var(--down) 25%,var(--panel2));color:var(--fg);border:1px solid var(--down)}
 .hist{display:flex;justify-content:space-between;gap:8px;padding:8px 0;border-top:1px solid var(--line);font-size:12.5px}
 .hist:first-child{border-top:0}
+.tg{display:inline-block;margin-left:4px;padding:1px 5px;border-radius:5px;font-size:10.5px;font-weight:800;background:color-mix(in srgb,var(--gold) 20%,transparent);color:var(--gold);vertical-align:1px}.tg.y{background:color-mix(in srgb,var(--up) 22%,transparent);color:var(--up)}.tg.q{background:#000;color:#fff;border:1px solid #555}.tg.i{background:color-mix(in srgb,var(--rumor) 20%,transparent);color:var(--rumor)}
 .hist span:last-child{font-family:var(--mono);font-weight:700;white-space:nowrap}
 .achgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
 .achgrid div{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:8px 4px;text-align:center;font-size:10.5px;line-height:1.25;min-width:0}
@@ -1211,16 +1213,17 @@ function recordRound(r){
   stats.rounds++;if(r.win){stats.wins++;stats.bestM=Math.max(stats.bestM,r.m);stats.bestPct=Math.max(stats.bestPct,r.pct);}
   lastAmt-=run.cost||0;stats.maxStreak=Math.max(stats.maxStreak,streak);stats.net+=lastAmt;
   stats.types=stats.types||[];if(!stats.types.includes(run.key))stats.types.push(run.key);if(stats.types.filter(k=>!TIERS[k].hidden).length>=Object.keys(TIERS).filter(k=>!TIERS[k].hidden).length)unlock('spread');
-  stats.hist.unshift({n:run.offer.name,w:r.win,m:r.win?r.m:peak,a:lastAmt});stats.hist=stats.hist.slice(0,20);
+  stats.hist.unshift({n:run.offer.name,w:r.win,m:r.win?r.m:peak,a:lastAmt,l:run.lev,y:run.allin?1:0,q:r.liq?1:0,i:Object.keys(run.it||{}).filter(k=>run.it[k]).map(k=>ITEMS[k].short)});stats.hist=stats.hist.slice(0,20);
   if(lastAmt>0)c.profit+=lastAmt;careerCheck();
   store.set('shg_stats',stats);
 }
-function rerender(name){const pg=$('page'),y=pg.scrollTop;pg.style.animation='none';tab(name);pg.scrollTop=y;requestAnimationFrame(()=>pg.style.animation='');}
-function tab(name){
+function rerender(name){const pg=$('page'),y=pg.scrollTop;pg.style.animation='none';tab(name,1);pg.scrollTop=y;}
+function tab(name,keep){
   curTab=name;document.querySelectorAll('#tabs button').forEach(b=>b.setAttribute('aria-current',b.dataset.tab===name?'page':'false'));
   const pg=$('page');
   if(name==='trade'){pg.hidden=true;return;}
   pg.innerHTML='<div>'+(name==='skill'?pageSkill():name==='shop'?pageShop():name==='mission'?pageMission():name==='record'?pageRecord():pageSet())+'</div>';
+  if(!keep){pg.style.animation='none';void pg.offsetWidth;pg.style.animation='';}
   pg.hidden=false;pg.scrollTop=0;bindPage(name);
 }
 $('tabs').addEventListener('click',e=>{const b=e.target.closest('button');if(b&&!b.disabled){beep(520,.03,'sine',.03);tab(b.dataset.tab);}});
@@ -1276,7 +1279,7 @@ function pageRecord(){
    [['플레이',stats.rounds+'판'],['승률',wr+'%'],['최고 배수','x'+(stats.bestM||0).toFixed(2)],['최고 근접도',Math.round(stats.bestPct)+'%'],['최장 연승',stats.maxStreak+'연속'],['파산',stats.bankrupts+'회'],['누적 손익',sw(stats.net)],['최고 자산',best?won(best):'-'],['캐릭터 레벨','Lv.'+lvlOf(xp).L],['보스 처치',(stats.bossLv||0)+'마리'],['업적 별',ACH.reduce((n,a)=>n+achStars(a[0]).st,0)+'/'+ACH.length*5]]
      .map(([k,v])=>`<div class="tile"><small>${k}</small><b>${v}</b></div>`).join('')+'</div>'+
    '<h3>장비 컬렉션</h3><div class="achgrid">'+GEAR.map(g=>`<div class="${gear[g.id]?'':'lock'}"><i>${g.e}</i>${g.n}</div>`).join('')+'</div>'+
-   '<h3>최근 거래</h3><div class="pan">'+(stats.hist.length?stats.hist.map(h=>`<div class="hist"><span>${h.w?'🔴 익절':'🔵 물림'} · ${h.n} <small class="mu">x${h.m.toFixed(2)}</small></span><span class="${h.a>=0?'up':'dn'}">${sw(h.a)}</span></div>`).join(''):'<div class="hist"><span class="mu">아직 거래 기록이 없습니다.</span></div>')+'</div>'+
+   '<h3>최근 거래</h3><div class="pan">'+(stats.hist.length?stats.hist.map(h=>`<div class="hist"><span>${h.w?'🔴 익절':'🔵 물림'} · ${h.n} <small class="mu">x${h.m.toFixed(2)}</small>${h.l>1?`<b class="tg">${h.l}x</b>`:''}${h.y?'<b class="tg y">영끌</b>':''}${h.q?'<b class="tg q">청산</b>':''}${(h.i||[]).map(t=>`<b class="tg i">${t}</b>`).join('')}</span><span class="${h.a>=0?'up':'dn'}">${sw(h.a)}</span></div>`).join(''):'<div class="hist"><span class="mu">아직 거래 기록이 없습니다.</span></div>')+'</div>'+
    '<h3>업적</h3><div class="achgrid">'+ACH.map(a=>`<div class="${ach.includes(a[0])?'':'lock'}" title="${a[3]} · ${achC[a[0]]||0}회"><i>${a[1]}</i>${a[2]}${starHtml(a[0])}<small>${a[3]}${achStars(a[0]).next?' · 다음 '+(achC[a[0]]||0)+'/'+achStars(a[0]).next:''}</small></div>`).join('')+'</div>';
 }
 function pageSet(){

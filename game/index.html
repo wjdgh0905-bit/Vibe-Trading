@@ -444,6 +444,7 @@ body{font-size:14px;line-height:1.4}
 .roomcv{position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated;image-rendering:crisp-edges}
 .ava2{position:absolute;transform:translate(-50%,-110%);pointer-events:none}.ava2 b{display:inline-block;background:#fff;color:#111;font-size:2.8cqw;padding:2px 7px;border-radius:9px;white-space:nowrap;position:relative;box-shadow:0 2px 0 rgba(0,0,0,.3)}
 .ava2 b::after{content:"";position:absolute;left:50%;bottom:-5px;margin-left:-5px;border:5px solid transparent;border-bottom:0;border-top-color:#fff}
+.colcat summary .mu{margin-left:auto;margin-right:10px;font-weight:600}.colcat summary{justify-content:flex-start;gap:6px}.colcat{border:0;margin-top:6px}.colcat summary{padding:10px 2px}.colcat .pan{margin-bottom:4px}
 </style>
 
 <div class="app" id="app">
@@ -1515,15 +1516,42 @@ const PROD=[
   {id:'coin',e:'🪙',n:'코인 바스켓',d:'판마다 ±15% · 한방 아니면 반토막',r:.012,v:.15,max:5e13,lv:6,fee:.02},
   {id:'angel',e:'🚀',n:'스타트업 엔젤',d:'판마다 3% 확률 상장(x5) · 4% 확률 파산(0원)',angel:1,max:2e13,lv:8,fee:.03}
 ];
+const CATS=[
+  {id:'lux',e:'💎',n:'명품'},{id:'ride',e:'🏎️',n:'탈것'},{id:'estate',e:'🏙️',n:'부동산'},{id:'sport',e:'🏟️',n:'스포츠'},
+  {id:'art',e:'🎨',n:'예술 · 유물'},{id:'corp',e:'🏢',n:'기업 인수'},{id:'space',e:'🚀',n:'우주'},{id:'myth',e:'🌌',n:'상상 · 전설'}
+];
 const COL=[
-  {id:'pent',e:'🏙️',n:'스카이 펜트하우스',p:1e11},{id:'team',e:'⚾',n:'프로야구단',p:5e12},{id:'air',e:'✈️',n:'항공사',p:8e13},
-  {id:'sat',e:'🛰️',n:'인공위성',p:1e15},{id:'isl',e:'🏝️',n:'개인 섬',p:1e16},{id:'iss',e:'🛸',n:'우주정거장',p:2e17},
-  {id:'moon',e:'🌕',n:'달 소유권',p:3e18,fic:1},{id:'mars',e:'🔴',n:'화성 식민지',p:3e19,fic:1},{id:'time',e:'⏳',n:'타임머신',p:3e20,fic:1},{id:'multi',e:'🌌',n:'평행우주 지분',p:3e21,fic:1}
+  // 명품
+  {id:'watch',cat:'lux',e:'⌚',n:'한정판 명품 시계',p:1e8},{id:'bag',cat:'lux',e:'👜',n:'명품 백 풀세트',p:5e8},{id:'ring',cat:'lux',e:'💍',n:'10캐럿 다이아 반지',p:3e9},
+  {id:'pinkd',cat:'lux',e:'💎',n:'핑크 다이아몬드',p:3e10},{id:'egg',cat:'lux',e:'🥚',n:'황금 보석 달걀',p:2e11},{id:'crown',cat:'lux',e:'👑',n:'왕실 왕관',p:2e12},
+  // 탈것
+  {id:'lambo',cat:'ride',e:'🏎️',n:'하이퍼카 컬렉션',p:2e9},{id:'heli',cat:'ride',e:'🚁',n:'개인 헬기',p:2e10},{id:'myacht',cat:'ride',e:'🛳️',n:'메가 요트',p:3e11},
+  {id:'b747',cat:'ride',e:'✈️',n:'개인 점보기',p:2e12},{id:'sub',cat:'ride',e:'🤿',n:'개인 잠수함',p:2e13},{id:'train',cat:'ride',e:'🚄',n:'전용 고속열차',p:1e14},
+  // 부동산
+  {id:'pent',cat:'estate',e:'🏙️',n:'스카이 펜트하우스',p:1e11},{id:'tower',cat:'estate',e:'🏢',n:'강남 빌딩 한 블록',p:3e12},{id:'ny',cat:'estate',e:'🗽',n:'맨해튼 마천루',p:5e13},
+  {id:'isl',cat:'estate',e:'🏝️',n:'개인 섬',p:1e15},{id:'resort',cat:'estate',e:'🏖️',n:'글로벌 리조트 체인',p:1e16},{id:'city',cat:'estate',e:'🌆',n:'신도시 하나',p:1e17},
+  // 스포츠
+  {id:'team',cat:'sport',e:'⚾',n:'프로야구단',p:5e12},{id:'soccer',cat:'sport',e:'⚽',n:'유럽 명문 축구단',p:5e13},{id:'nba',cat:'sport',e:'🏀',n:'농구 명문 구단',p:2e14},
+  {id:'f1',cat:'sport',e:'🏁',n:'F1 레이싱팀',p:5e14},{id:'olymp',cat:'sport',e:'🏅',n:'올림픽 개최권',p:5e15},{id:'wcup',cat:'sport',e:'🏆',n:'월드컵 트로피',p:3e16},
+  // 예술 · 유물
+  {id:'paint',cat:'art',e:'🖼️',n:'인상파 명화',p:5e11},{id:'dino',cat:'art',e:'🦖',n:'공룡 화석 전신',p:5e12},{id:'statue',cat:'art',e:'🗿',n:'고대 석상',p:5e13},
+  {id:'ship',cat:'art',e:'🏴‍☠️',n:'해저 보물선',p:5e14},{id:'pyr',cat:'art',e:'🔺',n:'고대 피라미드 관리권',p:1e16},{id:'atl',cat:'art',e:'🔱',n:'아틀란티스 지도',p:1e18,fic:1},
+  // 기업 인수
+  {id:'air',cat:'corp',e:'🛫',n:'항공사',p:8e13},{id:'chip',cat:'corp',e:'💾',n:'반도체 회사',p:5e14},{id:'bigt',cat:'corp',e:'📱',n:'빅테크 기업',p:5e15},
+  {id:'bank',cat:'corp',e:'🏦',n:'글로벌 은행',p:5e16},{id:'oil',cat:'corp',e:'🛢️',n:'석유 메이저',p:3e17},{id:'cbank',cat:'corp',e:'🪙',n:'중앙은행 (상상)',p:5e18,fic:1},
+  // 우주
+  {id:'sat',cat:'space',e:'🛰️',n:'인공위성',p:1e15},{id:'iss',cat:'space',e:'🛸',n:'우주정거장',p:2e17},{id:'moon',cat:'space',e:'🌕',n:'달 소유권',p:3e18,fic:1},
+  {id:'mars',cat:'space',e:'🔴',n:'화성 식민지',p:3e19,fic:1},{id:'jup',cat:'space',e:'🪐',n:'토성 고리',p:3e20,fic:1},{id:'sun',cat:'space',e:'☀️',n:'태양 에너지 독점권',p:3e21,fic:1},
+  // 상상 · 전설
+  {id:'time',cat:'myth',e:'⏳',n:'타임머신',p:3e20,fic:1},{id:'dragon',cat:'myth',e:'🐉',n:'드래곤 알',p:3e21,fic:1},{id:'multi',cat:'myth',e:'🌌',n:'평행우주 지분',p:3e22,fic:1},
+  {id:'hole',cat:'myth',e:'🕳️',n:'블랙홀 소유권',p:1e25,fic:1},{id:'galaxy',cat:'myth',e:'🌠',n:'은하계 하나',p:1e29,fic:1},{id:'reset',cat:'myth',e:'🔘',n:'우주 리셋 버튼',p:1e34,fic:1},
+  {id:'godkey',cat:'myth',e:'⌨️',n:'신의 키보드',p:1e40,fic:1},{id:'dim',cat:'myth',e:'♾️',n:'차원 그 자체',p:1e45,fic:1}
 ];
 let invest=store.get('shg_inv2',{}),col=store.get('shg_col',[]);
 let invPct=store.get('shg_ipct',.25);
 const invTotal=()=>Object.values(invest).reduce((n,h)=>n+(h.a||0),0);
-const colSP=()=>{try{return col.reduce((n,id)=>{const c=COL.find(x=>x.id===id);return n+(c&&c.fic?2:1);},0)}catch(e){return 0}};
+const catDone=c=>COL.filter(x=>x.cat===c).every(x=>col.includes(x.id));
+const colSP=()=>{try{return col.reduce((n,id)=>{const c=COL.find(x=>x.id===id);return n+(c?(c.fic?2:1):0);},0)+CATS.filter(c=>catDone(c.id)).length*3}catch(e){return 0}};
 const gauss=()=>(Math.random()+Math.random()+Math.random()-1.5)*2;
 function tickInvest(){
   const rg=regime(),bear=(rg.crash||1)<1,bull=(rg.rate||1)>1;let sum=0;
@@ -1557,6 +1585,7 @@ function roomHtml(){
     (nx?'<div class="rprog"><u style="width:'+Math.min(100,(balance+invTotal())/nx.min*100)+'%"></u></div>':'')+'</div>';
 }
 // 아이소메트릭 픽셀 방: 저해상도 캔버스에 그리고 확대(픽셀아트)
+function shelfItems(){const own=COL.filter(c=>col.includes(c.id)).sort((a,b)=>b.p-a.p).slice(0,10);const rest=COL.filter(c=>!col.includes(c.id)).sort((a,b)=>a.p-b.p);return own.concat(rest).slice(0,10);}
 function drawRooms(){document.querySelectorAll('.roomcv').forEach(cv=>{
   const x=cv.getContext('2d'),hi=homeIdx(),H=HOMES[hi],G=id=>!!gear[id],C=id=>col.includes(id),hits=[];
   x.imageSmoothingEnabled=false;x.clearRect(0,0,200,150);
@@ -1604,7 +1633,7 @@ function drawRooms(){document.querySelectorAll('.roomcv').forEach(cv=>{
   if(hi>=1){const fp=[LW(.15,.55),LW(.32,.55),LW(.32,.85),LW(.15,.85)];poly(fp,'#c9b38a');poly([LW(.17,.6),LW(.3,.6),LW(.3,.8),LW(.17,.8)],'#1a1d24');
     const [fx,fy]=LW(.235,.62);if(G('vip'))em('💳',fx,fy,9,'증권사 VIP · 수수료·레버리지 이자 면제');else hits.push({x:fx-6,y:fy-12,w:12,h:12,tip:'증권사 VIP · 미보유 '+won(GEAR.find(q=>q.id==='vip').p)});}
   if(hi>=3){for(let r=0;r<2;r++){poly([LW(.42,.28+r*.3),LW(.95,.28+r*.3),LW(.95,.31+r*.3),LW(.42,.31+r*.3)],'#8a5f36');
-      COL.slice(r*5,r*5+5).forEach((c,k)=>{const [sx,sy]=LW(.48+k*.105,.31+r*.3);if(C(c.id))em(c.e,sx,sy,9,c.n+' · 보유');else{x.globalAlpha=.35;em('🔒',sx,sy,6);x.globalAlpha=1;hits.push({x:sx-5,y:sy-9,w:10,h:9,tip:c.n+' · '+won(c.p)});}});}}
+      shelfItems().slice(r*5,r*5+5).forEach((c,k)=>{const [sx,sy]=LW(.48+k*.105,.31+r*.3);if(C(c.id))em(c.e,sx,sy,9,c.n+' · 보유');else{x.globalAlpha=.35;em('🔒',sx,sy,6);x.globalAlpha=1;hits.push({x:sx-5,y:sy-9,w:10,h:9,tip:c.n+' · '+won(c.p)});}});}}
   // 바닥 물건: 뒤쪽부터 그리기(겹침 순서)
   const things=[];
   things.push({u:.12,v:.4,draw:()=>{const [a,b]=F(.12,.4);poly([[a-14,b-6],[a+2,b-14],[a+14,b-8],[a-2,b]],'#a87a4c');poly([[a-14,b-6],[a-2,b],[a-2,b+3],[a-14,b-3]],'#6b4a2d');poly([[a-2,b],[a+14,b-8],[a+14,b-5],[a-2,b+3]],'#7d5733');}}); // 책상
@@ -1628,8 +1657,10 @@ function pageInvest(){
    '<h3>상품</h3><div class="pan">'+PROD.map(P=>{const h=invest[P.id]||{a:0},lk=ri<P.lv;
      return '<div class="li'+(lk?' lock':'')+'"><i>'+P.e+'</i><div><b>'+P.n+(h.a>0?' <span class="mu">· '+won(h.a)+'</span>':'')+'</b><small>'+(lk?'🔒 '+RANKS[P.lv][1]+' 계급부터':P.d+' · 수익 한도 '+won(P.max)+(P.fee?' · 출금 수수료 '+P.fee*100+'%':''))+(h.d?' · 지난 판 <span class="'+(h.d>=0?'up':'dn')+'">'+sw(h.d)+'</span>':'')+'</small>'+
       (lk?'':'<div class="ivb"><button class="setbtn" type="button" data-dep="'+P.id+'"'+(balance*invPct<1?' disabled':'')+'>입금 '+won(balance*invPct)+'</button><button class="setbtn ghost" type="button" data-wd="'+P.id+'"'+(h.a>0?'':' disabled')+'>출금 '+(invPct*100)+'%</button></div>')+'</div></div>';}).join('')+'</div>'+
-   '<h3>🏆 컬렉션 '+col.length+' / '+COL.length+'</h3><p class="lead">돈으로만 살 수 있는 꿈. 하나 살 때마다 SP +1, 상상 속 물건은 SP +2.</p><div class="pan">'+COL.map(c=>{const own=col.includes(c.id);
-     return '<div class="li'+(own?' done':'')+'"><i>'+c.e+'</i><div><b>'+c.n+(c.fic?' <span class="tg i">상상</span>':'')+'</b><small>'+(own?'✓ 보유 중':won(c.p)+' · 달성 '+Math.min(100,balance/c.p*100).toFixed(balance<c.p*.01?2:0)+'%')+'</small>'+(own?'':'<div class="xpbar" style="height:4px;margin-top:4px"><u style="width:'+Math.min(100,balance/c.p*100)+'%"></u></div>')+'</div>'+(own?'':'<button class="setbtn" type="button" data-col="'+c.id+'"'+(balance<c.p?' disabled':'')+'>구매</button>')+'</div>';}).join('')+'</div>';
+   '<h3>🏆 컬렉션 '+col.length+' / '+COL.length+'</h3><p class="lead">하나 살 때마다 SP +1 (상상 속 물건 +2), 한 분류를 다 모으면 보너스 SP +3.</p>'+
+   CATS.map((K,ki)=>{const items=COL.filter(c=>c.cat===K.id),got=items.filter(c=>col.includes(c.id)).length,done=got===items.length,open=!done&&CATS.slice(0,ki).every(k=>catDone(k.id));
+     return '<details class="gl colcat"'+(open?' open':'')+'><summary>'+K.e+' '+K.n+' <span class="mu">'+got+'/'+items.length+(done?' · ✅ 완성 +3 SP':'')+'</span></summary><div class="pan">'+items.map(c=>{const own=col.includes(c.id);
+     return '<div class="li'+(own?' done':'')+'"><i>'+c.e+'</i><div><b>'+c.n+(c.fic?' <span class="tg i">상상</span>':'')+'</b><small>'+(own?'✓ 보유 중':won(c.p)+' · 달성 '+Math.min(100,balance/c.p*100).toFixed(balance<c.p*.01?2:0)+'%')+'</small>'+(own?'':'<div class="xpbar" style="height:4px;margin-top:4px"><u style="width:'+Math.min(100,balance/c.p*100)+'%"></u></div>')+'</div>'+(own?'':'<button class="setbtn" type="button" data-col="'+c.id+'"'+(balance<c.p?' disabled':'')+'>구매</button>')+'</div>';}).join('')+'</div></details>';}).join('');
 }
 function glossary(){
   const L=(i,t,d)=>`<div class="li"><i>${i}</i><div><b>${t}</b><small>${d}</small></div></div>`;
@@ -1646,7 +1677,7 @@ function glossary(){
   G('🧰 아이템 · 성장',Object.values(ITEMS).map(it=>L(it.name.split(' ')[0],it.name.split(' ').slice(1).join(' '),it.desc+' · 판마다 비용')).join('')+
     L('🌳','SP · 스킬','레벨업·업적·미션으로 얻는 포인트. 스킬 탭에서 강화')+L('🎁','선물','하루 한 번 룰렛, 가끔 보물상자')+L('📋','미션','일일 8개 · 주간 10개 · 커리어 20개')+L('⭐','업적 별','반복 달성하면 ★1→★5, 그 뒤엔 색이 바뀜')+L('🛒','상점','소모품·장비 구매, 은행(대출·상환)'))+
   G('🌡 장세 (차트 위 배지)',REGIMES.map(r=>L(r.e,r.n,r.d)).join('')+L('⏱','N판 남음','장세는 5판마다 바뀜'))+
-  G('💼 투자 · 컬렉션',PROD.map(P=>L(P.e,P.n,P.d)).join('')+L('🏆','컬렉션','펜트하우스부터 평행우주까지. 살 때마다 SP'))+
+  G('💼 투자 · 컬렉션',PROD.map(P=>L(P.e,P.n,P.d)).join('')+L('🏆','컬렉션','8개 분류 50종. 살 때마다 SP, 분류를 다 모으면 보너스 SP +3'))+
   G('🔣 기타 아이콘',L('🔥','피버','5연속 익절. 보너스 2배')+L('💎','보물상자','익절하면 가끔 등장')+L('⚔️','보스 처치','보스 목표 배수 넘기고 매도')+L('🕵','찌라시 진짜','힌트가 진짜였음')+L('🤡','찌라시 가짜','힌트가 거짓말이었음')+L('🏛','부자세','고액 수익에 붙는 세금')+L('💸','빚 자동 상환','수익 30%로 빚 갚음'))+
   G('💳 빚 · 신용',
     L('💳','대출','돈이 바닥나면 빌려서 계속 가능. 매 판 이자가 붙음')+L('🏦','신용등급','1등급이 최고. 대출하면 떨어지고, 갚으면 오름')+L('↩','자동 상환','수익의 30%가 자동으로 빚을 갚음')+L('🚨','신용불량','빚이 한도를 넘으면 장비·아이템 압류 후 재시작'))+
@@ -1671,7 +1702,7 @@ function bindPage(name){
   pg.querySelectorAll('[data-ipct]').forEach(b=>b.onclick=()=>{invPct=+b.dataset.ipct;store.set('shg_ipct',invPct);rerender('invest');});
   pg.querySelectorAll('[data-dep]').forEach(b=>b.onclick=()=>{const id=b.dataset.dep,v=Math.floor(balance*invPct);if(v<1)return;balance-=v;invest[id]=invest[id]||{a:0};invest[id].a+=v;store.set('shg_inv2',invest);sfx.sell();toast('💼 '+PROD.find(x=>x.id===id).n+' 입금 '+won(v));paintTop();paintPickers();rerender('invest');});
   pg.querySelectorAll('[data-wd]').forEach(b=>b.onclick=()=>{const P=PROD.find(x=>x.id===b.dataset.wd),h=invest[P.id];if(!h||!(h.a>0))return;const take=invPct>=1?h.a:h.a*invPct,out=take*(1-P.fee);balance+=out;h.a-=take;if(h.a<1){h.a=0;h.d=0;}store.set('shg_inv2',invest);sfx.sell();toast('💼 출금 '+won(out)+(P.fee?' (수수료 '+P.fee*100+'%)':''));paintTop();paintPickers();rerender('invest');});
-  pg.querySelectorAll('[data-col]').forEach(b=>b.onclick=()=>{const c=COL.find(x=>x.id===b.dataset.col);if(col.includes(c.id)||balance<c.p)return;balance-=c.p;col.push(c.id);store.set('shg_col',col);sfx.up();burst(innerWidth/2,innerHeight*.4,80);stamp(c.e+' '+c.n+' 획득!');toast('🏆 컬렉션 '+col.length+'/'+COL.length+' · SP +'+(c.fic?2:1));paintTop();paintPickers();rerender('invest');});
+  pg.querySelectorAll('[data-col]').forEach(b=>b.onclick=()=>{const c=COL.find(x=>x.id===b.dataset.col);if(col.includes(c.id)||balance<c.p)return;balance-=c.p;col.push(c.id);store.set('shg_col',col);sfx.up();burst(innerWidth/2,innerHeight*.4,80);stamp(c.e+' '+c.n+' 획득!');toast('🏆 컬렉션 '+col.length+'/'+COL.length+' · SP +'+(c.fic?2:1));if(catDone(c.cat)){const K=CATS.find(k=>k.id===c.cat);setTimeout(()=>{stamp(K.e+' '+K.n+' 완성!');toast('✅ '+K.n+' 분류 완성 · 보너스 SP +3');},900);}paintTop();paintPickers();rerender('invest');});
   const iv=$('invite');if(iv)iv.onclick=()=>shareOut('📈 상한가 따라잡기 — 폭락 전에 팔면 이기는 주식 게임. 내 자산 '+won(balance)+', 나보다 잘할 수 있음?');
   const bl=$('bLoan');if(bl)bl.onclick=()=>{if(takeLoan()){paintTop();paintPickers();rerender('shop');}};
   const bh=$('bHalf');if(bh)bh.onclick=()=>{repay(Math.ceil(debt/2));paintTop();paintPickers();rerender('shop');};

@@ -156,6 +156,28 @@ canvas{position:absolute;inset:0;width:100%;height:100%}
 .sk .t .lv{margin-left:auto;font-family:var(--mono);font-size:12px;color:var(--muted)}
 .sk.lockd{opacity:.55}
 .xpb{height:6px;background:var(--line);border-radius:3px;overflow:hidden}.xpb u{display:block;height:100%;background:var(--gold)}
+.offers{display:block}
+.pick1{width:100%;display:flex;align-items:center;gap:10px;font:inherit;text-align:left;background:var(--panel);color:var(--fg);border:1px solid var(--gold);border-radius:12px;padding:8px 12px;cursor:pointer}
+.pick1:disabled{opacity:.45}
+.pick1 .pe,.srow .pe{font-size:22px;flex:none}
+.pick1 .pt,.srow .pt{flex:1;min-width:0;display:flex;flex-direction:column}
+.pick1 b,.srow b{font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pick1 small,.srow small{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pick1 .pc{flex:none;font-size:12px;font-weight:800;color:var(--gold);white-space:nowrap}
+.pick1 svg,.srow svg{flex:none}
+.items{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;overflow:visible}
+.items .chip.ic{min-width:0!important;text-align:center;padding:6px 4px}
+.items .chip.ic b{font-size:13px}
+.items .chip.ic small{font-size:11px}
+#sheet{position:fixed;inset:0;z-index:22;background:color-mix(in srgb,#000 55%,transparent);display:flex;align-items:flex-end;justify-content:center}
+#sheet .sh{width:min(560px,100%);max-height:78vh;overflow-y:auto;background:var(--panel);border:1px solid var(--line);border-bottom:0;border-radius:18px 18px 0 0;padding:12px max(14px,env(safe-area-inset-left,0px)) calc(14px + env(safe-area-inset-bottom,0px));box-sizing:border-box;animation:slide .2s ease-out}
+.sh-h{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}
+.sh-h b{display:block;font-family:var(--display);font-weight:400;font-size:21px}
+.sh-h small{color:var(--muted);font-size:12px}
+.sh-h button{font:inherit;font-weight:700;font-size:13px;background:var(--panel2);color:var(--fg);border:1px solid var(--line);border-radius:9px;padding:7px 12px;cursor:pointer}
+.srow{width:100%;display:flex;align-items:center;gap:10px;font:inherit;text-align:left;background:none;color:var(--fg);border:0;border-top:1px solid var(--line);padding:10px 4px;cursor:pointer}
+.srow.on{background:color-mix(in srgb,var(--gold) 12%,transparent);border-radius:10px}
+.srow .pr{flex:none;width:58px;text-align:right;font-family:var(--mono);font-weight:800;font-size:13px}
 /* readability pass */
 body{font-size:15px;line-height:1.45}
 .app{gap:8px}
@@ -319,6 +341,7 @@ body{font-size:15px;line-height:1.45}
 <div id="toast" hidden></div>
 <div id="coach" hidden></div>
 <canvas id="fx"></canvas>
+<div id="sheet" hidden><div class="sh"><div class="sh-h"><div><b>종목 고르기</b><small>매판 새 종목 8개 · 계급이 오르면 종류가 늘어나요</small></div><button type="button" id="shClose">닫기</button></div><div id="shList"></div></div></div>
 <div class="modal" id="modal" hidden><div class="box"><div id="modalBody"></div><button id="modalClose" type="button">닫기</button></div></div>
 
 <script>
@@ -365,10 +388,10 @@ const TIERS={
 const BOSSES=[{e:'👹',n:'공매도 세력'},{e:'🌑',n:'검은 월요일'},{e:'🏦',n:'금리 인상'},{e:'🎭',n:'작전 세력 총수'},{e:'⛔',n:'서킷브레이커'},{e:'🦢',n:'블랙스완'},{e:'🐻',n:'대왕 곰'},{e:'🌪',n:'금융 위기'}];
 const bossInfo=lv=>({lv,B:BOSSES[lv%BOSSES.length],target:+(1.5+.2*lv).toFixed(2)});
 const ITEMS={
-  shield:{name:'🛡 손절보험',cost:.08,desc:'폭락 손실 -10%',lv:1},
-  insider:{name:'🔍 찌라시',cost:.05,desc:'폭락가 힌트(70%)',lv:2},
-  slow:{name:'⏱ 슬로모션',cost:.06,desc:'차트 속도 0.6배',lv:3},
-  lev:{name:'⚡ 레버리지',cost:0,desc:'수익 2배 · 손실↑',lv:5}
+  shield:{short:'보험',name:'🛡 손절보험',cost:.08,desc:'폭락 손실 -10%',lv:1},
+  insider:{short:'찌라시',name:'🔍 찌라시',cost:.05,desc:'폭락가 힌트(70%)',lv:2},
+  slow:{short:'슬로',name:'⏱ 슬로모션',cost:.06,desc:'차트 속도 0.6배',lv:3},
+  lev:{short:'2배',name:'⚡ 레버리지',cost:0,desc:'수익 2배 · 손실↑',lv:5}
 };
 const RANKS=[[0,'주린이'],[150,'개미'],[400,'단타충'],[800,'스윙러'],[1300,'슈퍼개미'],[2000,'전업투자자'],[3000,'차트 장인'],[4300,'큰손'],[6000,'펀드매니저'],[8200,'세력'],[11000,'헤지펀드'],[14500,'월가의 늑대'],[19000,'투자의 신'],[25000,'여의도 전설'],[33000,'시장 그 자체']];
 const ACH=[
@@ -458,24 +481,29 @@ function ensureDaily(){
 ensureDaily();
 
 /* ---------- state ---------- */
-let state='ready',balance=START,streak=0,round=1,tierSel='theme',sel={shield:false,insider:false,slow:false,lev:false};
+let selId='o0',state='ready',balance=START,streak=0,round=1,tierSel='theme',sel={shield:false,insider:false,slow:false,lev:false};
 let offers=makeOffers(),run=null,candles=[],t=0,cur=1,peak=1,sell=null,crashed=false,crashT=0,readyAt=0,lastTs=0;
 let events=[],warned=false,newsTimer=0,talkT=0,bookT=0,lowFlag=false,volTotal=0;
 
 function makeOffers(){ // 내가 고른 종류 + 해금된 종류 중 랜덤 2개, 10판마다 보스전
   let bossNext=false;try{bossNext=tutDone&&(stats.rounds+1)%10===0;}catch(e){} // 초기화 순서상 아직 없을 수 있음
   if(bossNext){const bi=bossInfo(stats.bossLv||0);
-    return [{k:'boss',name:bi.B.e+' '+bi.B.n+' Lv.'+(bi.lv+1),code:'BOSS · 목표 +'+Math.round((bi.target-1)*100)+'%',p0:roundTick(rnd(5000,50000))}];}
+    selId='o0';return [{id:'o0',k:'boss',name:bi.B.e+' '+bi.B.n+' Lv.'+(bi.lv+1),code:'BOSS · 목표 +'+Math.round((bi.target-1)*100)+'%',p0:roundTick(rnd(5000,50000))}];}
   const ri=rankOf(xp),open=Object.keys(TIERS).filter(k=>TIERS[k].lv<=ri&&!TIERS[k].hidden);
   if(!open.includes(tierSel))tierSel='theme';
-  const rest=open.filter(k=>k!==tierSel).sort(()=>Math.random()-.5).slice(0,2);
-  return [tierSel,...rest].sort((a,b)=>Object.keys(TIERS).indexOf(a)-Object.keys(TIERS).indexOf(b)).map(k=>{const T=TIERS[k];
-    const n=pick(T.names),name=Array.isArray(n)?n[0]:n;
+  const keys=[tierSel];while(keys.length<8)keys.push(pick(open)); // 매판 8종목 (같은 종류도 이름은 다르게)
+  const used=new Set(),order=Object.keys(TIERS);
+  const list=keys.map(k=>{const T=TIERS[k];let n,name,tries=0;
+    do{n=pick(T.names);name=Array.isArray(n)?n[0]:n;tries++;}while(used.has(name)&&tries<12);used.add(name);
     const code=Array.isArray(n)?(T.usd?n[1]+' · NASDAQ':n[1]+'/KRW'):String(Math.floor(rnd(100000,999999)));
-    return {k,name,code,p0:roundTick(rnd(T.p[0],T.p[1]),T.usd)};
-  });
+    const sp=[1];for(let i=0;i<15;i++)sp.push(sp[i]*(1+rnd(-.04,.045)*(T.wig||1)));
+    return {k,name,code,p0:roundTick(rnd(T.p[0],T.p[1]),T.usd),chg:(sp[15]-1)*100,spark:sp};
+  }).sort((a,b)=>order.indexOf(a.k)-order.indexOf(b.k));
+  list.forEach((o,i)=>o.id='o'+i);selId=(list.find(o=>o.k===tierSel)||list[0]).id;
+  return list;
 }
-const offer=()=>run?run.offer:(offers.find(o=>o.k===tierSel)||offers[0]);
+const curOffer=()=>offers.find(o=>o.id===selId)||offers.find(o=>o.k===tierSel)||offers[0];
+const offer=()=>run?run.offer:curOffer();
 const priceOf=m=>roundTick(offer().p0*eM*m,isUsd());
 
 /* ---------- audio ---------- */
@@ -553,10 +581,13 @@ function paintTop(){
 }
 function paintPickers(){
   const lock=state==='holding'||state==='ghost'||state==='over';
-  $('offers').innerHTML=offers.map(o=>{const T=TIERS[o.k];if(o.k==='boss')return `<button class="chip bosschip" type="button" data-k="boss" aria-pressed="true" ${lock?'disabled':''}><b>${o.name}</b><small>보스전 · 목표 수익 넘기고 팔면 처치 · SP +3</small></button>`;return `<button class="chip" type="button" data-k="${o.k}" aria-pressed="${o.k===tierSel}" ${lock?'disabled':''}><b>${T.e} ${o.name}</b><small>${T.label} · 손실 ${T.loss*100}%</small></button>`}).join('');
+  const co=curOffer(),CT=TIERS[co.k],spark=(o,w,h)=>{const mn=Math.min(...o.spark),mx=Math.max(...o.spark);return `<svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" aria-hidden="true"><polyline fill="none" stroke="${o.chg>=0?C.up:C.down}" stroke-width="1.6" points="${o.spark.map((v,i)=>(i/(o.spark.length-1)*w).toFixed(1)+','+(h-1-(v-mn)/((mx-mn)||1)*(h-2)).toFixed(1)).join(' ')}"/></svg>`;};
+  $('offers').innerHTML=co.k==='boss'?`<button class="pick1 bosschip" type="button" ${lock?'disabled':''}><span class="pe">${TIERS.boss.e}</span><span class="pt"><b>${co.name}</b><small>보스전 · 목표 수익 넘기고 팔면 처치 · SP +3</small></span></button>`
+   :`<button class="pick1" type="button" id="openSheet" ${lock?'disabled':''}><span class="pe">${CT.e}</span><span class="pt"><b>${co.name}</b><small>${CT.label} · 물리면 -${Math.round(CT.loss*100)}%</small></span>${spark(co,54,24)}<span class="pc">종목 ${offers.length}개 ▾</span></button>`;
+  $('shList').innerHTML=offers.map(o=>{const T=TIERS[o.k];return `<button class="srow ${o.id===co.id?'on':''}" type="button" data-o="${o.id}"><span class="pe">${T.e}</span><span class="pt"><b>${o.name}</b><small>${T.label} · 물리면 -${Math.round(T.loss*100)}%${T.desc?' · '+T.desc:''}</small></span>${spark(o,64,26)}<span class="pr ${o.chg>=0?'up':'dn'}">${o.chg>=0?'+':''}${o.chg.toFixed(1)}%</span></button>`}).join('');
   const ri=rankOf(xp);
   $('offers').hidden=$('items').hidden=state==='holding'||state==='ghost';
-  $('items').innerHTML=Object.entries(ITEMS).map(([k,it])=>{const lk=ri<it.lv;if(lk)sel[k]=false;return `<button class="chip" type="button" data-i="${k}" aria-pressed="${sel[k]}" ${lock||lk?'disabled':''}><b>${lk?'🔒 '+it.name.slice(2):it.name}</b><small>${lk?RANKS[it.lv][1]+' 계급에서 해금':(it.cost?won(Math.min(balance,betCap())*it.cost*(1-.04*skl('discount'))):'무료')+' · '+it.desc}</small></button>`}).join('');
+  $('items').innerHTML=Object.entries(ITEMS).map(([k,it])=>{const lk=ri<it.lv;if(lk)sel[k]=false;return `<button class="chip ic" type="button" data-i="${k}" aria-pressed="${sel[k]}" ${lock||lk?'disabled':''} title="${it.desc}"><b>${lk?'🔒':it.name.split(' ')[0]} ${it.short}</b><small>${lk?RANKS[it.lv][1]:(it.cost?won(Math.min(balance,betCap())*it.cost*(1-.04*skl('discount'))):'무료')}</small></button>`}).join('');
 }
 function paintQuote(){
   const o=offer(),T=TIERS[o.k];
@@ -598,7 +629,12 @@ function setBtn(){
   btn.textContent=state==='holding'?'떼면 매도!':state==='ghost'?'차트 끝까지 보는 중…':state==='over'?'계좌 복구 중…':state==='result'?'꾹 눌러서 다음 종목 매수':'꾹 눌러서 매수';
 }
 
-$('offers').addEventListener('click',e=>{const b=e.target.closest('[data-k]');if(b&&!b.disabled&&b.dataset.k!=='boss'){tierSel=b.dataset.k;if(state==='ready'||state==='result'){run=null;sell=null;crashed=false;eM=1;$('bossbar').hidden=true;}paintPickers();paintQuote();renderBook();buildChartIdle();}});
+function selectOffer(id){const o=offers.find(x=>x.id===id);if(!o||o.k==='boss')return;selId=id;tierSel=o.k;
+  if(state==='ready'||state==='result'){run=null;sell=null;crashed=false;eM=1;$('bossbar').hidden=true;}
+  buildChartIdle();paintPickers();paintQuote();renderBook();}
+$('offers').addEventListener('click',e=>{const b=e.target.closest('#openSheet');if(b&&!b.disabled){$('sheet').hidden=false;beep(520,.03,'sine',.03);}});
+$('shList').addEventListener('click',e=>{const b=e.target.closest('[data-o]');if(b){selectOffer(b.dataset.o);$('sheet').hidden=true;}});
+$('sheet').addEventListener('click',e=>{if(e.target.id==='sheet'||e.target.id==='shClose')$('sheet').hidden=true;});
 $('items').addEventListener('click',e=>{const b=e.target.closest('[data-i]');if(b&&!b.disabled){sel[b.dataset.i]=!sel[b.dataset.i];paintPickers();}});
 
 /* ---------- game ---------- */
@@ -615,7 +651,7 @@ function start(){
   if(state==='result')round++;
   ensureDaily();
   const tut=!tutDone;if(tut)for(const k in sel)sel[k]=false;hideCoach();
-  const o=offers.find(x=>x.k===tierSel)||offers[0],T=TIERS[o.k];
+  const o=curOffer(),T=TIERS[o.k];
   if(run||chartStock!==o){run=null;sell=null;crashed=false;eM=1;buildChartIdle();}
   eM=liveM;candles.forEach(c=>{c.o/=eM;c.h/=eM;c.l/=eM;c.c/=eM;});runBase=candles.length; // 지금 가격에 매수
   const bet=Math.min(balance,betCap());

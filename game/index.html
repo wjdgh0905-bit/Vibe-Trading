@@ -676,6 +676,8 @@ const REGIMES=[
 ];
 const regime=()=>{let r=0;try{r=stats.rounds}catch(e){}const b=Math.floor(r/5);return b<1?REGIMES[0]:REGIMES[(Math.imul(b,2654435761)>>>0)%REGIMES.length];};
 const betCap=()=>Math.round(1e6*(regime().cap||1)*Math.pow(1.22,lvlOf(xp).L-1)*(gear.car?1.1:1)*(gear.yacht?1.2:1)*(gear.firm?1.5:1)/1e4)*1e4;
+// 실제 베팅 한도: 레벨 한도와 예수금 5% 중 큰 쪽
+const stakeCap=()=>Math.max(betCap(),Math.round(balance*.05*(regime().cap||1)/1e4)*1e4);
 function gainXp(n){
   n=Math.round(n*(1+.05*skl('xp')+(gear.office?.05:0)));
   const before=rankOf(xp),lb=lvlOf(xp).L;xp+=n;store.set('shg_xp',xp);const after=rankOf(xp),la=lvlOf(xp).L;
@@ -692,7 +694,7 @@ function paintTop(){
   if(lowFlag&&balance-debt>=START&&state!=='holding'){lowFlag=false;unlock('comeback');}
   animBal();
   $('streak').innerHTML=streak?(streak>=5?'<span class="gd">'+streak+'연속 🔥</span>':streak+'연속'):'0';
-  $('best').textContent=won(Math.min(balance,betCap()));
+  $('best').textContent=won(Math.min(balance,stakeCap()));
   const ri=rankOf(xp),nx=RANKS[ri+1];
   const lv=lvlOf(xp);$('rankName').textContent='Lv.'+lv.L+' '+(profile?TYPES[profile].e:'')+RANKS[ri][1];
   $('rankBar').style.width=(lv.cur/lv.need*100).toFixed(0)+'%';
@@ -708,7 +710,7 @@ function paintPickers(){
   $('shList').innerHTML=offers.map(o=>{const T=TIERS[o.k];return `<button class="srow ${o.id===co.id?'on':''}" type="button" data-o="${o.id}"><span class="pe">${T.e}</span><span class="pt"><b>${o.name}</b><small>${T.label} · 물리면 -${Math.round(T.loss*100)}%${T.desc?' · '+T.desc:''}</small></span>${spark(o,64,26)}<span class="pr ${o.chg>=0?'up':'dn'}">${o.chg>=0?'+':''}${o.chg.toFixed(1)}%</span></button>`}).join('');
   const ri=rankOf(xp);
   $('offers').hidden=$('items').hidden=$('betrow').hidden=state==='holding'||state==='ghost';
-  const maxBet=allin&&ri>=2?Math.min(balance,betCap()*10):Math.min(balance,betCap());
+  const maxBet=allin&&ri>=2?Math.min(balance,stakeCap()*10):Math.min(balance,stakeCap());
   $('betrow').innerHTML='<span>투자 비율</span>'+[.1,.25,.5,1].map(v=>`<button type="button" data-pct="${v}" aria-pressed="${betPct===v}" ${lock?'disabled':''}>${v*100}%</button>`).join('')+'<b>'+won(maxBet*betPct)+'</b>';
   $('items').innerHTML=Object.entries(ITEMS).map(([k,it])=>{const lk=ri<it.lv;if(lk)sel[k]=false;return `<button class="chip ic" type="button" data-i="${k}" aria-pressed="${sel[k]}" ${lock||lk?'disabled':''} title="${it.desc}"><b>${lk?'🔒':it.name.split(' ')[0]} ${it.short}</b><small>${lk?RANKS[it.lv][1]:(it.cost?won(Math.min(balance,betCap())*betPct*it.cost*(1-.04*skl('discount'))):'무료')}</small></button>`}).join('')+
     `<button class="chip ic ${levSel>=5?'hot':''}" type="button" id="levBtn" ${lock?'disabled':''}><b>⚡ ${levSel}배</b><small>${levSel>1?'청산 -'+Math.round(85/levSel*(gear.jet?95/85:1))+'%':'레버리지'}</small></button>`+
@@ -763,7 +765,7 @@ $('sheet').addEventListener('click',e=>{if(e.target.id==='sheet'||e.target.id===
 $('betrow').addEventListener('click',e=>{const b=e.target.closest('[data-pct]');if(b&&!b.disabled){betPct=+b.dataset.pct;store.set('shg_pct',betPct);beep(520,.03,'sine',.03);paintPickers();}});
 $('items').addEventListener('click',e=>{
   const lb=e.target.closest('#levBtn');if(lb&&!lb.disabled){const ri=rankOf(xp),ok=LEVS.filter(l=>l[1]<=ri).map(l=>l[0]);levSel=ok[(ok.indexOf(levSel)+1)%ok.length];if(levSel>=10){vib(30);toast('⚠ '+levSel+'배: '+Math.round(85/levSel)+'%만 빠져도 강제청산');}paintPickers();return;}
-  const ab=e.target.closest('#allinBtn');if(ab&&!ab.disabled){allin=!allin;if(allin){vib([30,30,30]);toast('🎲 영끌 ON · 한도의 10배 '+won(Math.min(balance,betCap()*10))+'까지 겁니다');}paintPickers();return;}
+  const ab=e.target.closest('#allinBtn');if(ab&&!ab.disabled){allin=!allin;if(allin){vib([30,30,30]);toast('🎲 영끌 ON · 한도의 10배 '+won(Math.min(balance,stakeCap()*10))+'까지 겁니다');}paintPickers();return;}
   const b=e.target.closest('[data-i]');if(b&&!b.disabled){sel[b.dataset.i]=!sel[b.dataset.i];paintPickers();}});
 
 /* ---------- game ---------- */
@@ -786,7 +788,7 @@ function start(){
   if(run||chartStock!==o){run=null;sell=null;crashed=false;eM=1;buildChartIdle();}
   eM=liveM;candles.forEach(c=>{c.o/=eM;c.h/=eM;c.l/=eM;c.c/=eM;});runBase=candles.length; // 지금 가격에 매수
   const lv=tut?1:levSel,ai=!tut&&allin&&rankOf(xp)>=2;
-  const bet=Math.min(balance,betCap()*(ai?10:1))*(tut?1:betPct);
+  const bet=Math.min(balance,stakeCap()*(ai?10:1))*(tut?1:betPct);
   let cost=0;for(const k in sel)if(sel[k])cost+=bet*ITEMS[k].cost*(1-.04*skl('discount'));
   const fee=tut||gear.vip?0:bet*(.003+.002*(lv-1)); // 수수료·세금·레버리지 이자
   balance-=cost+fee;
@@ -1325,7 +1327,7 @@ function glossary(){
   const G=(t,body,open)=>`<details class="gl"${open?' open':''}><summary>${t}</summary>${body}</details>`;
   return '<h3>📖 용어 · 아이콘 설명</h3><div class="pan">'+
   G('📈 화면 보는 법',
-    L('💵','예수금','지금 쓸 수 있는 내 돈')+L('🔥','연속 익절','수익으로 끝낸 판이 연속 몇 번인지. 5연속이면 피버')+L('🎯','투자 한도','한 판에 걸 수 있는 최대 금액. 레벨이 오르면 커짐')+
+    L('💵','예수금','지금 쓸 수 있는 내 돈')+L('🔥','연속 익절','수익으로 끝낸 판이 연속 몇 번인지. 5연속이면 피버')+L('🎯','투자 한도','한 판에 걸 수 있는 최대 금액. 레벨 한도와 예수금의 5% 중 큰 쪽')+
     L('<span style="color:var(--muted);font-weight:900">┅</span>','기준가 (회색 점선)','매수한 가격. 이 위면 수익, 아래면 손실')+L('<span style="color:var(--gold);font-weight:900">┅</span>','상한가 +30% (노란 점선)','하루 최대 상승폭. 일부 종목만 표시')+L('💀','청산가 (파란 점선)','레버리지를 쓰면 생김. 여기 닿으면 강제청산')+L('<span style="color:var(--rumor);font-weight:900">┅</span>','찌라시 목표가 (보라 점선)','찌라시가 알려준 폭락 지점. 가짜일 수도 있음')+
     L('📊','호가 · 잔량','사려는(빨강)·팔려는(파랑) 가격과 수량. 노란 칸이 현재가')+L('🧾','체결 · 체결강도','실제로 거래된 가격. 체결강도 100% 넘으면 사는 쪽이 셈')+L('📰','뉴스 바','호재(빨강)·악재(파랑)·찌라시(보라). 악재 뒤엔 출렁임이 옴')+L('🌡','장세 배지','5판마다 바뀌는 시장 분위기. 불장·폭락장 등'),1)+
   G('💰 매매 용어',

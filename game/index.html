@@ -291,7 +291,7 @@ body{font-size:15px;line-height:1.45}
   <div class="acct">
     <div><small>예수금</small><span id="bal" class="num">1,000,000원</span></div>
     <div><small>연속 익절</small><span id="streak">0</span></div>
-    <div><small>최고 자산</small><span id="best">-</span></div>
+    <div><small>투자 한도</small><span id="best">-</span></div>
   </div>
   <div class="quote">
     <div class="qn"><b id="qName">-</b><small id="qCode">-</small></div>
@@ -505,10 +505,12 @@ function talk(kind){
 }
 function rankOf(x){let i=0;RANKS.forEach((r,j)=>{if(x>=r[0])i=j});return i}
 const lvlOf=x=>{let L=1,need=60;while(x>=need){x-=need;L++;need=40+20*L;}return {L,cur:x,need};};
+// 한 판 투자 한도: Lv.1 100만 원, 레벨마다 22%씩 증가
+const betCap=()=>Math.round(1e6*Math.pow(1.22,lvlOf(xp).L-1)/1e4)*1e4;
 function gainXp(n){
   n=Math.round(n*(1+.05*skl('xp')));
   const before=rankOf(xp),lb=lvlOf(xp).L;xp+=n;store.set('shg_xp',xp);const after=rankOf(xp),la=lvlOf(xp).L;
-  if(la>lb&&after===before){setTimeout(()=>{toast('⬆️ 레벨 업! Lv.'+la+' · SP +'+2*(la-lb));sfx.up();burst(innerWidth/2,90,30);},900);}
+  if(la>lb&&after===before){setTimeout(()=>{toast('⬆️ 레벨 업! Lv.'+la+' · SP +'+2*(la-lb)+' · 한도 '+won(betCap()));sfx.up();burst(innerWidth/2,90,30);},900);}
   if(after>before){const nt=Object.values(TIERS).filter(T=>T.lv===after);setTimeout(()=>{toast('🎉 승급! '+RANKS[after][1]+(la>lb?' · Lv.'+la:'')+(nt.length?' · '+nt.map(T=>T.e+' '+T.label).join(', ')+' 해금':''));sfx.up();},900);if(after===RANKS.length-1)unlock('legend');}
 }
 
@@ -517,7 +519,7 @@ function paintTop(){
   if(lowFlag&&balance>=START&&state!=='holding'){unlock('comeback');lowFlag=false;}
   animBal();
   $('streak').innerHTML=streak?(streak>=5?'<span class="gd">'+streak+'연속 🔥</span>':streak+'연속'):'0';
-  $('best').textContent=best?won(best):'-';
+  $('best').textContent=won(Math.min(balance,betCap()));
   const ri=rankOf(xp),nx=RANKS[ri+1];
   const lv=lvlOf(xp);$('rankName').textContent='Lv.'+lv.L+' '+(profile?TYPES[profile].e:'')+RANKS[ri][1];
   $('rankBar').style.width=(lv.cur/lv.need*100).toFixed(0)+'%';
@@ -528,7 +530,7 @@ function paintPickers(){
   $('offers').innerHTML=offers.map(o=>{const T=TIERS[o.k];if(o.k==='boss')return `<button class="chip bosschip" type="button" data-k="boss" aria-pressed="true" ${lock?'disabled':''}><b>${o.name}</b><small>보스전 · 목표 수익 넘기고 팔면 처치 · SP +3</small></button>`;return `<button class="chip" type="button" data-k="${o.k}" aria-pressed="${o.k===tierSel}" ${lock?'disabled':''}><b>${T.e} ${o.name}</b><small>${T.label} · 손실 ${T.loss*100}%</small></button>`}).join('');
   const ri=rankOf(xp);
   $('offers').hidden=$('items').hidden=state==='holding'||state==='ghost';
-  $('items').innerHTML=Object.entries(ITEMS).map(([k,it])=>{const lk=ri<it.lv;if(lk)sel[k]=false;return `<button class="chip" type="button" data-i="${k}" aria-pressed="${sel[k]}" ${lock||lk?'disabled':''}><b>${lk?'🔒 '+it.name.slice(2):it.name}</b><small>${lk?RANKS[it.lv][1]+' 계급에서 해금':(it.cost?won(balance*it.cost*(1-.04*skl('discount'))):'무료')+' · '+it.desc}</small></button>`}).join('');
+  $('items').innerHTML=Object.entries(ITEMS).map(([k,it])=>{const lk=ri<it.lv;if(lk)sel[k]=false;return `<button class="chip" type="button" data-i="${k}" aria-pressed="${sel[k]}" ${lock||lk?'disabled':''}><b>${lk?'🔒 '+it.name.slice(2):it.name}</b><small>${lk?RANKS[it.lv][1]+' 계급에서 해금':(it.cost?won(Math.min(balance,betCap())*it.cost*(1-.04*skl('discount'))):'무료')+' · '+it.desc}</small></button>`}).join('');
 }
 function paintQuote(){
   const o=offer(),T=TIERS[o.k];
@@ -588,13 +590,15 @@ function start(){
   ensureDaily();
   const tut=!tutDone;if(tut)for(const k in sel)sel[k]=false;hideCoach();
   const o=offers.find(x=>x.k===tierSel)||offers[0],T=TIERS[o.k];
-  let cost=0;for(const k in sel)if(sel[k])cost+=balance*ITEMS[k].cost*(1-.04*skl('discount'));
-  balance-=cost;
-  const raw=Math.random()<T.instant?1+Math.random()*.06:Math.min(60,Math.max(1.01,.97/(1-Math.random())));
+  const bet=Math.min(balance,betCap());
+  let cost=0;for(const k in sel)if(sel[k])cost+=bet*ITEMS[k].cost*(1-.04*skl('discount'));
+  const fee=tut?0:bet*.003; // 수수료·세금
+  balance-=cost+fee;
+  const raw=Math.random()<T.instant?1+Math.random()*.06:Math.min(60,Math.max(1.01,.94/(1-Math.random())));
   const crashAt=tut?1.85:Math.max(1.01,1+(raw-1)*T.scale)*(1+.015*skl('jackpot'));
   const it={...sel};let hint=null;
   if(it.insider){const real=Math.random()<.7+.03*skl('radar');hint={real,v:real?Math.max(1.02,crashAt*rnd(.88,.98)):crashAt*rnd(1.4,3)};}
-  run={offer:o,T,key:o.k,crashAt,it,hint,sawDip:false,tut,cost};
+  run={offer:o,T,key:o.k,crashAt,it,hint,sawDip:false,tut,cost:cost+fee,bet};
   run.boss=o.k==='boss'?bossInfo(stats.bossLv||0):null;$('bossbar').hidden=!run.boss;
   if(run.boss){$('bossName').textContent=run.boss.B.e+' '+run.boss.B.n+' Lv.'+(run.boss.lv+1);$('bossGoal').textContent='목표 +'+Math.round((run.boss.target-1)*100)+'%';$('bossHp').style.width='100%';setTimeout(()=>stamp('⚔️ 보스전 시작'),50);}tutStep=0;
   card.hidden=true;$('news').hidden=true;
@@ -608,10 +612,10 @@ function release(){
   const lev=run.it.lev?2:1;
   sell={t,m:cur,dip:inDip(t),idx:candles.length-1};
   if(run.tut)hideCoach();
-  const gain=balance*(cur-1)*lev*(profile==='lion'?1.05:1)*(1+.02*skl('profit'));
+  const gain=run.bet*(cur-1)*lev*(profile==='lion'?1.05:1)*(1+.02*skl('profit'));
   streak++;
   const fever=streak>=5;
-  const bonus=streak>=3?gain*.05*(streak-2)*(fever?2:1)*(1+.15*skl('streak')):0;
+  const bonus=streak>=3?gain*Math.min(.25,.05*(streak-2)*(fever?2:1))*(1+.15*skl('streak')):0;
   sell.gain=gain;sell.bonus=bonus;sell.fever=fever;
   balance+=gain+bonus;
   if(balance>best){best=balance;store.set('shg_best',Math.floor(best));}
@@ -620,7 +624,7 @@ function release(){
   paintTop();paintPickers();setBtn();
   $('pnl').innerHTML='<span class="dn">매도 체결</span> <span class="up">'+sw(gain+bonus)+'</span>';
   unlock('first');
-  if(run.boss&&cur>=run.boss.target){const rw=Math.max(500000,balance*.2);balance+=rw;sell.bossReward=rw;stats.bossLv=(stats.bossLv||0)+1;stats.bossSP=(stats.bossSP||0)+3;store.set('shg_stats',stats);
+  if(run.boss&&cur>=run.boss.target){const rw=run.bet*.5;balance+=rw;sell.bossReward=rw;stats.bossLv=(stats.bossLv||0)+1;stats.bossSP=(stats.bossSP||0)+3;store.set('shg_stats',stats);
     unlock('boss1');if(stats.bossLv>=5)unlock('boss5');gainXp(100);setTimeout(()=>{stamp('⚔️ 보스 처치!');burst(innerWidth/2,innerHeight*.4,70);},200);paintTop();}
   if(cur>=10)unlock('ten');
   if(fever)unlock('streak5');
@@ -645,7 +649,7 @@ function crash(){
   let res;
   if(state==='holding'){
     let L=run.T.loss;if(run.it.lev)L=Math.min(.9,L*1.6);if(run.it.shield)L=.1;if(profile==='turtle'&&!run.it.shield)L*=.8;L*=1-.03*skl('risk');if(Math.random()<.03*skl('insure')){L*=.5;setTimeout(()=>toast('🪂 자동 손절 발동! 손실 절반'),600);}
-    const loss=balance*L;balance-=loss;lastAmt=-loss;streak=0;app.classList.remove('fever');$('fever').hidden=true;
+    const loss=run.bet*L;balance-=loss;lastAmt=-loss;streak=0;app.classList.remove('fever');$('fever').hidden=true;
     if(run.hint&&!run.hint.real)unlock('fake');
     if(balance<100000)lowFlag=true;
     res={win:false,key:run.key,m:0,pct:0,streak:0,insider:run.it.insider,sawDip:run.sawDip};
@@ -720,7 +724,7 @@ function showOver(){
 function showIntro(){
   const ms=daily.ids.map(id=>MISSIONS.find(m=>m.id===id).t);
   card.innerHTML='<div class="grade"><span class="up">상한가</span> 따라잡기</div>'+
-   '<ul><li>버튼을 <b>누르는 동안 보유</b>, 손을 떼면 <b>매도</b>합니다.</li><li>언젠가 반드시 폭락합니다. 그 전에 떼세요.</li><li>악재 뉴스는 진짜 신호일 수도, 개미털기일 수도 있습니다.</li><li>5연속 익절하면 <b class="gd">FEVER</b>로 보너스가 2배입니다.</li><li>아이템은 계급이 오를 때마다 하나씩 열립니다.</li></ul>'+
+   '<ul><li>버튼을 <b>누르는 동안 보유</b>, 손을 떼면 <b>매도</b>합니다.</li><li>언젠가 반드시 폭락합니다. 그 전에 떼세요.</li><li>악재 뉴스는 진짜 신호일 수도, 개미털기일 수도 있습니다.</li><li>한 판에 거는 돈은 <b>투자 한도</b>까지예요. 한도는 레벨이 오를수록 커집니다.</li><li>5연속 익절하면 <b class="gd">FEVER</b>로 보너스가 2배입니다.</li><li>아이템은 계급이 오를 때마다 하나씩 열립니다.</li></ul>'+
    '<div class="sub" style="text-align:left;margin-top:10px"><b class="gd">오늘의 미션</b><br>· '+ms.join('<br>· ')+'</div>';
   card.hidden=false;
 }
@@ -1032,7 +1036,7 @@ function frame(ts){
       const dv=dt*(1+Math.abs(cur-prev)/prev*300+(events.some(e=>t>=e.t0&&t<=e.t0+1.4)?3:0))*rnd(.6,1.4);c.v+=dv;volTotal+=dv*(1+cur);
       if(state==='holding'&&run.boss){const hp=Math.max(0,1-(cur-1)/(run.boss.target-1));$('bossHp').style.width=(hp*100).toFixed(1)+'%';if(hp<=0&&!run.boss.down){run.boss.down=1;stamp('💥 HP 0! 지금 팔면 처치');}}
       if(state==='holding'){tension(dt);if(run.tut)tutTick();while(run.mi<MS.length&&cur>=MS[run.mi][0]){if(!(MS[run.mi][0]===1.3&&!run.T.limit))stamp(MS[run.mi][1]);run.mi++;}}
-      if(state==='holding'){const lev=run.it.lev?2:1,g=balance*(cur-1)*lev;
+      if(state==='holding'){const lev=run.it.lev?2:1,g=run.bet*(cur-1)*lev;
         $('pnl').innerHTML='평가손익 <span class="'+(g>=0?'up':'dn')+'">'+sw(g)+'</span>'+(lev>1?' <span class="gd">x2</span>':'');}
     }
     paintQuote();

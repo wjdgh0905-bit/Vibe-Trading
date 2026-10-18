@@ -440,6 +440,10 @@ body{font-size:14px;line-height:1.4}
 .room.s0 .deco,.room.s1 .deco{filter:saturate(.7)}
 .rprog{position:absolute;left:0;right:0;bottom:0;height:3px;background:rgba(255,255,255,.15)}.rprog u{display:block;height:100%;background:var(--gold)}
 .rlabel{bottom:3px!important}.rlabel b{color:var(--gold)}
+.room.iso{aspect-ratio:4/3;background:#141822;border:2px solid var(--line)}
+.roomcv{position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated;image-rendering:crisp-edges}
+.ava2{position:absolute;transform:translate(-50%,-110%);pointer-events:none}.ava2 b{display:inline-block;background:#fff;color:#111;font-size:2.8cqw;padding:2px 7px;border-radius:9px;white-space:nowrap;position:relative;box-shadow:0 2px 0 rgba(0,0,0,.3)}
+.ava2 b::after{content:"";position:absolute;left:50%;bottom:-5px;margin-left:-5px;border:5px solid transparent;border-bottom:0;border-top-color:#fff}
 </style>
 
 <div class="app" id="app">
@@ -1442,7 +1446,7 @@ function tab(name,keep){
   if(name==='trade'){pg.hidden=true;return;}
   pg.innerHTML='<div>'+(name==='skill'?pageSkill():name==='shop'?pageShop():name==='invest'?pageInvest():name==='mission'?pageMission():name==='record'?pageRecord():pageSet())+'</div>';
   if(!keep){pg.style.animation='none';void pg.offsetWidth;pg.style.animation='';}
-  pg.hidden=false;pg.scrollTop=0;bindPage(name);
+  pg.hidden=false;pg.scrollTop=0;bindPage(name);try{drawRooms()}catch(e){}
 }
 $('tabs').addEventListener('click',e=>{const b=e.target.closest('button');if(b&&!b.disabled){beep(520,.03,'sine',.03);tab(b.dataset.tab);}});
 $('spBtn').onclick=()=>{if(state!=='holding'&&state!=='ghost')tab('skill');};
@@ -1532,47 +1536,90 @@ function tickInvest(){
 
 /* ---------- 미니룸: 단칸방에서 시작해 자산 따라 이사 ---------- */
 const AVA=['🐣','🐥','🐤','🐔','🦆','🦉','🦊','🐺','🦁','🐯','🐲','🦄','👑','🌟','🌌'];
-const HOMES=[
-  {n:'고시원 단칸방',min:0,win:'bars',deco:[['🍜',22,60,6],['🕯️',8,40,5],['📦',82,66,7]],bed:'🛌'},
-  {n:'반지하 원룸',min:1e7,win:'feet',deco:[['🍜',24,61,5],['🧺',84,66,7],['🪳',70,86,3.5]],bed:'🛏️'},
-  {n:'원룸 오피스텔',min:1e8,win:'day',deco:[['🛏️',84,62,11],['🪴',4,58,7]]},
-  {n:'국민평형 아파트',min:1e9,win:'day',deco:[['🛋️',22,80,11],['📺',22,30,7],['🪴',4,58,7]]},
-  {n:'한강뷰 아파트',min:1e10,win:'river',deco:[['🛋️',22,80,11],['🍷',8,82,5],['🪴',4,58,7],['🖼️',22,22,7]]},
-  {n:'강남 펜트하우스',min:1e12,win:'night',deco:[['🛋️',22,80,11],['🍾',8,82,5],['💎',22,22,6],['🎹',38,80,8]]},
-  {n:'빌딩 꼭대기 회장실',min:1e14,win:'night',deco:[['🗿',4,60,9],['🏆',22,22,7],['🛋️',22,80,11],['🥂',38,82,5]]},
-  {n:'우주정거장 스위트',min:1e16,win:'space',deco:[['👨‍🚀',22,80,9],['🛰️',22,22,7],['🧪',4,62,7]]},
-  {n:'달 기지',min:1e18,win:'moon',deco:[['🚀',20,78,11],['🏳️',22,22,7],['🌑',38,82,6]]}
+const HOMES=[ // 벽(왼/오), 바닥 2톤, 창문, 바닥 소품 [이모지,u,v,크기]
+  {n:'고시원 단칸방',min:0,wl:'#6b6352',wr:'#7d7461',f1:'#8a8270',f2:'#7f7765',win:'bars',size:.62,deco:[['🛌',.75,.2,15],['🍜',.35,.55,10],['🕯️',.12,.75,9],['📦',.8,.6,12]]},
+  {n:'반지하 원룸',min:1e7,wl:'#56655c',wr:'#64746a',f1:'#6f7d74',f2:'#66746b',win:'feet',size:.72,deco:[['🛏️',.75,.18,17],['🍜',.35,.6,9],['🧺',.85,.6,12],['🪳',.6,.85,7]]},
+  {n:'원룸 오피스텔',min:1e8,wl:'#cfc6b4',wr:'#ddd5c5',f1:'#b88b5e',f2:'#a77d52',win:'day',size:.85,deco:[['🛏️',.75,.18,18],['🪴',.08,.9,13],['🧸',.85,.55,10]]},
+  {n:'국민평형 아파트',min:1e9,wl:'#e6dccb',wr:'#f1e9da',f1:'#c49a6c',f2:'#b48a5e',win:'day',size:1,deco:[['🛋️',.75,.2,20],['📺',.9,.55,14],['🪴',.08,.9,14],['🧸',.6,.8,9]]},
+  {n:'한강뷰 아파트',min:1e10,wl:'#d4dfea',wr:'#e2ebf3',f1:'#d0a878',f2:'#c09867',win:'river',size:1,deco:[['🛋️',.75,.2,20],['🍷',.62,.4,8],['🪴',.08,.9,14],['🖼️',.9,.6,13]]},
+  {n:'강남 펜트하우스',min:1e12,wl:'#2c2440',wr:'#382e50',f1:'#e8e8e8',f2:'#b8b8b8',win:'night',size:1,deco:[['🛋️',.75,.2,20],['🍾',.62,.4,9],['🎹',.88,.62,16],['🪴',.08,.9,14]]},
+  {n:'빌딩 꼭대기 회장실',min:1e14,wl:'#4a3818',wr:'#5c4620',f1:'#c9a227',f2:'#2a2a2a',win:'night',size:1,deco:[['🛋️',.75,.2,20],['🗿',.9,.62,16],['🏆',.62,.4,10],['🥂',.4,.75,8]]},
+  {n:'우주정거장 스위트',min:1e16,wl:'#9aa6b8',wr:'#b4bfce',f1:'#7d8796',f2:'#6f7988',win:'space',size:1,deco:[['👨‍🚀',.78,.25,17],['🧪',.88,.62,11],['🛰️',.6,.82,11]]},
+  {n:'달 기지',min:1e18,wl:'#2a2d40',wr:'#353950',f1:'#bdbdbd',f2:'#a8a8a8',win:'moon',size:1,deco:[['🚀',.8,.22,22],['🏳️',.88,.62,13],['🌑',.6,.85,10]]}
 ];
 const homeIdx=()=>{const w=balance+invTotal();let i=0;HOMES.forEach((h,j)=>{if(w>=h.min)i=j;});return i;};
 let lastHome=store.get('shg_home',0);
 function checkHome(){const h=homeIdx();if(h>lastHome){lastHome=h;store.set('shg_home',h);setTimeout(()=>{stamp('🏠 이사!');toast('🏠 '+HOMES[h].n+'(으)로 이사했습니다!');},400);}else if(h<lastHome){lastHome=h;store.set('shg_home',h);}}
 function roomHtml(){
-  const ri=rankOf(xp),G=id=>!!gear[id],C=id=>col.includes(id),hi=homeIdx(),H=HOMES[hi],nx=HOMES[hi+1];
-  const it=(e,x,y,sz,own,tip,cls='')=>`<button type="button" class="ri ${own?'own':'no'} ${cls}" style="left:${x}%;top:${y}%;font-size:${sz}cqw" data-tip="${tip}">${own?e:'?'}</button>`;
-  const gt=id=>{const g=GEAR.find(x=>x.id===id);return g.n+(gear[id]?' · '+g.d:' · 미보유 '+won(g.p));};
-  const ct=id=>{const c=COL.find(x=>x.id===id);return c.n+(C(id)?' · 보유':' · '+won(c.p));};
-  const win={bars:'<span class="bars"></span>',feet:'<span class="feet">👟 👠 👞</span>',day:'<span class="sun">☀️</span><div class="rcity"></div>',
-    river:'<span class="sun">☀️</span><div class="rcity"></div><div class="river"></div>',night:'<span class="stars">✦ · ✧ · ✦ ·</span><span class="sky" style="right:8%;top:6%">🌙</span><div class="rcity"></div>',
-    space:'<span class="stars">✦ · ✧ · ✦ · ✧</span><span class="sky" style="right:14%;top:30%;font-size:12cqw">🌍</span>',
-    moon:'<span class="stars">✦ · ✧ · ✦ · ✧</span><span class="sky" style="right:10%;top:8%;font-size:9cqw">🌍</span><div class="moonland"></div>'}[H.win];
-  const outdoor=hi>=2; // 창밖에 장비가 보이는 집부터
-  return '<div class="room s'+hi+'">'+
-    '<div class="rwall"></div><div class="rfloor"></div>'+
-    '<div class="rwin w-'+H.win+'">'+win+
-      (C('moon')&&H.win!=='moon'?'<span class="sky" style="left:8%;top:6%">🌕</span>':'')+(C('iss')&&hi<7?'<span class="sky" style="left:36%;top:6%">🛸</span>':'')+'</div>'+
-    (outdoor?it('🛩️',63,9,5.5,G('jet'),gt('jet'))+it('🏢',71,17,8,G('building'),gt('building'))+it('🏦',85,15,7,G('firm'),gt('firm'))+it('🏎️',64,40,6,G('car'),gt('car'))+it('🛥️',81,40,6,G('yacht'),gt('yacht')):'')+
-    (hi>=1?'<div class="rframe"></div>'+it('💳',39.5,16,4.5,G('vip'),gt('vip')):'')+
-    '<div class="rdesk"></div>'+it('🖥️',15,47,9,G('monitor'),gt('monitor'))+it('🪑',30,60,9,G('chair'),gt('chair'))+
-    H.deco.map(d=>`<span class="deco" style="left:${d[1]}%;top:${d[2]}%;font-size:${d[3]}cqw">${d[0]}</span>`).join('')+
-    (H.bed?`<span class="deco" style="left:70%;top:72%;font-size:10cqw">${H.bed}</span>`:'')+
-    (hi<2?'<span class="crack"></span>':'')+
-    '<div class="ava" style="left:46%;top:58%"><b>'+(hi===0?'라면 또 먹냐…':hi<3?RANKS[ri][1]:'성공했다 '+RANKS[ri][1])+'</b><span>'+AVA[Math.min(ri,AVA.length-1)]+'</span></div>'+
-    (hi>=3?'<div class="shelf">'+COL.map(c=>`<button type="button" class="si ${C(c.id)?'own':'no'}" data-tip="${ct(c.id)}">${C(c.id)?c.e:'🔒'}</button>`).join('')+'</div>':'')+
+  const hi=homeIdx(),H=HOMES[hi],nx=HOMES[hi+1],ri=rankOf(xp);
+  return '<div class="room iso"><canvas class="roomcv" width="200" height="150"></canvas><div class="ava2"><b>'+(hi===0?'라면 또 먹냐…':hi<3?RANKS[ri][1]:'성공했다 '+RANKS[ri][1])+'</b></div>'+
     '<div class="rlabel">🏠 '+H.n+' · Lv.'+(hi+1)+'/'+HOMES.length+(nx?' · 다음 <b>'+nx.n+'</b>까지 '+won(Math.max(0,nx.min-balance-invTotal())):' · 최종 집!')+'</div>'+
-    (nx?'<div class="rprog"><u style="width:'+Math.min(100,(balance+invTotal())/nx.min*100)+'%"></u></div>':'')+
-  '</div>';
+    (nx?'<div class="rprog"><u style="width:'+Math.min(100,(balance+invTotal())/nx.min*100)+'%"></u></div>':'')+'</div>';
 }
-document.addEventListener('click',e=>{const t=e.target.closest('.room [data-tip]');if(t)toast(t.dataset.tip);});
+// 아이소메트릭 픽셀 방: 저해상도 캔버스에 그리고 확대(픽셀아트)
+function drawRooms(){document.querySelectorAll('.roomcv').forEach(cv=>{
+  const x=cv.getContext('2d'),hi=homeIdx(),H=HOMES[hi],G=id=>!!gear[id],C=id=>col.includes(id),hits=[];
+  x.imageSmoothingEnabled=false;x.clearRect(0,0,200,150);
+  const sz=H.size,CX=100,TY=58,W=78*sz,D=39*sz,WH=44;
+  const F=(u,v)=>[CX+(u-v)*W,TY+(u+v)*D];            // 바닥 좌표
+  const LW=(v,h)=>{const [a,b]=F(0,v);return [a,b-h*WH];}; // 왼쪽 벽
+  const RW=(u,h)=>{const [a,b]=F(u,0);return [a,b-h*WH];}; // 오른쪽 벽
+  const poly=(pts,fill)=>{x.beginPath();pts.forEach((p,i)=>i?x.lineTo(p[0],p[1]):x.moveTo(p[0],p[1]));x.closePath();x.fillStyle=fill;x.fill();};
+  // 바깥 배경
+  x.fillStyle=hi>=7?'#05060f':'#141822';x.fillRect(0,0,200,150);
+  if(hi>=7){for(let i=0;i<40;i++){x.fillStyle=i%3?'#556':'#fff';x.fillRect((i*53)%200,(i*37)%150,1,1);}}
+  // 바닥 (체크 타일)
+  const N=6;for(let i=0;i<N;i++)for(let j=0;j<N;j++)poly([F(i/N,j/N),F((i+1)/N,j/N),F((i+1)/N,(j+1)/N),F(i/N,(j+1)/N)],(i+j)%2?H.f1:H.f2);
+  // 벽
+  poly([LW(0,0),LW(1,0),LW(1,1),LW(0,1)],H.wl);poly([RW(0,0),RW(1,0),RW(1,1),RW(0,1)],H.wr);
+  // 벽지 줄무늬
+  x.globalAlpha=.08;x.fillStyle='#000';for(let k=1;k<10;k+=2){poly([LW(k/10,0),LW((k+.5)/10,0),LW((k+.5)/10,1),LW(k/10,1)],'#000');poly([RW(k/10,0),RW((k+.5)/10,0),RW((k+.5)/10,1),RW(k/10,1)],'#000');}x.globalAlpha=1;
+  // 걸레받이 + 모서리
+  poly([LW(0,0),LW(1,0),LW(1,.06),LW(0,.06)],'rgba(0,0,0,.25)');poly([RW(0,0),RW(1,0),RW(1,.06),RW(0,.06)],'rgba(0,0,0,.18)');
+  x.fillStyle='rgba(0,0,0,.35)';const [ex,ey]=F(0,0);x.fillRect(ex,ey-WH,1,WH);
+  // 금 간 벽 (가난)
+  if(hi<2){x.strokeStyle='#2e2a22';x.lineWidth=1;x.beginPath();const [a,b]=LW(.3,.8);x.moveTo(a,b);x.lineTo(a+4,b+6);x.lineTo(a+1,b+11);x.lineTo(a+6,b+17);x.stroke();}
+  // 창문 (오른쪽 벽)
+  const wu0=hi<2?.5:.35,wu1=hi<2?.82:.9,wh0=hi===1?.62:.35,wh1=hi===1?.92:.88;
+  const wp=[RW(wu0,wh0),RW(wu1,wh0),RW(wu1,wh1),RW(wu0,wh1)];
+  x.save();x.beginPath();wp.forEach((p,i)=>i?x.lineTo(p[0],p[1]):x.moveTo(p[0],p[1]));x.closePath();x.clip();
+  const [wx0,wy0]=RW(wu0,wh1),[wx1,wy1]=RW(wu1,wh0),bx=Math.min(wx0,wx1),by=Math.min(wy0,wy1)-10,bw=Math.abs(wx1-wx0),bh=Math.abs(wy1-wy0)+20;
+  const sky={bars:['#9bb','#8aa'],feet:['#888','#666'],day:['#7cc4ff','#cfe9ff'],river:['#7cc4ff','#cfe9ff'],night:['#060a1f','#1b2550'],space:['#02030a','#13204a'],moon:['#02030a','#13204a']}[H.win];
+  const gr=x.createLinearGradient(0,by,0,by+bh);gr.addColorStop(0,sky[0]);gr.addColorStop(1,sky[1]);x.fillStyle=gr;x.fillRect(bx,by,bw,bh);
+  const em=(e,px,py,size,tip)=>{x.font=size+'px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif';x.textAlign='center';x.textBaseline='bottom';x.fillStyle='#000';x.fillText(e,Math.round(px),Math.round(py));if(tip)hits.push({x:px-size/2,y:py-size,w:size,h:size,tip});};
+  if(H.win==='day'||H.win==='river'||H.win==='night'){x.fillStyle=H.win==='night'?'#2a3456':'#8a9ab8';for(let k=0;k<8;k++){const hh=6+((k*7)%9);x.fillRect(bx+k*(bw/8),by+bh*.62-hh,bw/8-1,hh);if(H.win==='night'){x.fillStyle='#ffd86b';x.fillRect(bx+k*(bw/8)+2,by+bh*.62-hh+2,1,1);x.fillStyle='#2a3456';}}
+    x.fillStyle=H.win==='river'?'#3a7cc8':H.win==='night'?'#1a2238':'#7fbf6a';x.fillRect(bx,by+bh*.62,bw,bh);
+    em(H.win==='night'?'🌙':'☀️',bx+bw*.85,by+bh*.38,9);}
+  if(H.win==='bars'){x.fillStyle='#333';for(let k=0;k<6;k++)x.fillRect(bx+k*bw/6,by,1.5,bh);}
+  if(H.win==='feet'){em('👟',bx+bw*.3,by+bh*.75,8);em('👠',bx+bw*.65,by+bh*.75,8);}
+  if(H.win==='space'){em('🌍',bx+bw*.6,by+bh*.75,20);}
+  if(H.win==='moon'){x.fillStyle='#9a9a9a';x.fillRect(bx,by+bh*.7,bw,bh);em('🌍',bx+bw*.75,by+bh*.45,12);}
+  if(hi>=2){ // 창밖 장비
+    const ow=(id,e,fx,fy,size)=>{const g=GEAR.find(q=>q.id===id);if(G(id))em(e,bx+bw*fx,by+bh*fy,size,g.n+' · '+g.d);};
+    ow('jet','🛩️',.25,.3,8);ow('building','🏢',.45,.6,11);ow('firm','🏦',.7,.6,10);ow('car','🏎️',.3,.88,8);ow('yacht','🛥️',.7,.88,8);
+    if(C('moon')&&H.win!=='moon')em('🌕',bx+bw*.15,by+bh*.3,7);if(C('iss')&&hi<7)em('🛸',bx+bw*.55,by+bh*.25,7);}
+  x.restore();
+  x.strokeStyle='#e8dcc0';x.lineWidth=1.5;x.beginPath();wp.forEach((p,i)=>i?x.lineTo(p[0],p[1]):x.moveTo(p[0],p[1]));x.closePath();x.stroke();
+  // 왼쪽 벽: VIP 액자 + 컬렉션 선반
+  if(hi>=1){const fp=[LW(.15,.55),LW(.32,.55),LW(.32,.85),LW(.15,.85)];poly(fp,'#c9b38a');poly([LW(.17,.6),LW(.3,.6),LW(.3,.8),LW(.17,.8)],'#1a1d24');
+    const [fx,fy]=LW(.235,.62);if(G('vip'))em('💳',fx,fy,9,'증권사 VIP · 수수료·레버리지 이자 면제');else hits.push({x:fx-6,y:fy-12,w:12,h:12,tip:'증권사 VIP · 미보유 '+won(GEAR.find(q=>q.id==='vip').p)});}
+  if(hi>=3){for(let r=0;r<2;r++){poly([LW(.42,.28+r*.3),LW(.95,.28+r*.3),LW(.95,.31+r*.3),LW(.42,.31+r*.3)],'#8a5f36');
+      COL.slice(r*5,r*5+5).forEach((c,k)=>{const [sx,sy]=LW(.48+k*.105,.31+r*.3);if(C(c.id))em(c.e,sx,sy,9,c.n+' · 보유');else{x.globalAlpha=.35;em('🔒',sx,sy,6);x.globalAlpha=1;hits.push({x:sx-5,y:sy-9,w:10,h:9,tip:c.n+' · '+won(c.p)});}});}}
+  // 바닥 물건: 뒤쪽부터 그리기(겹침 순서)
+  const things=[];
+  things.push({u:.12,v:.4,draw:()=>{const [a,b]=F(.12,.4);poly([[a-14,b-6],[a+2,b-14],[a+14,b-8],[a-2,b]],'#a87a4c');poly([[a-14,b-6],[a-2,b],[a-2,b+3],[a-14,b-3]],'#6b4a2d');poly([[a-2,b],[a+14,b-8],[a+14,b-5],[a-2,b+3]],'#7d5733');}}); // 책상
+  things.push({u:.1,v:.38,e:'🖥️',s:14,dy:-8,id:'monitor'});things.push({u:.28,v:.5,e:'🪑',s:14,id:'chair'});
+  H.deco.forEach(d=>things.push({u:d[1],v:d[2],e:d[0],s:d[3]}));
+  things.push({u:.55,v:.55,e:AVA[Math.min(rankOf(xp),AVA.length-1)],s:22,ava:1});
+  things.sort((a,b)=>(a.u+a.v)-(b.u+b.v)).forEach(t=>{
+    if(t.draw)return t.draw();const [a,b]=F(t.u,t.v);
+    x.fillStyle='rgba(0,0,0,.28)';x.beginPath();x.ellipse(a,b+1,t.s*.42,t.s*.18,0,0,7);x.fill();
+    if(t.id){const g=GEAR.find(q=>q.id===t.id);if(G(t.id))em(t.e,a,b+(t.dy||0),t.s,g.n+' · '+g.d);else{x.globalAlpha=.3;em('❔',a,b+(t.dy||0),9);x.globalAlpha=1;hits.push({x:a-6,y:b-12+(t.dy||0),w:12,h:12,tip:g.n+' · 미보유 '+won(g.p)});}}
+    else{em(t.e,a,b,t.s);if(t.ava){cv.dataset.ax=a/200*100;cv.dataset.ay=(b-t.s-3)/150*100;}}});
+  cv._hits=hits;
+  const av=cv.parentNode.querySelector('.ava2');if(av){av.style.left=cv.dataset.ax+'%';av.style.top=cv.dataset.ay+'%';}
+  cv.onclick=e=>{const r=cv.getBoundingClientRect(),px=(e.clientX-r.left)/r.width*200,py=(e.clientY-r.top)/r.height*150;const h=hits.find(q=>px>=q.x&&px<=q.x+q.w&&py>=q.y&&py<=q.y+q.h);if(h)toast(h.tip);};
+});}
 function pageInvest(){
   const ri=rankOf(xp),tot=invTotal(),last=Object.values(invest).reduce((n,h)=>n+(h.d||0),0);
   return '<h2>💼 투자</h2>'+roomHtml()+'<p class="lead" style="margin-top:10px">예수금을 넣어두면 <b>판을 할 때마다</b> 수익(또는 손실)이 붙어요. 상품마다 수익이 붙는 한도가 있어요. 빼면 수수료가 나가요.</p>'+

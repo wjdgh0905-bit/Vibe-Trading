@@ -555,7 +555,7 @@ const NICK=['개미','존버','단타왕','물린자','라면장인','부자될�
 /* ---------- persistent ---------- */
 const dayKey=()=>{const d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()};
 let best=store.get('shg_best',0),ach=store.get('shg_ach',[]),xp=store.get('shg_xp',0);
-const SET=Object.assign({sound:true,vib:true,heart:true,fx:true,slow:false},store.get('shg_set',{}));
+const SET=Object.assign({sound:true,bgm:true,vib:true,heart:true,fx:true,slow:false},store.get('shg_set',{}));
 let muted=!SET.sound;
 const vib=pat=>{if(!SET.vib)return;try{navigator.vibrate&&navigator.vibrate(pat)}catch(e){}};
 let daily=store.get('shg_daily',null);
@@ -615,8 +615,35 @@ const sfx={
   sell:()=>{beep(988,.07,'square',.04);setTimeout(()=>beep(1319,.18,'square',.04),70)},
   crash:()=>{beep(420,.7,'sawtooth',.06,45);beep(90,.5,'square',.05,40)},
   up:()=>[523,659,784,1047].forEach((f,i)=>setTimeout(()=>beep(f,.12,'square',.035),i*90)),
-  news:()=>beep(660,.05,'sine',.04)
+  news:()=>beep(660,.05,'sine',.04),
+  click:()=>beep(1250,.03,'triangle',.03)
 };
+// 배경음악: WebAudio로 직접 만든 루프 (파일 없음)
+const bgm=(()=>{
+  let g=null,timer=null,step=0,next=0;
+  const CH=[[57,60,64],[53,57,60],[48,52,55],[55,59,62]]; // Am F C G
+  const hz=m=>440*Math.pow(2,(m-69)/12);
+  function note(a,f,t,d,type,v){const o=a.createOscillator(),e=a.createGain();o.type=type;o.frequency.value=f;
+    e.gain.setValueAtTime(0,t);e.gain.linearRampToValueAtTime(v,t+.01);e.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(e).connect(g);o.start(t);o.stop(t+d+.05);}
+  function hat(a,t,v){const b=a.createBuffer(1,a.sampleRate*.04,a.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*(1-i/d.length);
+    const s=a.createBufferSource(),f=a.createBiquadFilter(),e=a.createGain();f.type='highpass';f.frequency.value=7000;e.gain.value=v;s.buffer=b;s.connect(f).connect(e).connect(g);s.start(t);}
+  function kick(a,t){const o=a.createOscillator(),e=a.createGain();o.frequency.setValueAtTime(130,t);o.frequency.exponentialRampToValueAtTime(40,t+.12);
+    e.gain.setValueAtTime(.5,t);e.gain.exponentialRampToValueAtTime(.001,t+.16);o.connect(e).connect(g);o.start(t);o.stop(t+.2);}
+  function tick(){const a=ac;if(!a||!g)return;const hot=state==='holding',bpm=hot?118:88,sx=60/bpm/4;
+    while(next<a.currentTime+.25){const t=next,i=step%16,c=CH[Math.floor(step/16)%4];
+      if(i===0||i===8)note(a,hz(c[0]-24),t,sx*7,'triangle',.22);
+      if(i%2===0)note(a,hz(c[(i/2)%3]+12),t,sx*1.6,'sine',hot?.07:.05);
+      if(i%4===2)hat(a,t,hot?.12:.06);
+      if(hot&&i%4===0)kick(a,t);
+      next+=sx;step++;}}
+  function start(){const a=au();if(!a||g)return;g=a.createGain();g.gain.value=.0001;g.connect(a.destination);g.gain.linearRampToValueAtTime(.32,a.currentTime+1.5);
+    next=a.currentTime+.1;step=0;timer=setInterval(tick,90);}
+  function stop(){if(!g)return;const old=g;g=null;clearInterval(timer);try{old.gain.linearRampToValueAtTime(.0001,ac.currentTime+.4);setTimeout(()=>old.disconnect(),600);}catch(e){}}
+  function sync(){(SET.bgm&&SET.sound&&!document.hidden)?start():stop();}
+  document.addEventListener('visibilitychange',sync);
+  return {sync};
+})();
+document.addEventListener('pointerdown',e=>{if(e.target.closest('button,.chip,summary'))sfx.click();bgm.sync();},true);
 
 /* ---------- ui helpers ---------- */
 function toast(txt){
@@ -677,7 +704,11 @@ const REGIMES=[
 const regime=()=>{let r=0;try{r=stats.rounds}catch(e){}const b=Math.floor(r/5);return b<1?REGIMES[0]:REGIMES[(Math.imul(b,2654435761)>>>0)%REGIMES.length];};
 const betCap=()=>Math.round(1e6*(regime().cap||1)*Math.pow(1.22,lvlOf(xp).L-1)*(gear.car?1.1:1)*(gear.yacht?1.2:1)*(gear.firm?1.5:1)/1e4)*1e4;
 // 실제 베팅 한도: 레벨 한도와 예수금 5% 중 큰 쪽
-const stakeCap=()=>Math.max(betCap(),Math.round(balance*.05*(regime().cap||1)/1e4)*1e4);
+// 예수금 구간별 체감: 1,000억까지 5%, 1조까지 2%, 그 위는 0.5%
+const wealthCap=b=>.05*Math.min(b,1e11)+.02*Math.min(Math.max(b-1e11,0),9e11)+.005*Math.max(b-1e12,0);
+const stakeCap=()=>Math.max(betCap(),Math.round(wealthCap(balance)*(regime().cap||1)/1e4)*1e4);
+// 부자세: 예수금 100억부터 수익에 세금 (최대 45%)
+const taxRate=b=>b<1e10?0:Math.min(.45,.05+.08*Math.log10(b/1e10));
 function gainXp(n){
   n=Math.round(n*(1+.05*skl('xp')+(gear.office?.05:0)));
   const before=rankOf(xp),lb=lvlOf(xp).L;xp+=n;store.set('shg_xp',xp);const after=rankOf(xp),la=lvlOf(xp).L;
@@ -794,7 +825,8 @@ function start(){
   balance-=cost+fee;
   const raw=Math.random()<T.instant?1+Math.random()*.06:Math.min(60,Math.max(1.01,.94/(1-Math.random())));
   const rg=tut?REGIMES[0]:regime();
-  let crashAt=tut?1.85:(rg.crash||1)*Math.max(1.01,1+(raw-1)*T.scale)*(1+.015*skl('jackpot'));
+  const hard=1-Math.min(.25,Math.max(0,lvlOf(xp).L-25)*.007); // Lv.25부터 폭락이 점점 빨리 옴 (최대 -25%)
+  let crashAt=tut?1.85:(rg.crash||1)*Math.max(1.01,1+(raw-1)*T.scale*hard)*(1+.015*skl('jackpot'));
   if(!tut&&armed.luck>0){armed.luck--;crashAt*=1.12;store.set('shg_armed',armed);}
   const it={...sel};let hint=null;
   if(it.insider){const real=Math.random()<.7+.03*skl('radar');hint={real,v:real?Math.max(1.02,crashAt*rnd(.88,.98)):crashAt*rnd(1.4,3)};}
@@ -823,7 +855,8 @@ function release(){
   const fever=streak>=5;
   const bonus=cur>1&&streak>=3?gain*Math.min(.25,.05*(streak-2)*(fever?2:1))*(1+.15*skl('streak')):0;
   sell.gain=gain;sell.bonus=bonus;sell.fever=fever;
-  balance+=gain+bonus;
+  const tr=taxRate(balance),tax=gain+bonus>0?(gain+bonus)*tr:0;sell.tax=tax;sell.taxR=tr;
+  balance+=gain+bonus-tax;
   if(debt>0&&gain+bonus>0){const r=Math.min(debt,(gain+bonus)*.3,balance);sell.repaid=r;repay(r);}
   if(balance>best){best=balance;store.set('shg_best',Math.floor(best));}
   state='ghost';sfx.sell();talk('sold');freezeT=.14;sellJuice(gain+bonus);
@@ -913,6 +946,7 @@ function showWin(pct,xg){
   shareText=`[상한가 따라잡기] ${o.name} +${pp(sell.m)} 매도 · 고점 근접도 ${pct.toFixed(0)}% · ${g[0]} ${streak>=5?'🔥'+streak+'연속':''}\n자산 ${won(balance)}`;
   card.innerHTML='<div class="grade '+g[1]+'">'+g[0]+'</div><div class="sub">'+g[2]+'</div>'+close+shook+
    '<div class="big up">'+sw(sell.gain+sell.bonus)+'</div>'+
+   (sell.tax?'<div class="sub dn">🏛 부자세 '+Math.round(sell.taxR*100)+'% '+sw(-sell.tax)+'</div>':'')+
    (sell.repaid?'<div class="sub dn">💸 빚 자동 상환 '+sw(-sell.repaid)+(debt>0?' · 남은 빚 '+won(debt):' · 빚 청산!')+'</div>':'')+
    (run.lev>1||run.allin?'<div class="sub gd">'+(run.lev>1?'⚡ 레버리지 '+run.lev+'배 ':'')+(run.allin?'🎲 영끌':'')+'</div>':'')+
    (sell.bonus?'<div class="sub gd">'+(sell.fever?'🔥 FEVER ':'')+streak+'연속 보너스 '+sw(sell.bonus)+'</div>':'')+
@@ -1327,12 +1361,12 @@ function glossary(){
   const G=(t,body,open)=>`<details class="gl"${open?' open':''}><summary>${t}</summary>${body}</details>`;
   return '<h3>📖 용어 · 아이콘 설명</h3><div class="pan">'+
   G('📈 화면 보는 법',
-    L('💵','예수금','지금 쓸 수 있는 내 돈')+L('🔥','연속 익절','수익으로 끝낸 판이 연속 몇 번인지. 5연속이면 피버')+L('🎯','투자 한도','한 판에 걸 수 있는 최대 금액. 레벨 한도와 예수금의 5% 중 큰 쪽')+
+    L('💵','예수금','지금 쓸 수 있는 내 돈')+L('🔥','연속 익절','수익으로 끝낸 판이 연속 몇 번인지. 5연속이면 피버')+L('🎯','투자 한도','한 판 최대 금액. 레벨 한도와 예수금 비율(1,000억까지 5% → 1조까지 2% → 그 위 0.5%) 중 큰 쪽')+
     L('<span style="color:var(--muted);font-weight:900">┅</span>','기준가 (회색 점선)','매수한 가격. 이 위면 수익, 아래면 손실')+L('<span style="color:var(--gold);font-weight:900">┅</span>','상한가 +30% (노란 점선)','하루 최대 상승폭. 일부 종목만 표시')+L('💀','청산가 (파란 점선)','레버리지를 쓰면 생김. 여기 닿으면 강제청산')+L('<span style="color:var(--rumor);font-weight:900">┅</span>','찌라시 목표가 (보라 점선)','찌라시가 알려준 폭락 지점. 가짜일 수도 있음')+
     L('📊','호가 · 잔량','사려는(빨강)·팔려는(파랑) 가격과 수량. 노란 칸이 현재가')+L('🧾','체결 · 체결강도','실제로 거래된 가격. 체결강도 100% 넘으면 사는 쪽이 셈')+L('📰','뉴스 바','호재(빨강)·악재(파랑)·찌라시(보라). 악재 뒤엔 출렁임이 옴')+L('🌡','장세 배지','5판마다 바뀌는 시장 분위기. 불장·폭락장 등'),1)+
   G('💰 매매 용어',
     L('🔴','매수 → 익절','버튼을 눌러 사고, 다시 눌러 팔아 수익 확정')+L('🔵','물림 · 손절','못 팔고 폭락을 맞거나, 산 값보다 낮게 판 경우')+L('✖','배수 (x2.0)','산 가격 대비 몇 배인지. x2면 +100%')+L('🎯','근접도','폭락 직전 고점에 얼마나 가깝게 팔았는지')+
-    L('⚡','레버리지','수익·손실을 몇 배로 키움. 높을수록 청산 위험 ↑, 수수료 ↑')+L('🎲','영끌','투자 한도를 10배로 늘려 한 방. 잃으면 크게 잃음')+L('%','투자 비율','예수금 중 이번 판에 걸 비율')+L('🧾','수수료','매수할 때 떼는 비용. 레버리지가 높을수록 비쌈'))+
+    L('⚡','레버리지','수익·손실을 몇 배로 키움. 높을수록 청산 위험 ↑, 수수료 ↑')+L('🎲','영끌','투자 한도를 10배로 늘려 한 방. 잃으면 크게 잃음')+L('%','투자 비율','예수금 중 이번 판에 걸 비율')+L('🧾','수수료','매수할 때 떼는 비용. 레버리지가 높을수록 비쌈')+L('🏛','부자세','예수금 100억부터 수익에 세금. 100억 5% → 1조 21% → 최대 45%')+L('💀','고레벨 난이도','Lv.25부터 레벨마다 폭락이 조금씩 빨라짐 (최대 25%)'))+
   G('🏷 종목 종류',Object.values(TIERS).filter(T=>!T.hidden).map(T=>L(T.e,T.label,`물리면 -${Math.round(T.loss*100)}% · 대박 크기 x${T.scale}`)).join('')+L('👹','보스전','10판마다 등장. 목표 배수까지 버티고 팔면 처치'))+
   G('🧰 아이템 · 성장',Object.values(ITEMS).map(it=>L(it.name.split(' ')[0],it.name.split(' ').slice(1).join(' '),it.desc+' · 판마다 비용')).join('')+
     L('🌳','SP · 스킬','레벨업·업적·미션으로 얻는 포인트. 스킬 탭에서 강화')+L('🎁','선물','하루 한 번 룰렛, 가끔 보물상자')+L('📋','미션','일일 8개 · 주간 10개 · 커리어 20개')+L('⭐','업적 별','반복 달성하면 ★1→★5, 그 뒤엔 색이 바뀜')+L('🛒','상점','소모품·장비 구매, 은행(대출·상환)'))+
@@ -1342,7 +1376,7 @@ function glossary(){
 }
 function pageSet(){
   const row=(k,t,d)=>`<div class="setrow"><div><b>${t}</b><small>${d}</small></div><button class="sw" type="button" role="switch" data-set="${k}" aria-checked="${SET[k]}" aria-label="${t}"></button></div>`;
-  return '<h2>⚙️ 설정</h2><div class="pan">'+row('sound','효과음','틱 소리, 매도·폭락 소리')+row('heart','심장 박동','보유 중 긴장감 사운드')+row('vib','진동','지원하는 기기에서만 작동')+row('fx','화려한 효과','파티클, 섬광, 화면 흔들림')+row('slow','느린 차트','차트 속도 20% 감소')+'</div>'+glossary()+
+  return '<h2>⚙️ 설정</h2><div class="pan">'+row('sound','효과음','버튼, 틱, 매도·폭락 소리')+row('bgm','배경음악','잔잔한 비트 · 매수 중엔 빨라짐')+row('heart','심장 박동','보유 중 긴장감 사운드')+row('vib','진동','지원하는 기기에서만 작동')+row('fx','화려한 효과','파티클, 섬광, 화면 흔들림')+row('slow','느린 차트','차트 속도 20% 감소')+'</div>'+glossary()+
    '<h3>다시 하기</h3><div style="display:grid;gap:8px"><button class="setbtn ghost" type="button" id="retake">🧪 투자 성향 테스트 다시 하기</button><button class="setbtn ghost" type="button" id="reTut">🎓 튜토리얼 다시 보기</button></div>'+
    '<h3>데이터</h3><button class="setbtn danger" type="button" id="wipe" style="width:100%">모든 기록 초기화</button><p class="lead" style="margin-top:8px">기록은 이 기기의 브라우저에만 저장됩니다. 초기화하면 계급, 스킬, 업적이 모두 사라집니다.</p>'+
    '<p class="lead">상한가 따라잡기 v1.5 · 가상 게임이며 실제 투자와 무관합니다.</p>';
@@ -1359,7 +1393,7 @@ function bindPage(name){
   const bh=$('bHalf');if(bh)bh.onclick=()=>{repay(Math.ceil(debt/2));paintTop();paintPickers();rerender('shop');};
   const ba=$('bAll');if(ba)ba.onclick=()=>{repay(debt);paintTop();paintPickers();rerender('shop');};
   const rs=$('skReset');if(rs)rs.onclick=()=>{sk={};store.set('shg_sk',sk);paintTop();rerender('skill');toast('스킬을 초기화했습니다');};
-  pg.querySelectorAll('[data-set]').forEach(b=>b.onclick=()=>{const k=b.dataset.set;SET[k]=!SET[k];store.set('shg_set',SET);b.setAttribute('aria-checked',SET[k]);if(k==='sound'){muted=!SET.sound;if(!muted){au();beep(660,.06,'sine',.04);}}if(k==='vib')vib(30);});
+  pg.querySelectorAll('[data-set]').forEach(b=>b.onclick=()=>{const k=b.dataset.set;SET[k]=!SET[k];store.set('shg_set',SET);b.setAttribute('aria-checked',SET[k]);if(k==='sound'){muted=!SET.sound;if(!muted){au();beep(660,.06,'sine',.04);}}if(k==='vib')vib(30);if(k==='bgm'||k==='sound')bgm.sync();});
   const rt=$('reTut');if(rt)rt.onclick=()=>{tutDone=false;store.set('shg_tut',0);tab('trade');if(state==='ready'||state==='result'){card.hidden=true;coachReady();}};
   const rq=$('retake');if(rq)rq.onclick=()=>{tab('trade');if(state==='ready'||state==='result')startQuiz();};
   const w=$('wipe');if(w)w.onclick=()=>{if(Date.now()-resetArm>3000){resetArm=Date.now();w.textContent='정말 초기화할까요? 3초 안에 한 번 더 누르세요';return;}

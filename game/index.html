@@ -279,7 +279,7 @@ body{font-size:14px;line-height:1.4}
 .tr:first-of-type{animation:slide .15s ease-out}
 #news small{display:none}
 .talk em{font-style:normal;color:var(--muted);font-size:11px}
-.tabs{flex:none;display:grid;grid-template-columns:repeat(6,1fr);gap:2px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:3px;position:relative;z-index:16}
+.tabs{flex:none;display:grid;grid-template-columns:repeat(7,1fr);gap:2px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:3px;position:relative;z-index:16}
 .tabs button{font:inherit;font-size:11px;font-weight:700;background:none;color:var(--muted);border:0;border-radius:11px;padding:5px 0 4px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:1px;position:relative}
 .tabs button i{font-style:normal;font-size:17px;line-height:1.1;filter:grayscale(.7);opacity:.75}
 .tabs button[aria-current="page"]{background:var(--panel2);color:var(--gold)}
@@ -370,6 +370,13 @@ body{font-size:14px;line-height:1.4}
 .lvl{display:grid;grid-template-columns:1fr 1fr;gap:6px}.lvl div{background:var(--panel2);border-radius:8px;padding:6px 8px}.lvl small{display:block;font-size:11px;color:var(--muted)}.lvl b{font-size:13px}
 .rk{max-height:34vh;overflow:auto;border:1px solid var(--line);border-radius:8px}.rk div{padding:6px 10px;border-top:1px solid var(--line)}.rk div:first-child{border-top:0}
 .rk b{display:block;font-size:13px}.rk small{font-size:11px;color:var(--muted)}.rk .ok{opacity:.55}.rk .on{background:color-mix(in srgb,var(--gold) 14%,transparent)}.rk .on b{color:var(--gold)}
+#regime{left:50%!important;right:auto!important;transform:translateX(-50%);top:6px;max-width:calc(100% - 16px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:auto;cursor:pointer;z-index:3}
+#pnl{top:auto!important;bottom:6px;z-index:3}
+#fever{top:30px!important;right:8px!important;left:auto!important}
+.tabs button{font-size:10px}.tabs button i{font-size:16px}
+.ivb{display:flex;gap:4px;margin-top:6px}.ivb .setbtn{flex:1;padding:5px 0;font-size:11.5px}
+.setbtn.ghost{background:var(--panel2);color:var(--fg);border:1px solid var(--line)}
+.setbtn:disabled{opacity:.35;cursor:default}
 </style>
 
 <div class="app" id="app">
@@ -403,6 +410,7 @@ body{font-size:14px;line-height:1.4}
     <button type="button" data-tab="trade" aria-current="page"><i>📈</i>거래</button>
     <button type="button" data-tab="mission"><i>📋</i>미션<u id="dotM" hidden></u></button>
     <button type="button" data-tab="skill"><i>🌳</i>스킬<u id="dotS" hidden></u></button>
+    <button type="button" data-tab="invest"><i>💼</i>투자</button>
     <button type="button" data-tab="shop"><i>🛒</i>상점</button>
     <button type="button" data-tab="record"><i>📊</i>기록</button>
     <button type="button" data-tab="set"><i>⚙️</i>설정</button>
@@ -712,10 +720,10 @@ function rankOf(x){let i=0;RANKS.forEach((r,j)=>{if(x>=r[0])i=j});return i}
 const lvlOf=x=>{let L=1,need=60;while(x>=need){x-=need;L++;need=40+20*L;}return {L,cur:x,need};};
 // 한 판 투자 한도: Lv.1 100만 원, 레벨마다 22%씩 증가
 const REGIMES=[
-  {e:'📊',n:'보통장',d:'평범한 장세'},{e:'🐂',n:'불장',d:'오르는 속도 +25%',rate:1.25},
-  {e:'🐻',n:'하락장',d:'폭락이 15% 빨리 옴 · 수익 +30%',crash:.85,pay:1.3},{e:'🌪',n:'변동성 폭발',d:'출렁임·뉴스 2배',wig:2,news:2},
-  {e:'💤',n:'횡보장',d:'느리고 폭락도 늦게 옴',rate:.8,crash:1.1},{e:'🔥',n:'테마 장세',d:'테마주·코인·바이오 수익 +50%',boost:['theme','meme','bio'],pay2:1.5},
-  {e:'💸',n:'유동성 파티',d:'투자 한도 2배',cap:2},{e:'🦢',n:'블랙스완 주의보',d:'폭락 25% 빨리 옴 · 수익 +60%',crash:.75,pay:1.6}
+  {e:'📊',n:'보통장',d:'평범한 장세',s:'기본'},{e:'🐂',n:'불장',d:'오르는 속도 +25%',s:'상승 빠름',rate:1.25},
+  {e:'🐻',n:'하락장',d:'폭락이 15% 빨리 옴 · 수익 +30%',s:'폭락↑ 수익↑',crash:.85,pay:1.3},{e:'🌪',n:'변동성 폭발',d:'출렁임·뉴스 2배',s:'출렁임 2배',wig:2,news:2},
+  {e:'💤',n:'횡보장',d:'느리고 폭락도 늦게 옴',s:'느림·안전',rate:.8,crash:1.1},{e:'🔥',n:'테마 장세',d:'테마주·코인·바이오 수익 +50%',s:'테마 수익↑',boost:['theme','meme','bio'],pay2:1.5},
+  {e:'💸',n:'유동성 파티',d:'투자 한도 2배',s:'한도 2배',cap:2},{e:'🦢',n:'블랙스완 주의보',d:'폭락 25% 빨리 옴 · 수익 +60%',s:'폭락↑↑ 수익↑↑',crash:.75,pay:1.6}
 ];
 const regime=()=>{let r=0;try{r=stats.rounds}catch(e){}const b=Math.floor(r/5);return b<1?REGIMES[0]:REGIMES[(Math.imul(b,2654435761)>>>0)%REGIMES.length];};
 const betCap=()=>Math.round(1e6*(regime().cap||1)*Math.pow(1.22,lvlOf(xp).L-1)*(gear.car?1.1:1)*(gear.yacht?1.2:1)*(gear.firm?1.5:1)/1e4)*1e4;
@@ -751,7 +759,7 @@ function paintTop(){
   const ri=rankOf(xp),nx=RANKS[ri+1];
   const lv=lvlOf(xp);$('rankName').textContent='Lv.'+lv.L+' '+(profile?TYPES[profile].e:'')+RANKS[ri][1];
   $('rankBar').style.width=(lv.cur/lv.need*100).toFixed(0)+'%';
-  {const R=regime();let left=5;try{left=5-stats.rounds%5}catch(e){}$('regime').textContent=R.e+' '+R.n+' · '+left+'판';$('regime').title=R.d;}
+  {const R=regime();let left=5;try{left=5-stats.rounds%5}catch(e){}$('regime').textContent=R.e+' '+R.n+(R.s&&R.s!=='기본'?' · '+R.s:'')+' · '+left+'판 남음';$('regime').title=R.d;}
   {let ok=false;try{ok=store.get('shg_spin','')!==dayKey()}catch(e){}$('giftBtn').classList.toggle('ready',ok);}
   $('spBtn').textContent='🌳 SP '+spFree();$('dotS').hidden=spFree()<=0;$('dotM').hidden=daily.done.length>=daily.ids.length;
 }
@@ -836,6 +844,7 @@ function start(){
   ensureDaily();
   if(!tutDone){}else if(debt>0){const it=Math.ceil(debt*loanRate());debt+=it;talkLines.push('<b class="dn">[이자]</b> 빚 이자 '+won(it)+' 붙었습니다');renderTalk();if(debt>debtLimit()){showDefault();paintTop();return;}}
   else{stats.cleanRounds=(stats.cleanRounds||0)+1;if(stats.cleanRounds>=15&&credit>3){credit--;stats.cleanRounds=0;toast('📈 신용등급 상승 · '+credit+'등급');}}
+  if(tutDone)tickInvest();
   const tut=!tutDone;if(tut)for(const k in sel)sel[k]=false;hideCoach();
   const o=curOffer(),T=TIERS[o.k];
   if(run||chartStock!==o){run=null;sell=null;crashed=false;eM=1;buildChartIdle();}
@@ -1074,7 +1083,7 @@ function showLevel(){
    '<h3 style="margin:12px 0 4px;font-size:13px">XP 얻는 법</h3><p class="mu" style="font-size:12px;margin:0;line-height:1.6">익절 8~45 XP (배수·근접도↑, 피버 2배) · 손절 3 XP · 보스 처치 60 XP · 일일미션 완료 · 선물 룰렛</p>'+
    '<h3 style="margin:12px 0 4px;font-size:13px">계급표</h3><div class="rk">'+RANKS.map((r,i)=>'<div class="'+(i===ri?'on':i<ri?'ok':'')+'"><b>'+(i<ri?'✓ ':i===ri?'▶ ':'')+r[1]+'</b><small>'+r[0].toLocaleString()+' XP'+(unl(i)?' · 🔓 '+unl(i):'')+'</small></div>').join('')+'</div>');
 }
-$('rankBtn').onclick=showLevel;$('rankBtn').onkeydown=e=>{if(e.key==='Enter')showLevel();};
+$('regime').onclick=()=>{const R=regime();toast(R.e+' '+R.n+' · '+R.d);};$('rankBtn').onclick=showLevel;$('rankBtn').onkeydown=e=>{if(e.key==='Enter')showLevel();};
 $('modalClose').onclick=()=>$('modal').hidden=true;
 /* ---------- input ---------- */
 let tapAt=0; // 한 번 탭: 매수, 다시 탭: 매도
@@ -1310,7 +1319,7 @@ const SKILLS=[
 const costOf=lv=>1+Math.floor(lv/5);
 let sk=store.get('shg_sk',{}),curTab='trade',lastAmt=0,resetArm=0;
 const skl=id=>sk[id]||0;
-const spEarned=()=>Math.floor((lvlOf(xp).L-1)/2)+achSP()+(()=>{try{return (stats.bossSP||0)+(stats.bonusSP||0)+(stats.careerSP||0)}catch(e){return 0}})();
+const spEarned=()=>Math.floor((lvlOf(xp).L-1)/2)+achSP()+colSP()+(()=>{try{return (stats.bossSP||0)+(stats.bonusSP||0)+(stats.careerSP||0)}catch(e){return 0}})();
 const spUsed=()=>SKILLS.reduce((a,x)=>{let c=0;for(let i=0;i<skl(x.id);i++)c+=costOf(i);return a+c;},0);
 const brPts=br=>SKILLS.filter(x=>x.br===br&&!x.req).reduce((a,x)=>a+skl(x.id),0);
 const spFree=()=>spEarned()-spUsed();
@@ -1339,7 +1348,7 @@ function tab(name,keep){
   curTab=name;document.querySelectorAll('#tabs button').forEach(b=>b.setAttribute('aria-current',b.dataset.tab===name?'page':'false'));
   const pg=$('page');
   if(name==='trade'){pg.hidden=true;return;}
-  pg.innerHTML='<div>'+(name==='skill'?pageSkill():name==='shop'?pageShop():name==='mission'?pageMission():name==='record'?pageRecord():pageSet())+'</div>';
+  pg.innerHTML='<div>'+(name==='skill'?pageSkill():name==='shop'?pageShop():name==='invest'?pageInvest():name==='mission'?pageMission():name==='record'?pageRecord():pageSet())+'</div>';
   if(!keep){pg.style.animation='none';void pg.offsetWidth;pg.style.animation='';}
   pg.hidden=false;pg.scrollTop=0;bindPage(name);
 }
@@ -1355,8 +1364,8 @@ function pageSkill(){
    '<h3>스킬 초기화</h3><button class="setbtn ghost" type="button" id="skReset" style="width:100%">모든 스킬 되돌리기 (SP 전액 환급)</button>';
 }
 const CONSUM=[
-  {id:'noliq',e:'🧯',n:'청산 방지권',d:'강제청산을 한 번 막아 줍니다 (자동 사용)',p:.3},
-  {id:'rewind',e:'⏪',n:'손실 복구권',d:'크게 물렸을 때 손실을 0원으로 (자동 사용)',p:1},
+  {id:'noliq',e:'🧯',n:'청산 방지권',d:'강제청산을 한 번 막아 줍니다 (자동 사용)',p:1.5},
+  {id:'rewind',e:'⏪',n:'손실 복구권',d:'크게 물렸을 때 손실을 0원으로 (자동 사용)',p:4},
   {id:'crystal',e:'🔮',n:'수정구슬',d:'다음 판 폭락 지점을 거의 정확히 표시',p:.5,arm:1},
   {id:'luck',e:'🍀',n:'행운의 부적',d:'다음 3판 동안 폭락이 12% 늦게 옴',p:.6,arm:3},
   {id:'bossT',e:'🎟',n:'보스 소환권',d:'다음 판에 바로 보스 등장',p:.4,arm:1}
@@ -1391,13 +1400,50 @@ function pageMission(){
 function pageRecord(){
   const wr=stats.rounds?Math.round(stats.wins/stats.rounds*100):0,T=profile&&TYPES[profile];
   return '<h2>📊 기록</h2>'+(T?'<div class="pan" style="padding:12px 14px"><div class="typecard"><i>'+T.e+'</i><div><b>'+T.n+'</b><br><small class="mu">'+T.perk+' · '+RANKS[rankOf(xp)][1]+' · '+xp+' XP</small></div></div></div>':'')+
-   '<h3>내 자산</h3><div class="tiles">'+[['현재 자산',won(balance)],['빚',debt?'-'+won(debt):'없음'],['순자산',sw(balance-debt)],['신용등급',credit+'등급'+(credit>=8?' 😱':credit<=3?' 😎':'')],['대출 한도',won(loanAmt())],['빚 한도',won(debtLimit())]].map(([k,v])=>`<div class="tile"><small>${k}</small><b>${v}</b></div>`).join('')+'</div>'+
+   '<h3>내 자산</h3><div class="tiles">'+[['현재 자산',won(balance)],['투자 평가금',won(invTotal())],['빚',debt?'-'+won(debt):'없음'],['순자산',sw(balance+invTotal()-debt)],['컬렉션',col.length+' / '+COL.length],['신용등급',credit+'등급'+(credit>=8?' 😱':credit<=3?' 😎':'')],['대출 한도',won(loanAmt())],['빚 한도',won(debtLimit())]].map(([k,v])=>`<div class="tile"><small>${k}</small><b>${v}</b></div>`).join('')+'</div>'+
    '<h3>통산 성적</h3><div class="tiles">'+
    [['플레이',stats.rounds+'판'],['승률',wr+'%'],['최고 배수','x'+(stats.bestM||0).toFixed(2)],['최고 근접도',Math.round(stats.bestPct)+'%'],['최장 연승',stats.maxStreak+'연속'],['파산',stats.bankrupts+'회'],['누적 손익',sw(stats.net)],['최고 자산',best?won(best):'-'],['캐릭터 레벨','Lv.'+lvlOf(xp).L],['보스 처치',(stats.bossLv||0)+'마리'],['업적 별',ACH.reduce((n,a)=>n+achStars(a[0]).st,0)+'/'+ACH.length*5]]
      .map(([k,v])=>`<div class="tile"><small>${k}</small><b>${v}</b></div>`).join('')+'</div>'+
    '<h3>장비 컬렉션</h3><div class="achgrid">'+GEAR.map(g=>`<div class="${gear[g.id]?'':'lock'}"><i>${g.e}</i>${g.n}</div>`).join('')+'</div>'+
    '<h3>최근 거래</h3><div class="pan">'+(stats.hist.length?stats.hist.map(h=>`<div class="hist"><span>${h.w?'🔴 익절':'🔵 물림'} · ${h.n} <small class="mu">x${h.m.toFixed(2)}</small>${h.l>1?`<b class="tg">${h.l}x</b>`:''}${h.y?'<b class="tg y">영끌</b>':''}${h.q?'<b class="tg q">청산</b>':''}${(h.i||[]).map(t=>`<b class="tg i">${t}</b>`).join('')}</span><span class="${h.a>=0?'up':'dn'}">${sw(h.a)}</span></div>`).join(''):'<div class="hist"><span class="mu">아직 거래 기록이 없습니다.</span></div>')+'</div>'+
    '<h3>업적</h3><div class="achgrid">'+ACH.map(a=>`<div class="${ach.includes(a[0])?'':'lock'}" title="${a[3]} · ${achC[a[0]]||0}회"><i>${a[1]}</i>${a[2]}${starHtml(a[0])}<small>${a[3]}${achStars(a[0]).next?' · 다음 '+(achC[a[0]]||0)+'/'+achStars(a[0]).next:''}</small></div>`).join('')+'</div>';
+}
+
+/* ---------- 투자 · 컬렉션 ---------- */
+const PROD=[
+  {id:'save',e:'🏦',n:'정기적금',d:'원금 보장 · 판마다 +0.2%',r:.002,v:0,max:1e11,lv:0,fee:0},
+  {id:'bond',e:'📜',n:'국채',d:'판마다 약 +0.4% · 거의 안전',r:.004,v:.003,max:1e13,lv:1,fee:.005},
+  {id:'reit',e:'🏢',n:'부동산 리츠',d:'판마다 약 +0.6% · 하락장엔 손실',r:.006,v:.015,max:5e13,lv:3,fee:.01},
+  {id:'index',e:'📊',n:'인덱스 펀드',d:'판마다 약 +0.9% · 출렁임 있음',r:.009,v:.035,max:1e14,lv:4,fee:.01},
+  {id:'coin',e:'🪙',n:'코인 바스켓',d:'판마다 ±15% · 한방 아니면 반토막',r:.012,v:.15,max:5e13,lv:6,fee:.02},
+  {id:'angel',e:'🚀',n:'스타트업 엔젤',d:'판마다 3% 확률 상장(x5) · 4% 확률 파산(0원)',angel:1,max:2e13,lv:8,fee:.03}
+];
+const COL=[
+  {id:'pent',e:'🏙',n:'한강뷰 펜트하우스',p:1e10},{id:'team',e:'⚾',n:'프로야구단',p:3e11},{id:'air',e:'✈️',n:'항공사',p:1e13},
+  {id:'sat',e:'🛰',n:'인공위성',p:2e14},{id:'isl',e:'🏝',n:'개인 섬',p:1e15},{id:'iss',e:'🛸',n:'우주정거장',p:3e16},
+  {id:'moon',e:'🌕',n:'달 소유권',p:2e17,fic:1},{id:'mars',e:'🔴',n:'화성 식민지',p:2e18,fic:1},{id:'time',e:'⏳',n:'타임머신',p:2e19,fic:1},{id:'multi',e:'🌌',n:'평행우주 지분',p:1e20,fic:1}
+];
+let invest=store.get('shg_inv2',{}),col=store.get('shg_col',[]);
+const invTotal=()=>Object.values(invest).reduce((n,h)=>n+(h.a||0),0);
+const colSP=()=>{try{return col.reduce((n,id)=>{const c=COL.find(x=>x.id===id);return n+(c&&c.fic?2:1);},0)}catch(e){return 0}};
+const gauss=()=>(Math.random()+Math.random()+Math.random()-1.5)*2;
+function tickInvest(){
+  const rg=regime(),bear=(rg.crash||1)<1,bull=(rg.rate||1)>1;let sum=0;
+  PROD.forEach(P=>{const h=invest[P.id];if(!h||!(h.a>0))return;const base=Math.min(h.a,P.max);let d;
+    if(P.angel){const u=Math.random();d=u<.03?base*4:u<.07?-base:0;if(d>0)toast('🚀 투자한 스타트업 상장! '+sw(d));if(d<0)toast('💥 투자한 스타트업 파산…');}
+    else d=base*(P.r+(P.v?P.v*gauss():0)+(P.v&&bear?-.01:0)+(P.v&&bull?.003:0));
+    d=Math.max(-h.a,d);h.a+=d;h.d=d;sum+=d;});
+  if(sum){store.set('shg_inv2',invest);talkLines.push('<b class="gd">[투자]</b> 평가손익 <span class="'+(sum>=0?'up':'dn')+'">'+sw(sum)+'</span>');renderTalk();}
+}
+function pageInvest(){
+  const ri=rankOf(xp),tot=invTotal(),last=Object.values(invest).reduce((n,h)=>n+(h.d||0),0);
+  return '<h2>💼 투자</h2><p class="lead">예수금을 넣어두면 <b>판을 할 때마다</b> 수익(또는 손실)이 붙어요. 상품마다 수익이 붙는 한도가 있어요. 빼면 수수료가 나가요.</p>'+
+   '<div class="tiles"><div class="tile"><small>투자 평가금</small><b>'+won(tot)+'</b></div><div class="tile"><small>지난 판 손익</small><b class="'+(last>=0?'up':'dn')+'">'+sw(last)+'</b></div><div class="tile"><small>예수금</small><b>'+won(balance)+'</b></div></div>'+
+   '<h3>상품</h3><div class="pan">'+PROD.map(P=>{const h=invest[P.id]||{a:0},lk=ri<P.lv;
+     return '<div class="li'+(lk?' lock':'')+'"><i>'+P.e+'</i><div><b>'+P.n+(h.a>0?' <span class="mu">· '+won(h.a)+'</span>':'')+'</b><small>'+(lk?'🔒 '+RANKS[P.lv][1]+' 계급부터':P.d+' · 수익 한도 '+won(P.max)+(P.fee?' · 출금 수수료 '+P.fee*100+'%':''))+(h.d?' · 지난 판 <span class="'+(h.d>=0?'up':'dn')+'">'+sw(h.d)+'</span>':'')+'</small>'+
+      (lk?'':'<div class="ivb"><button class="setbtn ghost" type="button" data-dep="'+P.id+'" data-r=".1">+10%</button><button class="setbtn ghost" type="button" data-dep="'+P.id+'" data-r=".5">+50%</button><button class="setbtn ghost" type="button" data-dep="'+P.id+'" data-r="1">+전부</button><button class="setbtn" type="button" data-wd="'+P.id+'"'+(h.a>0?'':' disabled')+'>출금</button></div>')+'</div></div>';}).join('')+'</div>'+
+   '<h3>🏆 컬렉션 '+col.length+' / '+COL.length+'</h3><p class="lead">돈으로만 살 수 있는 꿈. 하나 살 때마다 SP +1, 상상 속 물건은 SP +2.</p><div class="pan">'+COL.map(c=>{const own=col.includes(c.id);
+     return '<div class="li'+(own?' done':'')+'"><i>'+c.e+'</i><div><b>'+c.n+(c.fic?' <span class="tg i">상상</span>':'')+'</b><small>'+(own?'✓ 보유 중':won(c.p)+' · 달성 '+Math.min(100,balance/c.p*100).toFixed(balance<c.p*.01?2:0)+'%')+'</small>'+(own?'':'<div class="xpbar" style="height:4px;margin-top:4px"><u style="width:'+Math.min(100,balance/c.p*100)+'%"></u></div>')+'</div>'+(own?'':'<button class="setbtn" type="button" data-col="'+c.id+'"'+(balance<c.p?' disabled':'')+'>구매</button>')+'</div>';}).join('')+'</div>';
 }
 function glossary(){
   const L=(i,t,d)=>`<div class="li"><i>${i}</i><div><b>${t}</b><small>${d}</small></div></div>`;
@@ -1413,6 +1459,9 @@ function glossary(){
   G('🏷 종목 종류',Object.values(TIERS).filter(T=>!T.hidden).map(T=>L(T.e,T.label,`물리면 -${Math.round(T.loss*100)}% · 대박 크기 x${T.scale}`)).join('')+L('👹','보스전','10판마다 등장. 목표 배수까지 버티고 팔면 처치'))+
   G('🧰 아이템 · 성장',Object.values(ITEMS).map(it=>L(it.name.split(' ')[0],it.name.split(' ').slice(1).join(' '),it.desc+' · 판마다 비용')).join('')+
     L('🌳','SP · 스킬','레벨업·업적·미션으로 얻는 포인트. 스킬 탭에서 강화')+L('🎁','선물','하루 한 번 룰렛, 가끔 보물상자')+L('📋','미션','일일 8개 · 주간 10개 · 커리어 20개')+L('⭐','업적 별','반복 달성하면 ★1→★5, 그 뒤엔 색이 바뀜')+L('🛒','상점','소모품·장비 구매, 은행(대출·상환)'))+
+  G('🌡 장세 (차트 위 배지)',REGIMES.map(r=>L(r.e,r.n,r.d)).join('')+L('⏱','N판 남음','장세는 5판마다 바뀜'))+
+  G('💼 투자 · 컬렉션',PROD.map(P=>L(P.e,P.n,P.d)).join('')+L('🏆','컬렉션','펜트하우스부터 평행우주까지. 살 때마다 SP'))+
+  G('🔣 기타 아이콘',L('🔥','피버','5연속 익절. 보너스 2배')+L('💎','보물상자','익절하면 가끔 등장')+L('⚔️','보스 처치','보스 목표 배수 넘기고 매도')+L('🕵','찌라시 진짜','힌트가 진짜였음')+L('🤡','찌라시 가짜','힌트가 거짓말이었음')+L('🏛','부자세','고액 수익에 붙는 세금')+L('💸','빚 자동 상환','수익 30%로 빚 갚음'))+
   G('💳 빚 · 신용',
     L('💳','대출','돈이 바닥나면 빌려서 계속 가능. 매 판 이자가 붙음')+L('🏦','신용등급','1등급이 최고. 대출하면 떨어지고, 갚으면 오름')+L('↩','자동 상환','수익의 30%가 자동으로 빚을 갚음')+L('🚨','신용불량','빚이 한도를 넘으면 장비·아이템 압류 후 재시작'))+
   '</div>';
@@ -1432,6 +1481,9 @@ function bindPage(name){
     if(c.id==='bossT'&&state!=='holding'&&state!=='ghost'){offers=makeOffers();paintPickers();}toast(c.e+' '+c.n+' 사용 · 다음 판부터 적용');sfx.up();rerender('shop');});
   pg.querySelectorAll('[data-gear]').forEach(b=>b.onclick=()=>{const g=GEAR.find(x=>x.id===b.dataset.gear);if(gear[g.id]||balance<g.p||rankOf(xp)<g.lv)return;balance-=g.p;gear[g.id]=1;stats.c.gear++;store.set('shg_gear',gear);store.set('shg_stats',stats);unlock('gear1');careerCheck();
     sfx.up();burst(innerWidth/2,innerHeight*.4,60);toast(g.e+' '+g.n+' 구매! '+g.d);paintTop();rerender('shop');});
+  pg.querySelectorAll('[data-dep]').forEach(b=>b.onclick=()=>{const id=b.dataset.dep,v=Math.floor(balance*+b.dataset.r);if(v<1)return;balance-=v;invest[id]=invest[id]||{a:0};invest[id].a+=v;store.set('shg_inv2',invest);sfx.sell();toast('💼 '+PROD.find(x=>x.id===id).n+' 입금 '+won(v));paintTop();paintPickers();rerender('invest');});
+  pg.querySelectorAll('[data-wd]').forEach(b=>b.onclick=()=>{const P=PROD.find(x=>x.id===b.dataset.wd),h=invest[P.id];if(!h||!(h.a>0))return;const out=h.a*(1-P.fee);balance+=out;h.a=0;h.d=0;store.set('shg_inv2',invest);sfx.sell();toast('💼 출금 '+won(out)+(P.fee?' (수수료 '+P.fee*100+'%)':''));paintTop();paintPickers();rerender('invest');});
+  pg.querySelectorAll('[data-col]').forEach(b=>b.onclick=()=>{const c=COL.find(x=>x.id===b.dataset.col);if(col.includes(c.id)||balance<c.p)return;balance-=c.p;col.push(c.id);store.set('shg_col',col);sfx.up();burst(innerWidth/2,innerHeight*.4,80);stamp(c.e+' '+c.n+' 획득!');toast('🏆 컬렉션 '+col.length+'/'+COL.length+' · SP +'+(c.fic?2:1));paintTop();paintPickers();rerender('invest');});
   const bl=$('bLoan');if(bl)bl.onclick=()=>{if(takeLoan()){paintTop();paintPickers();rerender('shop');}};
   const bh=$('bHalf');if(bh)bh.onclick=()=>{repay(Math.ceil(debt/2));paintTop();paintPickers();rerender('shop');};
   const ba=$('bAll');if(ba)ba.onclick=()=>{repay(debt);paintTop();paintPickers();rerender('shop');};

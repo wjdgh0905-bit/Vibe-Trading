@@ -377,6 +377,7 @@ body{font-size:14px;line-height:1.4}
 .ivb{display:flex;gap:4px;margin-top:6px}.ivb .setbtn{flex:1;padding:5px 0;font-size:11.5px}
 .setbtn.ghost{background:var(--panel2);color:var(--fg);border:1px solid var(--line)}
 .setbtn:disabled{opacity:.35;cursor:default}
+#hold.re{background:linear-gradient(90deg,#ff7a1a,var(--up));box-shadow:0 5px 0 #7a2a00;animation:pulse .5s infinite alternate}
 </style>
 
 <div class="app" id="app">
@@ -813,8 +814,9 @@ function pushTrade(m){
 function setBtn(){
   const busy=state==='holding'||state==='ghost';document.querySelectorAll('#tabs button').forEach(b=>b.disabled=busy&&b.dataset.tab!=='trade');
   const cool=state==='result'&&performance.now()<readyAt;
-  btn.className=state==='holding'?'on':(state==='ghost'||cool||state==='over')?'wait':'';
-  btn.textContent=state==='holding'?'탭해서 매도!':state==='ghost'?'차트 끝까지 보는 중…':state==='over'?'계좌 복구 중…':state==='result'?'탭해서 다음 종목 매수':'탭해서 매수';
+  const canRe=state==='ghost'&&sell&&!crashed&&run&&!run.tut&&!run.re;
+  btn.className=state==='holding'?'on':canRe?'re':(state==='ghost'||cool||state==='over')?'wait':'';
+  btn.textContent=state==='holding'?(run&&run.re?'탭해서 매도! (재진입분)':'탭해서 매도!'):canRe?'🔁 탭해서 재진입 (한 번 더)':state==='ghost'?'차트 끝까지 보는 중…':state==='over'?'계좌 복구 중…':state==='result'?'탭해서 다음 종목 매수':'탭해서 매수';
 }
 
 function selectOffer(id){const o=offers.find(x=>x.id===id);if(!o||o.k==='boss')return;selId=id;tierSel=o.k;
@@ -863,6 +865,9 @@ function start(){
   const it={...sel};let hint=null;
   if(it.insider){const real=Math.random()<.7+.03*skl('radar');hint={real,v:real?Math.max(1.02,crashAt*rnd(.88,.98)):crashAt*rnd(1.4,3)};}
   if(!tut&&armed.crystal>0){armed.crystal--;store.set('shg_armed',armed);hint={real:true,v:crashAt*rnd(.94,.99),crystal:1};}
+  let entryTag='';
+  if(!tut){const d=liveM-1;if(d<=-.04){crashAt*=1.08;entryTag='📉 저점 매수! 폭락 늦게 옴';}else if(d>=.05){crashAt*=.93;entryTag='🔥 추격 매수… 폭락 빨리 옴';}}
+  if(entryTag)setTimeout(()=>toast(entryTag),120);
   run={offer:o,T,key:o.k,crashAt,it,hint,sawDip:false,tut,cost:cost+fee,bet,lev:lv,allin:ai,liqLine:lv>1?1-(gear.jet?.95:.85)/lv:0};
   if(o.k==='boss'&&armed.bossT>0){armed.bossT--;store.set('shg_armed',armed);}
   if(ai)setTimeout(()=>stamp('🎲 영끌 '+won(bet)),60);else if(lv>=5)setTimeout(()=>stamp('⚡ '+lv+'배'),60);
@@ -877,8 +882,20 @@ function start(){
   if(hint&&hint.crystal)news('🔮 수정구슬: "'+fmtP(priceOf(hint.v))+(isUsd()?'':'원')+' 부근에서 폭락"','rumor');
   else if(hint)news('🔍 찌라시: "'+fmtP(priceOf(hint.v))+(isUsd()?'':'원')+' 근처에서 세력 턴다"','rumor');
 }
+function reenter(){
+  if(!(state==='ghost'&&sell&&!crashed&&run&&!run.tut&&!run.re))return;
+  const bet=Math.min(balance,run.bet),fee=gear.vip?0:bet*(.003+.002*(run.lev-1));if(bet<1e4)return;
+  balance-=fee;run.re={bet,entry:cur,fee};run.liqLine=run.liqLine?cur*(1-(gear.jet?.95:.85)/run.lev):0;
+  state='holding';vib(30);sfx.tick(cur);stamp('🔁 재진입!');toast('🔁 '+won(bet)+' 다시 진입 · 폭락 전에 또 팔아야 함');
+  paintTop();setBtn();
+}
 function release(){
   if(state!=='holding')return;
+  if(run.re&&!run.re.done){const r=run.re,raw=r.bet*(cur/r.entry-1)*run.lev*(1+.02*skl('profit')),tr=raw>0?taxRate(balance):0,g=raw-(raw>0?raw*tr:0);
+    balance+=g;r.gain=g;r.done=1;state='ghost';sfx.sell();freezeT=.1;sellJuice(g);
+    $('pnl').innerHTML='<span class="dn">재진입 매도</span> <span class="'+(g>=0?'up':'dn')+'">'+sw(g)+'</span>';
+    if(balance>best){best=balance;store.set('shg_best',Math.floor(best));}
+    paintTop();setBtn();return;}
   const lev=run.lev;
   sell={t,m:cur,dip:inDip(t),idx:candles.length-1};
   if(run.tut)hideCoach();
@@ -920,6 +937,11 @@ function crash(){
   hideCoach();
   if(run.tut){tutEnd(!!sell);readyAt=performance.now()+800;paintTop();paintPickers();setBtn();setTimeout(setBtn,820);scheduleSwitch();return;}
   let res;
+  if(state==='holding'&&run.re&&!run.re.done){
+    let L=run.T.loss;if(run.lev>1)L=Math.min(1,L*(1+(run.lev-1)*.5));if(run.liq)L=1;
+    const loss=Math.max(0,Math.min(run.re.bet*L,balance));balance-=loss;run.re.loss=loss;run.re.done=1;state='ghost';
+    flash(C.down);stamp('💥 재진입 물림','dn');
+  }
   if(state==='holding'){
     let L=run.T.loss;if(run.lev>1)L=Math.min(1,L*(1+(run.lev-1)*.5));if(run.it.shield)L=.1;if(profile==='turtle'&&!run.it.shield)L*=.8;L*=1-.03*skl('risk');if(Math.random()<.03*skl('insure')){L*=.5;setTimeout(()=>toast('🪂 자동 손절 발동! 손실 절반'),600);}
     if(run.liq)L=1;
@@ -940,7 +962,7 @@ function crash(){
     if(pct>=95)unlock('god');
     res={win:sell.m>1,key:run.key,m:sell.m,pct,streak,insider:run.it.insider,sawDip:run.sawDip&&!sell.dip,boss:!!run.boss,bossKill:!!sell.bossReward,lev:run.lev,allin:run.allin,liq:!!run.liq,shield:run.it.shield};
     const xg=Math.round((8+pct/10+Math.min(30,(sell.m-1)*5))*(sell.fever?2:1)*(profile==='squirrel'?1.2:1));gainXp(xg);
-    lastAmt=sell.gain+sell.bonus;showWin(pct,xg);
+    lastAmt=sell.gain+sell.bonus-(sell.tax||0)+(run.re?(run.re.gain||0)-(run.re.loss||0)-run.re.fee:0);showWin(pct,xg);
   }
   missionsUpdate(res);recordRound(res);
   offers=makeOffers();
@@ -977,7 +999,8 @@ function showWin(pct,xg){
   const o=run.offer,pp=x=>((x-1)*100).toFixed(1)+'%';
   shareText=`[상한가 따라잡기] ${o.name} +${pp(sell.m)} 매도 · 고점 근접도 ${pct.toFixed(0)}% · ${g[0]} ${streak>=5?'🔥'+streak+'연속':''}\n자산 ${won(balance)}`;
   card.innerHTML='<div class="grade '+g[1]+'">'+g[0]+'</div><div class="sub">'+g[2]+'</div>'+close+shook+
-   '<div class="big up">'+sw(sell.gain+sell.bonus)+'</div>'+
+   (()=>{const tot=sell.gain+sell.bonus+(run.re?(run.re.gain||0)-(run.re.loss||0):0);return '<div class="big '+(tot>=0?'up':'dn')+'">'+sw(tot)+'</div>'+(run.re?'<div class="sub">1차 매도 '+sw(sell.gain+sell.bonus)+'</div>':'');})()+
+   (run.re?'<div class="sub '+((run.re.gain||0)-(run.re.loss||0)>=0?'up':'dn')+'">🔁 재진입 '+(run.re.loss?'물림 '+sw(-run.re.loss):'매도 '+sw(run.re.gain||0))+'</div>':'')+
    (sell.tax?'<div class="sub dn">🏛 부자세 '+Math.round(sell.taxR*100)+'% '+sw(-sell.tax)+'</div>':'')+
    (sell.repaid?'<div class="sub dn">💸 빚 자동 상환 '+sw(-sell.repaid)+(debt>0?' · 남은 빚 '+won(debt):' · 빚 청산!')+'</div>':'')+
    (run.lev>1||run.allin?'<div class="sub gd">'+(run.lev>1?'⚡ 레버리지 '+run.lev+'배 ':'')+(run.allin?'🎲 영끌':'')+'</div>':'')+
@@ -1087,25 +1110,29 @@ $('regime').onclick=()=>{const R=regime();toast(R.e+' '+R.n+' · '+R.d);};$('ran
 $('modalClose').onclick=()=>$('modal').hidden=true;
 /* ---------- input ---------- */
 let tapAt=0; // 한 번 탭: 매수, 다시 탭: 매도
-btn.addEventListener('pointerdown',e=>{e.preventDefault();const n=performance.now();if(n-tapAt<300)return;tapAt=n;if(state==='holding')release();else start();});
+btn.addEventListener('pointerdown',e=>{e.preventDefault();const n=performance.now();if(n-tapAt<300)return;tapAt=n;if(state==='holding')release();else if(state==='ghost')reenter();else start();});
 document.addEventListener('visibilitychange',()=>{if(document.hidden)release();});
 addEventListener('pagehide',release);
-document.addEventListener('keydown',e=>{if(e.code==='Space'&&!e.repeat){e.preventDefault();if(state==='holding')release();else start();}});
+document.addEventListener('keydown',e=>{if(e.code==='Space'&&!e.repeat){e.preventDefault();if(state==='holding')release();else if(state==='ghost')reenter();else start();}});
 btn.addEventListener('contextmenu',e=>e.preventDefault());
 
 /* ---------- chart ---------- */
 let W=0,H=0;
 function resize(){const r=cv.getBoundingClientRect(),d=window.devicePixelRatio||1;W=r.width;H=r.height;cv.width=Math.round(W*d);cv.height=Math.round(H*d);ctx.setTransform(d,0,0,d,0,0);}
 new ResizeObserver(resize).observe(chart);resize();
-let liveM=1,liveT=0,eM=1,chartStock=null,runBase=0;
+let liveM=1,liveT=0,liveV=0,eM=1,chartStock=null,runBase=0;
 function buildChartIdle(){ // 종목의 지난 흐름을 만들고, 이후엔 실시간으로 계속 움직임
   candles=[];let m=1;for(let i=0;i<34;i++){const o=m;m*=1+rnd(-.012,.012);candles.push({o,c:m,h:Math.max(o,m)*(1+rnd(0,.006)),l:Math.min(o,m)*(1-rnd(0,.006)),v:rnd(.3,1.4)});}
   const f=candles[candles.length-1].c;candles.forEach(c=>{c.o/=f;c.c/=f;c.h/=f;c.l/=f;});
-  liveM=1;liveT=0;eM=1;cur=1;chartStock=offer();
+  liveM=1;liveT=0;liveV=0;eM=1;cur=1;chartStock=offer();
 }
 function liveTick(dt){ // 매수 전 실시간 시세
   const T=TIERS[offer().k],prev=liveM;liveT+=dt*.6;
-  liveM*=1+rnd(-1,1)*.0025*(T.wig||1)+(1-liveM)*.003;liveM=Math.max(.7,Math.min(1.4,liveM));
+  const w=T.wig||1;
+  liveV+=rnd(-1,1)*.00045*w-liveV*.025+(1-liveM)*.0006;
+  if(Math.random()<dt*.18){liveV=(Math.random()<.55?1:-1)*rnd(.0025,.006)*w;if(liveV>0&&Math.random()<.5)talk('hype');}
+  liveM*=1+liveV*.6+rnd(-1,1)*.0012*w;liveM=Math.max(.8,Math.min(1.25,liveM));
+  if(state==='ready'||(state==='result'&&performance.now()>=readyAt)){const d=(liveM-1)*100;btn.textContent=(state==='result'?'탭해서 다음 종목 매수':'탭해서 매수')+(Math.abs(d)>=.5?(d>0?' · ▲':' · ▼')+Math.abs(d).toFixed(1)+'%':'');}
   let c=candles[candles.length-1];
   if(!c||liveT>=CD){liveT=0;c={o:prev,h:prev,l:prev,c:prev,v:0};candles.push(c);if(candles.length>240)candles.splice(0,candles.length-240);}
   c.h=Math.max(c.h,liveM);c.l=Math.min(c.l,liveM);c.c=liveM;c.v+=dt*rnd(.4,1.4);cur=liveM;
@@ -1454,7 +1481,7 @@ function glossary(){
     L('<span style="color:var(--muted);font-weight:900">┅</span>','기준가 (회색 점선)','매수한 가격. 이 위면 수익, 아래면 손실')+L('<span style="color:var(--gold);font-weight:900">┅</span>','상한가 +30% (노란 점선)','하루 최대 상승폭. 일부 종목만 표시')+L('💀','청산가 (파란 점선)','레버리지를 쓰면 생김. 여기 닿으면 강제청산')+L('<span style="color:var(--rumor);font-weight:900">┅</span>','찌라시 목표가 (보라 점선)','찌라시가 알려준 폭락 지점. 가짜일 수도 있음')+
     L('📊','호가 · 잔량','사려는(빨강)·팔려는(파랑) 가격과 수량. 노란 칸이 현재가')+L('🧾','체결 · 체결강도','실제로 거래된 가격. 체결강도 100% 넘으면 사는 쪽이 셈')+L('📰','뉴스 바','호재(빨강)·악재(파랑)·찌라시(보라). 악재 뒤엔 출렁임이 옴')+L('🌡','장세 배지','5판마다 바뀌는 시장 분위기. 불장·폭락장 등'),1)+
   G('💰 매매 용어',
-    L('🔴','매수 → 익절','버튼을 눌러 사고, 다시 눌러 팔아 수익 확정')+L('🔵','물림 · 손절','못 팔고 폭락을 맞거나, 산 값보다 낮게 판 경우')+L('✖','배수 (x2.0)','산 가격 대비 몇 배인지. x2면 +100%')+L('🎯','근접도','폭락 직전 고점에 얼마나 가깝게 팔았는지')+
+    L('🔴','매수 → 익절','버튼을 눌러 사고, 다시 눌러 팔아 수익 확정')+L('🔁','재진입','매도 후 폭락 전이면 한 번 더 같은 금액으로 들어갈 수 있음. 또 팔아야 함')+L('📉','저점 매수 · 추격 매수','매수 전 차트가 기준가보다 4% 아래면 폭락이 늦게, 5% 위면 빨리 옴')+L('🔵','물림 · 손절','못 팔고 폭락을 맞거나, 산 값보다 낮게 판 경우')+L('✖','배수 (x2.0)','산 가격 대비 몇 배인지. x2면 +100%')+L('🎯','근접도','폭락 직전 고점에 얼마나 가깝게 팔았는지')+
     L('⚡','레버리지','수익·손실을 몇 배로 키움. 높을수록 청산 위험 ↑, 수수료 ↑')+L('🎲','영끌','투자 한도를 10배로 늘려 한 방. 잃으면 크게 잃음')+L('%','투자 비율','예수금 중 이번 판에 걸 비율')+L('🧾','수수료','매수할 때 떼는 비용. 레버리지가 높을수록 비쌈')+L('🏛','부자세','예수금 100억부터 수익에 세금. 100억 5% → 1조 25% → 100조 45% → 최대 65%')+L('🌊','유동성 한도','한 판에 걸 수 있는 돈은 영끌 포함 최대 100조')+L('📉','자산 리스크','예수금 10억부터 폭락이 빨라지고 즉시 폭락 확률↑. 1조면 약 10%, 최대 30%')+L('💀','고레벨 난이도','Lv.20부터 레벨마다 폭락이 조금씩 빨라짐 (최대 35%)'))+
   G('🏷 종목 종류',Object.values(TIERS).filter(T=>!T.hidden).map(T=>L(T.e,T.label,`물리면 -${Math.round(T.loss*100)}% · 대박 크기 x${T.scale}`)).join('')+L('👹','보스전','10판마다 등장. 목표 배수까지 버티고 팔면 처치'))+
   G('🧰 아이템 · 성장',Object.values(ITEMS).map(it=>L(it.name.split(' ')[0],it.name.split(' ').slice(1).join(' '),it.desc+' · 판마다 비용')).join('')+
@@ -1521,7 +1548,7 @@ function frame(ts){
       const dv=dt*(1+Math.abs(cur-prev)/prev*300+(events.some(e=>t>=e.t0&&t<=e.t0+1.4)?3:0))*rnd(.6,1.4);c.v+=dv;volTotal+=dv*(1+cur);
       if(state==='holding'&&run.boss){const hp=Math.max(0,1-(cur-1)/(run.boss.target-1));$('bossHp').style.width=(hp*100).toFixed(1)+'%';if(hp<=0&&!run.boss.down){run.boss.down=1;stamp('💥 HP 0! 지금 팔면 처치');}}
       if(state==='holding'){events.forEach(e=>{if(e.shake&&!e.shown&&t>=e.t0){e.shown=1;run.sawDip=true;news('⚠ 세력의 개미털기 매도 폭탄','bear');talk('fear');}});tension(dt);if(run.tut)tutTick();while(run.mi<MS.length&&cur>=MS[run.mi][0]){if(!(MS[run.mi][0]===1.3&&!run.T.limit))stamp(MS[run.mi][1]);run.mi++;}}
-      if(state==='holding'){const lev=run.lev,g=run.bet*(cur-1)*lev;
+      if(state==='holding'){const lev=run.lev,g=run.re?run.re.bet*(cur/run.re.entry-1)*lev:run.bet*(cur-1)*lev;
         $('pnl').innerHTML='평가손익 <span class="'+(g>=0?'up':'dn')+'">'+sw(g)+'</span>'+(lev>1?' <span class="gd">x'+lev+'</span>':'')+(run.allin?' <span class="gd">🎲</span>':'');}
     }
     paintQuote();

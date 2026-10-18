@@ -327,6 +327,40 @@ body{font-size:14px;line-height:1.4}
 .typecard{display:flex;gap:12px;align-items:center}
 .typecard i{font-style:normal;font-size:40px}
 @media (prefers-reduced-motion:reduce){.page{animation:none}#coach{animation:none}.stamp,.pop,.flash{animation-duration:.01s}.chart.shake,#hold.on,.card,#news,#toast,#fever,.app.fever #hold{animation:none}}
+/* compact pass: smaller numbers, tighter rhythm */
+.app{gap:7px}
+.acct{border-radius:12px}
+.acct div{padding:5px 10px 6px}
+.acct small,.tile small{font-size:10.5px;letter-spacing:.02em}
+.acct span{font-size:14px;margin-top:1px}
+.quote{align-items:center;padding:0 2px}
+.qn b{font-size:15px}
+.qn small{font-size:10.5px}
+#qPrice{font-size:clamp(20px,6vw,26px)}
+#qChg{font-size:11.5px!important;margin-top:2px}
+#news{height:24px;line-height:22px;font-size:12px;border-radius:7px}
+.chart,.book{border-radius:12px}
+#pnl{font-size:11.5px}
+#regime{font-size:10.5px;padding:1px 7px}
+.talk{font-size:12px;height:38px;border-radius:12px}
+.pick1{padding:6px 12px;border-radius:12px}
+.pick1 .pe{font-size:19px}
+.pick1 b{font-size:14px}
+.pick1 small{font-size:11px}
+.pick1 .pc{font-size:11.5px}
+.items .chip.ic{padding:5px 3px;border-radius:10px}
+.items .chip.ic b{font-size:12px}
+.items .chip.ic small{font-size:10px}
+.betrow span{font-size:11px}
+.betrow button{font-size:12px;padding:5px 0;border-radius:8px}
+.betrow b{font-size:12px;min-width:64px}
+#hold{height:56px;font-size:20px;border-radius:14px}
+@media (max-height:760px){#hold{height:50px;font-size:19px}}
+.tabs{border-radius:14px}
+.tabs button{font-size:10.5px;padding:4px 0 3px}
+.tabs button i{font-size:17px}
+.rank span{font-size:11.5px}
+.ib{font-size:12px;height:28px}
 </style>
 
 <div class="app" id="app">
@@ -1006,7 +1040,7 @@ function draw(){
   const L0=Math.log(lo)-.03,L1=Math.log(hi)+.05;
   const Y=m=>plotB-(Math.log(m)-L0)/(L1-L0)*(plotB-plotT);
   const X=i=>plotL+i*cw+cw/2;
-  ctx.font='600 12px "JetBrains Mono",monospace';ctx.textBaseline='middle';ctx.textAlign='left';ctx.lineWidth=1;
+  ctx.font='600 10.5px "JetBrains Mono",monospace';ctx.textBaseline='middle';ctx.textAlign='left';ctx.lineWidth=1;
   for(let i=0;i<=4;i++){const m=Math.exp(L0+(L1-L0)*(i+.5)/5),y=Y(m);
     ctx.strokeStyle=C.line;ctx.beginPath();ctx.moveTo(plotL,y);ctx.lineTo(plotR,y);ctx.stroke();
     ctx.fillStyle=C.muted;ctx.fillText(fmtP(priceOf(m)),plotR+4,y);}

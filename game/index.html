@@ -344,23 +344,23 @@ const isUsd=()=>{const o=offer();return !!(o&&TIERS[o.k].usd)};
 const fmtP=p=>isUsd()?'$'+p.toFixed(2):Math.round(p).toLocaleString('ko-KR');
 
 const TIERS={
-  blue:{e:'🏛',label:'우량주',rate:.7,scale:.6,loss:.25,instant:.01,limit:true,p:[30000,180000],lv:0,unit:40,news:.6,amp:.7,wig:.6,
+  blue:{e:'🏛',label:'우량주',rate:.7,scale:.6,loss:.35,instant:.01,limit:true,p:[30000,180000],lv:0,unit:40,news:.6,amp:.7,wig:.6,
     names:['한빛전자','대한중공업','삼진화학','국민통신','동방제철','미래금융지주','태평양건설','한국그리드']},
-  theme:{e:'🔥',label:'테마주',rate:1,scale:1,loss:.5,instant:.04,limit:true,p:[1500,25000],lv:0,unit:180,
+  theme:{e:'🔥',label:'테마주',rate:1,scale:1,loss:.6,instant:.04,limit:true,p:[1500,25000],lv:0,unit:180,
     names:['초전도랩','대성로보틱스','K배터리텍','우주항공테크','AI반도체솔루션','양자컴퓨팅','비만치료제랩','원전에너지']},
-  meme:{e:'🐸',label:'코인',rate:1.5,scale:1.8,loss:.75,instant:.1,limit:false,p:[200,3000],lv:0,unit:900,
+  meme:{e:'🐸',label:'코인',rate:1.5,scale:1.8,loss:.85,instant:.1,limit:false,p:[200,3000],lv:0,unit:900,
     names:[['도지킹','DOGK'],['개구리코인','PEPEK'],['김치토큰','KIMCH'],['문샷','MOON'],['냥냥코인','NYANG'],['가즈아','GAZUA'],['로켓코인','RCKT']]},
-  bio:{e:'🧬',label:'바이오',rate:.8,scale:1.4,loss:.6,instant:.05,limit:true,p:[3000,60000],lv:1,unit:120,news:2.2,amp:1.8,wig:1.2,
+  bio:{e:'🧬',label:'바이오',rate:.8,scale:1.4,loss:.7,instant:.05,limit:true,p:[3000,60000],lv:1,unit:120,news:2.2,amp:1.8,wig:1.2,
     desc:'임상 뉴스 하나에 급등락',names:['한빛제약','셀메디','진바이오텍','메디포스','바이오넥스트','젠큐어','뉴로셀']},
-  penny:{e:'🪙',label:'동전주',rate:1.2,scale:1.2,loss:.55,instant:.06,limit:true,p:[300,990],lv:2,unit:3000,news:1.4,amp:1.4,wig:2.4,
+  penny:{e:'🪙',label:'동전주',rate:1.2,scale:1.2,loss:.65,instant:.06,limit:true,p:[300,990],lv:2,unit:3000,news:1.4,amp:1.4,wig:2.4,
     desc:'호가 1원, 출렁임 최강',names:['대박전자','국일테크','삼영물산','미래씨앤씨','동아에너지','한성피앤씨']},
-  ipo:{e:'🎉',label:'공모주',rate:1.7,scale:2,loss:.6,instant:.14,limit:true,p:[10000,50000],lv:4,unit:300,wig:1.4,
+  ipo:{e:'🎉',label:'공모주',rate:1.7,scale:2,loss:.75,instant:.14,limit:true,p:[10000,50000],lv:4,unit:300,wig:1.4,
     desc:'상장 첫날, 따상 아니면 폭망',names:['(신규)로봇에이아이','(신규)스페이스원','(신규)퀀텀랩스','(신규)그린수소','(신규)K뷰티랩']},
-  us:{e:'🇺🇸',label:'미국주식',rate:.9,scale:1.1,loss:.4,instant:.02,limit:false,usd:true,p:[20,400],lv:6,unit:25,news:.8,amp:.8,wig:.8,
+  us:{e:'🇺🇸',label:'미국주식',rate:.9,scale:1.1,loss:.5,instant:.02,limit:false,usd:true,p:[20,400],lv:6,unit:25,news:.8,amp:.8,wig:.8,
     desc:'달러 표시, 상한가 없음',names:[['노바 다이내믹스','NOVA'],['아틀라스 칩스','ATLC'],['블루오션 EV','BOEV'],['퀀텀 클라우드','QNTC'],['메가 소셜','MGSO']]},
-  pump:{e:'🎭',label:'작전주',rate:1.1,scale:1.6,loss:.7,instant:.03,limit:true,p:[1000,8000],lv:8,unit:600,news:1.6,amp:1.5,warn:.35,
+  pump:{e:'🎭',label:'작전주',rate:1.1,scale:1.6,loss:.85,instant:.03,limit:true,p:[1000,8000],lv:8,unit:600,news:1.6,amp:1.5,warn:.35,
     desc:'세력의 펌프, 경고는 대부분 진짜',names:['신화테크','코리아스타','에이스홀딩스','세종인더','태양바이오']},
-  boss:{e:'👹',label:'보스전',rate:1.05,scale:1.4,loss:.5,instant:.02,limit:false,p:[5000,50000],lv:99,hidden:true,unit:500,news:1.4,amp:1.3,names:['보스']}
+  boss:{e:'👹',label:'보스전',rate:1.05,scale:1.4,loss:.6,instant:.02,limit:false,p:[5000,50000],lv:99,hidden:true,unit:500,news:1.4,amp:1.3,names:['보스']}
 };
 const BOSSES=[{e:'👹',n:'공매도 세력'},{e:'🌑',n:'검은 월요일'},{e:'🏦',n:'금리 인상'},{e:'🎭',n:'작전 세력 총수'},{e:'⛔',n:'서킷브레이커'},{e:'🦢',n:'블랙스완'},{e:'🐻',n:'대왕 곰'},{e:'🌪',n:'금융 위기'}];
 const bossInfo=lv=>({lv,B:BOSSES[lv%BOSSES.length],target:+(1.5+.2*lv).toFixed(2)});
@@ -385,8 +385,10 @@ const ACH=[
   ['meme5','🐸','밈의 왕','코인으로 x5 이상 매도'],
   ['mission','📋','성실한 개미','일일 미션 첫 완료'],
   ['billion','🏢','건물주','자산 1억 돌파'],
-  ['comeback','🧟','기사회생','10만 원 밑에서 100만 원 회복'],
-  ['hangang','🥫','깡통 계좌','자산 1만 원 미만'],
+  ['comeback','🧟','기사회생','30만 원 밑에서 100만 원 회복'],
+  ['hangang','🥫','깡통 계좌','첫 파산'],
+  ['bk5','🔁','오뚝이','파산 5회, 그래도 다시'],
+  ['bk10','💀','깡통 장인','파산 10회'],
   ['legend','👑','시장 그 자체','최고 계급 달성'],
   ['spread','🌏','분산 투자','8가지 종목을 모두 거래'],
   ['boss1','⚔️','첫 보스 처치','보스전에서 목표 수익 달성'],
@@ -674,14 +676,14 @@ function crash(){
   if(run.tut){tutEnd(!!sell);readyAt=performance.now()+800;paintTop();paintPickers();setBtn();setTimeout(setBtn,820);scheduleSwitch();return;}
   let res;
   if(state==='holding'){
-    let L=run.T.loss;if(run.it.lev)L=Math.min(.9,L*1.6);if(run.it.shield)L=.1;if(profile==='turtle'&&!run.it.shield)L*=.8;L*=1-.03*skl('risk');if(Math.random()<.03*skl('insure')){L*=.5;setTimeout(()=>toast('🪂 자동 손절 발동! 손실 절반'),600);}
+    let L=run.T.loss;if(run.it.lev)L=Math.min(1,L*1.6);if(run.it.shield)L=.1;if(profile==='turtle'&&!run.it.shield)L*=.8;L*=1-.03*skl('risk');if(Math.random()<.03*skl('insure')){L*=.5;setTimeout(()=>toast('🪂 자동 손절 발동! 손실 절반'),600);}
     const loss=run.bet*L;balance-=loss;lastAmt=-loss;streak=0;app.classList.remove('fever');$('fever').hidden=true;
     if(run.hint&&!run.hint.real)unlock('fake');
-    if(balance<100000)lowFlag=true;
+    if(balance<300000)lowFlag=true;
     res={win:false,key:run.key,m:0,pct:0,streak:0,insider:run.it.insider,sawDip:run.sawDip,boss:!!run.boss,lev:run.it.lev,shield:run.it.shield};
     const xg=3;gainXp(xg);
     $('pnl').innerHTML='<span class="dn">반대매매 '+sw(-loss)+'</span>';
-    if(balance<10000){state='over';unlock('hangang');showOver();}
+    if(balance<100000){state='over';unlock('hangang');stats.bankrupts++;stats.curRun=0;store.set('shg_stats',stats);if(stats.bankrupts>=5)unlock('bk5');if(stats.bankrupts>=10)unlock('bk10');showOver(loss);}
     else{state='result';showBust(loss,L,xg);}
   }else{
     state='result';
@@ -744,15 +746,26 @@ function showBust(loss,L,xg){
   card.innerHTML='<div class="grade dn">'+(early?'시초가 폭락':'물렸습니다')+'</div>'+
    '<div class="sub">'+(early?'사자마자 터졌습니다. 운이 없었어요.':'+'+((peak-1)*100).toFixed(1)+'%까지 갔는데 욕심을 부렸습니다.')+'</div>'+
    '<div class="big dn">'+sw(-loss)+' ('+Math.round(L*100)+'%)</div>'+
+   (peak>1.05?'<div class="sub gd">고점에서 팔았으면 '+sw(run.bet*(peak-1)*(run.it.lev?2:1))+'였는데…</div>':'')+
    (run.it.shield?'<div class="sub gd">🛡 손절보험이 손실을 줄였습니다.</div>':'')+
    '<div class="row"><span>연속 익절 끊김</span><span class="gd">+'+xg+' XP</span></div>'+hintLine()+shareBtn();
   card.hidden=false;bindShare();
 }
-function showOver(){
-  card.innerHTML='<div class="grade dn">깡통 계좌 🥫</div><div class="sub">자산이 1만 원 아래로 떨어졌습니다.<br>'+round+'라운드 버텼고, 최고 자산은 '+won(best||START)+'입니다.<br>계급과 업적은 그대로 남아 있습니다.</div><div class="btns"><button class="pri" id="again" type="button">시드 100만 원으로 다시</button></div>';
+const RAGE=['세력이 당신의 계좌를 보며 웃고 있습니다','방금 판 사람이 최고점에 팔았습니다','종토방: "ㅋㅋ 또 물린 사람?"','개미 털기 성공 (당함)','차트가 당신이 판 직후 반등했습니다','오늘의 교훈: 욕심은 금물… 이었는데'];
+function showOver(loss){
+  const near=peak>1.05?'<div class="sub gd">고점(+'+((peak-1)*100).toFixed(1)+'%)에서 팔았으면 '+sw(run.bet*(peak-1))+'이었습니다</div>':'';
+  const gain=stats.bankrupts<=10;
+  if(gain){stats.bonusSP=(stats.bonusSP||0)+1;store.set('shg_stats',stats);}
+  vib([200,80,200,80,400]);flash('#000');
+  card.innerHTML='<div class="grade dn">깡통 계좌 🥫</div><div class="sub">반대매매로 계좌가 털렸습니다.<br><b>'+pick(RAGE)+'</b></div>'+near+
+   '<div class="row"><span>파산 횟수</span><span class="dn">'+stats.bankrupts+'회</span></div>'+
+   '<div class="row"><span>이번 계좌 버틴 판수</span><span>'+round+'판</span></div>'+
+   '<div class="row"><span>역대 최고 자산</span><span class="gd">'+won(best||START)+'</span></div>'+
+   (gain?'<div class="sub gd">😤 오기 포인트: SP +1 (파산 10회까지)</div>':'')+
+   '<div class="sub">레벨, 스킬, 업적은 그대로입니다.</div><div class="btns"><button class="pri" id="again" type="button">🔥 복수전 · 시드 '+won(START*(1+.2*skl('seed')))+'</button></div>';
   card.hidden=false;
-  $('again').onclick=()=>{balance=START*(1+.2*skl('seed'));stats.bankrupts++;store.set('shg_stats',stats);streak=0;round=1;state='ready';card.hidden=true;candles=[];sell=null;crashed=false;run=null;lowFlag=false;
-    $('pnl').hidden=true;paintTop();paintPickers();paintQuote();setBtn();buildChartIdle();};
+  $('again').onclick=()=>{balance=START*(1+.2*skl('seed'));streak=0;round=1;state='ready';card.hidden=true;candles=[];sell=null;crashed=false;run=null;eM=1;lowFlag=false;
+    $('pnl').hidden=true;$('bossbar').hidden=true;buildChartIdle();paintTop();paintPickers();paintQuote();setBtn();sfx.up();stamp('🔥 복수전 시작');};
 }
 function showIntro(){
   const ms=daily.ids.map(id=>MISSIONS.find(m=>m.id===id).t);

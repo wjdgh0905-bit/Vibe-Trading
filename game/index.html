@@ -147,6 +147,15 @@ canvas{position:absolute;inset:0;width:100%;height:100%}
 .li.done b{color:var(--gold)}
 .modal button{margin-top:12px;width:100%;font:inherit;font-weight:700;background:var(--fg);color:var(--bg);border:0;border-radius:10px;padding:10px;cursor:pointer}
 
+#bossbar{position:absolute;left:8px;right:8px;top:34px;z-index:2;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:8px;background:color-mix(in srgb,#7a1020 55%,var(--bg));border:1px solid #ff4d6d;border-radius:10px;padding:6px 10px;pointer-events:none}
+#bossbar b{font-size:13px;white-space:nowrap}
+#bossbar i{height:10px;background:#2a0a10;border-radius:5px;overflow:hidden;border:1px solid #ff4d6d}
+#bossbar u{display:block;height:100%;background:linear-gradient(90deg,#ff2d55,#ff8a00);transition:width .15s}
+#bossbar small{font-family:var(--mono);font-size:11.5px;color:var(--gold);white-space:nowrap}
+.bosschip{grid-column:1/-1;background:linear-gradient(90deg,color-mix(in srgb,#ff2d55 25%,var(--panel)),var(--panel))!important;border-color:#ff4d6d!important}
+.sk .t .lv{margin-left:auto;font-family:var(--mono);font-size:12px;color:var(--muted)}
+.sk.lockd{opacity:.55}
+.xpb{height:6px;background:var(--line);border-radius:3px;overflow:hidden}.xpb u{display:block;height:100%;background:var(--gold)}
 /* readability pass */
 body{font-size:15px;line-height:1.45}
 .app{gap:8px}
@@ -289,7 +298,7 @@ body{font-size:15px;line-height:1.45}
     <div class="qp"><div id="qPrice" class="num">-</div><div id="qChg" class="mu">-</div></div>
   </div>
   <div class="main" id="main">
-    <div class="chart" id="chart"><canvas id="cv"></canvas><div id="vign"></div><div id="pnl" hidden></div><div id="fever" hidden>🔥 FEVER</div></div>
+    <div class="chart" id="chart"><canvas id="cv"></canvas><div id="vign"></div><div id="pnl" hidden></div><div id="bossbar" hidden><b id="bossName"></b><i><u id="bossHp"></u></i><small id="bossGoal"></small></div><div id="fever" hidden>🔥 FEVER</div></div>
     <div class="book" id="book"></div>
     <div id="news" hidden></div>
     <div id="card" class="card" hidden></div>
@@ -318,7 +327,11 @@ const $=id=>document.getElementById(id);
 const cv=$('cv'),ctx=cv.getContext('2d'),chart=$('chart'),btn=$('hold'),card=$('card'),app=$('app');
 const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 const C={up:css('--up'),down:css('--down'),gold:css('--gold'),line:css('--line'),muted:css('--muted'),rumor:css('--rumor'),fg:css('--fg'),panel:css('--panel')};
-const won=n=>Math.floor(n).toLocaleString('ko-KR')+'원';
+const won=n=>{const a=Math.floor(Math.abs(n)),sg=n<0?'-':'',f=x=>x.toLocaleString('ko-KR');
+  if(a>=1e12){const j=Math.floor(a/1e12),e=Math.floor(a%1e12/1e8);return sg+f(j)+'조'+(e?' '+f(e)+'억':'')+'원';}
+  if(a>=1e8){const e=Math.floor(a/1e8),m=Math.floor(a%1e8/1e4);return sg+f(e)+'억'+(m?' '+f(m)+'만':'')+'원';}
+  if(a>=1e6)return sg+f(Math.floor(a/1e4))+'만원';
+  return sg+f(a)+'원';};
 const sw=n=>(n>=0?'+':'-')+won(Math.abs(n));
 const pick=a=>a[Math.floor(Math.random()*a.length)];
 const rnd=(a,b)=>a+Math.random()*(b-a);
@@ -346,8 +359,11 @@ const TIERS={
   us:{e:'🇺🇸',label:'미국주식',rate:.9,scale:1.1,loss:.4,instant:.02,limit:false,usd:true,p:[20,400],lv:4,unit:25,news:.8,amp:.8,wig:.8,
     desc:'달러 표시, 상한가 없음',names:[['노바 다이내믹스','NOVA'],['아틀라스 칩스','ATLC'],['블루오션 EV','BOEV'],['퀀텀 클라우드','QNTC'],['메가 소셜','MGSO']]},
   pump:{e:'🎭',label:'작전주',rate:1.1,scale:1.6,loss:.7,instant:.03,limit:true,p:[1000,8000],lv:5,unit:600,news:1.6,amp:1.5,warn:.35,
-    desc:'세력의 펌프, 경고는 대부분 진짜',names:['신화테크','코리아스타','에이스홀딩스','세종인더','태양바이오']}
+    desc:'세력의 펌프, 경고는 대부분 진짜',names:['신화테크','코리아스타','에이스홀딩스','세종인더','태양바이오']},
+  boss:{e:'👹',label:'보스전',rate:1.05,scale:1.4,loss:.5,instant:.02,limit:false,p:[5000,50000],lv:99,hidden:true,unit:500,news:1.4,amp:1.3,names:['보스']}
 };
+const BOSSES=[{e:'👹',n:'공매도 세력'},{e:'🌑',n:'검은 월요일'},{e:'🏦',n:'금리 인상'},{e:'🎭',n:'작전 세력 총수'},{e:'⛔',n:'서킷브레이커'},{e:'🦢',n:'블랙스완'},{e:'🐻',n:'대왕 곰'},{e:'🌪',n:'금융 위기'}];
+const bossInfo=lv=>({lv,B:BOSSES[lv%BOSSES.length],target:+(1.5+.2*lv).toFixed(2)});
 const ITEMS={
   shield:{name:'🛡 손절보험',cost:.08,desc:'폭락 손실 -10%',lv:1},
   insider:{name:'🔍 찌라시',cost:.05,desc:'폭락가 힌트(70%)',lv:2},
@@ -372,7 +388,9 @@ const ACH=[
   ['comeback','🧟','기사회생','10만 원 밑에서 100만 원 회복'],
   ['hangang','🥫','깡통 계좌','자산 1만 원 미만'],
   ['legend','👑','여의도 전설','최고 계급 달성'],
-  ['spread','🌏','분산 투자','8가지 종목을 모두 거래']
+  ['spread','🌏','분산 투자','8가지 종목을 모두 거래'],
+  ['boss1','⚔️','첫 보스 처치','보스전에서 목표 수익 달성'],
+  ['boss5','🐉','보스 헌터','보스 5마리 처치']
 ];
 const MISSIONS=[
   {id:'w20',t:'익절 20번',n:20,f:r=>r.win},
@@ -418,8 +436,11 @@ let state='ready',balance=START,streak=0,round=1,tierSel='theme',sel={shield:fal
 let offers=makeOffers(),run=null,candles=[],t=0,cur=1,peak=1,sell=null,crashed=false,crashT=0,readyAt=0,lastTs=0;
 let events=[],warned=false,newsTimer=0,talkT=0,bookT=0,lowFlag=false,volTotal=0;
 
-function makeOffers(){ // 내가 고른 종류 + 해금된 종류 중 랜덤 2개
-  const ri=rankOf(xp),open=Object.keys(TIERS).filter(k=>TIERS[k].lv<=ri);
+function makeOffers(){ // 내가 고른 종류 + 해금된 종류 중 랜덤 2개, 10판마다 보스전
+  let bossNext=false;try{bossNext=tutDone&&(stats.rounds+1)%10===0;}catch(e){} // 초기화 순서상 아직 없을 수 있음
+  if(bossNext){const bi=bossInfo(stats.bossLv||0);
+    return [{k:'boss',name:bi.B.e+' '+bi.B.n+' Lv.'+(bi.lv+1),code:'BOSS · 목표 +'+Math.round((bi.target-1)*100)+'%',p0:roundTick(rnd(5000,50000))}];}
+  const ri=rankOf(xp),open=Object.keys(TIERS).filter(k=>TIERS[k].lv<=ri&&!TIERS[k].hidden);
   if(!open.includes(tierSel))tierSel='theme';
   const rest=open.filter(k=>k!==tierSel).sort(()=>Math.random()-.5).slice(0,2);
   return [tierSel,...rest].sort((a,b)=>Object.keys(TIERS).indexOf(a)-Object.keys(TIERS).indexOf(b)).map(k=>{const T=TIERS[k];
@@ -428,7 +449,7 @@ function makeOffers(){ // 내가 고른 종류 + 해금된 종류 중 랜덤 2�
     return {k,name,code,p0:roundTick(rnd(T.p[0],T.p[1]),T.usd)};
   });
 }
-const offer=()=>run?run.offer:offers.find(o=>o.k===tierSel);
+const offer=()=>run?run.offer:(offers.find(o=>o.k===tierSel)||offers[0]);
 const priceOf=m=>roundTick(offer().p0*m,isUsd());
 
 /* ---------- audio ---------- */
@@ -483,10 +504,12 @@ function talk(kind){
   talkLines.push(msg);renderTalk();
 }
 function rankOf(x){let i=0;RANKS.forEach((r,j)=>{if(x>=r[0])i=j});return i}
+const lvlOf=x=>{let L=1,need=60;while(x>=need){x-=need;L++;need=40+20*L;}return {L,cur:x,need};};
 function gainXp(n){
-  n=Math.round(n*(1+.1*skl('xp')));
-  const before=rankOf(xp);xp+=n;store.set('shg_xp',xp);const after=rankOf(xp);
-  if(after>before){const nt=Object.values(TIERS).filter(T=>T.lv===after);setTimeout(()=>{toast('🎉 승급! '+RANKS[after][1]+(nt.length?' · '+nt.map(T=>T.e+' '+T.label).join(', ')+' 해금':''));sfx.up();},900);if(after===RANKS.length-1)unlock('legend');}
+  n=Math.round(n*(1+.05*skl('xp')));
+  const before=rankOf(xp),lb=lvlOf(xp).L;xp+=n;store.set('shg_xp',xp);const after=rankOf(xp),la=lvlOf(xp).L;
+  if(la>lb&&after===before){setTimeout(()=>{toast('⬆️ 레벨 업! Lv.'+la+' · SP +'+2*(la-lb));sfx.up();burst(innerWidth/2,90,30);},900);}
+  if(after>before){const nt=Object.values(TIERS).filter(T=>T.lv===after);setTimeout(()=>{toast('🎉 승급! '+RANKS[after][1]+(la>lb?' · Lv.'+la:'')+(nt.length?' · '+nt.map(T=>T.e+' '+T.label).join(', ')+' 해금':''));sfx.up();},900);if(after===RANKS.length-1)unlock('legend');}
 }
 
 function paintTop(){
@@ -496,16 +519,16 @@ function paintTop(){
   $('streak').innerHTML=streak?(streak>=5?'<span class="gd">'+streak+'연속 🔥</span>':streak+'연속'):'0';
   $('best').textContent=best?won(best):'-';
   const ri=rankOf(xp),nx=RANKS[ri+1];
-  $('rankName').textContent=(profile?TYPES[profile].e+' ':'')+RANKS[ri][1];
-  $('rankBar').style.width=nx?((xp-RANKS[ri][0])/(nx[0]-RANKS[ri][0])*100).toFixed(0)+'%':'100%';
+  const lv=lvlOf(xp);$('rankName').textContent='Lv.'+lv.L+' '+(profile?TYPES[profile].e:'')+RANKS[ri][1];
+  $('rankBar').style.width=(lv.cur/lv.need*100).toFixed(0)+'%';
   $('spBtn').textContent='🌳 SP '+spFree();$('dotS').hidden=spFree()<=0;$('dotM').hidden=daily.done.length>=3;
 }
 function paintPickers(){
   const lock=state==='holding'||state==='ghost'||state==='over';
-  $('offers').innerHTML=offers.map(o=>{const T=TIERS[o.k];return `<button class="chip" type="button" data-k="${o.k}" aria-pressed="${o.k===tierSel}" ${lock?'disabled':''}><b>${T.e} ${o.name}</b><small>${T.label} · 물리면 -${T.loss*100}%</small></button>`}).join('');
+  $('offers').innerHTML=offers.map(o=>{const T=TIERS[o.k];if(o.k==='boss')return `<button class="chip bosschip" type="button" data-k="boss" aria-pressed="true" ${lock?'disabled':''}><b>${o.name}</b><small>보스전 · 목표 수익 넘기고 팔면 처치 · SP +3</small></button>`;return `<button class="chip" type="button" data-k="${o.k}" aria-pressed="${o.k===tierSel}" ${lock?'disabled':''}><b>${T.e} ${o.name}</b><small>${T.label} · 손실 ${T.loss*100}%</small></button>`}).join('');
   const ri=rankOf(xp);
   $('offers').hidden=$('items').hidden=state==='holding'||state==='ghost';
-  $('items').innerHTML=Object.entries(ITEMS).map(([k,it])=>{const lk=ri<it.lv;if(lk)sel[k]=false;return `<button class="chip" type="button" data-i="${k}" aria-pressed="${sel[k]}" ${lock||lk?'disabled':''}><b>${lk?'🔒 '+it.name.slice(2):it.name}</b><small>${lk?RANKS[it.lv][1]+' 계급에서 해금':(it.cost?won(balance*it.cost):'무료')+' · '+it.desc}</small></button>`}).join('');
+  $('items').innerHTML=Object.entries(ITEMS).map(([k,it])=>{const lk=ri<it.lv;if(lk)sel[k]=false;return `<button class="chip" type="button" data-i="${k}" aria-pressed="${sel[k]}" ${lock||lk?'disabled':''}><b>${lk?'🔒 '+it.name.slice(2):it.name}</b><small>${lk?RANKS[it.lv][1]+' 계급에서 해금':(it.cost?won(balance*it.cost*(1-.04*skl('discount'))):'무료')+' · '+it.desc}</small></button>`}).join('');
 }
 function paintQuote(){
   const o=offer(),T=TIERS[o.k];
@@ -547,7 +570,7 @@ function setBtn(){
   btn.textContent=state==='holding'?'떼면 매도!':state==='ghost'?'차트 끝까지 보는 중…':state==='over'?'계좌 복구 중…':state==='result'?'꾹 눌러서 다음 종목 매수':'꾹 눌러서 매수';
 }
 
-$('offers').addEventListener('click',e=>{const b=e.target.closest('[data-k]');if(b&&!b.disabled){tierSel=b.dataset.k;paintPickers();paintQuote();renderBook();buildChartIdle();}});
+$('offers').addEventListener('click',e=>{const b=e.target.closest('[data-k]');if(b&&!b.disabled&&b.dataset.k!=='boss'){tierSel=b.dataset.k;paintPickers();paintQuote();renderBook();buildChartIdle();}});
 $('items').addEventListener('click',e=>{const b=e.target.closest('[data-i]');if(b&&!b.disabled){sel[b.dataset.i]=!sel[b.dataset.i];paintPickers();}});
 
 /* ---------- game ---------- */
@@ -564,14 +587,16 @@ function start(){
   if(state==='result')round++;
   ensureDaily();
   const tut=!tutDone;if(tut)for(const k in sel)sel[k]=false;hideCoach();
-  const o=offers.find(x=>x.k===tierSel),T=TIERS[o.k];
-  let cost=0;for(const k in sel)if(sel[k])cost+=balance*ITEMS[k].cost;
+  const o=offers.find(x=>x.k===tierSel)||offers[0],T=TIERS[o.k];
+  let cost=0;for(const k in sel)if(sel[k])cost+=balance*ITEMS[k].cost*(1-.04*skl('discount'));
   balance-=cost;
   const raw=Math.random()<T.instant?1+Math.random()*.06:Math.min(60,Math.max(1.01,.97/(1-Math.random())));
-  const crashAt=tut?1.85:Math.max(1.01,1+(raw-1)*T.scale);
+  const crashAt=tut?1.85:Math.max(1.01,1+(raw-1)*T.scale)*(1+.015*skl('jackpot'));
   const it={...sel};let hint=null;
-  if(it.insider){const real=Math.random()<.7;hint={real,v:real?Math.max(1.02,crashAt*rnd(.88,.98)):crashAt*rnd(1.4,3)};}
-  run={offer:o,T,key:o.k,crashAt,it,hint,sawDip:false,tut,cost};tutStep=0;
+  if(it.insider){const real=Math.random()<.7+.03*skl('radar');hint={real,v:real?Math.max(1.02,crashAt*rnd(.88,.98)):crashAt*rnd(1.4,3)};}
+  run={offer:o,T,key:o.k,crashAt,it,hint,sawDip:false,tut,cost};
+  run.boss=o.k==='boss'?bossInfo(stats.bossLv||0):null;$('bossbar').hidden=!run.boss;
+  if(run.boss){$('bossName').textContent=run.boss.B.e+' '+run.boss.B.n+' Lv.'+(run.boss.lv+1);$('bossGoal').textContent='목표 +'+Math.round((run.boss.target-1)*100)+'%';$('bossHp').style.width='100%';setTimeout(()=>stamp('⚔️ 보스전 시작'),50);}tutStep=0;
   card.hidden=true;$('news').hidden=true;
   candles=[];t=0;cur=1;peak=1;sell=null;crashed=false;events=[];warned=false;volTotal=0;talkT=0;hbT=0;vigA=0;run.mi=0;
   state='holding';paintTop();paintPickers();setBtn();
@@ -583,10 +608,10 @@ function release(){
   const lev=run.it.lev?2:1;
   sell={t,m:cur,dip:inDip(t),idx:candles.length-1};
   if(run.tut)hideCoach();
-  const gain=balance*(cur-1)*lev*(profile==='lion'?1.05:1)*(1+.03*skl('profit'));
+  const gain=balance*(cur-1)*lev*(profile==='lion'?1.05:1)*(1+.02*skl('profit'));
   streak++;
   const fever=streak>=5;
-  const bonus=streak>=3?gain*.05*(streak-2)*(fever?2:1)*(1+.25*skl('streak')):0;
+  const bonus=streak>=3?gain*.05*(streak-2)*(fever?2:1)*(1+.15*skl('streak')):0;
   sell.gain=gain;sell.bonus=bonus;sell.fever=fever;
   balance+=gain+bonus;
   if(balance>best){best=balance;store.set('shg_best',Math.floor(best));}
@@ -595,6 +620,8 @@ function release(){
   paintTop();paintPickers();setBtn();
   $('pnl').innerHTML='<span class="dn">매도 체결</span> <span class="up">'+sw(gain+bonus)+'</span>';
   unlock('first');
+  if(run.boss&&cur>=run.boss.target){const rw=Math.max(500000,balance*.2);balance+=rw;sell.bossReward=rw;stats.bossLv=(stats.bossLv||0)+1;stats.bossSP=(stats.bossSP||0)+3;store.set('shg_stats',stats);
+    unlock('boss1');if(stats.bossLv>=5)unlock('boss5');gainXp(100);setTimeout(()=>{stamp('⚔️ 보스 처치!');burst(innerWidth/2,innerHeight*.4,70);},200);paintTop();}
   if(cur>=10)unlock('ten');
   if(fever)unlock('streak5');
   if(run.key==='meme'&&cur>=5)unlock('meme5');
@@ -617,7 +644,7 @@ function crash(){
   if(run.tut){tutEnd(!!sell);readyAt=performance.now()+800;paintTop();paintPickers();setBtn();setTimeout(setBtn,820);return;}
   let res;
   if(state==='holding'){
-    let L=run.T.loss;if(run.it.lev)L=Math.min(.9,L*1.6);if(run.it.shield)L=.1;if(profile==='turtle'&&!run.it.shield)L*=.8;L*=1-.05*skl('risk');
+    let L=run.T.loss;if(run.it.lev)L=Math.min(.9,L*1.6);if(run.it.shield)L=.1;if(profile==='turtle'&&!run.it.shield)L*=.8;L*=1-.03*skl('risk');if(Math.random()<.03*skl('insure')){L*=.5;setTimeout(()=>toast('🪂 자동 손절 발동! 손실 절반'),600);}
     const loss=balance*L;balance-=loss;lastAmt=-loss;streak=0;app.classList.remove('fever');$('fever').hidden=true;
     if(run.hint&&!run.hint.real)unlock('fake');
     if(balance<100000)lowFlag=true;
@@ -646,7 +673,7 @@ function missionsUpdate(r){
     if(daily.done.includes(id))return;
     const m=MISSIONS.find(x=>x.id===id);
     if(m.f(r)){daily.prog[id]=(daily.prog[id]||0)+1;
-      if(daily.prog[id]>=m.n){const rw=1000000*(1+.2*skl('mission'));daily.done.push(id);balance+=rw;gainXp(150);unlock('mission');
+      if(daily.prog[id]>=m.n){const rw=1000000*(1+.1*skl('mission'));daily.done.push(id);balance+=rw;gainXp(150);unlock('mission');
         setTimeout(()=>{toast('📋 미션 완료! '+m.t+' · +'+won(rw));sfx.up();},1500);}}
   });
   store.set('shg_daily',daily);
@@ -669,6 +696,7 @@ function showWin(pct,xg){
    (sell.bonus?'<div class="sub gd">'+(sell.fever?'🔥 FEVER ':'')+streak+'연속 보너스 '+sw(sell.bonus)+'</div>':'')+
    '<div class="bar"><i style="width:'+pct.toFixed(0)+'%"></i></div>'+
    '<div class="row"><span>매도 '+fmtP(priceOf(sell.m))+' (+'+pp(sell.m)+')</span><span>고점 +'+pp(peak)+'</span></div>'+
+   (run.boss?(sell.bossReward?'<div class="sub gd">⚔️ '+run.boss.B.n+' 처치! '+sw(sell.bossReward)+' · SP +3 · XP +100</div>':'<div class="sub dn">👹 보스가 살아남았다 (목표 +'+Math.round((run.boss.target-1)*100)+'%)</div>'):'')+
    '<div class="row"><span>고점 근접도 '+pct.toFixed(0)+'%</span><span class="gd">+'+xg+' XP</span></div>'+hintLine()+shareBtn();
   card.hidden=false;bindShare();
 }
@@ -898,26 +926,33 @@ function boot(){
 }
 
 /* ---------- meta: 스킬 · 기록 · 설정 · 탭 ---------- */
+const BR={atk:{e:'⚔️',n:'공격 · 수익'},def:{e:'🛡',n:'방어 · 생존'},int:{e:'🔍',n:'정보 · 성장'}};
 const SKILLS=[
-  {id:'profit',e:'📈',n:'수익 감각',d:'익절 수익 +3%',max:5},
-  {id:'risk',e:'🛡',n:'리스크 관리',d:'폭락 손실 -5%',max:5},
-  {id:'intel',e:'👂',n:'정보통',d:'진짜 폭락 경고 확률 +8%p',max:4},
-  {id:'mind',e:'🧘',n:'멘탈 관리',d:'차트 속도 -4%',max:3},
-  {id:'streak',e:'🔥',n:'연승 본능',d:'연속 익절 보너스 +25%',max:4},
-  {id:'xp',e:'📚',n:'복기 습관',d:'얻는 XP +10%',max:3},
-  {id:'mission',e:'🎁',n:'성실함',d:'미션 현금 보상 +20%',max:3},
-  {id:'seed',e:'💰',n:'비상금',d:'파산 후 시작 자금 +20%',max:5}
+  {id:'profit',br:'atk',e:'📈',n:'수익 감각',d:'익절 수익 +',per:2,u:'%',max:20},
+  {id:'streak',br:'atk',e:'🔥',n:'연승 본능',d:'연속 익절 보너스 +',per:15,u:'%',max:15},
+  {id:'jackpot',br:'atk',e:'💎',n:'대박 본능',d:'폭락 지점 +',per:1.5,u:'%',max:10,req:10},
+  {id:'risk',br:'def',e:'🛡',n:'리스크 관리',d:'폭락 손실 -',per:3,u:'%',max:15},
+  {id:'mind',br:'def',e:'🧘',n:'멘탈 관리',d:'차트 속도 -',per:2,u:'%',max:15},
+  {id:'seed',br:'def',e:'💰',n:'비상금',d:'파산 후 시작 자금 +',per:20,u:'%',max:20},
+  {id:'insure',br:'def',e:'🪂',n:'자동 손절',d:'물릴 때 손실 절반 확률 ',per:3,u:'%',max:10,req:10},
+  {id:'intel',br:'int',e:'👂',n:'정보통',d:'진짜 폭락 경고 확률 +',per:4,u:'%p',max:12},
+  {id:'xp',br:'int',e:'📚',n:'복기 습관',d:'얻는 XP +',per:5,u:'%',max:20},
+  {id:'mission',br:'int',e:'🎁',n:'성실함',d:'미션 현금 보상 +',per:10,u:'%',max:10},
+  {id:'discount',br:'int',e:'🏷',n:'짠테크',d:'아이템 가격 -',per:4,u:'%',max:10},
+  {id:'radar',br:'int',e:'📡',n:'찌라시 감별',d:'찌라시가 진짜일 확률 +',per:3,u:'%p',max:10,req:10}
 ];
+const costOf=lv=>1+Math.floor(lv/5);
 let sk=store.get('shg_sk',{}),curTab='trade',lastAmt=0,resetArm=0;
 const skl=id=>sk[id]||0;
-const spEarned=()=>Math.floor(xp/100)+ach.length;
-const spUsed=()=>SKILLS.reduce((a,x)=>a+(skl(x.id)*(skl(x.id)+1))/2,0);
+const spEarned=()=>2*(lvlOf(xp).L-1)+ach.length+(()=>{try{return stats.bossSP||0}catch(e){return 0}})();
+const spUsed=()=>SKILLS.reduce((a,x)=>{let c=0;for(let i=0;i<skl(x.id);i++)c+=costOf(i);return a+c;},0);
+const brPts=br=>SKILLS.filter(x=>x.br===br&&!x.req).reduce((a,x)=>a+skl(x.id),0);
 const spFree=()=>spEarned()-spUsed();
 let stats=Object.assign({rounds:0,wins:0,bestM:0,bestPct:0,net:0,maxStreak:0,bankrupts:0,hist:[]},store.get('shg_stats',{}));
 function recordRound(r){
   stats.rounds++;if(r.win){stats.wins++;stats.bestM=Math.max(stats.bestM,r.m);stats.bestPct=Math.max(stats.bestPct,r.pct);}
   lastAmt-=run.cost||0;stats.maxStreak=Math.max(stats.maxStreak,streak);stats.net+=lastAmt;
-  stats.types=stats.types||[];if(!stats.types.includes(run.key))stats.types.push(run.key);if(stats.types.length>=Object.keys(TIERS).length)unlock('spread');
+  stats.types=stats.types||[];if(!stats.types.includes(run.key))stats.types.push(run.key);if(stats.types.filter(k=>!TIERS[k].hidden).length>=Object.keys(TIERS).filter(k=>!TIERS[k].hidden).length)unlock('spread');
   stats.hist.unshift({n:run.offer.name,w:r.win,m:r.win?r.m:peak,a:lastAmt});stats.hist=stats.hist.slice(0,20);
   store.set('shg_stats',stats);
 }
@@ -931,14 +966,16 @@ function tab(name){
 $('tabs').addEventListener('click',e=>{const b=e.target.closest('button');if(b&&!b.disabled){beep(520,.03,'sine',.03);tab(b.dataset.tab);}});
 $('spBtn').onclick=()=>{if(state!=='holding'&&state!=='ghost')tab('skill');};
 function pageSkill(){
-  return '<h2>🌳 스킬</h2><p class="lead">XP 100마다, 업적 하나마다 스킬 포인트(SP)를 1개 받습니다. 레벨이 오를수록 비용이 늘어납니다.</p>'+
-   '<div class="sphead"><div><small>사용 가능한 SP</small><b>'+spFree()+'</b></div><div style="text-align:right"><small>누적 획득 '+spEarned()+' · 사용 '+spUsed()+'</small><small>다음 SP까지 '+(100-xp%100)+' XP</small></div></div>'+
-   '<div class="skills">'+SKILLS.map(x=>{const lv=skl(x.id),cost=lv+1,maxed=lv>=x.max;
-     return `<div class="sk"><div class="t"><i>${x.e}</i><b>${x.n}</b></div><p>${x.d} / 레벨<br>현재 Lv.${lv} → 효과 ${lv?x.d.replace(/[0-9.]+/,m=>+(m*lv).toFixed(1)):'없음'}</p><div class="pips">${Array.from({length:x.max},(_,i)=>`<u class="${i<lv?'on':''}"></u>`).join('')}</div><button type="button" data-up="${x.id}" ${maxed||spFree()<cost?'disabled':''}>${maxed?'MAX':'강화 · SP '+cost}</button></div>`}).join('')+'</div>'+
+  const lv=lvlOf(xp),v=(x,l)=>+(x.per*l).toFixed(1)+x.u;
+  return '<h2>🌳 스킬 트리</h2><p class="lead">레벨업마다 SP 2개, 업적마다 1개, 보스 처치마다 3개를 받습니다. 5레벨마다 강화 비용이 1씩 오르고, 각 계열의 상위 스킬은 그 계열에 10포인트를 찍으면 열립니다.</p>'+
+   '<div class="sphead"><div><small>사용 가능한 SP</small><b>'+spFree()+'</b></div><div style="text-align:right"><small>Lv.'+lv.L+' · 다음 레벨까지 '+(lv.need-lv.cur)+' XP</small><small>누적 '+spEarned()+' · 사용 '+spUsed()+'</small></div></div>'+
+   Object.entries(BR).map(([bk,B])=>'<h3>'+B.e+' '+B.n+' <span class="mu">· '+brPts(bk)+'P</span></h3><div class="skills">'+SKILLS.filter(x=>x.br===bk).map(x=>{
+     const l=skl(x.id),cost=costOf(l),maxed=l>=x.max,locked=x.req&&brPts(bk)<x.req;
+     return `<div class="sk ${locked?'lockd':''}"><div class="t"><i>${x.e}</i><b>${x.n}</b><span class="lv">${l}/${x.max}</span></div><p>${x.d}${v(x,1)} / 레벨<br>지금 <b class="gd">${l?x.d+v(x,l):'효과 없음'}</b>${maxed?'':'<br>다음 '+x.d+v(x,l+1)}</p><div class="xpb"><u style="width:${l/x.max*100}%"></u></div><button type="button" data-up="${x.id}" ${maxed||locked||spFree()<cost?'disabled':''}>${maxed?'MAX':locked?'🔒 계열 '+x.req+'P 필요':'강화 · SP '+cost}</button></div>`}).join('')+'</div>').join('')+
    '<h3>스킬 초기화</h3><button class="setbtn ghost" type="button" id="skReset" style="width:100%">모든 스킬 되돌리기 (SP 전액 환급)</button>';
 }
 function pageMission(){
-  return '<h2>📋 미션</h2><p class="lead">자정마다 새 미션 3개가 나옵니다. 하루 30판 이상 해야 다 깰 수 있어요. 완료하면 '+won(1000000*(1+.2*skl('mission')))+'과 150 XP.</p><div class="pan">'+
+  return '<h2>📋 미션</h2><p class="lead">자정마다 새 미션 3개가 나옵니다. 하루 30판 이상 해야 다 깰 수 있어요. 완료하면 '+won(1000000*(1+.1*skl('mission')))+'과 150 XP.</p><div class="pan">'+
    daily.ids.map(id=>{const m=MISSIONS.find(x=>x.id===id),p=Math.min(m.n,daily.prog[id]||0),d=daily.done.includes(id);
      return `<div class="li ${d?'done':''}"><i>${d?'✅':'⬜'}</i><div><b>${m.t}</b><small>${p} / ${m.n}</small><div class="pb"><u style="width:${p/m.n*100}%"></u></div></div></div>`}).join('')+'</div>'+
    '<h3>계급</h3><div class="pan">'+RANKS.map((r,i)=>`<div class="li ${xp>=r[0]?'':'lock'}"><i>${i===RANKS.length-1?'👑':i===rankOf(xp)?'⭐':'·'}</i><div><b>${r[1]}</b><small>${r[0]} XP${Object.values(ITEMS).filter(it=>it.lv===i).map(it=>' · '+it.name+' 해금').join('')}${i?Object.values(TIERS).filter(T=>T.lv===i).map(T=>' · '+T.e+' '+T.label+' 종목 해금').join(''):''}</small></div></div>`).join('')+'</div>';
@@ -947,7 +984,7 @@ function pageRecord(){
   const wr=stats.rounds?Math.round(stats.wins/stats.rounds*100):0,T=profile&&TYPES[profile];
   return '<h2>📊 기록</h2>'+(T?'<div class="pan" style="padding:12px 14px"><div class="typecard"><i>'+T.e+'</i><div><b>'+T.n+'</b><br><small class="mu">'+T.perk+' · '+RANKS[rankOf(xp)][1]+' · '+xp+' XP</small></div></div></div>':'')+
    '<h3>통산 성적</h3><div class="tiles">'+
-   [['플레이',stats.rounds+'판'],['승률',wr+'%'],['최고 배수','x'+(stats.bestM||0).toFixed(2)],['최고 근접도',Math.round(stats.bestPct)+'%'],['최장 연승',stats.maxStreak+'연속'],['파산',stats.bankrupts+'회'],['누적 손익',(stats.net>=0?'+':'')+Math.round(stats.net/10000).toLocaleString('ko-KR')+'만'],['최고 자산',best?Math.round(best/10000).toLocaleString('ko-KR')+'만':'-'],['업적',ach.length+'/'+ACH.length]]
+   [['플레이',stats.rounds+'판'],['승률',wr+'%'],['최고 배수','x'+(stats.bestM||0).toFixed(2)],['최고 근접도',Math.round(stats.bestPct)+'%'],['최장 연승',stats.maxStreak+'연속'],['파산',stats.bankrupts+'회'],['누적 손익',sw(stats.net)],['최고 자산',best?won(best):'-'],['캐릭터 레벨','Lv.'+lvlOf(xp).L],['보스 처치',(stats.bossLv||0)+'마리'],['업적',ach.length+'/'+ACH.length]]
      .map(([k,v])=>`<div class="tile"><small>${k}</small><b>${v}</b></div>`).join('')+'</div>'+
    '<h3>최근 거래</h3><div class="pan">'+(stats.hist.length?stats.hist.map(h=>`<div class="hist"><span>${h.w?'🔴 익절':'🔵 물림'} · ${h.n} <small class="mu">x${h.m.toFixed(2)}</small></span><span class="${h.a>=0?'up':'dn'}">${sw(h.a)}</span></div>`).join(''):'<div class="hist"><span class="mu">아직 거래 기록이 없습니다.</span></div>')+'</div>'+
    '<h3>업적</h3><div class="achgrid">'+ACH.map(a=>`<div class="${ach.includes(a[0])?'':'lock'}" title="${a[3]}"><i>${a[1]}</i>${a[2]}</div>`).join('')+'</div>';
@@ -961,7 +998,7 @@ function pageSet(){
 }
 function bindPage(name){
   const pg=$('page');
-  pg.querySelectorAll('[data-up]').forEach(b=>b.onclick=()=>{const id=b.dataset.up;if(spFree()>=skl(id)+1){sk[id]=skl(id)+1;store.set('shg_sk',sk);sfx.up();toast('🌳 '+SKILLS.find(x=>x.id===id).n+' Lv.'+sk[id]);paintTop();tab('skill');}});
+  pg.querySelectorAll('[data-up]').forEach(b=>b.onclick=()=>{const id=b.dataset.up;if(spFree()>=costOf(skl(id))){sk[id]=skl(id)+1;store.set('shg_sk',sk);sfx.up();toast('🌳 '+SKILLS.find(x=>x.id===id).n+' Lv.'+sk[id]);paintTop();tab('skill');}});
   const rs=$('skReset');if(rs)rs.onclick=()=>{sk={};store.set('shg_sk',sk);paintTop();tab('skill');toast('스킬을 초기화했습니다');};
   pg.querySelectorAll('[data-set]').forEach(b=>b.onclick=()=>{const k=b.dataset.set;SET[k]=!SET[k];store.set('shg_set',SET);b.setAttribute('aria-checked',SET[k]);if(k==='sound'){muted=!SET.sound;if(!muted){au();beep(660,.06,'sine',.04);}}if(k==='vib')vib(30);});
   const rt=$('reTut');if(rt)rt.onclick=()=>{tutDone=false;store.set('shg_tut',0);tab('trade');if(state==='ready'||state==='result'){card.hidden=true;coachReady();}};
@@ -976,10 +1013,10 @@ function frame(ts){
   if(freezeT>0){freezeT-=dt;draw();requestAnimationFrame(frame);return;}
   if(state==='holding'||state==='ghost'){
     const prev=cur;
-    t+=dt*(state==='ghost'?3:(run.it.slow?.6:1)*(SET.slow?.8:1)*(1-.04*skl('mind')));
+    t+=dt*(state==='ghost'?3:(run.it.slow?.6:1)*(SET.slow?.8:1)*(1-.02*skl('mind')));
     const b=base(t);
     if(state==='holding'){
-      if(!run.tut&&!warned&&base(t+1)>=run.crashAt){warned=true;if(Math.random()<(profile==='fox'?.65:.4)+.08*skl('intel')+(run.T.warn||0))news('⚠ '+pick(BEAR),'bear');}
+      if(!run.tut&&!warned&&base(t+1)>=run.crashAt){warned=true;if(Math.random()<(profile==='fox'?.65:.4)+.04*skl('intel')+(run.T.warn||0))news('⚠ '+pick(BEAR),'bear');}
       else if(!run.tut&&t>.8&&!events.some(e=>t<e.t0+1.6)&&Math.random()<dt*.3*(run.T.news||1)){
         const bull=Math.random()<.45;events.push({t0:t,amp:(bull?.12:-.14)*(run.T.amp||1)});if(!bull)run.sawDip=true;
         news(bull?'📈 '+pick(BULL):'⚠ '+pick(BEAR),bull?'bull':'bear');talk(bull?'hype':'fear');
@@ -993,6 +1030,7 @@ function frame(ts){
       while(candles.length<=idx){const pc=candles.length?candles[candles.length-1].c:1;candles.push({o:pc,h:pc,l:pc,c:pc,v:0,ghost:state==='ghost'});if(state==='holding')sfx.tick(cur);}
       const c=candles[candles.length-1];c.h=Math.max(c.h,cur);c.l=Math.min(c.l,cur);c.c=cur;
       const dv=dt*(1+Math.abs(cur-prev)/prev*300+(events.some(e=>t>=e.t0&&t<=e.t0+1.4)?3:0))*rnd(.6,1.4);c.v+=dv;volTotal+=dv*(1+cur);
+      if(state==='holding'&&run.boss){const hp=Math.max(0,1-(cur-1)/(run.boss.target-1));$('bossHp').style.width=(hp*100).toFixed(1)+'%';if(hp<=0&&!run.boss.down){run.boss.down=1;stamp('💥 HP 0! 지금 팔면 처치');}}
       if(state==='holding'){tension(dt);if(run.tut)tutTick();while(run.mi<MS.length&&cur>=MS[run.mi][0]){if(!(MS[run.mi][0]===1.3&&!run.T.limit))stamp(MS[run.mi][1]);run.mi++;}}
       if(state==='holding'){const lev=run.it.lev?2:1,g=balance*(cur-1)*lev;
         $('pnl').innerHTML='평가손익 <span class="'+(g>=0?'up':'dn')+'">'+sw(g)+'</span>'+(lev>1?' <span class="gd">x2</span>':'');}
@@ -1006,7 +1044,7 @@ function frame(ts){
   draw();requestAnimationFrame(frame);
 }
 
-buildChartIdle();paintTop();paintPickers();paintQuote();renderBook();setBtn();boot();talk('idle');talk('idle');
+buildChartIdle();paintTop();paintPickers();paintQuote();renderBook();setBtn();if(spFree()<0){sk={};store.set('shg_sk',sk);setTimeout(()=>toast('스킬 트리가 개편되어 SP를 전액 돌려드렸어요'),1500);}paintTop();boot();talk('idle');talk('idle');
 requestAnimationFrame(frame);
 })();
 </script>

@@ -445,6 +445,32 @@ body{font-size:14px;line-height:1.4}
 .ava2{position:absolute;transform:translate(-50%,-110%);pointer-events:none}.ava2 b{display:inline-block;background:#fff;color:#111;font-size:2.8cqw;padding:2px 7px;border-radius:9px;white-space:nowrap;position:relative;box-shadow:0 2px 0 rgba(0,0,0,.3)}
 .ava2 b::after{content:"";position:absolute;left:50%;bottom:-5px;margin-left:-5px;border:5px solid transparent;border-bottom:0;border-top-color:#fff}
 .colcat summary .mu{margin-left:auto;margin-right:10px;font-weight:600}.colcat summary{justify-content:flex-start;gap:6px}.colcat{border:0;margin-top:6px}.colcat summary{padding:10px 2px}.colcat .pan{margin-bottom:4px}
+/* release pass: 작은 화면·가로모드·탭 영역 */
+.card{position:fixed!important;left:50%!important;top:50%!important;transform:translate(-50%,-50%)!important;width:min(360px,calc(100vw - 24px))!important;max-height:calc(100dvh - 40px)!important;z-index:25;box-shadow:0 20px 60px rgba(0,0,0,.6);-webkit-overflow-scrolling:touch}
+.card .btns{position:sticky;bottom:-14px;background:linear-gradient(transparent,var(--bg) 40%);padding-top:8px}
+@keyframes slideC{from{transform:translate(-50%,10px);opacity:0}}
+#coach,#toast{animation-name:slideC!important}
+#toast{white-space:normal!important;max-width:calc(100vw - 32px);text-align:center;top:auto!important;bottom:calc(env(safe-area-inset-bottom,0px) + 150px);line-height:1.35}
+#rotate{display:none}
+@media (orientation:landscape) and (max-height:500px){#rotate{display:flex;position:fixed;inset:0;z-index:99;background:var(--bg);color:var(--fg);flex-direction:column;align-items:center;justify-content:center;gap:10px;font-weight:800;font-size:18px;text-align:center}#rotate i{font-size:56px;font-style:normal;animation:rot 1.6s ease-in-out infinite}}
+@keyframes rot{50%{transform:rotate(-90deg)}}
+@media (max-width:360px){header h1,.top h1{display:none}.rank{max-width:none}.tile b{font-size:13px}.acct span{font-size:13px}}
+.tile b{overflow-wrap:anywhere}
+#betrow>button,.page .betrow button,.ivb .setbtn,.shopb .setbtn,.li .setbtn,#giftBtn,#spBtn,.card button{min-height:40px}
+#rankBtn{min-height:36px;display:flex;flex-direction:column;justify-content:center}
+.card .cx{width:40px;height:40px}
+.setrow .sw{min-height:32px}
+.li.lock,.achgrid div.lock{opacity:.6}
+.chip small{color:#c3cad8}
+.talk{height:46px!important}
+.setbtn,.sk>button{min-height:40px}
+.achgrid small{font-size:11px!important;color:#c3cad8}
+.talk p>b,.talk em{color:#c7cfdc!important}
+.th span,.trs .th{font-size:10.5px!important}
+.tile b{font-size:clamp(12.5px,3.7vw,16px)}
+.talk{height:52px!important}
+@media (max-height:600px){#hold{height:44px!important;font-size:17px}.app{gap:5px;padding-block:4px 6px}#news{height:22px;line-height:20px}.acct div{padding:3px 8px}.betrow button{padding:3px 0}#betrow>button{min-height:34px}}
+@media (max-width:360px){.items .chip.ic b{font-size:11px;letter-spacing:-.3px}.items .chip.ic small{font-size:9.5px}}
 </style>
 
 <div class="app" id="app">
@@ -489,6 +515,7 @@ body{font-size:14px;line-height:1.4}
 <div id="coach" hidden></div>
 <canvas id="fx"></canvas>
 <div id="sheet" hidden><div class="sh"><div class="sh-h"><div><b>종목 고르기</b><small>매판 새 종목 8개 · 계급이 오르면 종류가 늘어나요</small></div><button type="button" id="shClose">닫기</button></div><div id="shList"></div></div></div>
+<div id="rotate"><i>📱</i>세로로 돌려서 플레이해 주세요</div>
 <div class="modal" id="modal" hidden><div class="box"><div id="modalBody"></div><button id="modalClose" type="button">닫기</button></div></div>
 
 <script>
@@ -645,7 +672,8 @@ const dayKey=()=>{const d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)
 let best=store.get('shg_best',0),ach=store.get('shg_ach',[]),xp=store.get('shg_xp',0);
 const SET=Object.assign({sound:true,bgm:true,vib:true,heart:true,fx:true,slow:false},store.get('shg_set',{}));
 let muted=!SET.sound;
-const vib=pat=>{if(!SET.vib)return;try{navigator.vibrate&&navigator.vibrate(pat)}catch(e){}};
+let touched=false;addEventListener('pointerdown',()=>touched=true,{capture:true,once:true});addEventListener('keydown',()=>touched=true,{once:true});
+const vib=pat=>{if(!SET.vib||!touched)return;try{navigator.vibrate&&navigator.vibrate(pat)}catch(e){}};
 let daily=store.get('shg_daily',null);
 const pickSeeded=(key,pool,k)=>{let h=0;for(const ch of key)h=(h*31+ch.charCodeAt(0))>>>0;const ids=[];k=Math.min(k,pool.length);
   while(ids.length<k){h=(h*1103515245+12345)>>>0;const id=pool[h%pool.length];if(!ids.includes(id))ids.push(id);}return ids;};
@@ -661,6 +689,8 @@ function ensureDaily(){
 ensureDaily();
 
 /* ---------- state ---------- */
+if(store.get('shg_tut',0)&&!store.get('shg_tutPaid',0))store.set('shg_tutPaid',1);
+addEventListener('error',e=>{try{const l=JSON.parse(localStorage.getItem('shg_errlog')||'[]');l.push(new Date().toISOString().slice(5,16)+' '+(e.message||'')+' @'+(e.lineno||''));localStorage.setItem('shg_errlog',JSON.stringify(l.slice(-10)));}catch(_){}});
 let pres=store.get('shg_pres',0),debt=store.get('shg_debt',0),credit=store.get('shg_credit',5),betPct=store.get('shg_pct',1),levSel=1,allin=false,inv=store.get('shg_inv',{}),gear=store.get('shg_gear',{}),armed=store.get('shg_armed',{});
 const LEVS=[[1,0],[2,1],[3,3],[5,5],[10,7],[20,9]]; // [배수, 해금 계급]
 let selId='o0',state='ready',balance=store.get('shg_bal',START),streak=0,round=1,tierSel='theme',sel={shield:false,insider:false,slow:false};
@@ -692,7 +722,7 @@ const priceOf=m=>roundTick(offer().p0*eM*m,isUsd());
 let ac=null;
 function au(){if(!ac){try{ac=new(window.AudioContext||window.webkitAudioContext)()}catch(e){}}if(ac&&ac.state==='suspended')ac.resume();return ac}
 function beep(f,d=.06,type='square',vol=.035,to){
-  if(muted)return;const a=au();if(!a)return;
+  if(muted||!touched)return;const a=au();if(!a)return;
   const o=a.createOscillator(),g=a.createGain(),n=a.currentTime;
   o.type=type;o.frequency.setValueAtTime(f,n);if(to)o.frequency.exponentialRampToValueAtTime(to,n+d);
   g.gain.setValueAtTime(vol,n);g.gain.exponentialRampToValueAtTime(.0001,n+d);
@@ -798,7 +828,7 @@ const REGIMES=[
   {e:'💸',n:'유동성 파티',d:'투자 한도 2배',s:'한도 2배',cap:2},{e:'🦢',n:'블랙스완 주의보',d:'폭락 25% 빨리 옴 · 수익 +60%',s:'폭락↑↑ 수익↑↑',crash:.75,pay:1.6}
 ];
 const regime=()=>{let r=0;try{r=stats.rounds}catch(e){}const b=Math.floor(r/5);return b<1?REGIMES[0]:REGIMES[(Math.imul(b,2654435761)>>>0)%REGIMES.length];};
-const betCap=()=>Math.round(1e6*(regime().cap||1)*Math.pow(1.22,lvlOf(xp).L-1)*(gear.car?1.1:1)*(gear.yacht?1.2:1)*(gear.firm?1.5:1)/1e4)*1e4;
+const betCap=noRg=>Math.round(1e6*(noRg?1:(regime().cap||1))*Math.pow(1.22,lvlOf(xp).L-1)*(gear.car?1.1:1)*(gear.yacht?1.2:1)*(gear.firm?1.5:1)/1e4)*1e4;
 // 실제 베팅 한도: 레벨 한도와 예수금 5% 중 큰 쪽
 // 예수금 구간별 체감: 1,000억까지 5%, 1조까지 2%, 그 위는 0.5%
 const wealthCap=b=>.1*Math.min(b,1e11)+.05*Math.min(Math.max(b-1e11,0),9e11)+.01*Math.min(Math.max(b-1e12,0),999e12)+.002*Math.max(b-1e15,0);
@@ -923,7 +953,7 @@ function start(){
   if(run||chartStock!==o){run=null;sell=null;crashed=false;eM=1;buildChartIdle();}
   eM=liveM;candles.forEach(c=>{c.o/=eM;c.h/=eM;c.l/=eM;c.c/=eM;});runBase=candles.length; // 지금 가격에 매수
   const lv=tut?1:levSel,ai=!tut&&allin&&rankOf(xp)>=2;
-  const bet=ai?Math.min(balance,maxStake(1)):Math.min(balance,maxStake(0))*(tut?1:betPct);
+  const bet=tut?(store.get('shg_tutPaid',0)?0:Math.min(balance,START)):ai?Math.min(balance,maxStake(1)):Math.min(balance,maxStake(0))*betPct; // 튜토리얼 다시보기는 연습(0원)
   let cost=0;for(const k in sel)if(sel[k])cost+=itemCost(k,bet);
   const fee=tut||gear.vip?0:bet*(.003+.002*(lv-1)); // 수수료·세금·레버리지 이자
   balance-=cost+fee;
@@ -984,7 +1014,7 @@ function release(){
   paintTop();paintPickers();setBtn();
   $('pnl').innerHTML='<span class="dn">매도 체결</span> <span class="up">'+sw(gain+bonus)+'</span>';
   unlock('first');
-  if(run.boss&&cur>=run.boss.target){const rw=run.bet*.5;balance+=rw;sell.bossReward=rw;stats.bossLv=(stats.bossLv||0)+1;stats.bossSP=(stats.bossSP||0)+2;store.set('shg_stats',stats);
+  if(run.boss&&!run.tut&&cur>=run.boss.target){const rw=run.bet*.5;balance+=rw;sell.bossReward=rw;stats.bossLv=(stats.bossLv||0)+1;stats.bossSP=(stats.bossSP||0)+2;store.set('shg_stats',stats);
     unlock('boss1');if(stats.bossLv>=5)unlock('boss5');gainXp(60);setTimeout(()=>{stamp('⚔️ 보스 처치!');burst(innerWidth/2,innerHeight*.4,70);},200);paintTop();}
   if(cur>=10)unlock('ten');
   if(fever)unlock('streak5');
@@ -996,6 +1026,7 @@ function release(){
   if(lowFlag&&balance-debt>=START){lowFlag=false;unlock('comeback');}
   if(!run.tut&&(Math.random()<.07||sell.bossReward)){const pz=rollPrize(true);setTimeout(()=>{const txt=pz.f();stamp('💎 보물상자!');toast('💎 보물상자 · '+pz.e+' '+txt);paintTop();paintPickers();},1300);}
 }
+let pendBust=null;
 function crash(){
   crashed=true;crashT=t;$('news').hidden=true;
   const last=candles[candles.length-1],bot=run.liq?cur*.8:run.crashAt*.62;
@@ -1023,8 +1054,7 @@ function crash(){
     res={win:false,key:run.key,m:0,pct:0,streak:0,insider:run.it.insider,sawDip:run.sawDip,boss:!!run.boss,lev:run.lev,allin:run.allin,liq:!!run.liq,shield:run.it.shield};
     const xg=3;gainXp(xg);
     $('pnl').innerHTML='<span class="dn">반대매매 '+sw(-loss)+'</span>';
-    if(balance<100000){state='over';showOver(loss);}
-    else{state='result';showBust(loss,L,xg);}
+    pendBust={loss,L,xg};
   }else{
     state='result';
     if(crashT-sell.t<.2)unlock('escape');
@@ -1033,9 +1063,10 @@ function crash(){
     if(pct>=95)unlock('god');
     res={win:sell.m>1,key:run.key,m:sell.m,pct,streak,insider:run.it.insider,sawDip:run.sawDip&&!sell.dip,boss:!!run.boss,bossKill:!!sell.bossReward,lev:run.lev,allin:run.allin,liq:!!run.liq,shield:run.it.shield};
     const xg=Math.round((8+pct/10+Math.min(30,(sell.m-1)*5))*(sell.fever?2:1)*(profile==='squirrel'?1.2:1));gainXp(xg);
-    lastAmt=sell.gain+sell.bonus-(sell.tax||0)+(run.re?(run.re.gain||0)-(run.re.loss||0)-run.re.fee:0);showWin(pct,xg);
+    lastAmt=sell.gain+sell.bonus-(sell.tax||0)+(sell.bossReward||0)+(run.re?(run.re.gain||0)-(run.re.loss||0)-run.re.fee:0);showWin(pct,xg);
   }
   missionsUpdate(res);recordRound(res);
+  if(pendBust){const P=pendBust;pendBust=null;if(balance+invTotal()<100000){state='over';showOver(P.loss);}else{state='result';showBust(P.loss,P.L,P.xg);if(balance<100000)setTimeout(()=>toast('💼 예수금이 바닥! 투자 탭에서 출금하세요'),900);}}
   offers=makeOffers();
   readyAt=performance.now()+800;
   paintTop();paintPickers();setBtn();setTimeout(setBtn,820);scheduleSwitch();
@@ -1100,9 +1131,9 @@ function showBust(loss,L,xg){
 const RAGE=['세력이 당신의 계좌를 보며 웃고 있습니다','방금 판 사람이 최고점에 팔았습니다','종토방: "ㅋㅋ 또 물린 사람?"','개미 털기 성공 (당함)','차트가 당신이 판 직후 반등했습니다','오늘의 교훈: 욕심은 금물… 이었는데'];
 /* ---------- 빚 · 신용등급 ---------- */
 const LOAN_X=[0,5,4,3.5,3,2.5,2,1.6,1.3,1,.8],LOAN_R=[0,.003,.004,.005,.007,.01,.013,.017,.022,.028,.035];
-const loanAmt=()=>Math.max(START,Math.round(betCap()*LOAN_X[credit]/1e4)*1e4);
+const loanAmt=()=>Math.max(START,Math.round(betCap(1)*LOAN_X[credit]/1e4)*1e4);
 const loanRate=()=>LOAN_R[credit];
-const debtLimit=()=>Math.max(START*30,betCap()*25);
+const debtLimit=()=>Math.max(START*30,betCap(1)*25);
 const canLoan=()=>credit<10&&debt+loanAmt()<=debtLimit();
 function takeLoan(){if(!canLoan())return false;const a=loanAmt();debt+=a;balance+=a;credit=Math.min(10,credit+1);stats.loans=(stats.loans||0)+1;store.set('shg_stats',stats);unlock('debt1');
   vib(40);toast('💳 대출 '+won(a)+' · 신용 '+credit+'등급'+(credit>=8?' (사채)':''));return true;}
@@ -1112,7 +1143,7 @@ function resetView(){streak=0;round=1;state='ready';card.hidden=true;candles=[];
 function declareBankrupt(forced){ // 파산 신청: 빚이 있으면 장비·소모품 압류, 신용 10등급
   stats.bankrupts++;stats.curRun=0;unlock('hangang');if(stats.bankrupts>=5)unlock('bk5');if(stats.bankrupts>=10)unlock('bk10');
   const seized=debt>0,gotSP=stats.bankrupts<=5;if(gotSP)stats.bonusSP=(stats.bonusSP||0)+1;
-  if(seized){gear={};inv={};armed={};store.set('shg_gear',gear);store.set('shg_inv',inv);store.set('shg_armed',armed);credit=10;stats.cleanRounds=0;if(forced)unlock('default');}
+  if(seized){gear={};inv={};armed={};invest={};store.set('shg_inv2',invest);store.set('shg_gear',gear);store.set('shg_inv',inv);store.set('shg_armed',armed);credit=10;stats.cleanRounds=0;if(forced)unlock('default');}
   debt=0;balance=START*(1+.2*skl('seed'));store.set('shg_stats',stats);resetView();sfx.up();
   stamp(seized?'🚨 압류 완료':'🔥 복수전 시작');setTimeout(()=>toast((seized?'🚨 장비·소모품 압류 · 신용 10등급 · ':'')+(gotSP?'😤 오기 SP +1':'다시 시작')),400);
 }
@@ -1124,7 +1155,7 @@ function showDefault(){ // 빚이 한도를 넘으면 강제 신용불량
   card.hidden=false;$('again').onclick=()=>declareBankrupt(true);
 }
 function showOver(loss){
-  const near=peak>1.05?'<div class="sub gd">고점(+'+((peak-1)*100).toFixed(1)+'%)에서 팔았으면 '+sw(run.bet*(peak-1))+'이었습니다</div>':'';
+  const near=run&&peak>1.05?'<div class="sub gd">고점(+'+((peak-1)*100).toFixed(1)+'%)에서 팔았으면 '+sw(run.bet*(peak-1))+'이었습니다</div>':'';
   const la=loanAmt(),ok=canLoan();
   vib([200,80,200,80,400]);flash('#000');
   card.innerHTML='<div class="grade dn">💸 돈이 바닥났습니다</div><div class="sub">반대매매로 계좌가 털렸습니다.<br><b>'+pick(RAGE)+'</b></div>'+near+
@@ -1164,6 +1195,7 @@ $('giftBtn').onclick=()=>{
   setTimeout(()=>{clearInterval(iv);const pz=rollPrize(false),txt=pz.f();store.set('shg_spin',dayKey());$('wheel').textContent=pz.e;$('wheelTxt').innerHTML='<b class="gd" style="font-size:18px">'+pz.t+' · '+txt+'</b>';sfx.up();burst(innerWidth/2,innerHeight*.45,50);paintTop();paintPickers();},1500);
 };
 /* ---------- card close ---------- */
+new MutationObserver(()=>{card.scrollTop=0;}).observe(card,{childList:true});
 new MutationObserver(()=>{if(card.hidden||card.querySelector('.cx')||card.querySelector('#again,.opts,#qStart,#qGo'))return;
   card.insertAdjacentHTML('afterbegin','<button class="cx" type="button" data-close aria-label="닫기">✕</button>');}).observe(card,{childList:true,attributes:true,attributeFilter:['hidden']});
 card.addEventListener('click',e=>{if(e.target.closest('[data-close]')){card.hidden=true;hideCoach();if(!tutDone&&(state==='ready'||state==='result'))coachReady();}});
@@ -1228,7 +1260,7 @@ function draw(){
   ctx.font='600 10.5px "JetBrains Mono",monospace';ctx.textBaseline='middle';ctx.textAlign='left';ctx.lineWidth=1;
   for(let i=0;i<=4;i++){const m=Math.exp(L0+(L1-L0)*(i+.5)/5),y=Y(m);
     ctx.strokeStyle=C.line;ctx.beginPath();ctx.moveTo(plotL,y);ctx.lineTo(plotR,y);ctx.stroke();
-    ctx.fillStyle=C.muted;ctx.fillText(fmtP(priceOf(m)),plotR+4,y);}
+    {const lc=candles[candles.length-1];const ty=lc?Y(Math.max(lc.c,Math.exp(L0))):-99;if(Math.abs(y-ty)>14){ctx.fillStyle=C.muted;ctx.fillText(fmtP(priceOf(m)),plotR+4,y);}}}
   const T=TIERS[offer().k];
   const hl=(m,col,label,dash)=>{if(m<Math.exp(L0)||m>Math.exp(L1))return;const y=Y(m);ctx.strokeStyle=col;ctx.setLineDash(dash);ctx.globalAlpha=.75;
     ctx.beginPath();ctx.moveTo(plotL,y);ctx.lineTo(plotR,y);ctx.stroke();ctx.setLineDash([]);ctx.globalAlpha=1;
@@ -1320,8 +1352,8 @@ function sellJuice(amt){
 }
 function animBal(){
   const from=shownBal,to=balance,t0=performance.now();cancelAnimationFrame(balAnim);
-  if(Math.abs(to-from)<1){$('bal').textContent=won(to);shownBal=to;return;}
-  const step=n=>{const k=Math.min(1,(n-t0)/650),e=1-Math.pow(1-k,3);shownBal=from+(to-from)*e;$('bal').textContent=won(shownBal);if(k<1)balAnim=requestAnimationFrame(step);};
+  if(Math.abs(to-from)<1){$('bal').textContent=to>=1e16?wonS(to):won(to);shownBal=to;return;}
+  const step=n=>{const k=Math.min(1,(n-t0)/650),e=1-Math.pow(1-k,3);shownBal=from+(to-from)*e;$('bal').textContent=shownBal>=1e16?wonS(shownBal):won(shownBal);if(k<1)balAnim=requestAnimationFrame(step);};
   balAnim=requestAnimationFrame(step);
 }
 function tension(dt){ // 심장 박동: 오래 들고 있을수록, 많이 오를수록 빨라짐
@@ -1383,8 +1415,8 @@ function tutTick(){
 function tutEnd(won){
   state='result';
   if(won){
-    tutDone=true;store.set('shg_tut',1);balance+=500000;
-    card.innerHTML='<div class="grade gd">튜토리얼 완료 🎉</div><div class="big up">+500,000원 보너스</div>'+
+    tutDone=true;store.set('shg_tut',1);const firstTut=!store.get('shg_tutPaid',0);if(firstTut){balance+=500000;store.set('shg_tutPaid',1);}
+    card.innerHTML='<div class="grade gd">튜토리얼 완료 🎉</div>'+(firstTut?'<div class="big up">+500,000원 보너스</div>':'<div class="sub">연습 모드라 보너스는 처음 한 번만 받아요.</div>')+
       '<ul><li>폭락 시점은 매판 랜덤이에요.</li><li>⚠ 악재 뉴스와 빨라지는 심장 소리를 보고 판단하세요. 악재 중엔 개미털기도 있어요.</li><li>계급이 오르면 아이템이 하나씩 열려요.</li><li>📋 일일 미션을 깨면 큰 보상이 있어요.</li></ul>'+
       '<div class="sub">이제 진짜 시작! 버튼을 눌러 매수해 보세요.</div>';
     burst(innerWidth/2,innerHeight*.4,60);sfx.up();
@@ -1444,7 +1476,7 @@ function recordRound(r){
   if(lastAmt>0)c.profit+=lastAmt;careerCheck();
   store.set('shg_stats',stats);
 }
-function rerender(name){const pg=$('page'),y=pg.scrollTop;pg.style.animation='none';tab(name,1);pg.scrollTop=y;}
+function rerender(name){const pg=$('page'),y=pg.scrollTop,op=[...pg.querySelectorAll('details')].map(d=>d.open);pg.style.animation='none';tab(name,1);pg.querySelectorAll('details').forEach((d,i)=>{if(i<op.length)d.open=op[i];});pg.scrollTop=y;}
 function tab(name,keep){
   curTab=name;document.querySelectorAll('#tabs button').forEach(b=>b.setAttribute('aria-current',b.dataset.tab===name?'page':'false'));
   const pg=$('page');
@@ -1581,8 +1613,8 @@ const HOMES=[ // 벽(왼/오), 바닥 2톤, 창문, 바닥 소품 [이모지,u,v
   {n:'달 기지',min:1e18,wl:'#2a2d40',wr:'#353950',f1:'#bdbdbd',f2:'#a8a8a8',win:'moon',size:1,deco:[['🚀',.8,.22,22],['🏳️',.88,.62,13],['🌑',.6,.85,10]]}
 ];
 const homeIdx=()=>{const w=balance+invTotal();let i=0;HOMES.forEach((h,j)=>{if(w>=h.min)i=j;});return i;};
-let lastHome=store.get('shg_home',0);
-function checkHome(){const h=homeIdx();if(h>lastHome){lastHome=h;store.set('shg_home',h);setTimeout(()=>{stamp('🏠 이사!');toast('🏠 '+HOMES[h].n+'(으)로 이사했습니다!');},400);}else if(h<lastHome){lastHome=h;store.set('shg_home',h);}}
+let lastHome=store.get('shg_home',-1);
+function checkHome(){const h=homeIdx();if(lastHome<0){lastHome=h;store.set('shg_home',h);return;}if(h>lastHome){lastHome=h;store.set('shg_home',h);setTimeout(()=>{stamp('🏠 이사!');toast('🏠 '+HOMES[h].n+'(으)로 이사했습니다!');},400);}} // 최고 기록을 넘을 때만 축하
 function roomHtml(){
   const hi=homeIdx(),H=HOMES[hi],nx=HOMES[hi+1],ri=rankOf(xp);
   return '<div class="room iso"><canvas class="roomcv" width="200" height="150"></canvas><div class="ava2"><b>'+(hi===0?'라면 또 먹냐…':hi<3?RANKS[ri][1]:'성공했다 '+RANKS[ri][1])+'</b></div>'+
@@ -1657,7 +1689,7 @@ function drawRooms(){document.querySelectorAll('.roomcv').forEach(cv=>{
 function pageInvest(){
   const ri=rankOf(xp),tot=invTotal(),last=Object.values(invest).reduce((n,h)=>n+(h.d||0),0);
   return '<h2>💼 투자</h2>'+roomHtml()+'<p class="lead" style="margin-top:10px">예수금을 넣어두면 <b>판을 할 때마다</b> 수익(또는 손실)이 붙어요. 상품마다 수익이 붙는 한도가 있어요. 빼면 수수료가 나가요.</p>'+
-   '<div class="tiles"><div class="tile"><small>투자 평가금</small><b>'+wonS(tot)+'</b></div><div class="tile"><small>지난 판 손익</small><b class="'+(last>=0?'up':'dn')+'">'+swS(last)+'</b></div><div class="tile"><small>예수금</small><b>'+won(balance)+'</b></div></div>'+
+   '<div class="tiles"><div class="tile"><small>투자 평가금</small><b>'+wonS(tot)+'</b></div><div class="tile"><small>지난 판 손익</small><b class="'+(last>=0?'up':'dn')+'">'+swS(last)+'</b></div><div class="tile"><small>예수금</small><b>'+wonS(balance)+'</b></div></div>'+
    '<h3>투자 비율</h3><div class="betrow ipct">'+[.05,.1,.25,.5,1].map(r=>'<button type="button" data-ipct="'+r+'" aria-pressed="'+(invPct===r)+'">'+(r*100)+'%</button>').join('')+'</div><p class="lead" style="margin-top:6px">입금은 예수금의 '+(invPct*100)+'%, 출금은 상품 잔액의 '+(invPct*100)+'%</p>'+
    '<h3>상품</h3><div class="pan">'+PROD.map(P=>{const h=invest[P.id]||{a:0},lk=ri<P.lv;
      return '<div class="li'+(lk?' lock':'')+'"><i>'+P.e+'</i><div><b>'+P.n+(h.a>0?' <span class="mu">· '+won(h.a)+'</span>':'')+'</b><small>'+(lk?'🔒 '+RANKS[P.lv][1]+' 계급부터':P.d+' · 수익 한도 '+won(P.max)+(P.fee?' · 출금 수수료 '+P.fee*100+'%':''))+(h.d?' · 지난 판 <span class="'+(h.d>=0?'up':'dn')+'">'+sw(h.d)+'</span>':'')+'</small>'+
@@ -1692,6 +1724,8 @@ function pageSet(){
   const row=(k,t,d)=>`<div class="setrow"><div><b>${t}</b><small>${d}</small></div><button class="sw" type="button" role="switch" data-set="${k}" aria-checked="${SET[k]}" aria-label="${t}"></button></div>`;
   return '<h2>⚙️ 설정</h2><div class="pan">'+row('sound','효과음','버튼, 틱, 매도·폭락 소리')+row('bgm','배경음악','잔잔한 비트 · 매수 중엔 빨라짐')+row('heart','심장 박동','보유 중 긴장감 사운드')+row('vib','진동','지원하는 기기에서만 작동')+row('fx','화려한 효과','파티클, 섬광, 화면 흔들림')+row('slow','느린 차트','차트 속도 20% 감소')+'</div>'+glossary()+
    '<h3>다시 하기</h3><div style="display:grid;gap:8px"><button class="setbtn ghost" type="button" id="retake">🧪 투자 성향 테스트 다시 하기</button><button class="setbtn ghost" type="button" id="reTut">🎓 튜토리얼 다시 보기</button></div>'+
+   '<h3>백업</h3><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><button class="setbtn" type="button" id="bkOut">💾 백업 코드 복사</button><button class="setbtn ghost" type="button" id="bkIn">📥 백업 불러오기</button></div><p class="lead" style="margin-top:8px">기록은 이 폰의 브라우저에만 저장돼요. 아이폰은 홈 화면에 추가하지 않으면 오래 안 쓸 때 지워질 수 있으니, 가끔 백업 코드를 메모장에 저장해 두세요. 다른 폰으로 옮길 때도 써요.</p>'+
+   '<h3>개인정보</h3><p class="lead">이 게임은 회원가입이 없고, 플레이 기록을 서버로 보내지 않습니다. 글꼴만 Google Fonts에서 받아옵니다.</p>'+
    '<h3>데이터</h3><button class="setbtn danger" type="button" id="wipe" style="width:100%">모든 기록 초기화</button><p class="lead" style="margin-top:8px">기록은 이 기기의 브라우저에만 저장됩니다. 초기화하면 계급, 스킬, 업적이 모두 사라집니다.</p>'+
    '<h3>친구 초대</h3><button class="setbtn" type="button" id="invite" style="width:100%">📤 친구에게 게임 공유하기</button>'+
    '<p class="lead" style="margin-top:10px">상한가 따라잡기 v2.0 · 가상 머니 게임이며 실제 투자·현금과 무관합니다. 실제 돈은 쓰이지 않습니다.</p>';
@@ -1710,7 +1744,7 @@ function bindPage(name){
   pg.querySelectorAll('[data-col]').forEach(b=>b.onclick=()=>{const c=COL.find(x=>x.id===b.dataset.col);if(col.includes(c.id)||balance<c.p)return;balance-=c.p;col.push(c.id);store.set('shg_col',col);sfx.up();burst(innerWidth/2,innerHeight*.4,80);stamp(c.e+' '+c.n+' 획득!');toast('🏆 컬렉션 '+col.length+'/'+COL.length+' · SP +'+(c.fic?2:1));if(catDone(c.cat)){const K=CATS.find(k=>k.id===c.cat);setTimeout(()=>{stamp(K.e+' '+K.n+' 완성!');toast('✅ '+K.n+' 분류 완성 · 보너스 SP +3');},900);}paintTop();paintPickers();rerender('invest');});
   const iv=$('invite');if(iv)iv.onclick=()=>shareOut('📈 상한가 따라잡기 — 폭락 전에 팔면 이기는 주식 게임. 내 자산 '+won(balance)+', 나보다 잘할 수 있음?');
   const pz=$('prestige');if(pz)pz.onclick=()=>{if(balance+invTotal()-debt<PRES_NEED())return;if(!confirm('은퇴하고 새 회차를 시작할까요?\n돈·투자·장비·소모품·빚이 초기화됩니다.'))return;
-    pres++;store.set('shg_pres',pres);balance=START;debt=0;credit=5;gear={};inv={};armed={};invest={};lastHome=0;
+    pres++;store.set('shg_pres',pres);lowFlag=false;streak=0;app.classList.remove('fever');$('fever').hidden=true;balance=START;debt=0;credit=5;gear={};inv={};armed={};invest={};lastHome=0;
     ['shg_gear','shg_inv','shg_armed','shg_inv2'].forEach(k=>store.set(k,{}));store.set('shg_home',0);store.set('shg_bal',balance);
     sfx.up();burst(innerWidth/2,innerHeight*.4,90);stamp('🔁 '+pres+'회차 시작!');toast('⭐ 환생 '+pres+'회 · 익절 수익 +'+pres*10+'% · SP +2');paintTop();paintPickers();rerender('record');};
   const bl=$('bLoan');if(bl)bl.onclick=()=>{if(takeLoan()){paintTop();paintPickers();rerender('shop');}};
@@ -1720,6 +1754,12 @@ function bindPage(name){
   pg.querySelectorAll('[data-set]').forEach(b=>b.onclick=()=>{const k=b.dataset.set;SET[k]=!SET[k];store.set('shg_set',SET);b.setAttribute('aria-checked',SET[k]);if(k==='sound'){muted=!SET.sound;if(!muted){au();beep(660,.06,'sine',.04);}}if(k==='vib')vib(30);if(k==='bgm'||k==='sound')bgm.sync();});
   const rt=$('reTut');if(rt)rt.onclick=()=>{tutDone=false;store.set('shg_tut',0);tab('trade');if(state==='ready'||state==='result'){card.hidden=true;coachReady();}};
   const rq=$('retake');if(rq)rq.onclick=()=>{tab('trade');if(state==='ready'||state==='result')startQuiz();};
+  const bo=$('bkOut');if(bo)bo.onclick=()=>{const d={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k.startsWith('shg_'))d[k]=localStorage.getItem(k);}
+    const code='SHG1:'+btoa(unescape(encodeURIComponent(JSON.stringify(d))));(navigator.clipboard?navigator.clipboard.writeText(code):Promise.reject()).then(()=>toast('💾 백업 코드를 복사했어요. 메모장에 붙여넣어 보관하세요'),()=>prompt('아래 코드를 길게 눌러 복사하세요',code));};
+  const bi=$('bkIn');if(bi)bi.onclick=()=>{const code=(prompt('백업 코드를 붙여넣으세요 (지금 기록은 덮어써집니다)')||'').trim();if(!code)return;
+    try{if(!code.startsWith('SHG1:'))throw 0;const d=JSON.parse(decodeURIComponent(escape(atob(code.slice(5)))));if(!d.shg_bal)throw 0;
+      Object.keys(localStorage).filter(k=>k.startsWith('shg_')).forEach(k=>localStorage.removeItem(k));for(const k in d)if(k.startsWith('shg_'))localStorage.setItem(k,d[k]);toast('📥 불러오는 중…');setTimeout(()=>location.reload(),500);}
+    catch(e){toast('백업 코드가 올바르지 않아요');}};
   const w=$('wipe');if(w)w.onclick=()=>{if(Date.now()-resetArm>3000){resetArm=Date.now();w.textContent='정말 초기화할까요? 3초 안에 한 번 더 누르세요';return;}
     try{Object.keys(localStorage).filter(k=>k.startsWith('shg_')).forEach(k=>localStorage.removeItem(k));}catch(e){}location.reload();};
 }
@@ -1742,7 +1782,7 @@ function frame(ts){
     }
     if(b>=run.crashAt){cur=run.crashAt;peak=Math.max(peak,cur);crash();}
     else{
-      cur=Math.max(.85,b*(1+(wig(t)-1)*(run.T.wig||1)*(run.rg.wig||1))*newsF(t));peak=Math.max(peak,cur);
+      cur=Math.max(run.liqLine?.3:.85,b*(1+(wig(t)-1)*(run.T.wig||1)*(run.rg.wig||1))*newsF(t));peak=Math.max(peak,cur);
       if(state==='holding'&&run.liqLine&&cur<=run.liqLine){if(inv.noliq>0){inv.noliq--;store.set('shg_inv',inv);stats.c.items++;run.liqLine=0;toast('🧯 청산 방지권 발동! 살았다');}else{run.liq=1;stamp('💀 강제청산','dn');crash();draw();requestAnimationFrame(frame);return;}}
       const idx=runBase+Math.floor(t/CD);
       while(candles.length<=idx){const pc=candles.length?candles[candles.length-1].c:1;candles.push({o:pc,h:pc,l:pc,c:pc,v:0,ghost:state==='ghost',r:1});if(state==='holding')sfx.tick(cur);}
@@ -1765,6 +1805,7 @@ function frame(ts){
 }
 
 buildChartIdle();paintTop();paintPickers();paintQuote();renderBook();setBtn();if(spFree()<0){sk={};store.set('shg_sk',sk);setTimeout(()=>toast('스킬 트리가 개편되어 SP를 전액 돌려드렸어요'),1500);}paintTop();boot();talk('idle');talk('idle');
+setTimeout(()=>{try{if(tutDone&&profile&&state==='ready'&&balance+invTotal()<100000){state='over';showOver(0);setBtn();}}catch(e){}},900);
 requestAnimationFrame(frame);
 })();
 </script>

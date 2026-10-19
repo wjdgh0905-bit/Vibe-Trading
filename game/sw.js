@@ -16,8 +16,8 @@ self.addEventListener('fetch', e => {
   // 게임 페이지: 온라인이면 최신 버전, 오프라인이면 캐시
   if (e.request.mode === 'navigate') {
     e.respondWith(fetch(e.request)
-      .then(r => { const copy = r.clone(); caches.open(CACHE).then(c => c.put('./', copy)); return r; })
-      .catch(() => caches.match('./')));
+      .then(r => { if (r.ok) { const copy = r.clone(); caches.open(CACHE).then(c => c.put(e.request.url.split('?')[0], copy)); } return r; })
+      .catch(() => caches.match(e.request.url.split('?')[0]).then(h => h || caches.match('./'))));
     return;
   }
   // 나머지(아이콘, 글꼴): 캐시 우선

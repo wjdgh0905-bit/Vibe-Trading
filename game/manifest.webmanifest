@@ -1,11 +1,11 @@
 {
-  "name": "상한가 따라잡기",
-  "short_name": "상한가",
+  "name": "떡상 계좌 키우기",
+  "short_name": "떡상계좌",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#080a0f",
+  "background_color": "#ffb800",
   "theme_color": "#080a0f",
   "icons": [
     { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },

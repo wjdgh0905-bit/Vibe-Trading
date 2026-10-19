@@ -7,6 +7,6 @@
 - `manifest.webmanifest`, `*.png`: 홈 화면 앱 설정과 아이콘
 - `og.png`: 링크 공유 미리보기 이미지
 
-플레이 주소: https://wjdgh0905-bit.github.io/Vibe-Trading/
+플레이 주소: https://melange-lab.github.io/
 
 `main`에 푸시하면 `.github/workflows/game-pages.yml`이 GitHub Pages로 배포합니다.

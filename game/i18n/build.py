@@ -9,22 +9,14 @@ s=s.replace("const GAME_URL='https://melange-lab.github.io/'","const GAME_URL='h
 bad=[k for k,v in d.items() if re.search(r"['\"`<>\\\n]|\$\{",v)]
 open('game_en.html','w').write(s)
 print('missing',len(miss),list(miss)[:20]);print('bad',bad[:10])
-H=r'''<!doctype html>
-<html lang="en"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
-<meta name="theme-color" content="#080a0f">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Stonks">
-<link rel="apple-touch-icon" href="../apple-touch-icon.png">
-<link rel="icon" href="../icon-192.png">
-<meta name="description" content="Sell before the crash. Grow your account from a tiny room to a moon base. Free stock-timing game with virtual money.">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Stonks Tycoon 📈 Sell before the crash">
-<meta property="og:description" content="Sell before the crash and grow your account. Free · No install · Virtual money">
-<meta property="og:image" content="https://melange-lab.github.io/og.png">
-<meta property="og:url" content="https://melange-lab.github.io/en/">
-<meta name="twitter:card" content="summary_large_image">
-'''
-open('index.html','w').write(H+s+'\n</body></html>\n')
+import re as _re
+K=open('/home/user/Vibe-Trading/game/index.html').read().split('\n')[:22]
+H='\n'.join(K)+'\n'
+for a,b in [('lang="ko"','lang="en"'),('content="떡상계좌"','content="Stonks"'),
+ ('<link rel="manifest" href="manifest.webmanifest">\n',''),('href="apple-touch-icon.png"','href="../apple-touch-icon.png"'),('href="icon-192.png"','href="../icon-192.png"')]:H=H.replace(a,b)
+H=_re.sub(r'<meta name="description" content="[^"]*">','<meta name="description" content="Sell before the crash. Grow your account from a tiny room to a moon base. Free stock-timing game with virtual money.">',H)
+H=_re.sub(r'<meta property="og:title" content="[^"]*">','<meta property="og:title" content="Stonks Tycoon 📈 Sell before the crash">',H)
+H=_re.sub(r'<meta property="og:description" content="[^"]*">','<meta property="og:description" content="Sell before the crash and grow your account. Free · No install · Virtual money">',H)
+H=H.replace('<meta property="og:url" content="https://melange-lab.github.io/">','<meta property="og:url" content="https://melange-lab.github.io/en/">')
+assert not _re.search('[가-힣]',H),'korean left in head'
+open('index.html','w').write(H+s+"\n<script>\nif('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('../sw.js').catch(()=>{}));\n</script>\n</body></html>\n")

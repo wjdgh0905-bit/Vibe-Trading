@@ -554,7 +554,7 @@ const START=1000000,CD=0.35;
 const tickOf=p=>p<2000?1:p<5000?5:p<20000?10:p<50000?50:p<200000?100:p<500000?500:1000;
 const roundTick=(p,usd)=>{if(usd)return Math.max(.01,Math.round(p*100)/100);const k=tickOf(p);return Math.max(k,Math.round(p/k)*k)};
 const isUsd=()=>{const o=offer();return !!(o&&TIERS[o.k].usd)};
-const fmtP=p=>isUsd()?'$'+p.toFixed(2):LANG==='en'?'$'+(p/1000).toFixed(p<10000?3:2):Math.round(p).toLocaleString('ko-KR');
+const fmtP=p=>isUsd()?'$'+p.toFixed(2):LANG==='en'?'$'+(p/1000).toFixed(p<1000?3:2):Math.round(p).toLocaleString('ko-KR');
 
 const TIERS={
   blue:{e:'🏛',label:'우량주',rate:.7,scale:.6,loss:.45,instant:.01,limit:true,p:[30000,180000],lv:0,unit:40,news:.6,amp:.7,wig:.6,
@@ -1225,7 +1225,7 @@ function showOver(loss){
 }
 function showIntro(){
   const ms=daily.ids.map(id=>MISSIONS.find(m=>m.id===id).t);
-  card.innerHTML='<div class="grade"><span class="up">상한가</span> 따라잡기</div>'+
+  card.innerHTML='<div class="grade"><span class="up">떡상</span> 계좌 키우기</div>'+
    '<ul><li>버튼을 <b>한 번 누르면 매수</b>, <b>다시 누르면 매도</b>합니다.</li><li>언젠가 반드시 폭락합니다. 그 전에 파세요.</li><li>악재 뉴스는 진짜 신호일 수도, 개미털기일 수도 있습니다.</li><li>한 판에 거는 돈은 <b>투자 한도</b>까지예요. 한도는 레벨이 오를수록 커집니다.</li><li>5연속 익절하면 <b class="gd">FEVER</b>로 보너스가 2배입니다.</li><li>아이템은 계급이 오를 때마다 하나씩 열립니다.</li></ul>'+
    '<div class="sub" style="text-align:left;margin-top:10px"><b class="gd">오늘의 미션</b><br>· '+ms.slice(0,3).join('<br>· ')+(ms.length>3?'<br>· 외 '+(ms.length-3)+'개는 미션 탭에서':'')+'</div>'+
    '<div class="btns"><button class="pri" type="button" data-close>닫고 시작하기</button></div>';
@@ -1482,7 +1482,7 @@ function tutEnd(won){
   card.hidden=false;
 }
 function boot(){
-  if(!profile){card.innerHTML='<div class="grade"><span class="up">상한가</span> 따라잡기</div><div class="sub">한 번 누르면 매수, 다시 누르면 매도.<br>폭락 전에 팔면 이기는 게임이에요.</div><div class="sub">먼저 나는 어떤 투자자인지 알아볼까요?</div><div class="btns"><button class="pri" id="qStart" type="button">🧪 투자 성향 테스트 (5문항)</button></div>';
+  if(!profile){card.innerHTML='<div class="grade"><span class="up">떡상</span> 계좌 키우기</div><div class="sub">한 번 누르면 매수, 다시 누르면 매도.<br>폭락 전에 팔면 이기는 게임이에요.</div><div class="sub">먼저 나는 어떤 투자자인지 알아볼까요?</div><div class="btns"><button class="pri" id="qStart" type="button">🧪 투자 성향 테스트 (5문항)</button></div>';
     card.hidden=false;$('qStart').onclick=startQuiz;}
   else if(!tutDone){card.hidden=true;coachReady();}
   else showIntro();
@@ -1958,7 +1958,6 @@ setTimeout(()=>{try{if(tutDone&&profile&&state==='ready'&&balance+invTotal()<100
 requestAnimationFrame(frame);
 })();
 </script>
-
 <script>
 if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
 </script>

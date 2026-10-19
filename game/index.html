@@ -19,6 +19,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <style>*,*::before,*::after{box-sizing:border-box}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);height:100%}body{margin:0;font-size:14px;overscroll-behavior:none}[hidden]{display:none!important}</style>
 </head><body>
+<script async data-ad-frequency-hint="120s" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2213068202184499" crossorigin="anonymous"></script>
 <title>떡상 계좌 키우기</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@400;500;700;900&family=JetBrains+Mono:wght@500;700;800&display=swap">
@@ -530,9 +531,12 @@ const cv=$('cv'),ctx=cv.getContext('2d'),chart=$('chart'),btn=$('hold'),card=$('
 const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 const C={up:css('--up'),down:css('--down'),gold:css('--gold'),line:css('--line'),muted:css('--muted'),rumor:css('--rumor'),fg:css('--fg'),panel:css('--panel')};
 // 좁은 칸용 짧은 금액: 조 이상은 큰 단위만
-const wonS=n=>{const a=Math.abs(n),sg=n<0?'-':'';if(a<1e12){if(a>=1e8)return sg+Math.floor(a/1e8).toLocaleString('ko-KR')+'억원';if(a>=1e6)return sg+Math.floor(a/1e4).toLocaleString('ko-KR')+'만원';return won(n);}for(const [U,nm] of UNITS)if(a>=U){const v=n/U;return (v>=100?Math.floor(v).toLocaleString('ko-KR'):v.toFixed(1).replace(/\.0$/,''))+nm+'원';}return won(n);};
+const LANG='ko';
+const USDU=[[1e33,'Dc'],[1e30,'No'],[1e27,'Oc'],[1e24,'Sp'],[1e21,'Sx'],[1e18,'Qi'],[1e15,'Qa'],[1e12,'T'],[1e9,'B'],[1e6,'M']];
+const usd=n=>{const a=Math.abs(n)/1000,sg=n<0?'-':'';if(!isFinite(a))return sg+'$∞';for(const [U,nm] of USDU)if(a>=U){const v=a/U;return sg+'$'+(v>=100?Math.floor(v):+v.toFixed(2))+nm;}return sg+'$'+(a>=1000?Math.floor(a).toLocaleString('en-US'):+a.toFixed(2));};
+const wonS=n=>{if(LANG==='en')return usd(n);const a=Math.abs(n),sg=n<0?'-':'';if(a<1e12){if(a>=1e8)return sg+Math.floor(a/1e8).toLocaleString('ko-KR')+'억원';if(a>=1e6)return sg+Math.floor(a/1e4).toLocaleString('ko-KR')+'만원';return won(n);}for(const [U,nm] of UNITS)if(a>=U){const v=n/U;return (v>=100?Math.floor(v).toLocaleString('ko-KR'):v.toFixed(1).replace(/\.0$/,''))+nm+'원';}return won(n);};
 const UNITS=[[1e44,'재'],[1e40,'정'],[1e36,'간'],[1e32,'구'],[1e28,'양'],[1e24,'자'],[1e20,'해'],[1e16,'경'],[1e12,'조']];
-const won=n=>{const a=Math.floor(Math.abs(n)),sg=n<0?'-':'',f=x=>x.toLocaleString('ko-KR');
+const won=n=>{if(LANG==='en')return usd(n);const a=Math.floor(Math.abs(n)),sg=n<0?'-':'',f=x=>x.toLocaleString('ko-KR');
   if(!isFinite(a))return sg+'∞원';
   for(let i=0;i<UNITS.length;i++){const [U,nm]=UNITS[i];if(a>=U){const top=Math.floor(a/U),lo=Math.floor(a/(U/1e4))-top*1e4,ln=i+1<UNITS.length?UNITS[i+1][1]:'억';
     return sg+f(top)+nm+(lo>0&&top<1e4?' '+f(lo)+ln:'')+'원';}}
@@ -550,7 +554,7 @@ const START=1000000,CD=0.35;
 const tickOf=p=>p<2000?1:p<5000?5:p<20000?10:p<50000?50:p<200000?100:p<500000?500:1000;
 const roundTick=(p,usd)=>{if(usd)return Math.max(.01,Math.round(p*100)/100);const k=tickOf(p);return Math.max(k,Math.round(p/k)*k)};
 const isUsd=()=>{const o=offer();return !!(o&&TIERS[o.k].usd)};
-const fmtP=p=>isUsd()?'$'+p.toFixed(2):Math.round(p).toLocaleString('ko-KR');
+const fmtP=p=>isUsd()?'$'+p.toFixed(2):LANG==='en'?'$'+(p/1000).toFixed(p<10000?3:2):Math.round(p).toLocaleString('ko-KR');
 
 const TIERS={
   blue:{e:'🏛',label:'우량주',rate:.7,scale:.6,loss:.45,instant:.01,limit:true,p:[30000,180000],lv:0,unit:40,news:.6,amp:.7,wig:.6,
@@ -997,6 +1001,7 @@ function start(){
   let entryTag='';
   if(!tut&&!ch){const d=liveM-1;if(d<=-.04){crashAt*=1.08;entryTag='📉 저점 매수! 폭락 늦게 옴';}else if(d>=.05){crashAt*=.93;entryTag='🔥 추격 매수… 폭락 빨리 옴';}}
   if(entryTag)setTimeout(()=>toast(entryTag),120);
+  cgPlay(true);
   run={offer:o,T,key:o.k,crashAt,it,hint,sawDip:false,tut,chal:!!ch,cost:cost+fee,bet,lev:lv,allin:ai,liqLine:lv>1?1-(gear.jet?.95:.85)/lv:0};
   if(o.k==='boss'&&armed.bossT>0){armed.bossT--;store.set('shg_armed',armed);}
   if(ai)setTimeout(()=>stamp('🎲 영끌 '+won(bet)),60);else if(lv>=5)setTimeout(()=>stamp('⚡ '+lv+'배'),60);
@@ -1186,12 +1191,19 @@ function showDefault(){ // 빚이 한도를 넘으면 강제 신용불량
 }
 
 /* ---------- 수익화: 보상형 광고 · 후원 (설정값 넣으면 켜짐) ---------- */
-const CFG={adClient:'',adTest:false,donateUrl:''}; // adClient: 'ca-pub-…' (구글 애드센스 H5 게임 광고), donateUrl: 후원 링크
-const adsOn=()=>!!CFG.adClient&&typeof window.adBreak==='function';
-if(CFG.adClient){const sc=document.createElement('script');sc.async=true;sc.src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client='+CFG.adClient;sc.crossOrigin='anonymous';
-  if(CFG.adTest)sc.dataset.adbreakTest='on';sc.dataset.adFrequencyHint='120s';document.head.appendChild(sc);
+const CFG={adClient:'ca-pub-2213068202184499',adTest:false,donateUrl:''}; // adClient: 'ca-pub-…' (구글 애드센스 H5 게임 광고), donateUrl: 후원 링크
+// 크레이지게임즈 포털에서 실행되면 그쪽 SDK 광고 사용
+const CG={on:false,S:null,last:0};
+if(/crazygames/.test(location.hostname+' '+document.referrer)||/[?&]cg\b/.test(location.search)){const sc=document.createElement('script');sc.src='https://sdk.crazygames.com/crazygames-sdk-v3.js';
+  sc.onload=async()=>{try{const S=window.CrazyGames.SDK;await S.init();if(S.environment!=='disabled'){CG.S=S;CG.on=true;try{S.game.loadingStop();}catch(e){}}}catch(e){}};document.head.appendChild(sc);}
+const cgPlay=on=>{if(!CG.on)return;try{on?CG.S.game.gameplayStart():CG.S.game.gameplayStop();}catch(e){}};
+function midAd(){if(!CG.on||performance.now()-CG.last<180000)return;CG.last=performance.now();try{CG.S.ad.requestAd('midgame',{adStarted:()=>{muted=true;},adFinished:()=>{muted=!SET.sound;},adError:()=>{muted=!SET.sound;}});}catch(e){}}
+const adsOn=()=>CG.on||(!!CFG.adClient&&typeof window.adBreak==='function');
+if(CFG.adClient){if(!document.querySelector('script[src*=adsbygoogle]')){const sc=document.createElement('script');sc.async=true;sc.src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client='+CFG.adClient;sc.crossOrigin='anonymous';
+  if(CFG.adTest)sc.dataset.adbreakTest='on';sc.dataset.adFrequencyHint='120s';document.head.appendChild(sc);}
   window.adsbygoogle=window.adsbygoogle||[];window.adBreak=window.adConfig=function(o){window.adsbygoogle.push(o);};window.adConfig({preloadAdBreaks:'on',sound:'on'});}
 function rewardAd(name,onReward){if(!adsOn()){toast('광고를 불러올 수 없어요');return;}let ok=false;
+  if(CG.on){CG.last=performance.now();try{CG.S.ad.requestAd('rewarded',{adStarted:()=>{muted=true;},adFinished:()=>{muted=!SET.sound;onReward();},adError:()=>{muted=!SET.sound;toast('지금은 볼 수 있는 광고가 없어요');}});}catch(e){toast('광고를 불러올 수 없어요');}return;}
   window.adBreak({type:'reward',name,beforeAd:()=>{muted=true;},afterAd:()=>{muted=!SET.sound;},beforeReward:show=>show(),adViewed:()=>{ok=true;onReward();},adDismissed:()=>toast('끝까지 봐야 보상을 받아요'),adBreakDone:i=>{if(!ok&&i&&i.breakStatus!=='viewed'&&i.breakStatus!=='dismissed')toast('지금은 볼 수 있는 광고가 없어요');}});}
 // 앱 아이콘 배지: 오늘 룰렛 안 돌렸으면 1
 const badge=()=>{try{if(!navigator.setAppBadge)return;if(store.get('shg_spin','')!==dayKey())navigator.setAppBadge(1);else navigator.clearAppBadge();}catch(e){}};
@@ -1510,6 +1522,7 @@ function careerCheck(){ // 기록 미션: 달성할 때마다 다음 단계 목�
   if(got){gainXp(30*got);store.set('shg_stats',stats);}
 }
 function recordRound(r){
+  cgPlay(false);if(!r.liq)setTimeout(midAd,1800);
   try{seasonXp(r.win?20:10);}catch(e){}
   const c=stats.c;c.rounds++;if(r.win){c.wins++;if(r.m>=2)c.x2++;if(r.m>=3)c.x3++;if(r.m>=5)c.x5++;if(r.m>=10)c.x10++;if(r.pct>=90)c.p90++;if(r.pct>=95)c.p95++;if(r.streak===5)c.fever++;if(r.lev>=5)c.levWin++;if(r.allin)c.allinWin++;if(r.sawDip)c.dip++;if(r.allin&&r.m>=2)unlock('allin');}
   if(r.liq)c.liq++;

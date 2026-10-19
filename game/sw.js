@@ -1,5 +1,5 @@
 // 오프라인 지원: 게임 파일은 설치 시 캐시, 글꼴은 처음 받을 때 캐시
-const CACHE = 'sanghanga-v43';
+const CACHE = 'sanghanga-v44';
 const CORE = ['./', 'index.html', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png'];
 
 self.addEventListener('install', e => {

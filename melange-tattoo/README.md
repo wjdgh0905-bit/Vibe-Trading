@@ -7,7 +7,7 @@ index.html        # English page  (/)
 404.html          # shown for any address that doesn't exist
 ko/index.html     # Korean page   (/ko/)
 styles.css        # shared styles — cobalt "blue ink on paper"
-gallery.js        # gallery data (120 photos, subject + placement per photo)
+gallery.js        # gallery data (subject, placement and alt text per photo)
 script.js         # behaviour: gallery filters/lightbox, booking form, guest spots, motion
 assets/work/      # gallery photos as WebP: <id>-480.webp and <id>-1080.webp
 assets/gallery/   # original JPGs (source files, not loaded by the pages)

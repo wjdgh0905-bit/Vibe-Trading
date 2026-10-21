@@ -33,6 +33,7 @@
   color-scheme:dark;--appw:760px;
 }
 html,body{height:100%}
+html[lang=ko] body{word-break:keep-all;overflow-wrap:anywhere}
 body{background:var(--bg);color:var(--fg);font-family:var(--body);overflow:hidden;user-select:none;-webkit-user-select:none;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 .app{height:100%;box-sizing:border-box;max-width:var(--appw);margin:0 auto;display:flex;flex-direction:column;gap:6px;padding-block:6px 10px;padding-left:max(12px,env(safe-area-inset-left,0px));padding-right:max(12px,env(safe-area-inset-right,0px))}
 @media (min-width:420px){.app{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}}
@@ -83,6 +84,7 @@ h1 b{color:var(--up);font-weight:400}
 canvas{position:absolute;inset:0;width:100%;height:100%}
 #pnl{position:absolute;left:8px;top:6px;font-family:var(--mono);font-size:12px;font-weight:700;pointer-events:none;background:color-mix(in srgb,var(--panel) 80%,transparent);padding:2px 6px;border-radius:6px;font-variant-numeric:tabular-nums}
 #fever{position:absolute;right:62px;top:6px;font:900 12px var(--body);color:#1a1200;background:var(--gold);padding:2px 8px;border-radius:999px;pointer-events:none;animation:pulse .5s infinite alternate}
+.book{overflow-wrap:normal}
 .book{background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden;display:flex;flex-direction:column;font-family:var(--mono);font-size:12px;font-variant-numeric:tabular-nums}
 .book .hd{font-family:var(--body);font-size:11px;color:var(--muted);text-align:center;padding:3px 0;border-bottom:1px solid var(--line)}
 .ob{position:relative;flex:1;display:flex;flex-direction:column;justify-content:center;padding:0 5px;min-height:0;border-bottom:1px solid color-mix(in srgb,var(--line) 50%,transparent)}
@@ -147,19 +149,20 @@ canvas{position:absolute;inset:0;width:100%;height:100%}
 
 .modal{position:fixed;inset:0;background:color-mix(in srgb,var(--bg) 82%,transparent);display:grid;place-items:center;z-index:20;padding:16px}
 .modal .box{width:min(380px,100%);max-height:80vh;overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;box-sizing:border-box}
+.modal .box:focus,#sheet .sh:focus{outline:none}
 .modal h2{font-family:var(--display);font-weight:400;margin:0 0 4px;font-size:22px}
 .modal .note{font-size:12px;color:var(--muted);margin:0 0 8px}
 .li{display:flex;gap:10px;align-items:center;padding:8px 0;border-top:1px solid var(--line)}
 .li>i{font-style:normal;font-size:20px;width:26px;text-align:center;flex:none}
 .li div{flex:1;min-width:0}
-.li b{display:block;font-size:13.5px}.li small{color:var(--muted);font-size:11.5px}
+.li b{display:block;font-size:13.5px;overflow-wrap:anywhere}.li small{color:var(--muted);font-size:11.5px}
 .li .pb{height:4px;background:var(--line);border-radius:2px;margin-top:4px;overflow:hidden}.li .pb u{display:block;height:100%;background:var(--gold)}
 .li.lock{opacity:.35}.li.lock>i{filter:grayscale(1)}
 .li.done b{color:var(--gold)}
 .modal button{margin-top:12px;width:100%;font:inherit;font-weight:700;background:var(--fg);color:var(--bg);border:0;border-radius:10px;padding:10px;cursor:pointer}
 
-#bossbar{position:absolute;left:8px;right:8px;top:34px;z-index:2;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:8px;background:color-mix(in srgb,#7a1020 55%,var(--bg));border:1px solid #ff4d6d;border-radius:10px;padding:6px 10px;pointer-events:none}
-#bossbar b{font-size:13px;white-space:nowrap}
+#bossbar{position:absolute;left:8px;right:8px;top:34px;z-index:2;display:grid;grid-template-columns:minmax(0,max-content) minmax(28px,1fr) auto;align-items:center;gap:8px;background:color-mix(in srgb,#7a1020 55%,var(--bg));border:1px solid #ff4d6d;border-radius:10px;padding:6px 10px;pointer-events:none}
+#bossbar b{font-size:13px;white-space:nowrap;min-width:0;overflow:hidden;text-overflow:ellipsis}
 #bossbar i{height:10px;background:#2a0a10;border-radius:5px;overflow:hidden;border:1px solid #ff4d6d}
 #bossbar u{display:block;height:100%;background:linear-gradient(90deg,#ff2d55,#ff8a00);transition:width .15s}
 #bossbar small{font-family:var(--mono);font-size:11.5px;color:var(--gold);white-space:nowrap}
@@ -186,13 +189,15 @@ canvas{position:absolute;inset:0;width:100%;height:100%}
 .sh-h{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}
 .sh-h b{display:block;font-family:var(--display);font-weight:400;font-size:21px}
 .sh-h small{color:var(--muted);font-size:12px}
-.sh-h button{font:inherit;font-weight:700;font-size:13px;background:var(--panel2);color:var(--fg);border:1px solid var(--line);border-radius:9px;padding:7px 12px;cursor:pointer}
+.sh-h button{font:inherit;font-weight:700;font-size:13px;background:var(--panel2);color:var(--fg);border:1px solid var(--line);border-radius:9px;padding:7px 12px;cursor:pointer;white-space:nowrap;flex:none}
 .srow{width:100%;display:flex;align-items:center;gap:10px;font:inherit;text-align:left;background:none;color:var(--fg);border:0;border-top:1px solid var(--line);padding:10px 4px;cursor:pointer}
 .srow.on{background:color-mix(in srgb,var(--gold) 12%,transparent);border-radius:10px}
 .srow .pr{flex:none;width:58px;text-align:right;font-family:var(--mono);font-weight:800;font-size:13px}
+.srow small{white-space:normal;text-overflow:clip;word-break:keep-all;overflow-wrap:anywhere}
+@media (max-width:340px){.srow svg{display:none}}
 .items{grid-template-columns:repeat(5,minmax(0,1fr))!important}
 .items .chip.ic.hot{border-color:#ff4d6d;background:color-mix(in srgb,#ff2d55 22%,var(--panel))}
-.shopb{display:flex;flex-direction:column;gap:4px;flex:none}
+.li>.shopb{display:flex;flex-direction:column;gap:4px;flex:none}
 .shopb .setbtn{padding:6px 10px;font-size:12px;white-space:nowrap}
 .shopb .setbtn:disabled{opacity:.4}
 .tabs button{font-size:11px}
@@ -269,7 +274,7 @@ body{font-size:14px;line-height:1.4}
 @keyframes flash{from{opacity:.5}to{opacity:0}}
 #bal.bump{animation:bump .5s ease-out}
 @keyframes bump{30%{transform:scale(1.12);color:var(--gold)}}
-#coach{position:fixed;left:50%;transform:translateX(-50%);width:min(340px,calc(100% - 32px));box-sizing:border-box;background:var(--gold);color:#1a1300;font-weight:700;font-size:14px;line-height:1.5;padding:11px 14px;border-radius:12px;z-index:27;pointer-events:none;box-shadow:0 8px 28px #000c;animation:slide .25s ease-out}
+#coach{position:fixed;left:50%;transform:translateX(-50%);width:min(340px,calc(100% - 32px));box-sizing:border-box;background:var(--gold);color:#1a1300;font-weight:700;font-size:14px;line-height:1.5;padding:11px 14px;border-radius:12px;z-index:19;pointer-events:none;box-shadow:0 8px 28px #000c;animation:slide .25s ease-out}
 #coach.above::after{content:"";position:absolute;left:50%;bottom:-8px;margin-left:-8px;border:8px solid transparent;border-bottom:0;border-top-color:var(--gold)}
 #coach b{font-weight:900}
 .glow{outline:3px solid var(--gold)!important;outline-offset:2px}
@@ -310,9 +315,9 @@ body{font-size:14px;line-height:1.4}
 .sphead small{display:block;color:var(--muted);font-size:11.5px}
 .skills{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:10px}
 .sk{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:11px;display:flex;flex-direction:column;gap:5px;min-width:0}
-.sk .t{display:flex;align-items:center;gap:7px}
+.sk .t{display:flex;flex-wrap:wrap;align-items:center;gap:7px}
 .sk .t i{font-style:normal;font-size:22px}
-.sk .t b{font-size:14px}
+.sk .t b{font-size:14px;flex:1;overflow-wrap:normal}
 .sk p{margin:0;font-size:11.5px;color:var(--muted);line-height:1.4;min-height:32px}
 .pips{display:flex;gap:3px}.pips u{flex:1;height:5px;border-radius:3px;background:var(--line)}.pips u.on{background:var(--gold)}
 .sk button,.setbtn{font:inherit;font-size:12.5px;font-weight:800;border:0;border-radius:9px;padding:8px;cursor:pointer;background:var(--gold);color:#1a1300}
@@ -335,7 +340,7 @@ body{font-size:14px;line-height:1.4}
 .achgrid div.lock{opacity:.3}.achgrid div.lock i{filter:grayscale(1)}
 .typecard{display:flex;gap:12px;align-items:center}
 .typecard i{font-style:normal;font-size:40px}
-@media (prefers-reduced-motion:reduce){.page{animation:none}#coach{animation:none}.stamp,.pop,.flash{animation-duration:.01s}.chart.shake,#hold.on,.card,#news,#toast,#fever,.app.fever #hold{animation:none}}
+@media (prefers-reduced-motion:reduce){.page{animation:none}#coach{animation:none}.flash{animation-duration:.01s}.stamp{animation:none;transform:translate(-50%,-50%) rotate(-3deg)}.pop{animation:none;transform:translate(-50%,-40px)}.chart.shake,#hold.on,.card,#news,#toast,#fever,.app.fever #hold{animation:none}}
 /* compact pass: smaller numbers, tighter rhythm */
 .app{gap:7px}
 .acct{border-radius:12px}
@@ -347,6 +352,9 @@ body{font-size:14px;line-height:1.4}
 .qn small{font-size:10.5px}
 #qPrice{font-size:clamp(20px,6vw,26px)}
 #qChg{font-size:11.5px!important;margin-top:2px}
+#qCode{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.qp{flex:none}
+#qChg{white-space:nowrap}
 #news{height:24px;line-height:22px;font-size:12px;border-radius:7px}
 .chart,.book{border-radius:12px}
 #pnl{font-size:11.5px}
@@ -382,11 +390,13 @@ body{font-size:14px;line-height:1.4}
 #regime{left:50%!important;right:auto!important;transform:translateX(-50%);top:6px;max-width:calc(100% - 16px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:auto;cursor:pointer;z-index:3}
 #pnl{top:auto!important;bottom:6px;z-index:3}
 #fever{top:30px!important;right:8px!important;left:auto!important}
+#bossbar:not([hidden])~#fever{top:76px!important}
 .tabs button{font-size:10px}.tabs button i{font-size:16px}
 .ivb{display:flex;gap:4px;margin-top:6px}.ivb .setbtn{flex:1;padding:5px 0;font-size:11.5px}
 .setbtn.ghost{background:var(--panel2);color:var(--fg);border:1px solid var(--line)}
 .setbtn:disabled{opacity:.35;cursor:default}
 #hold.re{background:linear-gradient(90deg,#ff7a1a,var(--up));box-shadow:0 5px 0 #7a2a00;animation:pulse .5s infinite alternate}
+html[lang=en] #hold:not(.on):not(.wait){color:#05140d} 
 .ipct button{padding:6px 0}
 .room{position:relative;container-type:inline-size;width:100%;aspect-ratio:4/3;border-radius:16px;overflow:hidden;border:2px solid var(--line);margin:8px 0 4px;background:#2a2f3a}
 .rwall{position:absolute;left:0;right:0;top:0;height:64%;background:repeating-linear-gradient(90deg,#3b4252 0 14px,#373e4d 14px 28px)}
@@ -412,7 +422,7 @@ body{font-size:14px;line-height:1.4}
 .ava b::after{content:"";position:absolute;left:50%;bottom:-5px;margin-left:-5px;border:5px solid transparent;border-bottom:0;border-top-color:#fff}
 .shelf{position:absolute;left:52%;right:3%;bottom:13%;display:grid;grid-template-columns:repeat(5,1fr);gap:1cqw;background:rgba(60,35,15,.75);border:2px solid #a87a4c;border-radius:6px;padding:1cqw}
 .si{background:none;border:0;padding:0;font-size:5cqw;line-height:1.2;cursor:pointer}.si.no{opacity:.25;filter:grayscale(1);font-size:3.5cqw}
-.rlabel{position:absolute;left:0;right:0;bottom:0;background:rgba(0,0,0,.55);color:#fff;font-size:2.9cqw;font-weight:700;padding:1cqw 2.5cqw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rlabel{position:absolute;left:0;right:0;bottom:0;background:rgba(0,0,0,.55);color:#fff;font-size:2.9cqw;font-weight:700;padding:1cqw 2.5cqw;white-space:normal}
 .room.s0 .rwall{background:linear-gradient(#5b5547,#4a4438);}
 .room.s0 .rfloor{background:repeating-linear-gradient(90deg,#6b6455 0 30px,#625b4c 30px 60px)}
 .room.s0 .rwin,.room.s1 .rwin{left:62%;right:12%;top:10%;height:26%}
@@ -451,18 +461,21 @@ body{font-size:14px;line-height:1.4}
 .card .btns{position:sticky;bottom:-14px;background:linear-gradient(transparent,var(--bg) 40%);padding-top:8px}
 @keyframes slideC{from{transform:translate(-50%,10px);opacity:0}}
 #coach,#toast{animation-name:slideC!important}
-#toast{white-space:normal!important;max-width:calc(100vw - 32px);text-align:center;top:auto!important;bottom:calc(env(safe-area-inset-bottom,0px) + 150px);line-height:1.35}
+#toast{white-space:normal!important;width:max-content;max-width:calc(100vw - 32px);text-align:center;top:auto!important;bottom:calc(env(safe-area-inset-bottom,0px) + 150px);line-height:1.35}
 #rotate{display:none}
 @media (orientation:landscape) and (max-height:500px) and (pointer:coarse){#rotate{display:flex;position:fixed;inset:0;z-index:99;background:var(--bg);color:var(--fg);flex-direction:column;align-items:center;justify-content:center;gap:10px;font-weight:800;font-size:18px;text-align:center}#rotate i{font-size:56px;font-style:normal;animation:rot 1.6s ease-in-out infinite}}
 @keyframes rot{50%{transform:rotate(-90deg)}}
 .emb #rotate{display:none!important}
 
 @media (orientation:landscape){:root{--appw:max(400px,min(760px,70vh))}}
-@media (max-width:360px){header h1,.top h1{display:none}.rank{max-width:none}.tile b{font-size:13px}.acct span{font-size:13px}}
+@media (max-width:360px){header h1,.top h1{display:none}.rank{max-width:none}.tile b{font-size:13px}.acct span{font-size:13px}.acct #debtTag{white-space:normal;line-height:1.15}}
+@media (max-width:480px),(orientation:landscape) and (max-height:700px){header h1,.top h1{display:none}.rank{max-width:none}}
+html[lang=en] .rank{max-width:none} 
 .tile b{overflow-wrap:anywhere}
 #betrow>button,.page .betrow button,.ivb .setbtn,.shopb .setbtn,.li .setbtn,#giftBtn,#spBtn,.card button{min-height:40px}
 #rankBtn{min-height:36px;display:flex;flex-direction:column;justify-content:center}
 .card .cx{width:40px;height:40px}
+.card .cx+.grade{padding-inline:38px}
 .setrow .sw{min-height:32px}
 .li.lock,.achgrid div.lock{opacity:.6}
 .chip small{color:#c3cad8}
@@ -477,16 +490,18 @@ body{font-size:14px;line-height:1.4}
 @media (max-width:360px){.items .chip.ic b{font-size:11px;letter-spacing:-.3px}.items .chip.ic small{font-size:9.5px}}
 
 @media (max-height:570px){.main{min-height:60px}.app{gap:4px;overflow-x:hidden;overflow-y:auto}#giftBtn,#spBtn{min-height:34px}#rankBtn{min-height:32px}.pick1{padding-block:5px}.tabs button{padding:3px 0 2px}.tabs button i{font-size:15px}}
-@media (max-height:520px){.ob{overflow:hidden}.ob .p,.ob .q{display:none}}
+@media (max-height:585px){.ob .p,.ob .q{line-height:1}.ob .p{font-size:11px}.ob .q{font-size:9.5px}.ob.now{outline-width:1px;outline-offset:-1px}}
+@media (max-height:540px){.ob{overflow:hidden}.ob .p,.ob .q{display:none}}
 .app.pgopen .tabs{position:fixed;left:max(12px,env(safe-area-inset-left,0px));right:max(12px,env(safe-area-inset-right,0px));bottom:calc(env(safe-area-inset-bottom,0px) + 10px);max-width:calc(var(--appw) - 32px);margin:0 auto}
 @media (min-width:420px){.app.pgopen .tabs{left:max(16px,env(safe-area-inset-left,0px));right:max(16px,env(safe-area-inset-right,0px))}}
 @media (max-height:600px){.app.pgopen .tabs{bottom:calc(env(safe-area-inset-bottom,0px) + 6px)}}
 .app.pgopen .card{visibility:hidden}
-.spass{display:grid;grid-template-columns:repeat(5,1fr);gap:5px}
+.spass{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px}
 .spass .sp{font:inherit;background:var(--panel2);color:var(--muted);border:1px solid var(--line);border-radius:10px;padding:5px 2px;display:flex;flex-direction:column;align-items:center;gap:1px;min-height:64px;cursor:pointer}
-.spass .sp i{font-style:normal;font-size:20px}.spass .sp small{font-size:10px}.spass .sp em{font-style:normal;font-size:9.5px;line-height:1.15;text-align:center;overflow:hidden;max-height:2.3em}
+.spass .sp i{font-style:normal;font-size:20px}.spass .sp small{font-size:10px}.spass .sp em{font-style:normal;font-size:9.5px;line-height:1.15;text-align:center}
 .spass .sp.ok{border-color:var(--gold);color:var(--fg);background:color-mix(in srgb,var(--gold) 16%,var(--panel2));animation:pulse .8s infinite alternate}
 .spass .sp.got{opacity:.45}.spass .sp:disabled{cursor:default}
+@media (max-width:359px){.spass{gap:4px}.spass .sp{padding-inline:1px}.spass .sp em{font-size:8.5px}}
 </style>
 
 <div class="app" id="app">
@@ -530,9 +545,9 @@ body{font-size:14px;line-height:1.4}
 <div id="toast" hidden></div>
 <div id="coach" hidden></div>
 <canvas id="fx"></canvas>
-<div id="sheet" hidden><div class="sh"><div class="sh-h"><div><b>Pick a stock</b><small>8 new stocks each round · rank up to unlock more types</small></div><button type="button" id="shClose">Close</button></div><div id="shList"></div></div></div>
+<div id="sheet" hidden><div class="sh" tabindex="-1"><div class="sh-h"><div><b>Pick a stock</b><small>8 new stocks each round · rank up to unlock more types</small></div><button type="button" id="shClose">Close</button></div><div id="shList"></div></div></div>
 <div id="rotate"><i>📱</i>Rotate to portrait to play</div>
-<div class="modal" id="modal" hidden><div class="box"><div id="modalBody"></div><button id="modalClose" type="button">Close</button></div></div>
+<div class="modal" id="modal" hidden><div class="box" tabindex="-1"><div id="modalBody"></div><button id="modalClose" type="button">Close</button></div></div>
 
 <script>
 (()=>{
@@ -543,9 +558,9 @@ const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim
 const C={up:css('--up'),down:css('--down'),gold:css('--gold'),line:css('--line'),muted:css('--muted'),rumor:css('--rumor'),fg:css('--fg'),panel:css('--panel')};
 const LANG='en';
 const USDU=[[1e45,'Qad'],[1e42,'Td'],[1e39,'Dd'],[1e36,'Ud'],[1e33,'Dc'],[1e30,'No'],[1e27,'Oc'],[1e24,'Sp'],[1e21,'Sx'],[1e18,'Qi'],[1e15,'Qa'],[1e12,'T'],[1e9,'B'],[1e6,'M']];
-const usd=n=>{const a=Math.abs(n)/1000,sg=n<0?'-':'';if(!isFinite(a))return sg+'$∞';for(const [U,nm] of USDU)if(a>=U*(1-1e-9)){const v=a/U;return sg+'$'+(v>=100?Math.floor(v).toLocaleString('en-US'):+v.toFixed(2))+nm;}return sg+'$'+(a>=1000?Math.floor(a).toLocaleString('en-US'):+a.toFixed(2));};
+const usd=n=>{const a=Math.abs(n)/1000,sg=n<0?'-':'';if(!isFinite(a))return sg+'$∞';for(const [U,nm] of USDU)if(a>=U*(1-1e-9)){const v=a/U;return sg+'$'+(v>=100?Math.floor(v).toLocaleString('en-US'):+v.toFixed(2))+nm;}const r=Math.round(a*100)/100;return sg+'$'+(r>=1000?Math.floor(r).toLocaleString('en-US'):(r%1?r.toFixed(2):String(r)));};
 const tierLbl=n=>LANG==='en'?'Tier '+n:n+' tier';
-const wonS=n=>{if(LANG==='en')return usd(n);const a=Math.abs(n),sg=n<0?'-':'';if(a<1e12){if(a>=1e8)return sg+Math.floor(a/1e8).toLocaleString('en-US')+'00K';if(a>=1e6)return sg+Math.floor(a/1e4).toLocaleString('en-US')+'0';return won(n);}for(const [U,nm] of UNITS)if(a>=U){const v=n/U;return (v>=100?Math.floor(v).toLocaleString('en-US'):v.toFixed(1).replace(/\.0$/,''))+nm+'';}return won(n);};
+const wonS=n=>{if(LANG==='en')return usd(n);const a=Math.abs(n),sg=n<0?'-':'';if(a<1e12){if(a>=1e8){const v=Math.floor(a/1e7)/10;return sg+(v>=100?Math.floor(v).toLocaleString('en-US'):v)+'00K';}if(a>=1e6)return sg+Math.floor(a/1e4).toLocaleString('en-US')+'0';return won(n);}for(const [U,nm] of UNITS)if(a>=U){const v=Math.floor(a/U*10+1e-9)/10;return sg+(v>=100?Math.floor(v).toLocaleString('en-US'):v)+nm+'';}return won(n);};
 const UNITS=[[1e44,'00Dd'],[1e40,'0Ud'],[1e36,'Dc'],[1e32,'00Oc'],[1e28,'0Sx'],[1e24,'Sx'],[1e20,'00Qa'],[1e16,'0T'],[1e12,'B']];
 const won=n=>{if(LANG==='en')return usd(n);const a=Math.floor(Math.abs(n)),sg=n<0?'-':'',f=x=>x.toLocaleString('en-US');
   if(!isFinite(a))return sg+'∞';
@@ -554,9 +569,9 @@ const won=n=>{if(LANG==='en')return usd(n);const a=Math.floor(Math.abs(n)),sg=n<
   if(a>=1e8){const e=Math.floor(a/1e8),m=Math.floor(a%1e8/1e4);return sg+f(e)+'00K'+(m?' '+f(m)+'0':'')+'';}
   if(a>=1e6)return sg+f(Math.floor(a/1e4))+'0';
   return sg+f(a)+'';};
-const sw=n=>(n>=0?'+':'-')+won(Math.abs(n));
+const sw=n=>(n>0?'+':n<0?'-':'')+won(Math.abs(n));
 const PRES_NEED=()=>1e12*Math.pow(10,pres);
-const swS=n=>(n>=0?'+':'-')+wonS(Math.abs(n));
+const swS=n=>(n>0?'+':n<0?'-':'')+wonS(Math.abs(n));
 const pick=a=>a[Math.floor(Math.random()*a.length)];
 const rnd=(a,b)=>a+Math.random()*(b-a);
 const store={off:0,seen:{},get(k,d){try{const v=localStorage.getItem(k);store.seen[k]=v;return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){if(store.off)return;try{const s=JSON.stringify(v);localStorage.setItem(k,s);store.seen[k]=s;}catch(e){}}};
@@ -564,7 +579,7 @@ const START=1000000,CD=0.35;
 const tickOf=p=>p<2000?1:p<5000?5:p<20000?10:p<50000?50:p<200000?100:p<500000?500:1000;
 const roundTick=(p,usd)=>{if(usd)return Math.max(.01,Math.round(p*100)/100);const k=tickOf(p);return Math.max(k,Math.round(p/k)*k)};
 const isUsd=()=>{const o=offer();return !!(o&&TIERS[o.k].usd)};
-const fmtP=p=>isUsd()?'$'+p.toFixed(2):LANG==='en'?'$'+(p/1000).toFixed(p<1000?3:2):Math.round(p).toLocaleString('en-US');
+const fmtP=(p,ref=p)=>isUsd()?'$'+p.toFixed(2):LANG==='en'?'$'+(p/1000).toFixed(ref<5000?3:2):Math.round(p).toLocaleString('en-US');
 
 const TIERS={
   blue:{e:'🏛',label:'Blue Chip',rate:.7,scale:.6,loss:.45,instant:.01,limit:true,p:[30000,180000],lv:0,unit:40,news:.6,amp:.7,wig:.6,
@@ -580,7 +595,7 @@ const TIERS={
   ipo:{e:'🎉',label:'IPOs',rate:1.7,scale:2,loss:.85,instant:.14,limit:true,p:[10000,50000],lv:4,unit:300,wig:1.4,
     desc:'Day-one listing: double up or bust',names:['(New) RobotAI','(New) SpaceOne','(New) Quantum Labs','(New) GreenHydrogen','(New) K-Beauty Lab']},
   us:{e:'🇺🇸',label:'US Stocks',rate:.9,scale:1.1,loss:.6,instant:.02,limit:false,usd:true,p:[20,400],lv:6,unit:25,news:.8,amp:.8,wig:.8,
-    desc:'Priced in USD, no limit up',names:[['Nova Dynamics','NOVA'],['Atlas Chips','ATLC'],['BlueOcean EV','BOEV'],['Quantum Cloud','QNTC'],['Mega Social','MGSO']]},
+    desc:'Wall Street listing, no limit up',names:[['Nova Dynamics','NOVA'],['Atlas Chips','ATLC'],['BlueOcean EV','BOEV'],['Quantum Cloud','QNTC'],['Mega Social','MGSO']]},
   pump:{e:'🎭',label:'Pump Stocks',rate:1.1,scale:1.6,loss:.92,instant:.03,limit:true,p:[1000,8000],lv:8,unit:600,news:1.6,amp:1.5,warn:.35,
     desc:'Whale pumps. The warnings are usually real',names:['Myth Tech','KoreaStar','Ace Holdings','Sejong Industrial','Sun Bio']},
   boss:{e:'👹',label:'Boss Fight',rate:1.05,scale:1.4,loss:.7,instant:.02,limit:false,p:[5000,50000],lv:99,hidden:true,unit:500,news:1.4,amp:1.3,names:['Boss']}
@@ -588,7 +603,7 @@ const TIERS={
 const BOSSES=[{e:'👹',n:'Short Sellers'},{e:'🌑',n:'Black Monday'},{e:'🏦',n:'Rate Hike'},{e:'🎭',n:'Pump Kingpin'},{e:'⛔',n:'Circuit Breaker'},{e:'🦢',n:'Black Swan'},{e:'🐻',n:'Giant Bear'},{e:'🌪',n:'Financial Crisis'}];
 const bossInfo=lv=>({lv,B:BOSSES[lv%BOSSES.length],target:+(1.5+.2*lv).toFixed(2)});
 const ITEMS={
-  shield:{short:'Shield',name:'🛡 Stop-Loss Shield',cost:.08,desc:'Crash loss -10%',lv:1},
+  shield:{short:'Shield',name:'🛡 Stop-Loss Shield',cost:.08,desc:'Crash loss −75% (min 10%)',lv:1},
   insider:{short:'Tip',name:'🔍 Insider Tip',cost:.05,desc:'Crash point hint (70%)',lv:2},
   slow:{short:'Slow',name:'⏱ Slow-Mo',cost:.06,desc:'Chart speed 0.6×',lv:3}
 };
@@ -623,29 +638,29 @@ const ACH=[
   ['default','🚨','Defaulter','Get repossessed over the debt limit']
 ];
 const MISSIONS=[
-  {id:'w15',t:'Take profit 15×',n:15,f:r=>r.win},
+  {id:'w15',t:'Take profit 15 times',n:15,f:r=>r.win},
   {id:'r30',t:'Play 30 rounds',n:30,f:()=>true},
-  {id:'x2',t:'Sell at x2 (+100%)+ 5×',n:5,f:r=>r.win&&r.m>=2},
-  {id:'x3',t:'Sell at x3 (+200%)+ 2×',n:2,f:r=>r.win&&r.m>=3},
-  {id:'p90',t:'Peak accuracy 90%+ 3×',n:3,f:r=>r.win&&r.pct>=90},
-  {id:'s3',t:'3-win streak 3×',n:3,f:r=>r.win&&r.streak>=3},
-  {id:'quick',t:'Quick profit at +10~30% 6×',n:6,f:r=>r.win&&r.m>=1.1&&r.m<1.3},
-  {id:'lim8',t:'Sell above +30% 8×',n:8,f:r=>r.win&&r.m>=1.3},
-  {id:'hodl',t:'Hold through bad news & profit 3×',n:3,f:r=>r.win&&r.sawDip},
-  {id:'blue6',t:'🏛 Profit on Blue Chips 6×',n:6,f:r=>r.win&&r.key==='blue'},
-  {id:'theme6',t:'🔥 Profit on Hype Stocks 6×',n:6,f:r=>r.win&&r.key==='theme'},
-  {id:'meme5',t:'🐸 Profit on Crypto 5×',n:5,f:r=>r.win&&r.key==='meme'},
-  {id:'boss',t:'👹 Try a boss fight 1×',n:1,f:r=>r.boss},
-  {id:'shield2',t:'🛡 Get saved by Shield 2×',n:2,lv:1,f:r=>!r.win&&r.shield},
-  {id:'bio3',t:'🧬 Profit on Biotech 3×',n:3,lv:1,f:r=>r.win&&r.key==='bio'},
-  {id:'ins3',t:'🔍 Profit with a tip 3×',n:3,lv:2,f:r=>r.win&&r.insider},
-  {id:'penny3',t:'🪙 Profit on Penny Stocks 3×',n:3,lv:2,f:r=>r.win&&r.key==='penny'},
-  {id:'ipo2',t:'🎉 Profit on IPOs 2×',n:2,lv:4,f:r=>r.win&&r.key==='ipo'},
-  {id:'lev3',t:'⚡ Profit with leverage 3×',n:3,lv:1,f:r=>r.win&&r.lev>1},
-  {id:'lev5',t:'⚡ Profit at 5×+ leverage 2×',n:2,lv:5,f:r=>r.win&&r.lev>=5},
-  {id:'allin2',t:'🎲 Profit all-in 2×',n:2,lv:2,f:r=>r.win&&r.allin},
-  {id:'us3',t:'🇺🇸 Profit on US Stocks 3×',n:3,lv:6,f:r=>r.win&&r.key==='us'},
-  {id:'pump2',t:'🎭 Profit on Pump Stocks 2×',n:2,lv:8,f:r=>r.win&&r.key==='pump'}
+  {id:'x2',t:'Sell 5 times at x2+ (+100%)',n:5,f:r=>r.win&&r.m>=2},
+  {id:'x3',t:'Sell 2 times at x3+ (+200%)',n:2,f:r=>r.win&&r.m>=3},
+  {id:'p90',t:'Peak accuracy 90%+ 3 times',n:3,f:r=>r.win&&r.pct>=90},
+  {id:'s3',t:'3-win streak 3 times',n:3,f:r=>r.win&&r.streak>=3},
+  {id:'quick',t:'Quick profit at +10~30% 6 times',n:6,f:r=>r.win&&r.m>=1.1&&r.m<1.3},
+  {id:'lim8',t:'Sell above +30% 8 times',n:8,f:r=>r.win&&r.m>=1.3},
+  {id:'hodl',t:'Hold through bad news & profit 3 times',n:3,f:r=>r.win&&r.sawDip},
+  {id:'blue6',t:'🏛 Profit on Blue Chips 6 times',n:6,f:r=>r.win&&r.key==='blue'},
+  {id:'theme6',t:'🔥 Profit on Hype Stocks 6 times',n:6,f:r=>r.win&&r.key==='theme'},
+  {id:'meme5',t:'🐸 Profit on Crypto 5 times',n:5,f:r=>r.win&&r.key==='meme'},
+  {id:'boss',t:'👹 Try a boss fight once',n:1,f:r=>r.boss},
+  {id:'shield2',t:'🛡 Get saved by Shield 2 times',n:2,lv:1,f:r=>!r.win&&r.shield},
+  {id:'bio3',t:'🧬 Profit on Biotech 3 times',n:3,lv:1,f:r=>r.win&&r.key==='bio'},
+  {id:'ins3',t:'🔍 Profit with a tip 3 times',n:3,lv:2,f:r=>r.win&&r.insider},
+  {id:'penny3',t:'🪙 Profit on Penny Stocks 3 times',n:3,lv:2,f:r=>r.win&&r.key==='penny'},
+  {id:'ipo2',t:'🎉 Profit on IPOs 2 times',n:2,lv:4,f:r=>r.win&&r.key==='ipo'},
+  {id:'lev3',t:'⚡ Profit with leverage 3 times',n:3,lv:1,f:r=>r.win&&r.lev>1},
+  {id:'lev5',t:'⚡ Profit 2 times at 5×+ leverage',n:2,lv:5,f:r=>r.win&&r.lev>=5},
+  {id:'allin2',t:'🎲 Profit all-in 2 times',n:2,lv:2,f:r=>r.win&&r.allin},
+  {id:'us3',t:'🇺🇸 Profit on US Stocks 3 times',n:3,lv:6,f:r=>r.win&&r.key==='us'},
+  {id:'pump2',t:'🎭 Profit on Pump Stocks 2 times',n:2,lv:8,f:r=>r.win&&r.key==='pump'}
 ];
 const CAREER=[
   {id:'rounds',e:'🕹',t:'Rounds played',b:50,m:2},{id:'wins',e:'💰',t:'Take profit',b:25,m:2},
@@ -660,20 +675,20 @@ const CAREER=[
   {id:'gear',e:'🛒',t:'Buy gear',b:1,m:1.6},{id:'items',e:'🧪',t:'Use items',b:5,m:2}
 ];
 const WEEKLY=[
-  {id:'ww80',t:'Take profit 80× this week',n:80,f:r=>r.win},
+  {id:'ww80',t:'Take profit 80 times this week',n:80,f:r=>r.win},
   {id:'wr150',t:'Play 150 rounds this week',n:150,f:()=>true},
   {id:'wboss',t:'Beat 2 bosses',n:2,f:r=>r.bossKill},
-  {id:'wx5',t:'Sell at x5 (+400%)+ 3×',n:3,f:r=>r.win&&r.m>=5},
-  {id:'wp95',t:'Peak accuracy 95%+ 8×',n:8,f:r=>r.win&&r.pct>=95},
-  {id:'ws5',t:'5-win streak (FEVER) 4×',n:4,f:r=>r.win&&r.streak>=5},
-  {id:'wx2',t:'Sell at x2+ 25×',n:25,f:r=>r.win&&r.m>=2},
-  {id:'wlev',t:'Profit with leverage 30×',n:30,f:r=>r.win&&r.lev>1},
-  {id:'wallin',t:'Profit all-in 5×',n:5,f:r=>r.win&&r.allin},
-  {id:'wdip',t:'Hold through bad news & profit 15×',n:15,f:r=>r.win&&r.sawDip},
-  {id:'wbig',t:'Sell at x3+ 10×',n:10,f:r=>r.win&&r.m>=3},
-  {id:'ws3',t:'3-win streak 15×',n:15,f:r=>r.win&&r.streak>=3},
-  {id:'wquick',t:'Quick profit at +10~30% 30×',n:30,f:r=>r.win&&r.m>=1.1&&r.m<1.3},
-  {id:'wcoin',t:'Profit on Crypto 20×',n:20,f:r=>r.win&&r.key==='meme'}
+  {id:'wx5',t:'Sell 3 times at x5+ (+400%)',n:3,f:r=>r.win&&r.m>=5},
+  {id:'wp95',t:'Peak accuracy 95%+ 8 times',n:8,f:r=>r.win&&r.pct>=95},
+  {id:'ws5',t:'5-win streak (FEVER) 4 times',n:4,f:r=>r.win&&r.streak>=5},
+  {id:'wx2',t:'Sell at x2+ 25 times',n:25,f:r=>r.win&&r.m>=2},
+  {id:'wlev',t:'Profit with leverage 30 times',n:30,f:r=>r.win&&r.lev>1},
+  {id:'wallin',t:'Profit all-in 5 times',n:5,f:r=>r.win&&r.allin},
+  {id:'wdip',t:'Hold through bad news & profit 15 times',n:15,f:r=>r.win&&r.sawDip},
+  {id:'wbig',t:'Sell at x3+ 10 times',n:10,f:r=>r.win&&r.m>=3},
+  {id:'ws3',t:'3-win streak 15 times',n:15,f:r=>r.win&&r.streak>=3},
+  {id:'wquick',t:'Quick profit at +10~30% 30 times',n:30,f:r=>r.win&&r.m>=1.1&&r.m<1.3},
+  {id:'wcoin',t:'Profit on Crypto 20 times',n:20,f:r=>r.win&&r.key==='meme'}
 ];
 const BEAR=['BREAKING: CEO fraud rumor','Short seller report drops','Exchange demands disclosure','Rumor: big holder block sale','Whales spotted dumping','New share offering announced','Rumor: regulators probing trades','Earnings shock'];
 const SECT=[
@@ -698,7 +713,7 @@ const newsPick=bull=>{const o=run&&run.offer,nm=o?o.name+' '+(o.code||''):'';let
   return L.length&&Math.random()<.7?pick(L):pick(bull?BULL:BEAR);};
 const BULL=['Filing: $1B mega contract','Shouted out by 3M-sub YouTuber','Foreign buying explodes','Named a gov’t policy winner','Earnings surprise','Big institutional buying spotted'];
 const TALK={
-  hype:['To the moon!!!!','Limit up incoming lol','Whales are in','Too late to hop on?','10× for real','Whoa what is this','Went full send','Eyeing my exit','Limit up at open tomorrow','We’re only at the knees','This time it’s real'],
+  hype:['To the moon!!!!','Limit up incoming lol','Whales are in','Too late to hop on?','10× for real','Whoa what is this','Went full send','Eyeing my exit','Limit up at open tomorrow','We’re just getting started','This time it’s real'],
   fear:['The dump is starting','I’m stuck, help','Stop loss?','It’s a shakeout, hold on','Bad news, run!','Whales are dumping','Sell or hold sell or hold'],
   crash:['Lost my lunch money','My money…','Hands up if you bought the top','That’s the market','lol got dumped on','Never again (back tomorrow)','Pizza money gone'],
   sold:['Sold? It’s still going lol','Taking profit is never wrong','Of course it pumps after I sell','A gain is a gain'],
@@ -708,6 +723,7 @@ const NICK=['Retail Ant','DiamondHands','ScalpKing','Bagholder','NoodleMaster','
 
 /* ---------- persistent ---------- */
 const dayKey=()=>{const d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()};
+const dayN=()=>{const d=new Date();return d.getFullYear()*1e4+(d.getMonth()+1)*100+d.getDate();},dayOrd=k=>{const m=String(k||'').match(/^(\d+)-(\d+)-(\d+)$/);return m?+m[1]*1e4+ +m[2]*100+ +m[3]:0;},usedToday=k=>dayOrd(store.get(k,''))>=dayN();
 let best=store.get('shg_best',0),ach=store.get('shg_ach',[]),xp=store.get('shg_xp',0);
 const SET=Object.assign({sound:true,bgm:true,vib:true,heart:true,fx:true,slow:false},store.get('shg_set',{}));
 let muted=!SET.sound,adPause=false;
@@ -719,13 +735,14 @@ const pickSeeded=(key,pool,k)=>{let h=0;for(const ch of key)h=(h*31+ch.charCodeA
   for(let n=0;ids.length<k&&n<5000;n++){h=(Math.imul(h,1103515245)+12345)>>>0;const id=pool[(h>>>16)%pool.length];if(!ids.includes(id))ids.push(id);}
   for(const id of pool)if(ids.length<k&&!ids.includes(id))ids.push(id);return ids;};
 const weekKey=()=>{const d=new Date(),m=new Date(d.getFullYear(),d.getMonth(),d.getDate()-(d.getDay()+6)%7),j=new Date(m.getFullYear(),0,1);return m.getFullYear()+'-W'+Math.round(((m-j)/864e5+(j.getDay()+6)%7)/7);};
+const wkOrd=k=>{const m=String(k||'').match(/^(\d+)-W(\d+)$/);return m?+m[1]*100+ +m[2]:0;};
 let weekly=store.get('shg_weekly',null);
 function ensureDaily(){
   const today=dayKey();
-  if(!(daily&&daily.date===today&&daily.v===4)){const ri=rankOf(xp);
+  if(!(daily&&daily.v===4&&dayOrd(daily.date)>=dayOrd(today))){const ri=rankOf(xp);
     daily={date:today,v:4,ids:pickSeeded(today,MISSIONS.filter(m=>(m.lv||0)<=ri).map(m=>m.id),8),prog:{},done:[]};store.set('shg_daily',daily);}
   const wk=weekKey();
-  if(!(weekly&&weekly.date===wk&&weekly.v===2)){weekly={date:wk,v:2,ids:pickSeeded(wk,WEEKLY.map(m=>m.id),10),prog:{},done:[]};store.set('shg_weekly',weekly);}
+  if(!(weekly&&weekly.v===2&&wkOrd(weekly.date)>=wkOrd(wk))){weekly={date:wk,v:2,ids:pickSeeded(wk,WEEKLY.map(m=>m.id),10),prog:{},done:[]};store.set('shg_weekly',weekly);}
 }
 ensureDaily();
 
@@ -734,8 +751,8 @@ if(store.get('shg_tut',0)&&!store.get('shg_tutPaid',0))store.set('shg_tutPaid',1
 addEventListener('error',e=>{try{const l=JSON.parse(localStorage.getItem('shg_errlog')||'[]');l.push(new Date().toISOString().slice(5,16)+' '+(e.message||'')+' @'+(e.lineno||''));localStorage.setItem('shg_errlog',JSON.stringify(l.slice(-10)));}catch(_){}});
 let pres=store.get('shg_pres',0),debt=store.get('shg_debt',0),credit=store.get('shg_credit',5),betPct=store.get('shg_pct',1),levSel=1,allin=false,inv=store.get('shg_inv',{}),gear=store.get('shg_gear',{}),armed=store.get('shg_armed',{});
 const LEVS=[[1,0],[2,1],[3,3],[5,5],[10,7],[20,9]];
-let selId='o0',state='ready',balance=store.get('shg_bal',START),streak=0,round=1,tierSel='theme',sel={shield:false,insider:false,slow:false};
-let offers=makeOffers(),run=null,candles=[],t=0,cur=1,peak=1,sell=null,crashed=false,crashT=0,readyAt=0,lastTs=0,intPaid=false;
+let selId='o0',state='ready',balance=store.get('shg_bal',START),streak=Math.max(0,Math.floor(+store.get('shg_streak',0)||0)),round=1,tierSel=store.get('shg_tier','theme'),sel={shield:false,insider:false,slow:false};
+let offers=makeOffers(),run=null,candles=[],t=0,cur=1,peak=1,sell=null,crashed=false,crashT=0,readyAt=0,sellAt=0,lastTs=0,intPaid=store.get('shg_intPaid',false);
 let events=[],warned=false,newsTimer=0,talkT=0,bookT=0,lowFlag=false,volTotal=0;
 
 function makeOffers(){
@@ -763,7 +780,7 @@ const priceOf=m=>roundTick(offer().p0*eM*m,isUsd());
 let ac=null;
 function au(){if(!ac){try{ac=new(window.AudioContext||window.webkitAudioContext)()}catch(e){}}if(ac&&ac.state==='suspended')ac.resume();return ac}
 function beep(f,d=.06,type='square',vol=.035,to){
-  if(muted||!touched)return;const a=au();if(!a)return;
+  if(muted||!touched||document.hidden)return;const a=au();if(!a)return;
   const o=a.createOscillator(),g=a.createGain(),n=a.currentTime;
   o.type=type;o.frequency.setValueAtTime(f,n);if(to)o.frequency.exponentialRampToValueAtTime(to,n+d);
   g.gain.setValueAtTime(vol,n);g.gain.exponentialRampToValueAtTime(.0001,n+d);
@@ -842,6 +859,7 @@ function news(text,kind){
   clearTimeout(newsTimer);newsTimer=setTimeout(()=>el.hidden=true,3500);sfx.news();
   talkLines.push('<b class="gd">[News]</b>'+text.replace(/^[^ ]+ /,''));renderTalk();
 }
+function newsIdle(){const el=$('news');clearTimeout(newsTimer);el.hidden=true;el.className='idle';el.textContent='📰 Live news';}
 const talkLines=[];
 const NEUTRAL=['Foreigners keep net selling','Fed expected to hold rates','Dollar swings near highs','Battery stocks slide','Chip recovery hopes rise','Retail margin debt at record','Short interest rising','Institutional program buying'];
 function dynTalk(kind){
@@ -862,10 +880,14 @@ const lvlOf=x=>{let L=1,need=60;while(x>=need){x-=need;L++;need=40+20*L;}return 
 const REGIMES=[
   {e:'📊',n:'Normal Market',d:'Business as usual',s:'Base'},{e:'🐂',n:'Bull Run',d:'Rises 25% faster',s:'Fast rise',rate:1.25},
   {e:'🐻',n:'Bear Market',d:'Crashes 15% sooner · Profit +30%',s:'Crash↑ Profit↑',crash:.85,pay:1.3},{e:'🌪',n:'Volatility Storm',d:'2× swings and news',s:'2× swings',wig:2,news:2},
-  {e:'💤',n:'Sideways Market',d:'Slow, crashes come later',s:'Slow·Safe',rate:.8,crash:1.1},{e:'🔥',n:'Theme Season',d:'Theme/coin/bio profit +50%',s:'Theme profit↑',boost:['theme','meme','bio'],pay2:1.5},
+  {e:'💤',n:'Sideways Market',d:'Slow, crashes come later',s:'Slow·Safe',rate:.8,crash:1.1},{e:'🔥',n:'Hype Season',d:'Hype Stocks/Crypto/Biotech profit +50%',s:'Hype profit↑',boost:['theme','meme','bio'],pay2:1.5},
   {e:'💸',n:'Liquidity Party',d:'2× bet cap',s:'2× cap',cap:2},{e:'🦢',n:'Black Swan Alert',d:'Crashes 25% sooner · Profit +60%',s:'Crash↑↑ Profit↑↑',crash:.75,pay:1.6}
 ];
-const regime=()=>{let r=0;try{r=stats.rounds}catch(e){}const b=Math.floor(r/5);return b<1?REGIMES[0]:REGIMES[(Math.imul(b,2654435761)>>>0)%REGIMES.length];};
+const rgOrd=c=>{const o=REGIMES.map((_,i)=>i);let h=c^0x5bd1e995;for(let i=o.length-1;i>0;i--){h=Math.imul(h^h>>>16,2246822507);h=Math.imul(h^h>>>13,3266489909);h^=h>>>16;const j=(h>>>0)%(i+1);[o[i],o[j]]=[o[j],o[i]];h+=i;}return o;};
+let rgMemo=[-1,null];
+const regime=()=>{let r=0;try{r=stats.rounds}catch(e){}const b=Math.floor(r/5);if(b<1)return REGIMES[0];if(rgMemo[0]===b)return rgMemo[1];
+  const k=b-1,c=Math.floor(k/REGIMES.length),o=rgOrd(c),prev=c?rgOrd(c-1)[REGIMES.length-1]:0;if(o[0]===prev)[o[0],o[1]]=[o[1],o[0]];
+  rgMemo=[b,REGIMES[o[k%REGIMES.length]]];return rgMemo[1];};
 const betCap=noRg=>Math.round(1e6*(noRg?1:(regime().cap||1))*Math.pow(1.22,lvlOf(xp).L-1)*(gear.car?1.1:1)*(gear.yacht?1.2:1)*(gear.firm?1.5:1)/1e4)*1e4;
 const wealthCap=b=>.1*Math.min(b,1e11)+.05*Math.min(Math.max(b-1e11,0),9e11)+.01*Math.min(Math.max(b-1e12,0),999e12)+.002*Math.max(b-1e15,0);
 const LIQ=1e16;
@@ -874,20 +896,23 @@ const maxStake=ai=>ai?balance:stakeCap();
 const itemCost=(k,bet)=>{const c=ITEMS[k].cost;return (bet*c+Math.min(balance*c*.05,bet*c*2))*(1-.04*skl('discount'));};
 const wealthRisk=b=>b<1e9?0:Math.min(.3,.035*Math.log10(b/1e9));
 const taxRate=b=>b<1e10?0:Math.min(.65,.05+.1*Math.log10(b/1e10));
+const xpMul=()=>1+.05*skl('xp')+(gear.office?.05:0);
 function gainXp(n){
-  n=Math.round(n*(1+.05*skl('xp')+(gear.office?.05:0)));
+  n=Math.round(n*xpMul());
   const before=rankOf(xp),lb=lvlOf(xp).L;xp+=n;store.set('shg_xp',xp);const after=rankOf(xp),la=lvlOf(xp).L;
-  if(la>lb&&after===before){setTimeout(()=>{toast('⬆️ Level up! Lv.'+la+(Math.floor((la-1)/2)>Math.floor((lb-1)/2)?' · SP +1':'')+' · Cap '+won(betCap()));sfx.up();burst(innerWidth/2,90,30);},900);}
-  if(after>before){const nt=Object.values(TIERS).filter(T=>T.lv===after);setTimeout(()=>{toast('🎉 Promoted! '+RANKS[after][1]+(la>lb?' · Lv.'+la:'')+(nt.length?' · '+nt.map(T=>T.e+' '+T.label).join(', ')+' unlocked':''));sfx.up();},900);if(after===RANKS.length-1)unlock('legend');}
+  const spG=Math.floor((la-1)/2)-Math.floor((lb-1)/2);
+  if(la>lb&&after===before){setTimeout(()=>{toast('⬆️ Level up! Lv.'+la+(spG>0?' · SP +'+spG:'')+' · Cap '+won(betCap(1)));sfx.up();burst(innerWidth/2,90,30);},900);}
+  if(after>before){const nt=Object.values(TIERS).filter(T=>T.lv===after);setTimeout(()=>{toast('🎉 Promoted! '+RANKS[after][1]+(la>lb?' · Lv.'+la+(spG>0?' · SP +'+spG:'')+' · Cap '+won(betCap(1)):'')+(nt.length?' · '+nt.map(T=>T.e+' '+T.label).join(', ')+' unlocked':''));sfx.up();},900);if(after===RANKS.length-1)unlock('legend');}
+  return n;
 }
 
 function paintTop(){try{checkHome()}catch(e){}
   store.set('shg_debt',Math.ceil(debt));store.set('shg_credit',credit);
-  {const d=$('debtTag');d.hidden=debt<=0;if(debt>0)d.textContent='Debt '+wonS(debt)+' · Credit '+credit+'';}
+  {const d=$('debtTag');d.hidden=debt<=0;if(debt>0)d.textContent='Debt '+wonS(debt)+' · Credit '+credit+'';}
   if(!(balance>=0))balance=0;
-  store.set('shg_bal',Math.floor(balance));
+  store.set('shg_bal',Math.floor(balance));store.set('shg_streak',streak);
   if(balance>best){best=balance;store.set('shg_best',Math.floor(best));}
-  if(lowFlag&&balance-debt>=START&&state!=='holding'){lowFlag=false;unlock('comeback');}
+  if(lowFlag&&balance+invTotal()-debt>=START&&state!=='holding'){lowFlag=false;stats.low=0;store.set('shg_stats',stats);unlock('comeback');}
   animBal();
   $('streak').innerHTML=streak?(streak>=5?'<span class="gd">'+streak+'-streak 🔥</span>':streak+'×'):'0';
   $('best').textContent=wonS(Math.min(balance,stakeCap()));
@@ -895,18 +920,18 @@ function paintTop(){try{checkHome()}catch(e){}
   const lv=lvlOf(xp);$('rankName').textContent=(pres?(pres<=3?'⭐'.repeat(pres):'⭐'+pres):'')+'Lv.'+lv.L+' '+(profile?TYPES[profile].e:'')+RANKS[ri][1];
   $('rankBar').style.width=(lv.cur/lv.need*100).toFixed(0)+'%';
   {const R=regime();let left=5;try{left=5-stats.rounds%5}catch(e){}$('regime').textContent=R.e+' '+(LANG==='en'&&R.s&&R.s!=='Base'?R.s:R.n+(R.s&&R.s!=='Base'?' · '+R.s:''))+' · '+left+' left';$('regime').title=R.d;}
-  {let ok=false;try{ok=store.get('shg_spin','')!==dayKey()}catch(e){}$('giftBtn').classList.toggle('ready',ok);}
+  {let ok=false;try{ok=!usedToday('shg_spin')}catch(e){}$('giftBtn').classList.toggle('ready',ok);}
   $('spBtn').textContent='🌳 SP '+spFree();$('dotS').hidden=spFree()<=0;ensureDaily();$('dotM').hidden=daily.done.length>=daily.ids.length;
   unOver();
 }
 function paintPickers(){
   const lock=state==='holding'||state==='ghost'||state==='over';
   const co=curOffer(),CT=TIERS[co.k],spark=(o,w,h)=>{const mn=Math.min(...o.spark),mx=Math.max(...o.spark);return `<svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" aria-hidden="true"><polyline fill="none" stroke="${o.chg>=0?C.up:C.down}" stroke-width="1.6" points="${o.spark.map((v,i)=>(i/(o.spark.length-1)*w).toFixed(1)+','+(h-1-(v-mn)/((mx-mn)||1)*(h-2)).toFixed(1)).join(' ')}"/></svg>`;};
-  $('offers').innerHTML=co.k==='boss'?`<button class="pick1 bosschip" type="button" ${lock?'disabled':''}><span class="pe">${TIERS.boss.e}</span><span class="pt"><b>${co.name}</b><small>Boss fight · Sell above the goal to win · SP +2</small></span></button>`
-   :`<button class="pick1" type="button" id="openSheet" ${lock?'disabled':''}><span class="pe">${CT.e}</span><span class="pt"><b>${co.name}</b><small>${CT.label} · Crash -${Math.round(CT.loss*100)}%</small></span>${spark(co,54,24)}<span class="pc"> ${offers.length} stocks ▾</span></button>`;
+  $('offers').innerHTML=co.k==='boss'?`<button class="pick1 bosschip" type="button" ${lock?'disabled':''}><span class="pe">${bossInfo(co.ni).B.e}</span><span class="pt"><b>${bossInfo(co.ni).B.n} Lv.${co.ni+1}</b><small>Boss fight · Sell above the goal to win · SP +2</small></span></button>`
+   :`<button class="pick1" type="button" id="openSheet" ${lock?'disabled':''}><span class="pe">${CT.e}</span><span class="pt"><b>${co.name}</b><small>Crash -${Math.round(CT.loss*100)}% · ${CT.label}</small></span>${spark(co,54,24)}<span class="pc"> ${offers.length} stocks ▾</span></button>`;
   $('shList').innerHTML=offers.map(o=>{const T=TIERS[o.k];return `<button class="srow ${o.id===co.id?'on':''}" type="button" data-o="${o.id}"><span class="pe">${T.e}</span><span class="pt"><b>${o.name}</b><small>${T.label} · Crash -${Math.round(T.loss*100)}%${T.desc?' · '+T.desc:''}</small></span>${spark(o,64,26)}<span class="pr ${o.chg>=0?'up':'dn'}">${o.chg>=0?'+':''}${o.chg.toFixed(1)}%</span></button>`}).join('');
   const ri=rankOf(xp);
-  $('offers').hidden=$('items').hidden=$('betrow').hidden=state==='holding'||state==='ghost';
+  const chOn=tutDone&&chal&&chal.i<5;$('offers').hidden=state==='holding'||state==='ghost';$('items').hidden=$('betrow').hidden=$('offers').hidden||!!chOn;
   const AI=allin&&ri>=2,maxBet=AI?maxStake(1):Math.min(balance,maxStake(0))*betPct;
   $('betrow').innerHTML='<span>Bet size</span>'+[.1,.25,.5,1].map(v=>`<button type="button" data-pct="${v}" aria-pressed="${betPct===v}" ${lock?'disabled':''}>${v*100}%</button>`).join('')+'<b>'+wonS(maxBet)+'</b>';
   $('items').innerHTML=Object.entries(ITEMS).map(([k,it])=>{const lk=ri<it.lv;if(lk)sel[k]=false;return `<button class="chip ic" type="button" data-i="${k}" aria-pressed="${sel[k]}" ${lock||lk?'disabled':''} title="${it.desc}"><b>${lk?'🔒':it.name.split(' ')[0]} ${it.short}</b><small>${lk?RANKS[it.lv][1]:(it.cost?wonS(itemCost(k,(allin&&ri>=2)?maxStake(1):Math.min(balance,maxStake(0))*betPct)):'Free')}</small></button>`}).join('')+
@@ -917,15 +942,15 @@ function paintQuote(){
   const o=offer(),T=TIERS[o.k];
   $('qName').textContent=o.name;
   $('qCode').innerHTML=o.code+'<span class="tier">'+T.label+'</span> · Vol '+Math.floor(volTotal*1373).toLocaleString('en-US');
-  const m=!run?liveM:(crashed&&!sell?Math.min(cur,run.crashAt*.62):cur);
+  const m=!run?liveM:(crashed?Math.min(cur,run.crashAt*.62):cur);
   const p=priceOf(m),d=p-o.p0,pc=d/o.p0*100;
   const cls=d>0?'up':d<0?'dn':'mu';
   $('qPrice').className='num '+cls;$('qPrice').textContent=fmtP(p);
-  $('qChg').className=cls;$('qChg').textContent=(d>0?'▲ ':d<0?'▼ ':'')+fmtP(Math.abs(d))+'  '+(pc>=0?'+':'')+pc.toFixed(2)+'%';
+  $('qChg').className=cls;$('qChg').textContent=(d>0?'▲ ':d<0?'▼ ':'')+fmtP(Math.abs(d),p)+'  '+(pc>=0?'+':'')+pc.toFixed(2)+'%';
 }
 let bookQ={},trades=[],tradeT=0,tradeM=1;
 function renderBook(){
-  const m=!run?liveM:(crashed&&!sell?Math.min(cur,run.crashAt*.62):cur);
+  const m=!run?liveM:(crashed?Math.min(cur,run.crashAt*.62):cur);
   const p=priceOf(m),tk=isUsd()?.01:tickOf(p),o=offer();
   const rising=state==='holding'&&!events.some(e=>e.amp<0&&t>=e.t0&&t<=e.t0+1.4);
   const bw=rising?1.5:.8,aw=rising?.8:1.4,unit=TIERS[o.k].unit||180;
@@ -937,8 +962,8 @@ function renderBook(){
   bookQ=nq;
   const mx=Math.max(...qs),str=Math.round(100*bw/aw*rnd(.94,1.06));
   const askSum=qs.slice(0,4).reduce((a,b)=>a+b,0),bidSum=qs.slice(4).reduce((a,b)=>a+b,0);
-  $('book').innerHTML='<div class="hd">Price · Size</div>'+rows.map((r,i)=>`<div class="ob ${r[1]?'ask':'bid'} ${i===4?'now':''} ${fl[i]?'fl':''}"><i style="width:${(qs[i]/mx*100).toFixed(0)}%"></i><span class="p ${r[0]>o.p0?'up':r[0]<o.p0?'dn':''}">${fmtP(r[0])}</span><span class="q">${qs[i].toLocaleString('en-US')}</span></div>`).join('')+
-    '<div class="trs"><div class="th"><span>Fill</span><span>Qty</span></div>'+trades.map(x=>`<div class="tr ${x.up?'up':'dn'}"><span>${fmtP(x.p)}</span><span>${x.q.toLocaleString('en-US')}</span></div>`).join('')+'</div>'+
+  $('book').innerHTML='<div class="hd">Price · Size</div>'+rows.map((r,i)=>`<div class="ob ${r[1]?'ask':'bid'} ${i===4?'now':''} ${fl[i]?'fl':''}"><i style="width:${(qs[i]/mx*100).toFixed(0)}%"></i><span class="p ${r[0]>o.p0?'up':r[0]<o.p0?'dn':''}">${fmtP(r[0],p)}</span><span class="q">${qs[i].toLocaleString('en-US')}</span></div>`).join('')+
+    '<div class="trs"><div class="th"><span>Fill</span><span>Qty</span></div>'+trades.map(x=>`<div class="tr ${x.up?'up':'dn'}"><span>${fmtP(x.p,p)}</span><span>${x.q.toLocaleString('en-US')}</span></div>`).join('')+'</div>'+
     `<div class="ft">Buy power <b class="${str>=100?'up':'dn'}">${str}%</b><br><span class="dn">${askSum.toLocaleString('en-US')}</span> · <span class="up">${bidSum.toLocaleString('en-US')}</span></div>`;
 }
 function pushTrade(m){
@@ -949,20 +974,20 @@ function pushTrade(m){
 function setBtn(){
   const busy=state==='holding'||state==='ghost';document.querySelectorAll('#tabs button').forEach(b=>b.disabled=busy&&b.dataset.tab!=='trade');
   const cool=state==='result'&&performance.now()<readyAt;
-  const canRe=state==='ghost'&&sell&&!crashed&&run&&!run.tut&&!run.chal&&!run.re;
+  const canRe=state==='ghost'&&sell&&!crashed&&run&&!run.tut&&!run.chal&&!run.re&&performance.now()-sellAt>=700;
   btn.className=state==='holding'?'on':canRe?'re':(state==='ghost'||cool||state==='over')?'wait':'';
   btn.textContent=state==='holding'?(run&&run.re?'Tap to SELL! (re-entry)':'Tap to SELL!'):canRe?'🔁 Re-enter (one more)':state==='ghost'?'Watching chart…':state==='over'?'Restoring account…':state==='result'?'Buy next stock':'Tap to Buy';
 }
 
-function selectOffer(id){if(state==='holding'||state==='ghost'||state==='over')return;const o=offers.find(x=>x.id===id);if(!o||o.k==='boss')return;selId=id;tierSel=o.k;
-  if(state==='ready'||state==='result'){run=null;sell=null;crashed=false;eM=1;$('bossbar').hidden=true;$('pnl').hidden=true;}
+function selectOffer(id){if(state==='holding'||state==='ghost'||state==='over')return;const o=offers.find(x=>x.id===id);if(!o||o.k==='boss')return;selId=id;tierSel=o.k;store.set('shg_tier',tierSel);
+  if(state==='ready'||state==='result'){run=null;sell=null;crashed=false;eM=1;$('bossbar').hidden=true;$('pnl').hidden=true;newsIdle();}
   buildChartIdle();paintPickers();paintQuote();renderBook();}
-$('offers').addEventListener('click',e=>{const b=e.target.closest('#openSheet');if(b&&!b.disabled){$('sheet').hidden=false;beep(520,.03,'sine',.03);}});
+$('offers').addEventListener('click',e=>{const b=e.target.closest('#openSheet');if(b&&!b.disabled&&curTab==='trade'){$('sheet').hidden=false;$('sheet').firstChild.focus({preventScroll:true});beep(520,.03,'sine',.03);}});
 $('shList').addEventListener('click',e=>{const b=e.target.closest('[data-o]');if(b){selectOffer(b.dataset.o);$('sheet').hidden=true;}});
 $('sheet').addEventListener('click',e=>{if(e.target.id==='sheet'||e.target.id==='shClose')$('sheet').hidden=true;});
 $('betrow').addEventListener('click',e=>{const b=e.target.closest('[data-pct]');if(b&&!b.disabled){betPct=+b.dataset.pct;store.set('shg_pct',betPct);beep(520,.03,'sine',.03);paintPickers();}});
 $('items').addEventListener('click',e=>{
-  const lb=e.target.closest('#levBtn');if(lb&&!lb.disabled){const ri=rankOf(xp),ok=LEVS.filter(l=>l[1]<=ri).map(l=>l[0]);levSel=ok[(ok.indexOf(levSel)+1)%ok.length];if(levSel>=10){vib(30);toast('⚠ '+levSel+'×: '+Math.round(85/levSel)+'% drop = liquidation');}paintPickers();return;}
+  const lb=e.target.closest('#levBtn');if(lb&&!lb.disabled){const ri=rankOf(xp),ok=LEVS.filter(l=>l[1]<=ri).map(l=>l[0]);levSel=ok[(ok.indexOf(levSel)+1)%ok.length];if(levSel>=10){vib(30);toast('⚠ '+levSel+'×: '+Math.round((gear.jet?95:85)/levSel)+'% drop = liquidation');}paintPickers();return;}
   const ab=e.target.closest('#allinBtn');if(ab&&!ab.disabled){allin=!allin;if(allin){vib([30,30,30]);toast('🎲 All-in ON · Betting '+wonS(maxStake(1))+' — all of it!');}paintPickers();return;}
   const b=e.target.closest('[data-i]');if(b&&!b.disabled){sel[b.dataset.i]=!sel[b.dataset.i];paintPickers();}});
 
@@ -975,53 +1000,57 @@ const inDip=x=>events.some(e=>e.amp<0&&x>=e.t0&&x<=e.t0+1.4);
 
 function start(){
   if(tabNow())return;
-  if(adPause||curTab!=='trade'||!profile||!$('modal').hidden||!$('sheet').hidden||state==='ghost'||(state==='over'&&!unOver())||state==='holding')return;
+  const chRound=tutDone&&chal&&chal.i<5&&debt<=debtLimit();
+  if(adReq){toast('📺 Loading ad…');return;}
+  if(adPause||curTab!=='trade'||!profile||!$('modal').hidden||!$('sheet').hidden||state==='ghost'||(state==='over'&&!unOver()&&!chRound)||state==='holding')return;
   if(state==='result'&&performance.now()<readyAt)return;
+  if(!card.hidden&&card.querySelector('.opts'))return;
   au();
-  const low=()=>{if(balance+invTotal()>=100000){toast('💼 Not enough cash. Withdraw from the Invest tab');}else{state='over';showOver(0);setBtn();}};
-  if(tutDone&&balance<100000){low();return;}
-  const intr=tutDone&&debt>0&&!intPaid?Math.ceil(debt*loanRate()):0,ex=Math.ceil(debt+intr-debtLimit());
+  const low=()=>{if(balance+invTotal()>=100000){toast('💼 Not enough cash. Withdraw from the Invest tab');}else{state='over';showOver(0);paintPickers();setBtn();}};
+  if(tutDone&&!chRound&&balance<100000){low();return;}
+  const intr=tutDone&&!chRound&&debt>0&&!intPaid?Math.ceil(debt*loanRate()):0,ex=Math.ceil(debt+intr-debtLimit());
   if(intr&&ex>0&&balance<ex&&balance+invNet()>=ex){toast('🚨 Next interest would push debt over the limit! Withdraw investments and repay at Shop › Bank');return;}
   if(state==='result')round++;
   ensureDaily();
-  if(!tutDone){}else if(debt>0){if(intr){debt+=intr;talkLines.push('<b class="dn">[Interest]</b> Debt interest '+won(intr)+' added');renderTalk();}
+  if(!tutDone||chRound){}else if(debt>0){if(intr){debt+=intr;talkLines.push('<b class="dn">[Interest]</b> Debt interest '+won(intr)+' added');renderTalk();}
     if(ex>0&&balance>=ex){repay(ex);toast('🏦 Debt over the limit: '+won(ex)+' auto-repaid from cash');}
-    if(debt>debtLimit()){intPaid=true;showDefault();paintTop();return;}
-    if(balance<100000){intPaid=true;paintTop();paintPickers();low();return;}}
+    if(debt>debtLimit()){intPaid=true;store.set('shg_intPaid',true);showDefault();paintTop();return;}
+    if(balance<100000){intPaid=true;store.set('shg_intPaid',true);paintTop();paintPickers();low();return;}}
   else{stats.cleanRounds=(stats.cleanRounds||0)+1;if(stats.cleanRounds>=15&&credit>3){credit--;stats.cleanRounds=0;toast('📈 Credit grade up · '+credit+'');}store.set('shg_stats',stats);}
-  intPaid=false;if(tutDone)tickInvest();
+  if(intPaid&&!chRound){intPaid=false;store.set('shg_intPaid',false);}if(tutDone&&!chRound)tickInvest();
   const tut=!tutDone,ch=!tut&&chal&&chal.i<5?chal:null;if(tut||ch)for(const k of Object.keys(sel))sel[k]=false;hideCoach();
   const o=curOffer(),T=TIERS[o.k];
   if(run||chartStock!==o){run=null;sell=null;crashed=false;eM=1;buildChartIdle();}
   eM=liveM;candles.forEach(c=>{c.o/=eM;c.h/=eM;c.l/=eM;c.c/=eM;});runBase=candles.length;
   const lv=tut||ch?1:levSel,ai=!tut&&!ch&&allin&&rankOf(xp)>=2;
   const bet=ch?0:tut?(store.get('shg_tutPaid',0)?0:Math.min(balance,START)):ai?Math.min(balance,maxStake(1)):Math.min(balance,maxStake(0))*betPct;
-  let cost=0;for(const k of Object.keys(ITEMS))if(sel[k])cost+=itemCost(k,bet);
+  const cry=!tut&&!ch&&armed.crystal>0;
+  let cost=0;for(const k of Object.keys(ITEMS))if(sel[k]&&!(cry&&k==='insider'))cost+=itemCost(k,bet);
   const fee=tut||ch||gear.vip?0:bet*(.003+.002*(lv-1));
   balance-=cost+fee;
   const wr=tut||ch?0:wealthRisk(balance);
   const raw=Math.random()<T.instant+wr*.25?1+Math.random()*.06:Math.min(60,Math.max(1.01,.92*Math.min(1,1.15/Math.sqrt(T.scale))/(1-Math.random())));
   const rg=tut||ch?REGIMES[0]:regime();
   const hard=1-Math.min(.35,Math.max(0,lvlOf(xp).L-20)*.008);
-  let crashAt=tut?1.85:ch?ch.pts[ch.i]:(1+(Math.max(1.01,1+(raw-1)*T.scale*hard*(1-wr))-1)*(rg.crash||1))*(1+.015*skl('jackpot'));
+  let crashAt=tut?1.85:ch?ch.pts[ch.i]:1+(Math.max(1.01,1+(raw-1)*T.scale*hard*(1-wr))-1)*(rg.crash||1)*(1+.015*skl('jackpot'));
   if(!tut&&!ch&&lv>1)crashAt=1+(crashAt-1)/Math.sqrt(lv);
-  if(!tut&&!ch&&armed.luck>0){armed.luck--;crashAt*=1.12;store.set('shg_armed',armed);}
-  const it={...sel};let hint=null;
-  if(it.insider){const real=Math.random()<.7+.03*skl('radar');hint={real,v:real?Math.max(1.02,crashAt*rnd(.88,.98)):crashAt*rnd(1.4,3)};}
-  if(!tut&&!ch&&armed.crystal>0){armed.crystal--;store.set('shg_armed',armed);hint={real:true,v:crashAt*rnd(.94,.99),crystal:1};}
+  if(!tut&&!ch&&armed.luck>0){armed.luck--;crashAt=1+(crashAt-1)*1.12;store.set('shg_armed',armed);}
   let entryTag='';
-  if(!tut&&!ch){const d=liveM-1;if(d<=-.04){crashAt*=1.08;entryTag='📉 Dip buy! Crash comes later';}else if(d>=.05){crashAt=1+(crashAt-1)*.93;entryTag='🔥 FOMO buy… Crash comes sooner';}}
+  if(!tut&&!ch){const d=liveM-1;if(d<=-.04){crashAt=1+(crashAt-1)*1.08;entryTag='📉 Dip buy! Crash comes later';}else if(d>=.05){crashAt=1+(crashAt-1)*.93;entryTag='🔥 FOMO buy… Crash comes sooner';}}
   if(entryTag)setTimeout(()=>toast(entryTag),120);
   if(!tut&&!ch)crashAt=Math.max(1.002,crashAt);
+  const it={...sel};if(cry)it.insider=false;let hint=null;
+  if(it.insider){const real=Math.random()<.7+.03*skl('radar');hint={real,v:real?Math.max(1.02,crashAt*rnd(.88,.98)):crashAt*rnd(1.4,3)};}
+  if(cry){armed.crystal--;store.set('shg_armed',armed);hint={real:true,v:crashAt*rnd(.94,.99),crystal:1};}
   cgPlay(true);
   run={offer:o,T,key:o.k,crashAt,it,hint,sawDip:false,tut,chal:!!ch,cost:cost+fee,bet,lev:lv,allin:ai,liqLine:lv>1?1-(gear.jet?.95:.85)/lv:0};
   if(ch){ch.pend=-30;store.set('shg_chalRun',ch);}
-  if(o.k==='boss'&&armed.bossT>0&&(stats.rounds+1)%10!==0){armed.bossT--;store.set('shg_armed',armed);}
+  if(!tut&&!ch&&o.k==='boss'&&armed.bossT>0&&(stats.rounds+1)%10!==0){armed.bossT--;store.set('shg_armed',armed);}
   if(ai)setTimeout(()=>stamp('🎲 All-in '+won(bet)),60);else if(lv>=5)setTimeout(()=>stamp('⚡ '+lv+'×'),60);
   run.rg=rg;const rgi=REGIMES.indexOf(rg);if(!tut&&!ch&&stats.lastRg!==rgi){const seen=stats.lastRg===rg.n;stats.lastRg=rgi;store.set('shg_stats',stats);if(!seen)setTimeout(()=>{stamp(rg.e+' '+rg.n);toast(rg.e+' '+rg.n+' begins · '+rg.d);},80);}
-  run.boss=o.k==='boss'&&!ch?bossInfo(stats.bossLv||0):null;$('bossbar').hidden=!run.boss;
+  run.boss=o.k==='boss'&&!ch&&!tut?bossInfo(stats.bossLv||0):null;$('bossbar').hidden=!run.boss;
   if(run.boss){$('bossName').textContent=run.boss.B.e+' '+run.boss.B.n+' Lv.'+(run.boss.lv+1);$('bossGoal').textContent='Goal +'+Math.round((run.boss.target-1)*100)+'%';$('bossHp').style.width='100%';setTimeout(()=>stamp('⚔️ Boss fight!'),50);}tutStep=0;
-  card.hidden=true;{const el=$('news');clearTimeout(newsTimer);el.hidden=true;el.className='idle';el.textContent='📰 Live news';}
+  card.hidden=true;newsIdle();
   t=0;cur=1;peak=1;sell=null;crashed=false;events=[];warned=false;volTotal=0;talkT=0;hbT=0;vigA=0;run.mi=0;
   if(run.lev>1&&!tut&&Math.random()<Math.min(.75,.08*run.lev))events.push({t0:rnd(.15,.8),amp:-rnd(.05,.18)*(T.amp||1),shake:1});
   state='holding';paintTop();paintPickers();setBtn();
@@ -1030,36 +1059,37 @@ function start(){
   else if(hint)news('🔍 Insider tip: "'+fmtP(priceOf(hint.v))+(isUsd()?'':'')+' is where whales dump"','rumor');
 }
 function reenter(){
-  if(adPause||!(state==='ghost'&&sell&&!crashed&&run&&!run.tut&&!run.chal&&!run.re))return;
+  if(adReq||adPause||!(state==='ghost'&&sell&&!crashed&&run&&!run.tut&&!run.chal&&!run.re)||performance.now()-sellAt<700)return;
   const bet=Math.min(balance,run.bet),fee=gear.vip?0:bet*(.003+.002*(run.lev-1));if(bet<1e4)return;
   balance-=fee;run.re={bet,entry:cur,fee};run.liqLine=run.liqLine?cur*(1-(gear.jet?.95:.85)/run.lev):0;
   state='holding';vib(30);sfx.tick(cur);stamp('🔁 Re-entry!');toast('🔁 '+won(bet)+' back in · Sell again before the crash');
   paintTop();setBtn();
 }
+function profitMul(){return (1+.1*pres)*(profile==='lion'?1.05:1)*(1+.02*skl('profit')+(gear.monitor?.03:0))*(run.rg.pay||1)*(run.rg.boost&&run.rg.boost.includes(run.key)?run.rg.pay2:1);}
 function release(){
   if(state!=='holding')return;
-  if(run.re&&!run.re.done){const r=run.re,r0=r.bet*(cur/r.entry-1)*run.lev,raw=r0>0?r0*(1+.1*pres)*(1+.02*skl('profit')):Math.max(r0,-balance),tr=raw>0?taxRate(balance):0,g=raw-(raw>0?raw*tr:0);
-    balance+=g;r.gain=g;r.done=1;state='ghost';sfx.sell();freezeT=.1;sellJuice(g);
+  if(run.re&&!run.re.done){const r=run.re,r0=r.bet*(cur/r.entry-1)*run.lev,raw=r0>0?r0*profitMul():Math.max(r0,-balance),tr=raw>0?taxRate(balance):0,g=raw-(raw>0?raw*tr:0);
+    balance+=g;if(debt>0&&raw>0){const rp=Math.min(debt,raw*.3,balance);r.repaid=rp;repay(rp);}r.gain=g;r.done=1;state='ghost';if(g<0&&balance+invTotal()-debt<300000){lowFlag=true;stats.low=1;store.set('shg_stats',stats);}sfx.sell();freezeT=.1;sellJuice(g);
     $('pnl').innerHTML='<span class="dn">Re-entry sold</span> <span class="'+(g>=0?'up':'dn')+'">'+sw(g)+'</span>';
     if(balance>best){best=balance;store.set('shg_best',Math.floor(best));}
     paintTop();setBtn();return;}
-  if(run.chal){sell={t,m:cur,dip:false,idx:candles.length-1,gain:0,bonus:0};chal.pend=Math.round((cur-1)*100);store.set('shg_chalRun',chal);state='ghost';sfx.sell();freezeT=.14;$('pnl').innerHTML='<span class="gd">🏆 '+(cur>=1?'+':'')+((cur-1)*100).toFixed(1)+' pts</span>';setBtn();return;}
+  if(run.chal){sell={t,m:cur,dip:false,idx:candles.length-1,gain:0,bonus:0};chal.pend=Math.round((cur-1)*100);store.set('shg_chalRun',chal);state='ghost';sfx.sell();freezeT=.14;vigA=0;$('vign').style.boxShadow='none';btn.style.setProperty('--heat',0);$('pnl').innerHTML='<span class="gd">🏆 '+(cur>=1?'+':'')+((cur-1)*100).toFixed(1)+' pts</span>';setBtn();return;}
   const lev=run.lev;
   sell={t,m:cur,dip:inDip(t),idx:candles.length-1};
-  if(run.tut){hideCoach();if(run.bet>0&&!store.get('shg_tutPaid',0)){store.set('shg_tutPaid',1);store.set('shg_tutBonus',1);}}
-  const g0=run.bet*(cur-1)*lev,gain=g0>0?g0*(1+.1*pres)*(profile==='lion'?1.05:1)*(1+.02*skl('profit')+(gear.monitor?.03:0))*(run.rg.pay||1)*(run.rg.boost&&run.rg.boost.includes(run.key)?run.rg.pay2:1):Math.max(g0,-balance);
-  if(cur>=1)streak++;else streak=0;
-  const fever=streak>=5;
+  if(run.tut){hideCoach();if(store.get('shg_tutPaid',0))run.bet=0;else{store.set('shg_tutPaid',1);store.set('shg_tutBonus',1);}}
+  const g0=run.bet*(cur-1)*lev,gain=g0>0?g0*profitMul():Math.max(g0,-balance);
+  if(!run.tut){if(cur>=1)streak++;else streak=0;}
+  const fever=!run.tut&&streak>=5;
   const bonus=cur>1&&streak>=3?gain*Math.min(.25,.05*(streak-2)*(fever?2:1))*(1+.15*skl('streak')):0;
   sell.gain=gain;sell.bonus=bonus;sell.fever=fever;
   const tr=taxRate(balance),tax=gain+bonus>0?(gain+bonus)*tr:0;sell.tax=tax;sell.taxR=tr;
   balance+=gain+bonus-tax;
   if(debt>0&&gain+bonus>0){const r=Math.min(debt,(gain+bonus)*.3,balance);sell.repaid=r;repay(r);}
   if(balance>best){best=balance;store.set('shg_best',Math.floor(best));}
-  state='ghost';sfx.sell();talk('sold');freezeT=.14;sellJuice(gain+bonus);
-  app.classList.toggle('fever',fever);$('fever').hidden=!fever;
+  state='ghost';sellAt=performance.now();setTimeout(setBtn,720);sfx.sell();talk('sold');freezeT=.14;sellJuice(gain+bonus-tax);
+  if(!run.tut){app.classList.toggle('fever',fever);$('fever').hidden=!fever;}
   paintTop();paintPickers();setBtn();
-  $('pnl').innerHTML='<span class="dn">Sold</span> <span class="'+(gain+bonus>=0?'up':'dn')+'">'+sw(gain+bonus)+'</span>';
+  $('pnl').innerHTML='<span class="dn">Sold</span> <span class="'+(gain+bonus>=0?'up':'dn')+'">'+sw(gain+bonus-tax)+'</span>';
   if(gain>0)unlock('first');
   if(run.boss&&!run.tut&&cur>=run.boss.target){const rw=run.bet*.5;balance+=rw;sell.bossReward=rw;stats.bossLv=(stats.bossLv||0)+1;stats.bossSP=(stats.bossSP||0)+2;store.set('shg_stats',stats);
     unlock('boss1');if(stats.bossLv>=5)unlock('boss5');gainXp(60);setTimeout(()=>{stamp('⚔️ Boss defeated!');burst(innerWidth/2,innerHeight*.4,70);},200);paintTop();}
@@ -1067,54 +1097,61 @@ function release(){
   if(fever)unlock('streak5');
   if(run.key==='meme'&&cur>=5)unlock('meme5');
   if(balance>=1e8)unlock('billion');
-  if(t>=15&&gain>0)unlock('diamond');
+  if((run.hold||0)>=15&&gain>0)unlock('diamond');
   if(cur<1.05&&run.bet>0)unlock('paper');
-  if(run.hint&&run.hint.real&&cur>=3)unlock('insider');
-  if(lowFlag&&balance-debt>=START){lowFlag=false;unlock('comeback');}
-  if(!run.tut&&(Math.random()<.07||sell.bossReward)){const pz=rollPrize(true);setTimeout(()=>{const txt=pz.f();stamp('💎 Treasure!');toast('💎 Treasure · '+pz.e+' '+txt);paintTop();paintPickers();},1300);}
+  if(run.hint&&run.hint.real&&!run.hint.crystal&&cur>=3)unlock('insider');
+  if(!run.tut&&gain<0&&balance+invTotal()-debt<300000){lowFlag=true;stats.low=1;store.set('shg_stats',stats);}
+  if(lowFlag&&balance+invTotal()-debt>=START){lowFlag=false;stats.low=0;store.set('shg_stats',stats);unlock('comeback');}
+  if(!run.tut&&(sell.bossReward||(gain>0&&Math.random()<.07))){const pz=rollPrize(true);setTimeout(()=>{const txt=pz.f();stamp('💎 Treasure!');toast('💎 Treasure · '+pz.e+' '+txt);paintTop();paintPickers();},1300);}
 }
 let pendBust=null;
+function lossFactor(){
+  let L=run.T.loss;if(run.lev>1)L=L*run.lev*.6;if(run.it.shield)L=Math.min(L,Math.max(.1,L*.25));if(profile==='turtle'&&!run.it.shield)L*=.8;L*=1-.03*skl('risk');if(!run.liq&&Math.random()<.03*skl('insure')){L*=.5;setTimeout(()=>toast('🪂 Auto stop-loss! Loss halved'),600);}
+  if(run.liq)L=1;return L;}
+const holdRate=()=>.6*(run.it.slow?.6:1)*(SET.slow?.8:1)*(1-.02*skl('mind'))*(gear.chair?.97:1);
+const gapS=()=>(crashT-sell.t)/holdRate();
 function crash(){
-  crashed=true;crashT=t;$('news').hidden=true;
+  crashed=true;crashT=t;newsIdle();
   const last=candles[candles.length-1],bot=run.liq?cur*.8:run.crashAt*.62;
   candles.push({o:last?last.c:run.crashAt,h:last?last.c:run.crashAt,l:bot,c:bot,v:(last?last.v:1)*4+6,crash:true,ghost:!!sell});
   if(SET.fx){chart.classList.remove('shake');void chart.offsetWidth;chart.classList.add('shake');}
   vib(sell?40:[80,40,140]);
   sfx.crash();talk('crash');setTimeout(()=>talk('crash'),500);vigA=0;$('vign').style.boxShadow='none';btn.style.setProperty('--heat',0);
   if(!sell){flash(C.down);stamp('💥 CRASH','dn');shards();}
-  else if(crashT-sell.t<.6){stamp('Got out!');sfx.up();}
-  hideCoach();cgPlay(false);
+  else if(state!=='holding'&&crashT-sell.t<.6){stamp('Got out!');sfx.up();}
+  hideCoach();cgPlay(false);if(!sell)$('pnl').innerHTML='<span class="dn">💥 CRASH</span>';
   if(run.chal){chalRound(!!sell);readyAt=performance.now()+800;paintTop();paintPickers();setBtn();setTimeout(setBtn,820);scheduleSwitch();return;}
   if(run.tut){tutEnd(!!sell);readyAt=performance.now()+800;paintTop();paintPickers();setBtn();setTimeout(setBtn,820);scheduleSwitch();return;}
   let res;
   if(state==='holding'&&run.re&&!run.re.done){
-    let L=run.T.loss;if(run.lev>1)L=L*run.lev*.6;if(run.liq)L=1;
-    const loss=Math.max(0,Math.min(run.re.bet*L,balance));balance-=loss;run.re.loss=loss;run.re.done=1;state='ghost';
-    flash(C.down);stamp('💥 Re-entry caught','dn');
+    let loss=run.re.bet*lossFactor();if(inv.rewind>0&&loss>=balance*.3){inv.rewind--;store.set('shg_inv',inv);loss=0;run.re.rw=1;stats.c.items++;setTimeout(()=>toast('⏪ Loss Rewind used! Loss: $0'),700);}
+    loss=Math.max(0,Math.min(loss,balance));balance-=loss;run.re.loss=loss;run.re.done=1;run.re.caught=1;state='ghost';if(balance+invTotal()-debt<300000){lowFlag=true;stats.low=1;}
+    flash(C.down);stamp('💥 Re-entry caught','dn');$('pnl').innerHTML=run.re.rw?'<span class="gd">⏪ Loss Rewind · '+won(0)+'</span>':'<span class="dn">💥 Re-entry caught '+sw(-loss)+'</span>';
   }
   if(state==='holding'){
-    let L=run.T.loss;if(run.lev>1)L=L*run.lev*.6;if(run.it.shield)L=Math.min(L,Math.max(.1,L*.25));if(profile==='turtle'&&!run.it.shield)L*=.8;L*=1-.03*skl('risk');if(Math.random()<.03*skl('insure')){L*=.5;setTimeout(()=>toast('🪂 Auto stop-loss! Loss halved'),600);}
-    if(run.liq)L=1;
+    const L=lossFactor();
     let loss=run.bet*L,rw=0;if(inv.rewind>0&&loss>=balance*.3){inv.rewind--;store.set('shg_inv',inv);loss=0;rw=1;stats.c.items++;setTimeout(()=>toast('⏪ Loss Rewind used! Loss: $0'),700);}
+    const sh=!!run.it.shield&&!run.liq&&!rw;
     loss=Math.max(0,Math.min(loss,balance));balance-=loss;lastAmt=-loss;if(run.liq)unlock('liq');streak=0;app.classList.remove('fever');$('fever').hidden=true;
     if(run.hint&&!run.hint.real)unlock('fake');
-    if(balance<300000)lowFlag=true;
-    res={win:false,key:run.key,m:0,pct:0,streak:0,insider:run.it.insider,sawDip:run.sawDip,boss:!!run.boss,lev:run.lev,allin:run.allin,liq:!!run.liq,shield:run.it.shield};
-    const xg=3;gainXp(xg);
-    $('pnl').innerHTML='<span class="dn">Crash loss '+sw(-loss)+'</span>';
-    pendBust={loss,L:run.bet>0?loss/run.bet:L,xg,rw};
+    if(balance+invTotal()-debt<300000){lowFlag=true;stats.low=1;}
+    res={win:false,key:run.key,m:0,pct:0,streak:0,insider:run.it.insider,sawDip:run.sawDip,boss:!!run.boss,lev:run.lev,allin:run.allin,liq:!!run.liq,shield:sh};
+    const xg=gainXp(3);
+    $('pnl').innerHTML=rw?'<span class="gd">⏪ Loss Rewind · '+won(0)+'</span>':'<span class="dn">Crash loss '+sw(-loss)+'</span>';
+    pendBust={loss,L:run.bet>0?loss/run.bet:L,xg,rw,sh};
   }else{
     state='result';
-    if(crashT-sell.t<.2)unlock('escape');
+    const rc=!!(run.re&&run.re.caught),net=sell.gain+sell.bonus-(sell.tax||0)+(sell.bossReward||0)+(run.re?(run.re.gain||0)-(run.re.loss||0)-run.re.fee:0);
+    if(!rc&&gapS()<.2)unlock('escape');
     if(sell.dip&&peak>=sell.m*2)unlock('shake');
     const pct=Math.min(100,sell.m/peak*100);
-    if(pct>=95)unlock('god');
-    res={win:sell.m>1,key:run.key,m:sell.m,pct,streak,insider:run.it.insider,sawDip:run.sawDip&&!sell.dip,boss:!!run.boss,bossKill:!!sell.bossReward,lev:run.lev,allin:run.allin,liq:!!run.liq,shield:run.it.shield};
-    const xg=Math.round((8+pct/10+Math.min(30,(sell.m-1)*5))*(sell.fever?2:1)*(profile==='squirrel'?1.2:1));gainXp(xg);
-    lastAmt=sell.gain+sell.bonus-(sell.tax||0)+(sell.bossReward||0)+(run.re?(run.re.gain||0)-(run.re.loss||0)-run.re.fee:0);showWin(pct,xg);
+    if(pct>=95&&!rc&&sell.m>1)unlock('god');
+    res={win:rc?net>0:sell.m>1,key:run.key,m:sell.m,pct,streak:rc?0:streak,insider:run.it.insider,sawDip:run.sawDip&&!sell.dip,boss:!!run.boss,bossKill:!!sell.bossReward,lev:run.lev,allin:run.allin,liq:!!run.liq,shield:rc&&!!run.it.shield&&!run.liq&&run.re.loss>0};
+    const xg=gainXp(Math.round((8+pct/10+Math.min(30,(sell.m-1)*5))*(sell.fever?2:1)*(profile==='squirrel'?1.2:1)));
+    lastAmt=net;showWin(pct,xg);if(rc){streak=0;app.classList.remove('fever');$('fever').hidden=true;}
   }
   missionsUpdate(res);recordRound(res);
-  if(pendBust){const P=pendBust;pendBust=null;if(balance+invTotal()<100000){state='over';showOver(P.loss);}else{state='result';showBust(P.loss,P.L,P.xg,P.rw);if(balance<100000)setTimeout(()=>toast('💼 Out of cash! Withdraw from the Invest tab'),900);}}
+  if(pendBust){const P=pendBust;pendBust=null;if(balance+invTotal()<100000){state='over';showOver(P.loss);}else{state='result';showBust(P.loss,P.L,P.xg,P.rw,P.sh);if(balance<100000)setTimeout(()=>toast('💼 Out of cash! Withdraw from the Invest tab'),900);}}
   offers=makeOffers();
   readyAt=performance.now()+800;
   paintTop();paintPickers();setBtn();setTimeout(setBtn,820);scheduleSwitch();
@@ -1141,34 +1178,36 @@ function missionsUpdate(r){
 let shareText='';
 const GAME_URL='https://melange-lab.github.io/en/';
 function shareOut(text){const full=text+'\n👉 '+GAME_URL;
-  if(navigator.share){navigator.share({title:'Stonks Tycoon',text,url:GAME_URL}).catch(()=>{});return;}
-  (navigator.clipboard?navigator.clipboard.writeText(full):Promise.reject()).then(()=>toast('Copied with link. Paste it to your friends!'),()=>toast('Copy blocked. Please take a screenshot'));}
+  const copy=()=>(navigator.clipboard?navigator.clipboard.writeText(full):Promise.reject()).then(()=>toast('Copied with link. Paste it to your friends!'),()=>{try{prompt('Long-press the text below to copy',full);}catch(e){toast('Copy blocked. Please take a screenshot');}});
+  if(navigator.share){navigator.share({title:'Stonks Tycoon',text,url:GAME_URL}).catch(e=>{if(!e||e.name!=='AbortError')copy();});return;}
+  copy();}
 function shareBtn(){return '<div class="btns"><button type="button" id="share">📤 Share result</button></div>'}
 function bindShare(){const b=$('share');if(!b)return;b.onclick=()=>shareOut(shareText);}
 function showWin(pct,xg){
-  const wb=Math.floor(Math.max(0,sell.gain+sell.bonus-(sell.tax||0))*.5);
-  const g=sell.m<1?['Stop loss','dn','Cut your losses and got out.']:pct>=95?['Golden Touch','gd','Sold right at the peak.']:pct>=80?['Pro','up','Nice sell near the top.']:pct>=50?['Retail Ant','','Got half. The rest went to the whales.']:['Paper Hands','dn','Sold too early. It kept going…'];
-  const close=(crashT-sell.t)<.4?'<div class="sub gd">Crash '+(crashT-sell.t).toFixed(2)+'s away — escaped!</div>':'';
+  const rc=!!(run.re&&run.re.caught),s1=sell.gain+sell.bonus-(sell.tax||0),wb=Math.floor(Math.max(0,rc?s1-run.re.loss-run.re.fee:s1)*.5);
+  const g=rc?['Re-entry caught','dn','You sold, jumped back in, and got caught by the crash.']:sell.m<1?['Stop loss','dn','Cut your losses and got out.']:pct>=95?['Golden Touch','gd','Sold right at the peak.']:pct>=80?['Pro','up','Nice sell near the top.']:pct>=50?['Retail Ant','','Got half. The rest went to the whales.']:['Chickened Out','dn','Sold too early. It kept going…'];
+  const close=!rc&&(crashT-sell.t)<.4?'<div class="sub gd">Crash '+gapS().toFixed(2)+'s away — escaped!</div>':'';
   const shook=sell.dip&&peak>=sell.m*1.5?'<div class="sub dn">That bad news was just a shakeout.</div>':'';
   const o=run.offer,pp=x=>((x-1)*100).toFixed(1)+'%';
-  shareText=`[Stonks Tycoon] ${o.name} +${pp(sell.m)} sold · peak timing ${pct.toFixed(0)}% · ${g[0]} ${streak>=5?'🔥'+streak+'×':''}\nBalance ${won(balance)}`;
+  shareText=`[Stonks Tycoon] ${o.name} ${sell.m>=1?'+':''}${pp(sell.m)} sold · peak timing ${pct.toFixed(0)}% · ${g[0]} ${!rc&&streak>=5?'🔥'+streak+'×':''}\nBalance ${won(balance)}`;
   card.innerHTML='<div class="grade '+g[1]+'">'+g[0]+'</div><div class="sub">'+g[2]+'</div>'+close+shook+
-   (()=>{const tot=sell.gain+sell.bonus+(run.re?(run.re.gain||0)-(run.re.loss||0):0);return '<div class="big '+(tot>=0?'up':'dn')+'">'+sw(tot)+'</div>'+(run.re?'<div class="sub">1st sell '+sw(sell.gain+sell.bonus)+'</div>':'');})()+
-   (run.re?'<div class="sub '+((run.re.gain||0)-(run.re.loss||0)>=0?'up':'dn')+'">🔁 Re-entry '+(run.re.loss?'Caught '+sw(-run.re.loss):'SELL '+sw(run.re.gain||0))+'</div>':'')+
-   (sell.tax?'<div class="sub dn">🏛 Rich Tax '+Math.round(sell.taxR*100)+'% '+sw(-sell.tax)+'</div>':'')+
-   (sell.repaid?'<div class="sub dn">💸 Auto debt repay '+sw(-sell.repaid)+(debt>0?' · Debt left '+won(debt):' · Debt cleared!')+'</div>':'')+
+   (()=>{const tot=sell.gain+sell.bonus-(sell.tax||0)+(run.re?(run.re.gain||0)-(run.re.loss||0):0);return '<div class="big '+(tot>=0?'up':'dn')+'">'+sw(tot)+'</div>'+(run.re?'<div class="sub">1st sell '+sw(sell.gain+sell.bonus-(sell.tax||0))+'</div>':'');})()+
+   (run.re?'<div class="sub '+(run.re.caught?run.re.rw?'gd':'dn':(run.re.gain||0)>=0?'up':'dn')+'">🔁 '+(run.re.caught?'Re-entry caught '+(run.re.rw?'⏪ Loss Rewind · '+won(0):sw(-(run.re.loss||0))):'Re-entry sold '+sw(run.re.gain||0))+'</div>':'')+
+   (sell.tax?'<div class="sub dn">🏛 Rich Tax '+Math.round(sell.taxR*100)+'% '+sw(-sell.tax)+' (already deducted)</div>':'')+
+   (()=>{const c=(run.cost||0)+(run.re?run.re.fee||0:0);return c>0?'<div class="sub dn">🧾 Fees & items '+sw(-c)+' · Net '+sw(lastAmt-(run.cost||0))+'</div>':'';})()+
+   ((sell.repaid||0)+((run.re&&run.re.repaid)||0)?'<div class="sub dn">💸 Auto debt repay '+sw(-((sell.repaid||0)+((run.re&&run.re.repaid)||0)))+(debt>0?' · Debt left '+won(debt):' · Debt cleared!')+'</div>':'')+
    (run.lev>1||run.allin?'<div class="sub gd">'+(run.lev>1?'⚡ Leverage '+run.lev+'× ':'')+(run.allin?'🎲 All-in':'')+'</div>':'')+
    (sell.bonus?'<div class="sub gd">'+(sell.fever?'🔥 FEVER ':'')+streak+'-streak bonus '+sw(sell.bonus)+'</div>':'')+
    '<div class="bar"><i style="width:'+pct.toFixed(0)+'%"></i></div>'+
-   '<div class="row"><span>SELL '+fmtP(priceOf(sell.m))+' ('+(sell.m>=1?'+':'')+pp(sell.m)+')</span><span>Peak +'+pp(peak)+'</span></div>'+
-   (run.boss?(sell.bossReward?'<div class="sub gd">⚔️ '+run.boss.B.n+' defeated! '+sw(sell.bossReward)+' · SP +2 · XP +60</div>':'<div class="sub dn">👹 Boss survived (goal +'+Math.round((run.boss.target-1)*100)+'%)</div>'):'')+
+   '<div class="row"><span>Sold at '+fmtP(priceOf(sell.m))+' ('+(sell.m>=1?'+':'')+pp(sell.m)+')</span><span>Peak +'+pp(peak)+'</span></div>'+
+   (run.boss?(sell.bossReward?'<div class="sub gd">⚔️ '+run.boss.B.n+' defeated! '+sw(sell.bossReward)+' · SP +2 · XP +'+Math.round(60*xpMul())+'</div>':'<div class="sub dn">👹 Boss survived (goal +'+Math.round((run.boss.target-1)*100)+'%)</div>'):'')+
    '<div class="row"><span>Peak accuracy '+pct.toFixed(0)+'%</span><span class="gd">+'+xg+' XP</span></div>'+hintLine()+
    (wb>0&&adOk('win')?'<div class="btns"><button class="pri" id="adWin" type="button">📺 Watch ad: +50% profit ('+swS(wb)+') · '+(AD_LIM.win-adCnt('win'))+'/'+AD_LIM.win+'</button></div>':'')+shareBtn();
   card.hidden=false;bindShare();
-  if($('adWin'))$('adWin').onclick=()=>{const b=$('adWin');b.disabled=true;rewardAd('winx',()=>{adUse('win');balance+=wb;stats.net+=wb;b.remove();paintTop();paintPickers();setBtn();stamp('📺 +50%');toast('📺 Bonus '+swS(wb)+' paid out!');});setTimeout(()=>{if(b.isConnected)b.disabled=false;},3000);};
+  if($('adWin'))$('adWin').onclick=()=>{const b=$('adWin'),p0=pres;b.disabled=true;rewardAd('winx',()=>{if(pres!==p0)return;adUse('win');balance+=wb;stats.net+=wb;store.set('shg_stats',stats);b.remove();paintTop();paintPickers();setBtn();stamp('📺 +50%');toast('📺 Bonus '+swS(wb)+' paid out!');});setTimeout(()=>{if(b.isConnected)b.disabled=false;},3000);};
 }
-function hintLine(){return run.hint?'<div class="row"><span>Tip</span><span>'+(run.hint.real?'It was real 🕵️':'It was fake 🤡')+'</span></div>':'';}
-function showBust(loss,L,xg,rw){
+function hintLine(){return run.hint&&!run.hint.crystal?'<div class="row"><span>Tip</span><span>'+(run.hint.real?'It was real 🕵️':'It was fake 🤡')+'</span></div>':'';}
+function showBust(loss,L,xg,rw,sh){
   const lb=Math.floor(loss*.3);
   const early=peak<1.1;
   shareText=`[Stonks Tycoon] ${run.offer.name} Peak +${((peak-1)*100).toFixed(1)}% but didn’t sell, lost ${Math.round(L*100)}% 🫠\nBalance ${won(balance)}`;
@@ -1176,11 +1215,12 @@ function showBust(loss,L,xg,rw){
    '<div class="sub">'+(early?'Crashed right after you bought. Bad luck.':'+'+((peak-1)*100).toFixed(1)+'% peak, but you got greedy.')+'</div>'+
    (rw?'<div class="sub gd">⏪ Loss Rewind used! Loss: $0</div>':'<div class="big dn">'+sw(-loss)+' ('+Math.round(L*100)+'%)</div>')+
    (peak>1.05?'<div class="sub gd">Selling at the peak would’ve made '+sw(run.bet*(peak-1)*run.lev)+'…</div>':'')+
-   (run.it.shield?'<div class="sub gd">🛡 Stop-loss insurance cut your loss.</div>':'')+
+   (sh?'<div class="sub gd">🛡 Stop-Loss Shield cut your loss.</div>':'')+
+   (run.cost?'<div class="sub dn">🧾 Fees & items '+sw(-run.cost)+'</div>':'')+
    '<div class="row"><span>Take-profit streak broken</span><span class="gd">+'+xg+' XP</span></div>'+hintLine()+
    (lb>0&&adOk('loss')?'<div class="btns"><button class="pri" id="adLoss" type="button">📺 Watch ad: recover 30% ('+swS(lb)+') · '+(AD_LIM.loss-adCnt('loss'))+'/'+AD_LIM.loss+'</button></div>':'')+shareBtn();
   card.hidden=false;bindShare();
-  if($('adLoss'))$('adLoss').onclick=()=>{const b=$('adLoss');b.disabled=true;rewardAd('lossback',()=>{adUse('loss');balance+=lb;stats.net+=lb;b.remove();paintTop();paintPickers();setBtn();stamp('📺 Recovered');toast('📺 '+swS(lb)+' recovered');});setTimeout(()=>{if(b.isConnected)b.disabled=false;},3000);};
+  if($('adLoss'))$('adLoss').onclick=()=>{const b=$('adLoss'),p0=pres;b.disabled=true;rewardAd('lossback',()=>{if(pres!==p0)return;adUse('loss');balance+=lb;stats.net+=lb;store.set('shg_stats',stats);b.remove();paintTop();paintPickers();setBtn();stamp('📺 Recovered');toast('📺 '+swS(lb)+' recovered');});setTimeout(()=>{if(b.isConnected)b.disabled=false;},3000);};
 }
 const RAGE=['The whales are laughing at your account','The last seller sold at the very top','Chat room: "lol who got stuck again?"','Retail ant shakeout: success (on you)','The chart bounced right after you sold','Today’s lesson: don’t get greedy… oops'];
 
@@ -1191,25 +1231,25 @@ const debtLimit=()=>Math.max(START*30,betCap(1)*25);
 const canLoan=()=>{if(credit>=10)return false;const d=debt+loanAmt();return d+Math.ceil(d*LOAN_R[Math.min(10,credit+1)])<=debtLimit();};
 function takeLoan(){if(!canLoan())return false;const a=loanAmt();debt+=a;balance+=a;credit=Math.min(10,credit+1);stats.loans=(stats.loans||0)+1;const nl=stats.loanAt!==stats.rounds;stats.loanAt=stats.rounds;store.set('shg_stats',stats);if(nl)unlock('debt1');
   vib(40);toast('💳 Loan '+won(a)+' · Credit '+credit+''+(credit>=8?' (subprime)':''));return true;}
-function repay(a){a=Math.min(a,debt,balance);if(a<=0)return;balance-=a;debt-=a;if(debt<1){debt=0;intPaid=false;credit=Math.max(1,credit-1);if(state==='holding'||!(stats.loanAt>=stats.rounds))unlock('payoff');toast('🙌 Debt paid off! Credit '+credit+'');sfx.up();}}
-function resetView(){streak=0;app.classList.remove('fever');$('fever').hidden=true;round=1;state='ready';card.hidden=true;candles=[];sell=null;crashed=false;run=null;eM=1;lowFlag=false;
-  $('pnl').hidden=true;$('bossbar').hidden=true;buildChartIdle();paintTop();paintPickers();paintQuote();setBtn();}
+function repay(a){a=Math.min(a,debt,balance);if(a<=0)return;balance-=a;debt-=a;if(debt<1){debt=0;intPaid=false;store.set('shg_intPaid',false);credit=Math.max(1,credit-1);if(state==='holding'||!(stats.loanAt>=stats.rounds))unlock('payoff');toast('🙌 Debt paid off! Credit '+credit+'');sfx.up();}}
+function resetView(){streak=0;app.classList.remove('fever');$('fever').hidden=true;round=1;state='ready';card.hidden=true;candles=[];sell=null;crashed=false;run=null;eM=1;lowFlag=false;stats.low=0;store.set('shg_stats',stats);
+  $('pnl').hidden=true;$('bossbar').hidden=true;buildChartIdle();newsIdle();paintTop();paintPickers();paintQuote();setBtn();}
 function unOver(){
-  if(state!=='over'||!tutDone)return false;
+  if(state!=='over')return false;
   let ex=0;if(debt>debtLimit()){ex=Math.ceil(debt-debtLimit());if(!(balance-ex>=100000))return false;repay(ex);}
   if(!(balance>=100000)||debt>debtLimit())return false;
-  resetView();toast(ex?'🏦 Debt over the limit: '+won(ex)+' auto-repaid from cash':'💵 Got '+wonS(balance)+' in cash! You can trade again');return true;}
+  resetView();if(!tutDone&&$('modal').hidden)coachReady();toast(ex?'🏦 Debt over the limit: '+won(ex)+' auto-repaid from cash':'💵 Got '+wonS(balance)+' in cash! You can trade again');return true;}
 function declareBankrupt(forced){
   stats.bankrupts++;stats.curRun=0;unlock('hangang');if(stats.bankrupts>=5)unlock('bk5');if(stats.bankrupts>=10)unlock('bk10');
   const seized=debt>0,gotSP=stats.bankrupts<=5;if(gotSP)stats.bonusSP=(stats.bonusSP||0)+1;
-  if(seized){gear={};inv={};armed={};invest={};store.set('shg_inv2',invest);store.set('shg_gear',gear);store.set('shg_inv',inv);store.set('shg_armed',armed);credit=10;stats.cleanRounds=0;if(forced)unlock('default');}
-  debt=0;intPaid=false;balance=START*(1+.2*skl('seed'));store.set('shg_stats',stats);resetView();sfx.up();
+  if(seized){gear={};inv={};armed={};invest={};store.set('shg_inv2',invest);store.set('shg_gear',gear);store.set('shg_inv',inv);store.set('shg_armed',armed);credit=10;stats.cleanRounds=0;if(forced)unlock('default');offers=makeOffers();}
+  debt=0;intPaid=false;store.set('shg_intPaid',false);balance=START*(1+.2*skl('seed'));store.set('shg_stats',stats);resetView();sfx.up();
   stamp(seized?'🚨 Seized':'🔥 Revenge round!');setTimeout(()=>toast((seized?'🚨 Gear & consumables seized · Credit 10 · ':'')+(gotSP?'😤 Grit SP +1':'Start over')),400);
 }
 function showDefault(){
   state='over';vib([300,100,300]);flash('#300');
   card.innerHTML='<div class="grade dn">🚨 Credit Default</div><div class="sub">Debt '+won(debt)+' exceeds your '+won(debtLimit())+' limit.<br>The collectors are coming.</div>'+
-   '<div class="row"><span>Seized</span><span class="dn">Gear '+Object.keys(gear).length+' · all consumables</span></div>'+
+   '<div class="row"><span>Seized</span><span class="dn">All gear ('+Object.keys(gear).length+') · all consumables</span></div>'+
    '<div class="row"><span>Money lost</span><span class="dn">Cash '+wonS(balance)+(invTotal()>0?' · Invested '+wonS(invTotal()):'')+'</span></div>'+
    '<div class="sub">Level, skills and achievements stay.</div><div class="btns"><button class="pri" id="again" type="button">🥫 Accept and start over</button></div>';
   card.hidden=false;$('again').onclick=()=>{if(!unOver())declareBankrupt(debt>debtLimit());};paintPickers();setBtn();
@@ -1217,42 +1257,46 @@ function showDefault(){
 
 
 const CFG={adClient:'ca-pub-2213068202184499',adTest:false,donateUrl:''};
-const CG={on:false,S:null,last:0},onCG=/crazygames/.test(location.hostname+' '+document.referrer)||/[?&]cg\b/.test(location.search);
+const CG={on:false,S:null,last:0},onCG=/crazygames/.test(location.hostname)||(window.top!==window&&/crazygames/.test(document.referrer))||/[?&]cg\b/.test(location.search);
 if(onCG){const sc=document.createElement('script');sc.src='https://sdk.crazygames.com/crazygames-sdk-v3.js';
   sc.onload=async()=>{try{const S=window.CrazyGames.SDK;await S.init();if(S.environment!=='disabled'){CG.S=S;CG.on=true;try{S.game.loadingStop();}catch(e){}}}catch(e){}};document.head.appendChild(sc);}
 const cgPlay=on=>{if(!CG.on)return;try{on?CG.S.game.gameplayStart():CG.S.game.gameplayStop();}catch(e){}};
 const adStart=()=>{adPause=true;muted=true;bgm.sync();},adEnd=()=>{adPause=false;muted=!SET.sound;bgm.sync();};
-let adPend=0;
-function midAd(){if(!adsOn())return;if(adPause){adPend=1;return;}try{if(CG.on)CG.S.ad.requestAd('midgame',{adStarted:adStart,adFinished:adEnd,adError:adEnd});else window.adBreak({type:'next',name:'round30',beforeAd:adStart,afterAd:adEnd,adBreakDone:adEnd});}catch(e){adEnd();}}
+let adPend=0,adReq=0,adReqT=0;
+const reqEnd=()=>{adReq=0;clearTimeout(adReqT);};
+function midAd(){if(!adsOn())return;if(adPause||adReq){adPend=1;return;}try{if(CG.on)CG.S.ad.requestAd('midgame',{adStarted:adStart,adFinished:adEnd,adError:adEnd});else window.adBreak({type:'next',name:'round30',beforeAd:adStart,afterAd:adEnd,adBreakDone:adEnd});}catch(e){adEnd();}}
 const AD_LIM={win:5,loss:3,item:3};
-const adCnt=k=>{const a=store.get('shg_adc',{});return a.d===dayKey()?(a[k]||0):0;};
-const adUse=k=>{let a=store.get('shg_adc',{});if(a.d!==dayKey())a={d:dayKey()};a[k]=(a[k]||0)+1;store.set('shg_adc',a);};
+const adCnt=k=>{const a=store.get('shg_adc',{});return dayOrd(a.d)>=dayN()?(a[k]||0):0;};
+const adUse=k=>{let a=store.get('shg_adc',{});if(dayOrd(a.d)<dayN())a={d:dayKey()};a[k]=(a[k]||0)+1;store.set('shg_adc',a);};
 const adOk=k=>adsOn()&&adCnt(k)<AD_LIM[k];
 const adsOn=()=>onCG?CG.on:(!!CFG.adClient&&typeof window.adBreak==='function'&&!!(window.adsbygoogle&&window.adsbygoogle.loaded));
 if(CFG.adClient&&!onCG){if(!document.querySelector('script[src*=adsbygoogle]')){const sc=document.createElement('script');sc.async=true;sc.src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client='+CFG.adClient;sc.crossOrigin='anonymous';
   if(CFG.adTest)sc.dataset.adbreakTest='on';sc.dataset.adFrequencyHint='120s';document.head.appendChild(sc);}
   window.adsbygoogle=window.adsbygoogle||[];window.adBreak=window.adConfig=function(o){window.adsbygoogle.push(o);};window.adConfig({preloadAdBreaks:'on',sound:SET.sound?'on':'off'});}
-function rewardAd(name,onReward){if(!adsOn()){toast('Couldn’t load the ad');return;}let ok=false;
-  if(CG.on){CG.last=performance.now();try{CG.S.ad.requestAd('rewarded',{adStarted:adStart,adFinished:()=>{adEnd();onReward();},adError:()=>{adEnd();toast('No ads available right now');}});}catch(e){adEnd();toast('Couldn’t load the ad');}return;}
-  window.adBreak({type:'reward',name,beforeAd:adStart,afterAd:adEnd,beforeReward:show=>show(),adViewed:()=>{ok=true;onReward();},adDismissed:()=>toast('Watch to the end to get the reward'),adBreakDone:i=>{adEnd();if(!ok&&i&&i.breakStatus!=='viewed'&&i.breakStatus!=='dismissed')toast('No ads available right now');}});}
-const badge=()=>{try{if(!navigator.setAppBadge)return;if(store.get('shg_spin','')!==dayKey())navigator.setAppBadge(1);else navigator.clearAppBadge();}catch(e){}};
+function rewardAd(name,onReward){if(store.off&&tabNow())return;if(!adsOn()){toast('Couldn’t load the ad');return;}if(adReq||adPause)return;adReq=1;adReqT=setTimeout(reqEnd,10000);let ok=false;
+  if(CG.on){CG.last=performance.now();try{CG.S.ad.requestAd('rewarded',{adStarted:()=>{reqEnd();adStart();},adFinished:()=>{reqEnd();adEnd();onReward();},adError:()=>{reqEnd();adEnd();toast('No ads available right now');}});}catch(e){reqEnd();adEnd();toast('Couldn’t load the ad');}return;}
+  window.adBreak({type:'reward',name,beforeAd:()=>{reqEnd();adStart();},afterAd:adEnd,beforeReward:show=>show(),adViewed:()=>{ok=true;onReward();},adDismissed:()=>toast('Watch to the end to get the reward'),adBreakDone:i=>{reqEnd();adEnd();if(!ok&&i&&i.breakStatus!=='viewed'&&i.breakStatus!=='dismissed')toast('No ads available right now');}});}
+const badge=()=>{try{if(!navigator.setAppBadge)return;if(!usedToday('shg_spin'))navigator.setAppBadge(1);else navigator.clearAppBadge();}catch(e){}};
 document.addEventListener('visibilitychange',()=>{if(document.hidden)badge();});
 function showOver(loss){
-  const near=run&&peak>1.05?'<div class="sub gd">Selling at the peak (+'+((peak-1)*100).toFixed(1)+'%) would’ve made '+sw(run.bet*(peak-1)*(run.lev||1))+'</div>':'';
+  const near=run&&!run.chal&&!run.tut&&run.bet>0&&peak>1.05?'<div class="sub gd">Selling at the peak (+'+((peak-1)*100).toFixed(1)+'%) would’ve made '+sw(run.bet*(peak-1)*(run.lev||1))+'</div>':'';
   const la=loanAmt(),ok=canLoan(),revHtml='<button class="pri" id="adRevive" type="button">📺 Watch ad for '+won(START*3)+' (1/day)</button>';
+  const revOk=()=>{const b=balance+START*3,i=tutDone&&debt>0&&!intPaid?Math.ceil(debt*loanRate()):0,ex=Math.ceil(debt+i-debtLimit());return !(ex>0&&b<ex)&&b-Math.max(0,ex)>=100000;};
   vib([200,80,200,80,400]);flash('#000');
-  card.innerHTML='<div class="grade dn">💸 You’re broke</div><div class="sub">Liquidation wiped out your account.<br><b>'+pick(RAGE)+'</b></div>'+near+
+  card.innerHTML='<div class="grade dn">💸 You’re broke</div><div class="sub">'+(run&&run.liq?'Liquidation wiped out your account.':'Your account is wiped out.')+'<br><b>'+pick(RAGE)+'</b></div>'+near+
    '<div class="row"><span>Debt</span><span class="dn">'+(debt?won(debt):'None')+'</span></div>'+
    '<div class="row"><span>Credit Grade</span><span>'+credit+'</span></div>'+
-   '<div class="row"><span>Rounds survived this account</span><span>'+round+'</span></div>'+
-   (ok?'<div class="sub">💳 Loan '+won(la)+' · Interest/round '+(loanRate()*100).toFixed(1)+'% → Credit '+Math.min(10,credit+1)+''+(credit+1>=8?' (subprime)':'')+'</div>':'<div class="sub dn">No more loans available</div>')+
-   '<div class="btns" id="overBtns" style="flex-wrap:wrap">'+(adsOn()&&store.get('shg_adRevive','')!==dayKey()?revHtml:'')+(ok?'<button class="pri" id="loanBtn" type="button">💳 Take loan & continue</button>':'')+'<button type="button" id="again">🥫 Declare bankruptcy'+(debt>0?' (seizure)':'')+'</button></div>';
+   '<div class="row"><span>Rounds survived on this account</span><span>'+(stats.curRun||0)+'</span></div>'+
+   (adsOn()&&!usedToday('shg_adRevive')&&!revOk()?'<div class="sub dn">Your debt is at the limit, so the ad bonus can’t carry you through the next round</div>':'')+
+   (ok?'<div class="sub">💳 Loan '+won(la)+' · Interest/round '+(LOAN_R[Math.min(10,credit+1)]*100).toFixed(1)+'% → Credit '+Math.min(10,credit+1)+''+(credit+1>=8?' (subprime)':'')+'</div>':'<div class="sub dn">No more loans available</div>')+
+   '<div class="btns" id="overBtns" style="flex-wrap:wrap">'+(adsOn()&&!usedToday('shg_adRevive')&&revOk()?revHtml:'')+(ok?'<button class="pri" id="loanBtn" type="button">💳 Take loan & continue</button>':'')+'<button type="button" id="again">🥫 Declare bankruptcy'+(debt>0?' (seizure)':'')+'</button></div>';
   card.hidden=false;
-  const rev=()=>rewardAd('revive',()=>{if(store.get('shg_adRevive','')===dayKey())return;store.set('shg_adRevive',dayKey());balance+=START*3;resetView();paintTop();paintPickers();setBtn();stamp('📺 Recovered');toast('📺 '+won(START*3)+' added! Let’s go again');});
-  if($('adRevive'))$('adRevive').onclick=rev;
-  else if(store.get('shg_adRevive','')!==dayKey()){let n=0;const iv=setInterval(()=>{const bx=$('overBtns');
-    if(++n>60||!bx||state!=='over'||card.hidden||$('adRevive')||store.get('shg_adRevive','')===dayKey())return clearInterval(iv);
-    if(adsOn()){clearInterval(iv);bx.insertAdjacentHTML('afterbegin',revHtml);$('adRevive').onclick=rev;}},500);}
+  const rev=()=>rewardAd('revive',()=>{if(usedToday('shg_adRevive'))return;store.set('shg_adRevive',dayKey());balance+=START*3;if(state==='over')resetView();paintTop();paintPickers();setBtn();stamp('📺 Recovered');toast('📺 '+won(START*3)+' added! Let’s go again');});
+  const revGo=()=>{const bs=['adRevive','loanBtn','again'].map(id=>$(id)).filter(Boolean);bs.forEach(b=>b.disabled=true);rev();const re=()=>{if(adPause||adReq)return setTimeout(re,500);bs.forEach(b=>{if(b.isConnected)b.disabled=false;});};setTimeout(re,3000);};
+  if($('adRevive'))$('adRevive').onclick=revGo;
+  else if(!usedToday('shg_adRevive')&&revOk()){let n=0;const iv=setInterval(()=>{const bx=$('overBtns');
+    if(++n>60||!bx||state!=='over'||card.hidden||$('adRevive')||usedToday('shg_adRevive')||!revOk())return clearInterval(iv);
+    if(adsOn()){clearInterval(iv);bx.insertAdjacentHTML('afterbegin',revHtml);$('adRevive').onclick=revGo;}},500);}
   if($('loanBtn'))$('loanBtn').onclick=()=>{if(!takeLoan())return showOver(0);resetView();stamp('💳 Trading on debt!');};
   $('again').onclick=()=>{if(!unOver())declareBankrupt(false);};
 }
@@ -1267,66 +1311,72 @@ function showIntro(){
 
 
 const PRIZES=[
-  {w:30,e:'💵',t:'Cash',f:()=>{const v=betCap()*.5;balance+=v;return won(v);}},
-  {w:8,e:'💰',t:'Cash jackpot',f:()=>{const v=betCap()*2;balance+=v;return won(v);}},
+  {w:30,e:'💵',t:'Cash',f:()=>{const v=betCap(1)*.5;balance+=v;return won(v);}},
+  {w:8,e:'💰',t:'Cash jackpot',f:()=>{const v=betCap(1)*2;balance+=v;return won(v);}},
   {w:30,e:'🧪',t:'Item',f:()=>{const c=pick(CONSUM);inv[c.id]=(inv[c.id]||0)+1;store.set('shg_inv',inv);return c.e+' '+c.n;}},
-  {w:24,e:'📚',t:'XP',f:()=>{gainXp(100);return '100 XP';}},
+  {w:24,e:'📚',t:'XP',s:1,f:()=>gainXp(100)+' XP'},
   {w:5,e:'🌳',t:'SP',f:()=>{stats.bonusSP=(stats.bonusSP||0)+1;store.set('shg_stats',stats);return 'SP +1';}},
-  {w:3,e:'🎟',t:'Boss Summon Ticket',f:()=>{inv.bossT=(inv.bossT||0)+1;store.set('shg_inv',inv);return '🎟 Boss Summon Ticket';}}
+  {w:3,e:'🎟',t:'Boss Summon Ticket',f:()=>{inv.bossT=(inv.bossT||0)+1;store.set('shg_inv',inv);return 'Boss Summon Ticket +1';}}
 ];
 function rollPrize(noSP){const pool=PRIZES.filter(p=>!(noSP&&p.t==='SP'));let r=Math.random()*pool.reduce((a,p)=>a+p.w,0);for(const p of pool){r-=p.w;if(r<=0)return p;}return pool[0];}
 let spinning=false;
 $('giftBtn').onclick=()=>{
   if(spinning||state==='holding'||state==='ghost')return;
-  if(store.get('shg_spin','')===dayKey()){if(adsOn()&&store.get('shg_adSpin','')!==dayKey()){openModal('<h2>🎁 Today’s wheel done!</h2><p class="note">Watch an ad to spin once more (1/day)</p><button class="setbtn" type="button" id="adSpin" style="width:100%">📺 Watch ad, spin again</button>');$('adSpin').onclick=()=>rewardAd('spin',()=>{if(store.get('shg_adSpin','')===dayKey())return;store.set('shg_adSpin',dayKey());store.set('shg_spin','');$('modal').hidden=true;setTimeout(()=>$('giftBtn').click(),300);});return;}toast('🎁 Wheel done for today! Spin again tomorrow');return;}
+  if(usedToday('shg_spin')){if(adsOn()&&!usedToday('shg_adSpin')){openModal('<h2>🎁 Today’s wheel done!</h2><p class="note">Watch an ad to spin once more (1/day)</p><button class="setbtn" type="button" id="adSpin" style="width:100%">📺 Watch ad, spin again</button>');$('adSpin').onclick=()=>rewardAd('spin',()=>{$('modal').hidden=true;if(!usedToday('shg_spin')){setTimeout(()=>$('giftBtn').click(),300);return;}if(usedToday('shg_adSpin'))return;store.set('shg_adSpin',dayKey());store.set('shg_spin','');setTimeout(()=>$('giftBtn').click(),300);});return;}toast('🎁 Wheel done for today! Spin again tomorrow');return;}
   spinning=true;const pz=rollPrize(false),txt=pz.f();store.set('shg_spin',dayKey());store.set('shg_bal',Math.floor(balance));
   openModal('<h2>🎁 Daily Wheel</h2><p class="note">Once a day · cash, consumables, XP, rare SP</p><div class="wheel" id="wheel">🎰</div><div class="note" id="wheelTxt" style="text-align:center">Spinning…</div>');
   au();let i=0;const em=PRIZES.map(p=>p.e),iv=setInterval(()=>{const w=$('wheel');if(!w)return;w.textContent=em[i++%em.length];beep(400+i*25,.03,'square',.025);},70);
-  setTimeout(()=>{clearInterval(iv);spinning=false;const w=$('wheel'),wt=$('wheelTxt');if(w)w.textContent=pz.e;if(wt)wt.innerHTML='<b class="gd" style="font-size:18px">'+pz.t+' · '+txt+'</b>';sfx.up();burst(innerWidth/2,innerHeight*.45,50);paintTop();paintPickers();},1500);
+  setTimeout(()=>{clearInterval(iv);spinning=false;const w=$('wheel'),wt=$('wheelTxt');if(w)w.textContent=pz.e;const lb=pz.s||txt.indexOf(pz.t)===0?txt:pz.t+' · '+txt;if(wt)wt.innerHTML='<b class="gd" style="font-size:18px">'+lb+'</b>';if(!wt||$('modal').hidden)toast('🎁 '+lb);sfx.up();burst(innerWidth/2,innerHeight*.45,50);paintTop();paintPickers();},1500);
 };
 /* ---------- card close ---------- */
 new MutationObserver(()=>{card.scrollTop=0;}).observe(card,{childList:true});
 new MutationObserver(()=>{if(card.hidden||card.querySelector('.cx')||card.querySelector('#again,.opts,#qStart,#qGo'))return;
   card.insertAdjacentHTML('afterbegin','<button class="cx" type="button" data-close aria-label="Close">✕</button>');}).observe(card,{childList:true,attributes:true,attributeFilter:['hidden']});
-card.addEventListener('click',e=>{if(e.target.closest('[data-close]')){card.hidden=true;hideCoach();if(!tutDone&&(state==='ready'||state==='result'))coachReady();}});
+card.addEventListener('click',e=>{const cb=e.target.closest('button');if(cb&&e.detail>0)cb.blur();if(e.target.closest('[data-close]')){card.hidden=true;hideCoach();if(!tutDone&&(state==='ready'||state==='result'))coachReady();}});
 /* ---------- modals ---------- */
-function openModal(html){$('modalBody').innerHTML=html;$('modal').hidden=false;}
+function openModal(html){$('modalBody').innerHTML=html;$('modal').hidden=false;$('modal').firstChild.focus({preventScroll:true});}
 function showLevel(){if(state==='holding'||state==='ghost')return;
   const lv=lvlOf(xp),ri=rankOf(xp),nx=RANKS[ri+1],pct=Math.round(lv.cur/lv.need*100);
-  const prevCap=betCap();
+  const prevCap=betCap(1);
   const unl=i=>{const u=Object.values(ITEMS).filter(it=>it.lv===i).map(it=>it.name);if(i===2)u.push('🎲 All-in');Object.values(TIERS).filter(T=>!T.hidden&&T.lv===i).forEach(T=>u.push(T.e+' '+T.label));return u.join(' · ');};
   openModal('<h3 style="margin:0 0 6px">⭐ Lv.'+lv.L+' · '+RANKS[ri][1]+'</h3>'+
    '<div class="xpbar"><u style="width:'+pct+'%"></u></div><p class="mu" style="margin:4px 0 10px;font-size:12.5px">Next level in '+(lv.need-lv.cur)+' XP ('+lv.cur+' / '+lv.need+') · Total '+xp.toLocaleString()+' XP</p>'+
    '<div class="lvl"><div><small>Level bet limit</small><b>'+won(prevCap)+'</b></div><div><small>Next rank</small><b>'+(nx?nx[1]+' · '+(nx[0]-xp).toLocaleString()+' XP to go':'Top rank!')+'</b></div></div>'+
    '<p class="mu" style="font-size:12px;margin:10px 0 4px">Each level-up: limit +22% · SP +1 every 2 levels</p>'+
-   '<h3 style="margin:12px 0 4px;font-size:13px">How to earn XP</h3><p class="mu" style="font-size:12px;margin:0;line-height:1.6">Take profit 8~45 XP (multiplier·closeness↑, Fever 2×) · Stop loss 3 XP · Boss defeat 60 XP · Daily missions · Gift wheel</p>'+
+   '<h3 style="margin:12px 0 4px;font-size:13px">How to earn XP</h3><p class="mu" style="font-size:12px;margin:0;line-height:1.6">Take profit 8~45 XP (multiplier·accuracy↑, Fever 2×) · Caught in a crash 3 XP · Boss defeat 60 XP · Daily missions · Daily Wheel</p>'+
    '<h3 style="margin:12px 0 4px;font-size:13px">Ranks</h3><div class="rk">'+RANKS.map((r,i)=>'<div class="'+(i===ri?'on':i<ri?'ok':'')+'"><b>'+(i<ri?'✓ ':i===ri?'▶ ':'')+r[1]+'</b><small>'+r[0].toLocaleString()+' XP'+(unl(i)?' · 🔓 '+unl(i):'')+'</small></div>').join('')+'</div>');
 }
-$('regime').onclick=()=>{const R=regime();toast(R.e+' '+R.n+' · '+R.d);};$('rankBtn').onclick=showLevel;$('rankBtn').onkeydown=e=>{if(e.key==='Enter')showLevel();};
+$('regime').onclick=()=>{const R=regime();toast(R.e+' '+R.n+' · '+R.d);};$('rankBtn').onclick=showLevel;$('rankBtn').onkeydown=e=>{if((e.key==='Enter'||e.key===' ')&&state!=='holding'&&state!=='ghost'){e.preventDefault();e.stopPropagation();showLevel();}};
 $('modalClose').onclick=()=>$('modal').hidden=true;
 /* ---------- input ---------- */
 let tapAt=0;
-const tapHold=e=>{e.preventDefault();const n=performance.now();if(n-tapAt<300)return;tapAt=n;if(state==='holding')release();else if(state==='ghost')reenter();else start();};
+const tapHold=e=>{if(e.button>0)return;e.preventDefault();const n=performance.now();if(n-tapAt<300)return;tapAt=n;if(state==='holding')release();else if(state==='ghost')reenter();else start();};
 if(window.PointerEvent)btn.addEventListener('pointerdown',tapHold);else{btn.addEventListener('touchstart',tapHold,{passive:false});btn.addEventListener('mousedown',tapHold);}
-document.addEventListener('visibilitychange',()=>{if(document.hidden)release();else if(!tabCheck()){ensureDaily();paintTop();}});
-addEventListener('pagehide',release);
+const flushRound=()=>{release();if(state!=='ghost'||!run||crashed)return;
+  for(let i=0;i<1e5&&base(t)<run.crashAt;i++){t+=.05;cur=Math.max(run.lev>1?.3:.85,base(t)*(1+(wig(t)-1)*(run.T.wig||1)*(run.rg.wig||1))*newsF(t));peak=Math.max(peak,cur);
+    const idx=runBase+Math.floor(t/CD);while(candles.length<=idx){const pc=candles.length?candles[candles.length-1].c:1;candles.push({o:pc,h:pc,l:pc,c:pc,v:0,ghost:true,r:1});}const c=candles[candles.length-1];c.h=Math.max(c.h,cur);c.l=Math.min(c.l,cur);c.c=cur;}
+  cur=run.crashAt;peak=Math.max(peak,cur);crash();};
+document.addEventListener('visibilitychange',()=>{if(document.hidden)flushRound();else if(!tabCheck()){ensureDaily();paintTop();}});
+addEventListener('pagehide',flushRound);
 addEventListener('resize',()=>{if(state==='holding'&&getComputedStyle($('rotate')).display!=='none')release();});
 let tabStale=0;
-const TAB_TAKE={shg_season:v=>season=v,shg_daily:v=>daily=v,shg_weekly:v=>weekly=v,shg_inv:v=>inv=v,shg_armed:v=>armed=v,shg_inv2:v=>invest=v,shg_gear:v=>gear=v,shg_col:v=>col=v,shg_ach:v=>ach=v,shg_achc:v=>achC=v,shg_sk:v=>sk=v,shg_league:v=>league=v,shg_nick:v=>nick=v,shg_profile:v=>profile=v,shg_home:v=>lastHome=v,shg_best:v=>best=Math.max(best,+v||0),shg_stats:v=>Object.assign(stats,v),shg_decor:v=>Object.assign(decor,v)},
-  TAB_KEEP=['shg_bal','shg_debt','shg_credit','shg_xp','shg_spin','shg_adSpin','shg_adRevive','shg_adc','shg_chalDay','shg_chalRun','shg_tutPaid','shg_tutBonus','shg_set','shg_pct','shg_ipct'];
+const TAB_TAKE={shg_streak:v=>{streak=Math.max(0,Math.floor(+v||0));app.classList.toggle('fever',streak>=5);$('fever').hidden=streak<5;},shg_season:v=>season=v,shg_daily:v=>daily=v,shg_weekly:v=>weekly=v,shg_inv:v=>inv=v,shg_armed:v=>armed=v,shg_inv2:v=>invest=v,shg_gear:v=>gear=v,shg_col:v=>col=v,shg_ach:v=>ach=v,shg_achc:v=>achC=v,shg_sk:v=>sk=v,shg_league:v=>league=v,shg_nick:v=>nick=v,shg_profile:v=>profile=v,shg_home:v=>lastHome=v,shg_intPaid:v=>intPaid=!!v,shg_best:v=>best=Math.max(best,+v||0),shg_stats:v=>{Object.assign(stats,v);fixStats();lowFlag=!!stats.low;},shg_decor:v=>Object.assign(decor,v)},
+  TAB_KEEP=['shg_bal','shg_debt','shg_credit','shg_xp','shg_spin','shg_adSpin','shg_adRevive','shg_adc','shg_chalDay','shg_chalRun','shg_chalPaid','shg_tutPaid','shg_tutBonus','shg_tut','shg_set','shg_pct','shg_ipct','shg_tier'];
 addEventListener('storage',e=>{const k=e.key;if(e.storageArea&&e.storageArea!==localStorage)return;if(k!==null&&(k.slice(0,4)!=='shg_'||k==='shg_errlog'))return;
-  if(tabStale!==1&&k!==null&&e.newValue!==null&&!document.hidden&&(tabStale===2||state==='holding'||state==='ghost')&&(TAB_TAKE[k]||TAB_KEEP.includes(k))){const d=(+e.newValue||0)-(+e.oldValue||0);
-    if(k==='shg_bal')balance+=d;else if(k==='shg_debt')debt=Math.max(0,debt+d);else if(k==='shg_credit')credit=Math.min(10,Math.max(1,credit+d));else if(k==='shg_xp')xp+=d;
+  if(tabStale!==1&&k!==null&&e.newValue!==null&&(adPause||!document.hidden&&(tabStale===2||state==='holding'||state==='ghost'))&&(TAB_TAKE[k]||TAB_KEEP.includes(k))){const d=(+e.newValue||0)-(+e.oldValue||0);
+    if(k==='shg_bal'){const f=d<0&&state==='holding'&&run&&balance+d<(run.re&&!run.re.done?run.re.bet:run.bet)*(run.lev>1?Math.max(1,run.T.loss*run.lev*.6):1);if(f)release();balance+=d;if(f){if(balance<0){if(!debt)credit=Math.min(10,credit+1);debt+=-balance;balance=0;}paintTop();}}
+    else if(k==='shg_debt')debt=Math.max(0,debt+d);else if(k==='shg_credit')credit=Math.min(10,Math.max(1,credit+d));else if(k==='shg_xp')xp+=d;
     else if(TAB_TAKE[k])try{const v=JSON.parse(e.newValue);if(v!=null)TAB_TAKE[k](v);}catch(_){}
     tabStale=2;return;}
   tabStale=1;store.off=1;tabGo();});
 function tabGo(){if(!tabStale||tabGo.on||adPause||document.hidden||state==='holding'||(state==='ghost'&&tabStale===2))return !!tabGo.on;
   tabGo.on=1;let w=tabStale===2?2500:0;try{w=Math.max(w,2000-(Date.now()-(+sessionStorage.getItem('shgRl')||0)));}catch(e){}
-  setTimeout(()=>{if(adPause||state==='holding'){tabGo.on=0;return;}store.off=1;try{sessionStorage.setItem('shgRl',Date.now())}catch(e){}location.reload();},w);return true;}
+  setTimeout(()=>{if(adPause||adReq||state==='holding'){tabGo.on=0;return;}store.off=1;try{sessionStorage.setItem('shgRl',Date.now())}catch(e){}location.reload();},w);return true;}
 const tabNow=()=>{if(!tabStale||adPause||state==='holding'||(state==='ghost'&&tabStale===2))return false;store.off=1;location.reload();return true;};
 const tabCheck=()=>{if(!tabStale)try{if(['shg_bal','shg_xp'].some(k=>k in store.seen&&localStorage.getItem(k)!==store.seen[k])){tabStale=1;store.off=1;}}catch(e){}return tabNow();};
 addEventListener('pageshow',e=>{if(e.persisted)tabCheck();});
-document.addEventListener('keydown',e=>{if(e.code==='Space'&&!e.repeat){e.preventDefault();if(state==='holding')release();else if(state==='ghost')reenter();else start();}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!adPause){if(!$('sheet').hidden)$('sheet').hidden=true;else if(!$('modal').hidden)$('modalClose').click();return;}
+  if(!(e.code==='Space'||(e.key==='Enter'&&e.target===btn))||e.repeat)return;if(state!=='holding'){const tg=e.target;if(curTab!=='trade'||!$('modal').hidden||!$('sheet').hidden||(tg&&tg.closest&&tg.closest('input,textarea,select,summary,[role=switch],#card:not([hidden]) button')))return;}e.preventDefault();if(state==='holding')release();else if(state==='ghost')reenter();else start();});
 btn.addEventListener('contextmenu',e=>e.preventDefault());
 
 /* ---------- chart ---------- */
@@ -1337,7 +1387,7 @@ let liveM=1,liveT=0,liveV=0,eM=1,chartStock=null,runBase=0;
 function buildChartIdle(){
   candles=[];let m=1;for(let i=0;i<34;i++){const o=m;m*=1+rnd(-.012,.012);candles.push({o,c:m,h:Math.max(o,m)*(1+rnd(0,.006)),l:Math.min(o,m)*(1-rnd(0,.006)),v:rnd(.3,1.4)});}
   const f=candles[candles.length-1].c;candles.forEach(c=>{c.o/=f;c.c/=f;c.h/=f;c.l/=f;});
-  liveM=1;liveT=0;liveV=0;eM=1;cur=1;chartStock=offer();
+  liveM=1;liveT=0;liveV=0;eM=1;cur=1;chartStock=offer();trades=[];bookQ={};tradeM=1;tradeT=0;
 }
 function liveTick(dt){
   const T=TIERS[offer().k],prev=liveM;liveT+=dt*.6;
@@ -1345,13 +1395,13 @@ function liveTick(dt){
   liveV+=rnd(-1,1)*.00045*w-liveV*.025+(1-liveM)*.0006;
   if(Math.random()<dt*.18){liveV=(Math.random()<.55?1:-1)*rnd(.0025,.006)*w;if(liveV>0&&Math.random()<.5)talk('hype');}
   liveM*=1+liveV*.6+rnd(-1,1)*.0012*w;liveM=Math.max(.8,Math.min(1.25,liveM));
-  if(state==='ready'||(state==='result'&&performance.now()>=readyAt)){const d=(liveM-1)*100;btn.textContent=(chal?'🏆 '+(chal.i+1)+'/5 Buy':state==='result'?'Buy next stock':'Tap to Buy')+(Math.abs(d)>=.5?(d>0?' · ▲':' · ▼')+Math.abs(d).toFixed(1)+'%':'');}
+  if(state==='ready'||(state==='result'&&performance.now()>=readyAt)){const d=(liveM-1)*100;btn.textContent=(chal&&tutDone?'🏆 '+(chal.i+1)+'/5 Buy':state==='result'?'Buy next stock':'Tap to Buy')+(Math.abs(d)>=.5?(d>0?' · ▲':' · ▼')+Math.abs(d).toFixed(1)+'%':'');}
   let c=candles[candles.length-1];
   if(!c||liveT>=CD){liveT=0;c={o:prev,h:prev,l:prev,c:prev,v:0};candles.push(c);if(candles.length>240)candles.splice(0,candles.length-240);}
   c.h=Math.max(c.h,liveM);c.l=Math.min(c.l,liveM);c.c=liveM;c.v+=dt*rnd(.4,1.4);cur=liveM;
 }
 function scheduleSwitch(){
-  const rr=run;setTimeout(()=>{if(run===rr&&(state==='result'||state==='over')){run=null;sell=null;crashed=false;eM=1;$('bossbar').hidden=true;$('pnl').hidden=true;buildChartIdle();paintQuote();renderBook();}},2600);
+  const rr=run;setTimeout(()=>{if(run===rr&&(state==='result'||state==='over')){run=null;sell=null;crashed=false;eM=1;$('bossbar').hidden=true;$('pnl').hidden=true;buildChartIdle();newsIdle();paintQuote();renderBook();}},2600);
 }
 function draw(){
   ctx.clearRect(0,0,W,H);
@@ -1374,7 +1424,7 @@ function draw(){
     ctx.fillStyle=col;ctx.font='700 10px "Noto Sans KR",sans-serif';ctx.fillText(label,plotL+4,y-7);ctx.font='500 10px "JetBrains Mono",monospace';};
   hl(1/eM,C.muted,'Base price',[2,3]);
   if(run&&run.liqLine&&state==='holding')hl(run.liqLine,C.down,'💀 Liquidation',[6,3]);
-  if(T.limit)hl(1.3/eM,C.gold,'Limit up +30%',[4,4]);
+  if(T.limit||(run&&run.tut))hl(1.3/eM,C.gold,'Limit up +30%',[4,4]);
   if(run&&run.hint&&state!=='ready'){ctx.lineWidth=2;hl(run.hint.v,C.rumor,'Insider tip target',[2,5]);ctx.lineWidth=1;}
   // volume
   const vmax=Math.max(1,...vis.map(c=>c.v));
@@ -1428,8 +1478,11 @@ function stamp(text,cls){
   showStamp(text,cls);
 }
 function showStamp(text,cls){
-  chart.querySelectorAll('.stamp').forEach(e=>e.remove());
-  const el=document.createElement('div');el.className='stamp '+(cls||'');el.textContent=text;chart.appendChild(el);
+  document.querySelectorAll('.stamp').forEach(e=>e.remove());
+  const onPg=app.classList.contains('pgopen');
+  const el=document.createElement('div');el.className='stamp '+(cls||'');el.textContent=text;
+  if(onPg){el.style.position='fixed';el.style.zIndex='26';}
+  (onPg?document.body:chart).appendChild(el);
   setTimeout(()=>el.remove(),1050);
   if(!cls){beep(784,.08,'square',.04);setTimeout(()=>beep(1175,.14,'square',.04),70);}
   vib(20);
@@ -1456,10 +1509,11 @@ function sellJuice(amt){
   if(amt>=0){burst(x,y+10,Math.min(70,14+Math.round(Math.log2(1+amt/50000)*8)),null,true);flash(C.gold);}vib([25,30,25]);
   const b=$('bal');b.classList.remove('bump');void b.offsetWidth;b.classList.add('bump');
 }
+function setBal(v){const b=$('bal');b.textContent=v>=1e16?wonS(v):won(v);if(b.scrollWidth>b.clientWidth)b.textContent=wonS(v);}
 function animBal(){
   const from=shownBal,to=balance,t0=performance.now();cancelAnimationFrame(balAnim);
-  if(Math.abs(to-from)<1){$('bal').textContent=to>=1e16?wonS(to):won(to);shownBal=to;return;}
-  const step=n=>{const k=Math.min(1,(n-t0)/650),e=1-Math.pow(1-k,3);shownBal=from+(to-from)*e;$('bal').textContent=shownBal>=1e16?wonS(shownBal):won(shownBal);if(k<1)balAnim=requestAnimationFrame(step);};
+  if(Math.abs(to-from)<1){setBal(to);shownBal=to;return;}
+  const step=n=>{const k=Math.min(1,(n-t0)/650),e=1-Math.pow(1-k,3);shownBal=from+(to-from)*e;setBal(shownBal);if(k<1)balAnim=requestAnimationFrame(step);};
   balAnim=requestAnimationFrame(step);
 }
 function tension(dt){
@@ -1493,29 +1547,32 @@ function quizStep(i,sc){
   const [q,opts]=QUIZ[i];
   card.innerHTML='<div class="sub">🧪 Investor Type Quiz '+(i+1)+' / '+QUIZ.length+'</div><div class="q">'+q+'</div><div class="opts">'+
     opts.map((o,j)=>'<button type="button" data-j="'+j+'">'+o[0]+'</button>').join('')+'</div>';
-  card.hidden=false;
-  card.querySelectorAll('.opts button').forEach(b=>b.onclick=()=>{au();beep(660,.05,'sine',.04);sc[opts[+b.dataset.j][1]]++;quizStep(i+1,sc);});
+  card.hidden=false;const shownAt=performance.now();
+  card.querySelectorAll('.opts button').forEach(b=>b.onclick=()=>{if(performance.now()-shownAt<300)return;au();beep(660,.05,'sine',.04);sc[opts[+b.dataset.j][1]]++;quizStep(i+1,sc);});
 }
 function quizResult(sc){
   const k=Object.keys(sc).reduce((a,b)=>sc[b]>sc[a]?b:a);
   profile=k;store.set('shg_profile',k);const T=TYPES[k];
-  tierSel=T.tier;offers=makeOffers();paintTop();paintPickers();paintQuote();renderBook();buildChartIdle();
+  tierSel=T.tier;store.set('shg_tier',tierSel);offers=makeOffers();paintTop();paintPickers();paintQuote();renderBook();buildChartIdle();
   card.innerHTML='<div class="sub">Your investor type is</div><div class="emo">'+T.e+'</div><div class="grade gd">'+T.n+'</div><div class="sub">'+T.d+'</div><div class="perk">Perk · '+T.perk+'</div>'+
     '<div class="sub">Recommended: '+TIERS[T.tier].label+'</div><div class="btns"><button class="pri" id="qGo" type="button">'+(tutDone?'To the game':'Start tutorial')+'</button></div>';
   card.hidden=false;sfx.up();burst(innerWidth/2,innerHeight*.45,40);
   $('qGo').onclick=()=>{card.hidden=true;if(!tutDone)coachReady();};
 }
+let coachAt=null;
 function coach(html,target,pos){if(curTab!=='trade')return;
   const el=$('coach');el.innerHTML=html;el.className=pos;el.hidden=false;
   document.querySelectorAll('.glow').forEach(g=>g.classList.remove('glow'));target.classList.add('glow');
-  const r=target.getBoundingClientRect(),h=el.offsetHeight;
-  el.style.top=Math.max(8,pos==='above'?r.top-h-14:r.top+30)+'px';
+  coachAt=[target,pos];placeCoach();
 }
+function placeCoach(){const el=$('coach');if(el.hidden||!coachAt)return;const[target,pos]=coachAt,r=target.getBoundingClientRect(),h=el.offsetHeight;el.style.top=Math.max(8,pos==='above'?r.top-h-14:r.top+30)+'px';}
+addEventListener('resize',placeCoach);addEventListener('orientationchange',()=>setTimeout(placeCoach,200));
+if(document.fonts){document.fonts.ready.then(placeCoach);if(document.fonts.addEventListener)document.fonts.addEventListener('loadingdone',placeCoach);}
 function hideCoach(){$('coach').hidden=true;document.querySelectorAll('.glow').forEach(g=>g.classList.remove('glow'));}
 function coachReady(){coach('👇 Tap this button <b>once to Buy</b>.<br>Tap again to sell. (Practice round, no real losses)',btn,'above');}
 function tutTick(){
-  if(tutStep<1&&t>.8){tutStep=1;coach('👉 On the right is the <b>order book</b>. Long green bars (buyers) and trade strength over 100% mean it’s rising. Keep watching!',$('book'),'below');}
-  else if(tutStep<2&&cur>=1.3){tutStep=2;coach('🔥 <b>Limit up broken!</b> Tap now to lock in +30%. You could hold longer, but…',btn,'above');}
+  if(tutStep<1&&t>.8){tutStep=1;coach('👉 On the right is the <b>order book</b>. Long green bars (buyers) and buy power over 100% mean it’s rising. Keep watching!',$('book'),'below');}
+  else if(tutStep<2&&cur*eM>=1.3){tutStep=2;coach('🔥 <b>Limit up broken!</b> Tap now to lock in your profit. You could hold longer, but…',btn,'above');}
   else if(tutStep<3&&cur>=1.6){tutStep=3;coach('💓 Heartbeat speeding up? It could pop any second. <b>Tap now to sell!</b>',btn,'above');}
 }
 function tutEnd(won){
@@ -1548,12 +1605,12 @@ const SKILLS=[
   {id:'risk',br:'def',e:'🛡',n:'Risk Control',d:'Crash loss -',per:3,u:'%',max:15},
   {id:'mind',br:'def',e:'🧘',n:'Mental Control',d:'Chart speed -',per:2,u:'%',max:15},
   {id:'seed',br:'def',e:'💰',n:'Rainy Day Fund',d:'Post-bankruptcy cash +',per:20,u:'%',max:20},
-  {id:'insure',br:'def',e:'🪂',n:'Auto Stop-Loss',d:'Chance to halve loss when stuck ',per:3,u:'%',max:10,req:10},
-  {id:'intel',br:'int',e:'👂',n:'Insider',d:'Real crash warning chance +',per:4,u:'%p',max:12},
+  {id:'insure',br:'def',e:'🪂',n:'Auto Stop-Loss',d:'Chance to halve a crash loss +',per:3,u:'%',max:10,req:10},
+  {id:'intel',br:'int',e:'👂',n:'Informant',d:'Real crash warning chance +',per:4,u:LANG==='en'?' pp':'%p',max:12},
   {id:'xp',br:'int',e:'📚',n:'Replay Review',d:'XP gained +',per:5,u:'%',max:20},
   {id:'mission',br:'int',e:'🎁',n:'Diligence',d:'Mission cash reward +',per:10,u:'%',max:10},
   {id:'discount',br:'int',e:'🏷',n:'Penny Pincher',d:'Item price -',per:4,u:'%',max:10},
-  {id:'radar',br:'int',e:'📡',n:'Tip Detector',d:'Insider tip accuracy +',per:3,u:'%p',max:10,req:10}
+  {id:'radar',br:'int',e:'📡',n:'Tip Detector',d:'Insider tip accuracy +',per:3,u:LANG==='en'?' pp':'%p',max:10,req:10}
 ];
 const costOf=lv=>1+Math.floor(lv/5);
 let sk=store.get('shg_sk',{}),curTab='trade',lastAmt=0,resetArm=0;
@@ -1564,6 +1621,11 @@ const brPts=br=>SKILLS.filter(x=>x.br===br&&!x.req).reduce((a,x)=>a+skl(x.id),0)
 const spFree=()=>spEarned()-spUsed();
 let stats=Object.assign({rounds:0,wins:0,bestM:0,bestPct:0,net:0,maxStreak:0,bankrupts:0,hist:[]},store.get('shg_stats',{}));
 stats.c=Object.assign({rounds:0,wins:0,x2:0,x3:0,x5:0,x10:0,p90:0,p95:0,fever:0,profit:0,levWin:0,allinWin:0,liq:0,dip:0,daily:0,weekly:0,gear:0,items:0},stats.c||{});
+const fixStats=()=>{const N=v=>+v||0,obj=o=>o&&typeof o==='object'&&!Array.isArray(o);
+  ['rounds','wins','bestM','bestPct','net','maxStreak','bankrupts','bossLv','bossSP','bonusSP','careerSP','cleanRounds','loans','curRun'].forEach(k=>stats[k]=N(stats[k]));
+  stats.hist=(Array.isArray(stats.hist)?stats.hist:[]).filter(h=>obj(h)&&isFinite(h.m)&&isFinite(h.a)).slice(0,20).map(h=>Object.assign(h,{m:+h.m,a:+h.a,l:+h.l||1,i:Array.isArray(h.i)?h.i:[],k:Object.prototype.hasOwnProperty.call(TIERS,h.k)?h.k:'',ni:Number.isInteger(h.ni)?h.ni:-1}));
+  if(!obj(stats.c))stats.c={};for(const k in stats.c)stats.c[k]=N(stats.c[k]);if(!obj(stats.ct))stats.ct={};for(const k in stats.ct)stats.ct[k]=N(stats.ct[k]);
+  stats.types=(Array.isArray(stats.types)?stats.types:[]).filter(k=>Object.prototype.hasOwnProperty.call(TIERS,k));};fixStats();lowFlag=!!stats.low;
 const cVal=d=>d.id==='boss'?(stats.bossLv||0):d.id==='bk'?(stats.bankrupts||0):(stats.c[d.id]||0);
 const cTarget=(d,tier)=>d.money?Math.round(d.b*Math.pow(d.m,tier)):Math.ceil(d.b*Math.pow(d.m,tier));
 function careerCheck(){
@@ -1573,14 +1635,14 @@ function careerCheck(){
   if(got){gainXp(30*got);store.set('shg_stats',stats);}
 }
 function recordRound(r){
-  if(adPend||(stats.rounds+1)%30===0){adPend=0;setTimeout(()=>{if(state==='holding'||state==='ghost')adPend=1;else midAd();},1800);}
+  if(adPend||(stats.rounds+1)%30===0){adPend=0;setTimeout(()=>{if(state==='holding'||state==='ghost'||document.hidden)adPend=1;else midAd();},1800);}
   try{seasonXp(r.win?20:10);}catch(e){}
   const c=stats.c;c.rounds++;if(r.win){c.wins++;if(r.m>=2)c.x2++;if(r.m>=3)c.x3++;if(r.m>=5)c.x5++;if(r.m>=10)c.x10++;if(r.pct>=90)c.p90++;if(r.pct>=95)c.p95++;if(r.streak===5)c.fever++;if(r.lev>=5)c.levWin++;if(r.allin)c.allinWin++;if(r.sawDip)c.dip++;if(r.allin&&r.m>=2)unlock('allin');}
   if(r.liq)c.liq++;
-  stats.rounds++;if(r.win){stats.wins++;stats.bestM=Math.max(stats.bestM,r.m);stats.bestPct=Math.max(stats.bestPct,r.pct);}
+  stats.rounds++;stats.curRun=(stats.curRun||0)+1;if(r.win){stats.wins++;stats.bestM=Math.max(stats.bestM,r.m);stats.bestPct=Math.max(stats.bestPct,r.pct);}
   lastAmt-=run.cost||0;stats.maxStreak=Math.max(stats.maxStreak,streak);stats.net+=lastAmt;
   stats.types=stats.types||[];if(!stats.types.includes(run.key))stats.types.push(run.key);if(stats.types.filter(k=>!TIERS[k].hidden).length>=Object.keys(TIERS).filter(k=>!TIERS[k].hidden).length)unlock('spread');
-  stats.hist.unshift({n:run.offer.name,k:run.offer.k,ni:run.offer.ni,w:r.win,m:r.win?r.m:peak,a:lastAmt,l:run.lev,y:run.allin?1:0,q:r.liq?1:0,i:Object.keys(run.it||{}).filter(k=>run.it[k])});stats.hist=stats.hist.slice(0,20);
+  stats.hist.unshift({n:run.offer.name,k:run.offer.k,ni:run.offer.ni,w:r.win,s:sell&&!(run.re&&run.re.caught)?1:0,m:sell?sell.m:peak,a:lastAmt,l:run.lev,y:run.allin?1:0,q:r.liq?1:0,i:Object.keys(run.it||{}).filter(k=>run.it[k])});stats.hist=stats.hist.slice(0,20);
   if(lastAmt>0)c.profit+=lastAmt;careerCheck();
   store.set('shg_stats',stats);
 }
@@ -1588,8 +1650,9 @@ function rerender(name){const pg=$('page'),y=pg.scrollTop,op=[...pg.querySelecto
 function tab(name,keep){if(!keep&&tabNow())return;
   curTab=name;if(name==='trade')unOver();document.querySelectorAll('#tabs button').forEach(b=>b.setAttribute('aria-current',b.dataset.tab===name?'page':'false'));
   app.classList.toggle('pgopen',name!=='trade');
+  [...app.children].forEach(el=>{if(el.id!=='tabs')el.inert=name!=='trade';});
   const pg=$('page');
-  if(name==='trade'){pg.hidden=true;if(!tutDone&&card.hidden&&$('modal').hidden&&(state==='ready'||state==='result'))coachReady();return;}
+  if(name==='trade'){pg.hidden=true;paintPickers();if(!tutDone&&profile&&card.hidden&&$('modal').hidden&&(state==='ready'||state==='result'))coachReady();return;}
   if(!card.hidden&&card.querySelector('[data-close]')&&!card.querySelector('#adWin,#adLoss'))card.hidden=true;hideCoach();
   pg.innerHTML='<div>'+(name==='skill'?pageSkill():name==='shop'?pageShop():name==='invest'?pageInvest():name==='mission'?pageMission():name==='record'?pageRecord():pageSet())+'</div>';
   if(!keep){pg.style.animation='none';void pg.offsetWidth;pg.style.animation='';}
@@ -1599,7 +1662,7 @@ $('tabs').addEventListener('click',e=>{const b=e.target.closest('button');if(b&&
 $('spBtn').onclick=()=>{if(state!=='holding'&&state!=='ghost')tab('skill');};
 function pageSkill(){
   const lv=lvlOf(xp),v=(x,l)=>+(x.per*l).toFixed(1)+x.u;
-  return '<h2>🌳 Skill Tree</h2><p class="lead">SP comes slowly: 1 per 2 levels, 1 per achievement, 1 per 2 career mission tiers, 2 per boss defeat, 1 per weekly mission. Upgrade cost rises by 1 every 5 levels, and each branch’s top skills unlock at 10 points in that branch.</p>'+
+  return '<h2>🌳 Skill Tree</h2><p class="lead">SP comes slowly: 1 per 2 levels, 1 per achievement, 1 per 2 career mission tiers, 2 per boss defeat, 1 per weekly mission. Each skill’s upgrade cost rises by 1 for every 5 levels in that skill, and each branch’s top skills unlock at 10 points in that branch.</p>'+
    '<div class="sphead"><div><small>Available SP</small><b>'+spFree()+'</b></div><div style="text-align:right"><small>Lv.'+lv.L+' · Next level in '+(lv.need-lv.cur)+' XP</small><small>Total '+spEarned()+' · Spent '+spUsed()+'</small></div></div>'+
    Object.entries(BR).map(([bk,B])=>'<h3>'+B.e+' '+B.n+' <span class="mu">· '+brPts(bk)+'P</span></h3><div class="skills">'+SKILLS.filter(x=>x.br===bk).map(x=>{
      const l=skl(x.id),cost=costOf(l),maxed=l>=x.max,locked=x.req&&brPts(bk)<x.req;
@@ -1620,7 +1683,7 @@ const GEAR=[
   {id:'building',e:'🏢',n:'Uptown Tower',d:'Daily mission cash 2×',p:1e13,lv:11},{id:'jet',e:'🛩',n:'Private Jet',d:'Easier liquidation line',p:8e13,lv:12},
   {id:'firm',e:'🏦',n:'Buy a Brokerage',d:'Bet limit +50%',p:5e14,lv:14}
 ];
-const cPrice=c=>Math.max(1e5,Math.round(Math.max(betCap()*c.p,balance*c.p*.03)*Math.pow(1.6,(inv[c.id]||0)+(armed[c.id]||0))/1e4)*1e4);
+const cPrice=c=>Math.max(1e5,Math.round(Math.max(betCap(1)*c.p,balance*c.p*.03)*Math.pow(1.6,(inv[c.id]||0)+((armed[c.id]||0)>0?1:0))/1e4)*1e4);
 
 
 const DECOR=[
@@ -1641,7 +1704,7 @@ let decor=Object.assign({own:[],wall:null,floor:null,furn:[]},store.get('shg_dec
 const decorSave=()=>store.set('shg_decor',decor);
 function decorHtml(){
   const sec=(t,title)=>'<h3>'+title+'</h3><div class="pan">'+DECOR.filter(d=>d.t===t).map(d=>{const own=decor.own.includes(d.id),on=t==='furn'?decor.furn.includes(d.id):decor[t]===d.id;
-    return '<div class="li'+(own?' done':'')+'"><i>'+d.e+'</i><div><b>'+d.n+'</b><small>'+(own?(on?'✓ In use':'Holding'):d.season?'Season Pass reward':won(d.p))+'</small></div><div class="shopb">'+
+    return '<div class="li'+(own?' done':'')+'"><i>'+d.e+'</i><div><b>'+d.n+'</b><small>'+(own?(on?'✓ In use':'Owned'):d.season?'Season Pass reward':won(d.p))+'</small></div><div class="shopb">'+
       (own?'<button class="setbtn'+(on?' ghost':'')+'" type="button" data-deq="'+d.id+'">'+(on?'Remove':'Use')+'</button>':d.season?'<span class="mu">🎫</span>':'<button class="setbtn" type="button" data-dbuy="'+d.id+'"'+(balance<d.p?' disabled':'')+'>Buy</button>')+'</div></div>';}).join('')+'</div>';
   return '<h3>🛋️ Decorate Mini-Room</h3><p class="lead">Wallpaper, floors and decor you buy show up right away in the mini-room on the Stats and Invest tabs.</p>'+sec('wall','🧱 Wallpaper')+sec('floor','🟫 Floor')+sec('furn','🧸 Decor');
 }
@@ -1655,8 +1718,8 @@ function giveDecor(id){const d=DECOR.find(x=>x.id===id);if(d&&!decor.own.include
 
 const SEASON_T=30,SEASON_XP=100;
 let season=store.get('shg_season',{wk:'',xp:0,got:[]});
-const seasonFix=()=>{const wk=weekKey();if(season.wk!==wk){season={wk,xp:0,got:[]};store.set('shg_season',season);}};
-const seasonReward=t=>{const own=id=>decor.own.includes(id),cash=m=>({e:'💵',n:'Cash (limit×'+m.toFixed(1)+')',f:()=>{balance+=Math.round(betCap(1)*m/1e4)*1e4;}}),
+const seasonFix=()=>{const wk=weekKey();if(wkOrd(season.wk)<wkOrd(wk)){season={wk,xp:0,got:[]};store.set('shg_season',season);}};
+const seasonReward=t=>{const own=id=>decor.own.includes(id),cash=m=>{const v=Math.round(betCap(1)*m/1e4)*1e4;return {e:'💵',n:'Cash '+wonS(v),f:()=>{balance+=v;}};},
   sp1={e:'🌳',n:'SP +1',f:()=>{stats.bonusSP=(stats.bonusSP||0)+1;store.set('shg_stats',stats);}},dec=(id,e,n)=>own(id)?cash(3):{e,n,f:()=>giveDecor(id)};
   return t===30?(own('d_cup')?sp1:{e:'🏆',n:'Season Trophy + SP +1',f:()=>{giveDecor('d_cup');sp1.f();}}):
   t===10?dec('w_sakura','🌸','Cherry Blossom Wallpaper'):t===15?dec('d_tree','🎄','Sparkle Tree'):t===20?dec('f_cloud','☁️','Cloud Floor'):t===25?dec('d_alien','👾','Alien Buddy'):
@@ -1664,84 +1727,88 @@ const seasonReward=t=>{const own=id=>decor.own.includes(id),cash=m=>({e:'💵',n
 function seasonXp(n){seasonFix();const before=Math.floor(season.xp/SEASON_XP);season.xp+=n;store.set('shg_season',season);const after=Math.floor(season.xp/SEASON_XP);if(after>before&&before<SEASON_T)setTimeout(()=>toast('🎫 Season Pass tier '+Math.min(after,SEASON_T)+'! Claim it in the Missions tab'),1200);}
 function seasonHtml(){seasonFix();const tier=Math.min(SEASON_T,Math.floor(season.xp/SEASON_XP)),into=season.xp%SEASON_XP;
   const d=new Date(),left=(8-(d.getDay()||7));
-  return '<h3>🎫 Weekly Season Pass · '+tierLbl(tier+'/'+SEASON_T)+' <span class="mu">· '+left+' days left</span></h3><div class="pan" style="padding:10px 14px"><div class="xpbar"><u style="width:'+(tier>=SEASON_T?100:into)+'%"></u></div><p class="mu" style="font-size:12px;margin:4px 0 8px">+10 XP per round, +20 XP on take profit · 1 tier per 100 XP · resets Monday</p><div class="spass">'+
+  return '<h3>🎫 Weekly Season Pass · '+tierLbl(tier+'/'+SEASON_T)+' <span class="mu">· '+left+(LANG==='en'&&left===1?' day left':' days left')+'</span></h3><div class="pan" style="padding:10px 14px"><div class="xpbar"><u style="width:'+(tier>=SEASON_T?100:into)+'%"></u></div><p class="mu" style="font-size:12px;margin:4px 0 8px">+10 XP per round, +20 XP on take profit · 1 tier per 100 XP · resets Monday</p><div class="spass">'+
    Array.from({length:SEASON_T},(_,i)=>{const t=i+1,r=seasonReward(t),ok=tier>=t,got=season.got.includes(t);return '<button type="button" class="sp '+(got?'got':ok?'ok':'')+'" data-stier="'+t+'"'+(ok&&!got?'':' disabled')+'><small>'+t+'</small><i>'+r.e+'</i><em>'+(got?'Claimed':r.n)+'</em></button>';}).join('')+'</div></div>';}
-function seasonBind(pg){pg.querySelectorAll('[data-stier]').forEach(b=>b.onclick=()=>{const t=+b.dataset.stier;seasonFix();if(season.got.includes(t)||Math.floor(season.xp/SEASON_XP)<t)return;const r=seasonReward(t);r.f();season.got.push(t);store.set('shg_season',season);sfx.up();toast('🎫 '+tierLbl(t)+' reward: '+r.e+' '+r.n);paintTop();rerender('mission');});}
+function seasonBind(pg){pg.querySelectorAll('[data-stier]').forEach(b=>b.onclick=()=>{const t=+b.dataset.stier,wk0=season.wk;seasonFix();
+  if(season.wk!==wk0){toast('🎫 A new season has started · last week’s rewards were reset');rerender('mission');return;}
+  if(season.got.includes(t)||Math.floor(season.xp/SEASON_XP)<t){rerender('mission');return;}const r=seasonReward(t);r.f();season.got.push(t);store.set('shg_season',season);sfx.up();toast('🎫 '+tierLbl(t)+' reward: '+r.e+' '+r.n);paintTop();rerender('mission');});}
 function pageShop(){
-  return '<h2>🛒 Shop</h2><p class="lead">Spend your money here. Consumables last one round; gear gives permanent bonuses.</p>'+
+  return '<h2>🛒 Shop</h2><p class="lead">Spend your money here. Consumables are used up once their effect is spent; gear gives permanent bonuses.</p>'+
    '<div class="sphead"><div><small>Cash</small><b style="font-size:22px;white-space:nowrap">'+wonS(balance)+'</b></div><div style="text-align:right"><small>Consumables scale with cash · each one you own makes the next 1.6× pricier</small></div></div>'+
    '<h3>🏦 Bank</h3><div class="pan" style="padding:6px 14px 12px">'+[['Debt',debt?won(debt):'None'],['Credit Grade',credit+''+(credit>=8?' · subprime':'')],['Interest/round',(loanRate()*100).toFixed(1)+'%'],['Debt limit',won(debtLimit())]].map(([k,v])=>`<div class="row" style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--line);font-size:14px"><span class="mu">${k}</span><b>${v}</b></div>`).join('')+
    '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:10px"><button class="setbtn" type="button" id="bLoan" '+(canLoan()?'':'disabled')+'>💳 Loan<br>'+wonS(loanAmt())+'</button><button class="setbtn ghost" type="button" id="bHalf" '+(debt&&balance>0?'':'disabled')+'>Repay half</button><button class="setbtn ghost" type="button" id="bAll" '+(debt&&balance>0?'':'disabled')+'>Repay all</button></div>'+
    '<p class="lead" style="margin:8px 0 0">Taking a loan drops your credit 1 grade; paying it all off raises it 1 grade. Debt over the limit is auto-repaid from cash; if you can’t cover it = credit default · gear and investments seized. 30% of take-profit gains auto-repay debt.</p></div>'+
    '<h3>🧪 Consumables</h3>'+(adOk('item')?'<button class="setbtn" id="adItem" type="button" style="width:100%;margin-bottom:8px">📺 Watch ad: free item · '+(AD_LIM.item-adCnt('item'))+'/'+AD_LIM.item+'</button>':'')+'<div class="pan">'+CONSUM.map(c=>{const pr=cPrice(c),own=inv[c.id]||0,arm=armed[c.id]||0;
-     return `<div class="li"><i>${c.e}</i><div><b>${c.n} <span class="mu">· Owned ${own}${arm?' · In use '+arm:''}</span></b><small>${c.d}</small></div><div class="shopb"><button class="setbtn" type="button" data-buy="${c.id}" ${balance<pr?'disabled':''}>${won(pr)}</button>${c.arm?`<button class="setbtn ghost" type="button" data-use="${c.id}" ${own<1||arm>0?'disabled':''}>${arm>0?'In use':'Use'}</button>`:''}</div></div>`}).join('')+'</div>'+
+     return `<div class="li"><i>${c.e}</i><div><b>${c.n} <span class="mu">· Owned ${own}${arm?' · In use '+arm:''}</span></b><small>${c.d}</small></div><div class="shopb"><button class="setbtn" type="button" data-buy="${c.id}" ${balance<pr?'disabled':''}>${wonS(pr)}</button>${c.arm?`<button class="setbtn ghost" type="button" data-use="${c.id}" ${own<1||arm>0?'disabled':''}>${arm>0?'In use':'Use'}</button>`:''}</div></div>`}).join('')+'</div>'+
    decorHtml()+
    '<h3>💎 Gear · Permanent Bonus</h3><div class="pan">'+GEAR.map(g=>{const own=gear[g.id];
-     return `<div class="li ${own?'done':''}"><i>${g.e}</i><div><b>${g.n}</b><small>${g.d} · ${RANKS[g.lv][1]} +</small></div><div class="shopb">${own?'<span class="gd">Owned ✓</span>':rankOf(xp)<g.lv?`<span class="mu">🔒 ${RANKS[g.lv][1]}</span>`:`<button class="setbtn" type="button" data-gear="${g.id}" ${balance<g.p?'disabled':''}>${won(g.p)}</button>`}</div></div>`}).join('')+'</div>';
+     return `<div class="li ${own?'done':''}"><i>${g.e}</i><div><b>${g.n}</b><small>${g.d} · ${RANKS[g.lv][1]} rank & up</small></div><div class="shopb">${own?'<span class="gd">Owned ✓</span>':rankOf(xp)<g.lv?`<span class="mu">🔒 ${RANKS[g.lv][1]}</span>`:`<button class="setbtn" type="button" data-gear="${g.id}" ${balance<g.p?'disabled':''}>${won(g.p)}</button>`}</div></div>`}).join('')+'</div>';
 }
 
 
 const seedRng=str=>{let h=1779033703^str.length;for(let i=0;i<str.length;i++){h=Math.imul(h^str.charCodeAt(i),3432918353);h=h<<13|h>>>19;}return()=>{h=Math.imul(h^h>>>16,2246822507);h=Math.imul(h^h>>>13,3266489909);return((h^=h>>>16)>>>0)/4294967296;};};
 const dayNum=()=>{const d=new Date();return d.getFullYear()*10000+(d.getMonth()+1)*100+d.getDate();};
+const wkDays=()=>{const d=new Date(),m=new Date(d.getFullYear(),d.getMonth(),d.getDate()-(d.getDay()+6)%7);return Array.from({length:7},(_,i)=>{const x=new Date(m.getFullYear(),m.getMonth(),m.getDate()+i);return x.getFullYear()*1e4+(x.getMonth()+1)*100+x.getDate();});},inWk=d=>wkDays().includes(+d);
 let chal=store.get('shg_chalRun',null);if(chal&&chal.day!==dayNum())chal=null;
 const esc=v=>String(v).replace(/[&<>"']/g,c=>'&#'+c.charCodeAt(0)+';');
 const nickClean=v=>String(v==null?'':v).replace(/[\s<>&"'`\\]/g,''),nickBad=n=>!n||n==='__proto__'||n==='constructor'||n==='prototype';
 let nick=store.get('shg_nick','');if(typeof nick==='string')nick=nick.replace(/^Retail ?Ant(?=\d{4}$)/,'Ant');
 nick=nickClean(nick).slice(0,10);if(nickBad(nick)||nick.length<2){nick=(LANG==='en'?'Ant':'Retail Ant')+Math.floor(1000+Math.random()*9000);}if(nick!==store.get('shg_nick',''))store.set('shg_nick',nick);
 let league=store.get('shg_league',{wk:'',me:{},fr:{}});
-const lgFix=()=>{const wk=weekKey();if(!league||typeof league!=='object'||league.wk!==wk)league={wk,me:{},fr:{}};
+const lgFix=()=>{const wk=weekKey();if(!league||typeof league!=='object'||wkOrd(league.wk)<wkOrd(wk))league={wk,me:{},fr:{}};
   const fr=Object.create(null);for(const n of Object.keys(league.fr||{}))if(n===nickClean(n)&&!nickBad(n)&&n.length<=20&&league.fr[n]&&typeof league.fr[n]==='object')fr[n]=Object.assign(Object.create(null),league.fr[n]);league.fr=fr;
-  if(!league.me||typeof league.me!=='object')league.me={};};
+  if(!league.me||typeof league.me!=='object')league.me={};
+  const num=o=>{for(const d of Object.keys(o))o[d]=+o[d]||0;};num(league.me);Object.values(league.fr).forEach(num);};
 function chalPoints(){const r=seedRng('SHG'+dayNum());return Array.from({length:5},()=>Math.min(20,Math.max(1.05,.94/(1-r()))));}
-function chalStart(){if(store.get('shg_chalDay',0)===dayNum()){toast('Already did today’s challenge. Come back tomorrow!');return;}
-  chal={day:dayNum(),pts:chalPoints(),i:0,score:0,res:[]};store.set('shg_chalRun',chal);tab('trade');setBtn();toast('🏆 Today’s Challenge is on! Sell before the crash for 5 rounds');}
+function chalStart(){if(!tutDone){toast('Finish the tutorial first!');return;}if(store.get('shg_chalDay',0)>=dayNum()){toast('Already did today’s challenge. Come back tomorrow!');return;}
+  chal={day:dayNum(),pts:chalPoints(),i:0,score:0,res:[],id:Date.now()+'-'+Math.floor(Math.random()*1e6)};store.set('shg_chalRun',chal);if(state==='over'&&debt<=debtLimit())resetView();tab('trade');paintPickers();setBtn();toast('🏆 Today’s Challenge is on! Sell before the crash for 5 rounds');}
 function chalRound(sold){
   state='result';delete chal.pend;const pt=sold?Math.round((sell.m-1)*100):-30;chal.score+=pt;chal.res.push(pt);chal.i++;
-  if(chal.i<5){store.set('shg_chalRun',chal);card.innerHTML='<div class="grade '+(pt>=0?'up':'dn')+'">'+(pt>=0?'+':'')+pt+' pts</div><div class="sub">Challenge '+chal.i+'/5 · Total '+chal.score+' pts</div><div class="sub">'+(sold?'Crash point was x'+chal.pts[chal.i-1].toFixed(2)+'':'Got stuck (-30 pts)')+'</div>';card.hidden=false;return;}
+  if(chal.i<5){store.set('shg_chalRun',chal);card.innerHTML='<div class="grade '+(pt>=0?'up':'dn')+'">'+(pt>=0?'+':'')+pt+' pts</div><div class="sub">Challenge '+chal.i+'/5 · Total '+chal.score+' pts</div><div class="sub">'+(sold?'Crash point was x'+chal.pts[chal.i-1].toFixed(2):'Got stuck (-30 pts)')+'</div>';card.hidden=false;return;}
   chalFinish();
 }
 function chalFinish(quiet){
-  const sc=chal.score,d=chal.day,dup=store.get('shg_chalDay',0)===d;chal=null;store.set('shg_chalRun',null);store.set('shg_chalDay',d);
-  lgFix();league.me[d]=sc;store.set('shg_league',league);
-  const rw=dup||sc<=0?0:Math.round(betCap()*Math.min(3,sc/100)/1e4)*1e4;balance+=rw;if(!dup)gainXp(40);
-  if(quiet){setTimeout(()=>toast('🏆 Challenge Complete · '+sc+' pts'+(rw?' · '+won(rw):'')),1500);return;}
-  shareText='🏆 Stonks Tycoon Daily Challenge '+String(d).slice(4,6)+'/'+String(d).slice(6)+' · '+sc+'pts! Enter this code to compete 👉 SHG-'+d+'-'+sc+'-'+nick;
-  card.innerHTML='<div class="grade gd">🏆 Challenge Complete</div><div class="big '+(sc>=0?'up':'dn')+'">'+sc+' pts</div><div class="sub">'+'Verdict: '+chalLast(sc)+'</div>'+(rw?'<div class="sub up">Reward '+won(rw)+' · XP +40</div>':'<div class="sub">XP +40</div>')+'<div class="sub">Share your result code with friends to compete in the Friend League.</div>'+shareBtn();card.hidden=false;bindShare();
+  const sc=chal.score,d=chal.day,id=chal.id,dup=store.get('shg_chalDay',0)>=d,pd=store.get('shg_chalPaid',null),same=dup&&!!id&&!!pd&&pd.d===d&&pd.id===id&&!!pd.q;chal=null;store.set('shg_chalRun',null);store.set('shg_chalDay',Math.max(d,+store.get('shg_chalDay',0)||0));
+  lgFix();if(inWk(d)){league.me[d]=sc;store.set('shg_league',league);}
+  const full=sc<=0?0:Math.round(betCap(1)*Math.min(3,sc/100)/1e4)*1e4,rw=!dup?full:same?Math.max(0,full-(+pd.rw||0)):0,tot=same?(+pd.rw||0)+rw:rw;balance+=rw;const cx=!dup?gainXp(40):same?Math.round(40*xpMul()):0;if(!dup||same)store.set('shg_chalPaid',{d,id,rw:tot,q:quiet?1:0});
+  if(quiet){setTimeout(()=>toast('🏆 Challenge Complete · '+sc+' pts'+(tot?' · '+won(tot):'')),1500);return;}
+  shareText='🏆 Stonks Tycoon Daily Challenge '+String(d).slice(4,6)+'/'+String(d).slice(6)+' · '+sc+' pts! Enter this code to compete 👉 SHG-'+d+'-'+sc+'-'+nick;
+  card.innerHTML='<div class="grade gd">🏆 Challenge Complete</div><div class="big '+(sc>=0?'up':'dn')+'">'+sc+' pts</div><div class="sub">'+'Verdict: '+chalLast(sc)+'</div>'+(tot?'<div class="sub up">Reward '+won(tot)+(cx?' · XP +'+cx:'')+'</div>':cx?'<div class="sub">XP +'+cx+'</div>':'')+'<div class="sub">Share your result code with friends to compete in the Friend League.</div>'+shareBtn();card.hidden=false;bindShare();
 }
 const chalLast=sc=>sc>=300?'Legendary Scalper':sc>=150?'Pro':sc>=50?'Nice Save':sc>=0?'Broke Even':'Bagholder Party';
-function chalHtml(){lgFix();const today=dayNum(),played=store.get('shg_chalDay',0)===today,myT=league.me[today];
-  const sum=o=>Object.values(o).reduce((a,b)=>a+b,0);
+function chalHtml(){lgFix();const today=dayNum(),played=store.get('shg_chalDay',0)>=today,myT=league.me[today];
+  const sum=o=>Object.keys(o).filter(inWk).reduce((a,k)=>a+(+o[k]||0),0);
   const rows=[[nick+' (me)',sum(league.me),league.me[today],1]].concat(Object.keys(league.fr).map(n=>{const o=league.fr[n];return [n,sum(o),o[today],0];})).sort((a,b)=>b[1]-a[1]);
-  return '<h3>🏆 Daily Challenge</h3><div class="pan" style="padding:12px 14px"><p class="lead" style="margin:0 0 8px">All <b>the same crash points</b> for 5 rounds! Round return = score, caught = -30. Once a day.</p>'+
-   (chal?'<button class="setbtn" type="button" id="chalGo" style="width:100%">▶ Continue ('+chal.i+'/5)</button>':played?'<div class="row" style="display:flex;justify-content:space-between"><b>Today’s Score</b><b class="gd">'+myT+' pts</b></div><button class="setbtn ghost" type="button" id="chalShare" style="width:100%;margin-top:8px">📤 Share my score code</button>':'<button class="setbtn" type="button" id="chalGo" style="width:100%">🏆 Start Challenge</button>')+
-   '</div><h3>👥 Friend League · This Week</h3><div class="pan">'+rows.map((r,i)=>'<div class="li'+(r[3]?' done':'')+'"><i>'+(['🥇','🥈','🥉'][i]||(i+1))+'</i><div><b>'+esc(r[0])+'</b><small>This week '+r[1]+'pts · Today '+(r[2]===undefined?'-':r[2]+' pts')+'</small></div></div>').join('')+
+  return '<h3>🏆 Daily Challenge</h3><div class="pan" style="padding:12px 14px"><p class="lead" style="margin:0 0 8px">Everyone gets <b>the same crash points</b> for 5 rounds! Round return = score, caught = -30. Once a day.</p>'+
+   (chal?'<button class="setbtn" type="button" id="chalGo" style="width:100%">▶ Continue ('+chal.i+'/5)</button>':played?'<div class="row" style="display:flex;justify-content:space-between"><b>Today’s Score</b><b class="gd">'+(myT==null?'-':myT+' pts')+'</b></div>'+(myT==null?'':'<button class="setbtn ghost" type="button" id="chalShare" style="width:100%;margin-top:8px">📤 Share my score code</button>'):'<button class="setbtn" type="button" id="chalGo" style="width:100%">🏆 Start Challenge</button>')+
+   '</div><h3>👥 Friend League · This Week</h3><div class="pan">'+rows.map((r,i)=>'<div class="li'+(r[3]?' done':'')+'"><i>'+(['🥇','🥈','🥉'][i]||(i+1))+'</i><div><b>'+esc(r[0])+'</b><small>This week '+r[1]+' pts · Today '+(r[2]===undefined?'-':r[2]+' pts')+'</small></div></div>').join('')+
    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:10px 0"><button class="setbtn" type="button" id="lgAdd">➕ Add friend code</button><button class="setbtn ghost" type="button" id="nickSet">✏️ Name '+esc(nick)+'</button></div></div>';}
 function chalBind(pg){
-  const g=pg.querySelector('#chalGo');if(g)g.onclick=()=>{if(chal){tab('trade');setBtn();}else chalStart();};
-  const sh=pg.querySelector('#chalShare');if(sh)sh.onclick=()=>{const d=dayNum();shareOut('🏆 Stonks Tycoon Daily Challenge '+(league.me[d]||0)+'pts! Enter this code to compete 👉 SHG-'+d+'-'+(league.me[d]||0)+'-'+nick);};
+  const g=pg.querySelector('#chalGo');if(g)g.onclick=()=>{if(chal){if(state==='over'&&debt<=debtLimit())resetView();tab('trade');setBtn();}else chalStart();};
+  const sh=pg.querySelector('#chalShare');if(sh){const d=dayNum();sh.onclick=()=>{const sc=league.me[d];if(sc===undefined){rerender('mission');return;}shareOut('🏆 Stonks Tycoon Daily Challenge '+sc+' pts! Enter this code to compete 👉 SHG-'+d+'-'+sc+'-'+nick);};}
   const a=pg.querySelector('#lgAdd');if(a)a.onclick=()=>{const t=(prompt('Paste your friend’s code (starts with SHG-)')||'');const m=t.match(/SHG-(\d{8})-(-?\d{1,6})-([^\s<>&"'`\\]{1,20})/);
-    if(!m||nickBad(m[3])){if(t)toast('Couldn’t find a code');return;}lgFix();const [,d,sc,n]=m;if(n===nick){toast('That’s your own code');return;}if(!league.fr[n])league.fr[n]=Object.create(null);league.fr[n][+d]=+sc;store.set('shg_league',league);toast('👥 '+n+' score added!');rerender('mission');};
+    if(!m||nickBad(m[3])){if(t)toast('Couldn’t find a code');return;}lgFix();const [,d,sc,n]=m;if(n===nick){toast('That’s your own code');return;}if(!inWk(d)){toast('Not a code from this week');return;}if(!league.fr[n])league.fr[n]=Object.create(null);league.fr[n][+d]=+sc;store.set('shg_league',league);toast('👥 '+n+' added to your league!');rerender('mission');};
   const nk=pg.querySelector('#nickSet');if(nk)nk.onclick=()=>{const v=nickClean(prompt('Nickname (2–10 chars, no spaces)',nick));if(v.length>=2&&v.length<=10&&!nickBad(v)){nick=v;store.set('shg_nick',nick);rerender('mission');}};
 }
 function pageMission(){ensureDaily();
   const row=(m,pr,dn)=>{const p=Math.min(m.n,pr[m.id]||0),d=dn.includes(m.id);return `<div class="li ${d?'done':''}"><i>${d?'✅':'⬜'}</i><div><b>${m.t}</b><small>${p} / ${m.n}</small><div class="pb"><u style="width:${p/m.n*100}%"></u></div></div></div>`;};
   return '<h2>📋 Missions</h2><p class="lead">Daily missions reset at midnight, weekly missions every Monday.</p>'+chalHtml()+seasonHtml()+
-   '<h3>☀️ Daily Missions · '+daily.done.length+'/'+daily.ids.length+' <span class="mu">· Each: '+won(1000000*(1+.1*skl('mission'))*(gear.building?2:1))+' + 80 XP</span></h3><div class="pan">'+daily.ids.map(id=>MISSIONS.find(x=>x.id===id)).filter(Boolean).map(m=>row(m,daily.prog,daily.done)).join('')+'</div>'+
-   '<h3>🗓 Weekly Missions · '+weekly.done.length+'/'+weekly.ids.length+' <span class="mu">· Each: SP +1 · 200 XP</span></h3><div class="pan">'+weekly.ids.map(id=>WEEKLY.find(x=>x.id===id)).filter(Boolean).map(m=>row(m,weekly.prog,weekly.done)).join('')+'</div>'+
-   '<h3>🏅 Career Missions · Endless tiers <span class="mu">· SP +1 every 2 tiers · 30 XP</span></h3><div class="pan">'+CAREER.map(d=>{const tier=(stats.ct||{})[d.id]||0,tg=cTarget(d,tier),v=cVal(d);return `<div class="li"><i>${d.e}</i><div><b>${d.t} ${d.money?won(tg):tg+'×'} <span class="mu">· ${tierLbl(tier+1)}</span></b><small>${d.money?won(v):v} / ${d.money?won(tg):tg}</small><div class="pb"><u style="width:${Math.min(100,v/tg*100)}%"></u></div></div></div>`}).join('')+'</div>'+
-   '<h3>🎖 Ranks · '+RANKS[rankOf(xp)][1]+'</h3><div class="pan">'+RANKS.map((r,i)=>`<div class="li ${xp>=r[0]?'':'lock'}"><i>${i===RANKS.length-1?'👑':i===rankOf(xp)?'⭐':xp>=r[0]?'✔':'·'}</i><div><b>${r[1]}</b><small>${r[0].toLocaleString('en-US')} XP${Object.values(ITEMS).filter(it=>it.lv===i).map(it=>' · '+it.name+' unlocked').join('')}${LEVS.filter(l=>l[1]===i&&l[0]>1).map(l=>' · ⚡ Leverage '+l[0]+'×').join('')}${i===2?' · 🎲 All-in':''}${i?Object.values(TIERS).filter(T=>T.lv===i).map(T=>' · '+T.e+' '+T.label+' stocks unlocked').join(''):''}</small></div></div>`).join('')+'</div>';
+   '<h3>☀️ Daily Missions · '+daily.done.length+'/'+daily.ids.length+' <span class="mu">· Each: '+won(1000000*(1+.1*skl('mission'))*(gear.building?2:1))+' + '+Math.round(80*xpMul())+' XP</span></h3><div class="pan">'+daily.ids.map(id=>MISSIONS.find(x=>x.id===id)).filter(Boolean).map(m=>row(m,daily.prog,daily.done)).join('')+'</div>'+
+   '<h3>🗓 Weekly Missions · '+weekly.done.length+'/'+weekly.ids.length+' <span class="mu">· Each: SP +1 · '+Math.round(200*xpMul())+' XP</span></h3><div class="pan">'+weekly.ids.map(id=>WEEKLY.find(x=>x.id===id)).filter(Boolean).map(m=>row(m,weekly.prog,weekly.done)).join('')+'</div>'+
+   '<h3>🏅 Career Missions · Endless tiers <span class="mu">· SP +1 every 2 tiers · '+Math.round(30*xpMul())+' XP</span></h3><div class="pan">'+CAREER.map(d=>{const tier=(stats.ct||{})[d.id]||0,tg=cTarget(d,tier),v=cVal(d);return `<div class="li"><i>${d.e}</i><div><b>${d.t} ${d.money?won(tg):tg+(LANG==='en'?(tg===1?' time':' times'):'×')} <span class="mu">· ${tierLbl(tier+1)}</span></b><small>${d.money?won(v):v} / ${d.money?won(tg):tg}</small><div class="pb"><u style="width:${Math.min(100,v/tg*100)}%"></u></div></div></div>`}).join('')+'</div>'+
+   '<h3>🎖 Ranks · '+RANKS[rankOf(xp)][1]+'</h3><div class="pan">'+RANKS.map((r,i)=>`<div class="li ${xp>=r[0]?'':'lock'}"><i>${i===RANKS.length-1?'👑':i===rankOf(xp)?'⭐':xp>=r[0]?'✔':'·'}</i><div><b>${r[1]}</b><small>${r[0].toLocaleString('en-US')} XP${Object.values(ITEMS).filter(it=>it.lv===i).map(it=>' · '+it.name+' unlocked').join('')}${LEVS.filter(l=>l[1]===i&&l[0]>1).map(l=>' · ⚡ Leverage '+l[0]+'×').join('')}${i===2?' · 🎲 All-in':''}${i?Object.values(TIERS).filter(T=>T.lv===i).map(T=>' · '+T.e+' '+T.label+' unlocked').join(''):''}</small></div></div>`).join('')+'</div>';
 }
 const histName=h=>{if(h.ni==null||h.ni<0)return h.n;if(h.k==='boss'){const bi=bossInfo(h.ni);return bi.B.e+' '+bi.B.n+' Lv.'+(bi.lv+1);}const n=TIERS[h.k]&&TIERS[h.k].names[h.ni];return n?(Array.isArray(n)?n[0]:n):h.n;};
 function pageRecord(){
   const wr=stats.rounds?Math.round(stats.wins/stats.rounds*100):0,T=profile&&TYPES[profile];
   return '<h2>📊 Stats</h2>'+roomHtml()+(T?'<div class="pan" style="padding:12px 14px"><div class="typecard"><i>'+T.e+'</i><div><b>'+T.n+'</b><br><small class="mu">'+T.perk+' · '+RANKS[rankOf(xp)][1]+' · '+xp+' XP</small></div></div></div>':'')+
-   '<h3>My Assets</h3><div class="tiles">'+[['Balance',wonS(balance)],['Invested',wonS(invTotal())],['Debt',debt?'-'+wonS(debt):'None'],['Net Worth',swS(balance+invTotal()-debt)],['Collection',col.length+' / '+COL.length],['Credit Grade',credit+''+(credit>=8?' 😱':credit<=3?' 😎':'')],['Loan Limit',wonS(loanAmt())],['Debt limit',wonS(debtLimit())]].map(([k,v])=>`<div class="tile"><small>${k}</small><b>${v}</b></div>`).join('')+'</div>'+
-   (()=>{const nw=balance+invTotal()-debt,need=PRES_NEED();return '<h3>🔁 Retire · Rebirth '+(pres?'⭐'+pres:'')+'</h3><div class="pan" style="padding:12px 14px"><p class="lead" style="margin:0 0 8px">Net Worth <b>'+wonS(need)+'</b> to retire. Cash, investments, gear, items and debt reset, but <b>level, skills, achievements & collection stay</b>. Each rebirth gives <b>Take profit +10%, SP +2</b>  forever.</p><div class="xpbar"><u style="width:'+Math.max(0,Math.min(100,nw/need*100))+'%"></u></div><p class="mu" style="font-size:12px;margin:4px 0 8px">Net worth now '+swS(nw)+' · Current bonus: take profit +'+pres*10+'%</p><button class="setbtn" type="button" id="prestige" style="width:100%"'+(nw>=need?'':' disabled')+'>🔁 Retire & start Run '+(pres+1)+'</button></div>';})()+
+   '<h3>My Assets</h3><div class="tiles">'+[['Balance',wonS(balance)],['Invested',wonS(invTotal())],['Debt',debt?'-'+wonS(debt):'None'],['Net Worth',swS(balance+invTotal()-debt)],['Collection',col.length+' / '+COL.length],['Credit Grade',credit+''+(credit>=8?' 😱':credit<=3?' 😎':'')],['Next Loan',canLoan()?wonS(loanAmt()):'N/A'],['Debt limit',wonS(debtLimit())]].map(([k,v])=>`<div class="tile"><small>${k}</small><b>${v}</b></div>`).join('')+'</div>'+
+   (()=>{const nw=balance+invTotal()-debt,need=PRES_NEED();return '<h3>🔁 Retire · Rebirth '+(pres?'⭐'+pres:'')+'</h3><div class="pan" style="padding:12px 14px"><p class="lead" style="margin:0 0 8px">Net Worth <b>'+wonS(need)+'</b> or more lets you retire. Cash, investments, gear, items and debt reset, but <b>level, skills, achievements & collection stay</b>. Each rebirth gives <b>Take profit +10%, SP +2</b> forever.</p><div class="xpbar"><u style="width:'+Math.max(0,Math.min(100,nw/need*100))+'%"></u></div><p class="mu" style="font-size:12px;margin:4px 0 8px">Net worth now '+swS(nw)+' · Current bonus: take profit +'+pres*10+'%</p><button class="setbtn" type="button" id="prestige" style="width:100%"'+(nw>=need?'':' disabled')+'>🔁 Retire & start Run '+(pres+2)+'</button></div>';})()+
    '<h3>All-Time Stats</h3><div class="tiles">'+
    [['Rounds',stats.rounds+''],['Win Rate',wr+'%'],['Best Multiplier','x'+(stats.bestM||0).toFixed(2)],['Best Accuracy',Math.round(stats.bestPct)+'%'],['Longest Streak',stats.maxStreak+'×'],['Bankrupt',stats.bankrupts+'×'],['Total P/L',swS(stats.net)],['Peak Assets',best?wonS(best):'-'],['Character Level','Lv.'+lvlOf(xp).L],['Bosses beaten',(stats.bossLv||0)+''],['Achievement Stars',ACH.reduce((n,a)=>n+achStars(a[0]).st,0)+'/'+ACH.length*5]]
      .map(([k,v])=>`<div class="tile"><small>${k}</small><b>${v}</b></div>`).join('')+'</div>'+
    '<h3>Gear Collection</h3><div class="achgrid">'+GEAR.map(g=>`<div class="${gear[g.id]?'':'lock'}"><i>${g.e}</i>${g.n}</div>`).join('')+'</div>'+
-   '<h3>Recent Trades</h3><div class="pan">'+(stats.hist.length?stats.hist.map(h=>`<div class="hist"><span>${h.w?'🟢 Profit':'🔴 Caught'} · ${histName(h)} <small class="mu">x${h.m.toFixed(2)}</small>${h.l>1?`<b class="tg">${h.l}x</b>`:''}${h.y?'<b class="tg y">All-in</b>':''}${h.q?'<b class="tg q">Liquidated</b>':''}${(h.i||[]).map(t=>`<b class="tg i">${ITEMS[t]?ITEMS[t].short:t}</b>`).join('')}</span><span class="${h.a>=0?'up':'dn'}">${sw(h.a)}</span></div>`).join(''):'<div class="hist"><span class="mu">No trades yet.</span></div>')+'</div>'+
+   '<h3>Recent Trades</h3><div class="pan">'+(stats.hist.length?stats.hist.map(h=>`<div class="hist"><span>${h.w&&h.a>=0?'🟢 Profit':h.w?'🔴 Net loss':h.s?'🔴 Stop loss':'🔴 Caught'} · ${esc(histName(h))} <small class="mu">x${h.m.toFixed(2)}</small>${h.l>1?`<b class="tg">${h.l}x</b>`:''}${h.y?'<b class="tg y">All-in</b>':''}${h.q?'<b class="tg q">Liquidated</b>':''}${(h.i||[]).map(t=>`<b class="tg i">${esc(ITEMS[t]?ITEMS[t].short:t)}</b>`).join('')}</span><span class="${h.a>=0?'up':'dn'}">${sw(h.a)}</span></div>`).join(''):'<div class="hist"><span class="mu">No trades yet.</span></div>')+'</div>'+
    '<h3>Achievements</h3><div class="achgrid">'+ACH.map(a=>`<div class="${ach.includes(a[0])?'':'lock'}" title="${a[3]} · ${achC[a[0]]||0}×"><i>${a[1]}</i>${a[2]}${starHtml(a[0])}<small>${a[3]}${achStars(a[0]).next?' · Next '+(achC[a[0]]||0)+'/'+achStars(a[0]).next:''}</small></div>`).join('')+'</div>';
 }
 
@@ -1770,7 +1837,7 @@ const COL=[
   {id:'paint',cat:'art',e:'🖼️',n:'Impressionist Masterpiece',p:5e11},{id:'dino',cat:'art',e:'🦖',n:'Full Dinosaur Fossil',p:5e12},{id:'statue',cat:'art',e:'🗿',n:'Ancient Statue',p:5e13},
   {id:'ship',cat:'art',e:'🏴‍☠️',n:'Sunken Treasure Ship',p:5e14},{id:'pyr',cat:'art',e:'🔺',n:'Ancient Pyramid Rights',p:1e16},{id:'atl',cat:'art',e:'🔱',n:'Map of Atlantis',p:1e18,fic:1},
   {id:'air',cat:'corp',e:'🛫',n:'Airline',p:8e13},{id:'chip',cat:'corp',e:'💾',n:'Chip Maker',p:5e14},{id:'bigt',cat:'corp',e:'📱',n:'Big Tech Company',p:5e15},
-  {id:'bank',cat:'corp',e:'🏦',n:'Global Bank',p:5e16},{id:'oil',cat:'corp',e:'🛢️',n:'Oil Major',p:3e17},{id:'cbank',cat:'corp',e:'🪙',n:'Central Bank (Myth)',p:5e18,fic:1},
+  {id:'bank',cat:'corp',e:'🏦',n:'Global Bank',p:5e16},{id:'oil',cat:'corp',e:'🛢️',n:'Oil Major',p:3e17},{id:'cbank',cat:'corp',e:'🪙',n:'Central Bank',p:5e18,fic:1},
   {id:'sat',cat:'space',e:'🛰️',n:'Satellite',p:1e15},{id:'iss',cat:'space',e:'🛸',n:'Space Station',p:2e17},{id:'moon',cat:'space',e:'🌕',n:'Moon Deed',p:3e18,fic:1},
   {id:'mars',cat:'space',e:'🔴',n:'Mars Colony',p:3e19,fic:1},{id:'jup',cat:'space',e:'🪐',n:'Saturn’s Rings',p:3e20,fic:1},{id:'sun',cat:'space',e:'☀️',n:'Solar Energy Monopoly',p:3e21,fic:1},
   {id:'time',cat:'myth',e:'⏳',n:'Time Machine',p:3e20,fic:1},{id:'dragon',cat:'myth',e:'🐉',n:'Dragon Egg',p:3e21,fic:1},{id:'multi',cat:'myth',e:'🌌',n:'Parallel Universe Shares',p:3e22,fic:1},
@@ -1785,11 +1852,11 @@ const colSP=()=>{try{return col.reduce((n,id)=>{const c=COL.find(x=>x.id===id);r
 const gauss=()=>(Math.random()+Math.random()+Math.random()-1.5)*2;
 function tickInvest(){
   const rg=regime(),bear=(rg.crash||1)<1,bull=(rg.rate||1)>1;let sum=0;
-  PROD.forEach(P=>{const h=invest[P.id];if(!h||!(h.a>0))return;const base=Math.min(h.a,P.max);let d;
+  PROD.forEach(P=>{const h=invest[P.id];if(!h)return;if(!(h.a>0)){h.d=0;return;}const base=Math.min(h.a,P.max);let d;
     if(P.angel){const u=Math.random();d=u<.03?base*4:u<.07?-base:0;if(d>0)toast('🚀 Your startup went public! '+sw(d));if(d<0)toast('💥 Your startup went bust…');}
     else d=base*(P.r+(P.v?P.v*gauss():0)+(P.v&&bear?-.01:0)+(P.v&&bull?.003:0));
     d=Math.max(-h.a,d);h.a+=d;h.d=d;sum+=d;});
-  if(sum){store.set('shg_inv2',invest);talkLines.push('<b class="gd">[Invest]</b> Unrealized P/L <span class="'+(sum>=0?'up':'dn')+'">'+sw(sum)+'</span>');renderTalk();}
+  store.set('shg_inv2',invest);if(sum){talkLines.push('<b class="gd">[Invest]</b> Unrealized P/L <span class="'+(sum>=0?'up':'dn')+'">'+sw(sum)+'</span>');renderTalk();}
 }
 
 
@@ -1890,10 +1957,10 @@ function glossary(){
   return '<h3>📖 Terms · Icons</h3><div class="pan">'+
   G('📈 Reading the Screen',
     L('💵','Cash','Money you can use right now')+L('🔥','Win streak','Rounds in a row ended in profit. 5 in a row = Fever')+L('🎯','Bet limit','Max bet per round. The higher of your level limit or a share of cash (10% up to $100M → 5% to $1B → 1% to $1T → 0.2% above)')+
-    L('<span style="color:var(--muted);font-weight:900">┅</span>','Entry (gray dashes)','Your buy price. Above = profit, below = loss')+L('<span style="color:var(--gold);font-weight:900">┅</span>','Limit up +30% (yellow dashes)','Max daily rise. Shown on some stocks only')+L('💀','Liquidation (red dashes)','Appears with leverage. Touch it and you’re liquidated')+L('<span style="color:var(--rumor);font-weight:900">┅</span>','Insider tip target (purple dashes)','Crash point from an insider tip. Might be fake')+
-    L('📊','Price · Size','Buy (green) / sell (red) prices and size. Yellow = current price')+L('🧾','Trades · Strength','Actual traded prices. Over 100% strength = buyers winning')+L('📰','News Bar','Good news (green) · bad news (red) · tips (purple). Bad news brings swings')+L('🌡','Market Badge','Market mood that changes every 5 rounds. Bull, crash market, etc.'),1)+
+    L('<span style="color:var(--muted);font-weight:900">┅</span>','Base price (gray dashes)','The stock’s base price (the +30% limit counts from it). Your P/L counts from your buy price, not this line')+L('<span style="color:var(--gold);font-weight:900">┅</span>','Limit up +30% (yellow dashes)','Max daily rise. Shown on some stocks only')+L('💀','Liquidation (red dashes)','Appears with leverage. Touch it and you’re liquidated')+L('<span style="color:var(--rumor);font-weight:900">┅</span>','Insider tip target (purple dashes)','Crash point from an insider tip. Might be fake')+
+    L('📊','Price · Size','Buy (green) / sell (red) prices and size. Yellow = current price')+L('🧾','Trades · Buy power','Actual traded prices. Buy power over 100% = buyers winning')+L('📰','News Bar','Good news (green) · bad news (red) · tips (purple). Bad news brings swings')+L('🌡','Market Badge','Market mood that changes every 5 rounds: Bull Run, Bear Market, etc.'),1)+
   G('💰 Trading Terms',
-    L(LANG==='en'?'🟢':'🔴','Buy → Take Profit','Tap to buy, tap again to sell and lock in profit')+L('🔁','Re-entry','After selling, if no crash yet, re-enter once with the same amount. Must sell again')+L('📉','Buy the Dip · Chase','If the chart is 4% below entry before buying, the crash comes later; 5% above, sooner')+L(LANG==='en'?'🔴':'🔵','Caught · Stop Loss','Didn’t sell before the crash, or sold below your buy price')+L('✖','Multiplier (x2.0)','How many times your buy price. x2 = +100%')+L('🎯','Accuracy','How close to the pre-crash peak you sold')+
+    L(LANG==='en'?'🟢':'🔴','Buy → Take Profit','Tap to buy, tap again to sell and lock in profit')+L('🔁','Re-entry','After selling, if no crash yet, re-enter once with the same amount. Must sell again')+L('📉','Buy the Dip · Chase','If the chart is 4% below the base price before buying, the crash comes later; 5% above, sooner')+L(LANG==='en'?'🔴':'🔵','Caught · Stop Loss','Didn’t sell before the crash, or sold below your buy price')+L('✖','Multiplier (x2.0)','How many times your buy price. x2 = +100%')+L('🎯','Accuracy','How close to the pre-crash peak you sold')+
     L('⚡','Leverage','Gains and losses both multiply. Get caught and lose several times your bet; higher leverage = faster crashes. Hit the liquidation line and you lose just your bet')+L('🎲','All-in','Ignore bet % and go all-in (no limit). Lose and you lose big')+L('%','Bet size','Share of cash bet this round')+L('🧾','Fees','Fee taken when buying. Higher leverage = pricier')+L('🏛','Rich Tax','Tax on profits once cash hits $10M: $10M 5% → $1B 25% → $100B 45% → max 65%')+L('🌊','Liquidity Cap','Normal buys cap at $10T per round. All-in is exempt')+L('📉','Wealth Risk','From $1M cash, crashes come faster and instant crashes get likelier. ~10% at $1B, max 30%')+L('💀','High-Level Difficulty','From Lv.20, crashes get a bit faster each level (max 35%)'))+
   G('🏷 Stock Types',Object.values(TIERS).filter(T=>!T.hidden).map(T=>L(T.e,T.label,`Crash -${Math.round(T.loss*100)}% · Jackpot size x${T.scale}`)).join('')+L('👹','Boss Fight','Every 10 rounds. Hold to the target multiplier and sell to win'))+
   G('🧰 Items · Growth',Object.values(ITEMS).map(it=>L(it.name.split(' ')[0],it.name.split(' ').slice(1).join(' '),it.desc+' · Cost per round')).join('')+
@@ -1901,7 +1968,7 @@ function glossary(){
   G('🌡 Market Mood (badge on chart)',REGIMES.map(r=>L(r.e,r.n,r.d)).join('')+L('⏱','N rounds left','Market mood changes every 5 rounds'))+
   G('💼 Invest · Collection',PROD.map(P=>L(P.e,P.n,P.d)).join('')+L('🏆','Collection','8 categories, 50 items. SP per buy, bonus SP +3 per full category'))+
   G('🏆 Challenge · League · Season',L('🏆','Daily Challenge','Once a day, 5 rounds with the same crash points for everyone. Sell return = score, caught = -30')+L('👥','Friend League','Enter a friend’s shared SHG- code to rank by this week’s score')+L('🎫','Season Pass','XP each round fills 30 reward tiers. New season every Monday')+L('🛋️','Decorate Mini-Room','Buy wallpaper, floors and decor in the Shop')+L('💾','Backup Code','Copy it in Settings to keep playing on a new phone'))+
-  G('🔣 Other Icons',L('🔥','Fever','5 take profits in a row. 2× bonus')+L('💎','Treasure Chest','Sometimes appears on take profit')+L('⚔️','Bosses beaten','Sell after passing the boss target multiplier')+L('🕵','Real Tip','The tip was real')+L('🤡','Fake Tip','The tip was a lie')+L('🏛','Rich Tax','Tax on big profits')+L('💸','Auto Debt Repay','30% of profit pays debt'))+
+  G('🔣 Other Icons',L('🔥','Fever','5 take profits in a row. 2× bonus')+L('💎','Treasure Chest','Sometimes appears on take profit')+L('⚔️','Boss Defeat','Sell after passing the boss target multiplier')+L('🕵','Real Tip','The tip was real')+L('🤡','Fake Tip','The tip was a lie')+L('🏛','Rich Tax','Tax on big profits')+L('💸','Auto Debt Repay','30% of profit pays debt'))+
   G('💳 Debt · Credit',
     L('💳','Loan','Broke? Borrow and keep going. Interest every round')+L('🏦','Credit Grade','Grade 1 is best. Drops when you borrow, rises when you repay')+L('↩','Auto Repay','30% of profit auto-pays your debt')+L('🚨','Default','Debt over the limit you can’t repay = gear, items and investments seized, then restart'))+
   '</div>';
@@ -1911,7 +1978,7 @@ function pageSet(){
   return '<h2>⚙️ Settings</h2><div class="pan">'+row('sound','Sound FX','Buttons, ticks, sell and crash sounds')+row('bgm','Music','Chill beat · speeds up while holding')+row('heart','Heartbeat','Tension sound while holding')+row('vib','Vibration','Only on supported devices')+row('fx','Flashy Effects','Particles, flashes, screen shake')+row('slow','Slow Chart','Chart speed -20%')+'</div>'+glossary()+
    '<h3>Replay</h3><div style="display:grid;gap:8px"><button class="setbtn ghost" type="button" id="retake">🧪 Retake Investor Type Quiz</button><button class="setbtn ghost" type="button" id="reTut">🎓 Replay Tutorial</button></div>'+
    '<h3>Backup</h3><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><button class="setbtn" type="button" id="bkOut">💾 Copy Backup Code</button><button class="setbtn ghost" type="button" id="bkIn">📥 Load Backup</button></div><p class="lead" style="margin-top:8px">Your progress is saved only in this phone’s browser. On iPhone, data may be cleared after long inactivity unless added to Home Screen, so save your backup code in Notes now and then. Also use it to switch phones.</p>'+
-   '<h3>Privacy</h3><p class="lead">No sign-up, and play data is never sent to a server. Only fonts load from Google Fonts.</p>'+
+   '<h3>Privacy</h3><p class="lead">No sign-up. Your progress is stored only in this browser and is never sent to a server. Fonts load from Google Fonts and ads from Google AdSense (the CrazyGames SDK on CrazyGames), and the ad provider may use cookies.</p>'+
    '<h3>Data</h3><button class="setbtn danger" type="button" id="wipe" style="width:100%">Reset All Progress</button><p class="lead" style="margin-top:8px">Progress is saved only in this device’s browser. Resetting erases ranks, skills and achievements.</p>'+
    (CFG.donateUrl?'<h3>Support the Dev</h3><a class="setbtn" style="display:block;text-align:center;text-decoration:none;width:100%" href="'+CFG.donateUrl+'" target="_blank" rel="noopener">☕ Buy Me a Coffee</a><p class="lead" style="margin-top:8px">Tips are pure support and give no in-game rewards.</p>':'')+'<h3>Invite Friends</h3><button class="setbtn" type="button" id="invite" style="width:100%">📤 Share Game with Friends</button>'+
    '<p class="lead" style="margin-top:10px">Stonks Tycoon v2.1 · A virtual-money game, unrelated to real investing or cash. No real money is used.</p>';
@@ -1932,23 +1999,28 @@ function bindPage(name){
   pg.querySelectorAll('[data-col]').forEach(b=>b.onclick=()=>{const c=COL.find(x=>x.id===b.dataset.col);if(col.includes(c.id)||balance<c.p)return;balance-=c.p;col.push(c.id);store.set('shg_col',col);sfx.up();burst(innerWidth/2,innerHeight*.4,80);stamp(c.e+' '+c.n+' acquired!');toast('🏆 Collection '+col.length+'/'+COL.length+' · SP +'+(c.fic?2:1));if(catDone(c.cat)){const K=CATS.find(k=>k.id===c.cat);setTimeout(()=>{stamp(K.e+' '+K.n+' complete!');toast('✅ '+K.n+' category complete · Bonus SP +3');},900);}paintTop();paintPickers();rerender('invest');});
   const iv=$('invite');if(iv)iv.onclick=()=>shareOut('📈 Stonks Tycoon — sell before the crash to win! My account: '+won(balance)+'. Can you beat me?');
   const pz=$('prestige');if(pz)pz.onclick=()=>{if(balance+invTotal()-debt<PRES_NEED())return;if(!confirm('Retire and start a new run? Cash, investments, gear, items and debt will reset.'))return;
-    pres++;store.set('shg_pres',pres);lowFlag=false;streak=0;app.classList.remove('fever');$('fever').hidden=true;balance=START;debt=0;credit=5;gear={};inv={};armed={};invest={};lastHome=0;
+    pres++;store.set('shg_pres',pres);lowFlag=false;stats.low=0;stats.curRun=0;store.set('shg_stats',stats);streak=0;app.classList.remove('fever');$('fever').hidden=true;balance=START;debt=0;credit=5;gear={};inv={};armed={};invest={};lastHome=0;
     ['shg_gear','shg_inv','shg_armed','shg_inv2'].forEach(k=>store.set(k,{}));store.set('shg_home',0);store.set('shg_bal',balance);if(rankOf(xp)===RANKS.length-1)unlock('legend');
-    sfx.up();burst(innerWidth/2,innerHeight*.4,90);stamp('🔁 '+pres+' — new run!');toast('⭐ Rebirth '+pres+' · Take profit +'+pres*10+'% · SP +2');paintTop();paintPickers();rerender('record');};
+    if(card.querySelector('#adWin,#adLoss')){card.hidden=true;card.innerHTML='';}
+    if(state!=='holding'&&state!=='ghost'){offers=makeOffers();if(!run){buildChartIdle();paintQuote();renderBook();}}
+    sfx.up();burst(innerWidth/2,innerHeight*.4,90);stamp('🔁 Reborn! Run '+(pres+1)+'');toast('⭐ Rebirth '+pres+' · Take profit +'+pres*10+'% · SP +2');paintTop();paintPickers();rerender('record');};
   const bl=$('bLoan');if(bl)bl.onclick=()=>{if(takeLoan()){paintTop();paintPickers();rerender('shop');}};
   const bh=$('bHalf');if(bh)bh.onclick=()=>{repay(Math.ceil(debt/2));paintTop();paintPickers();rerender('shop');};
   const ba=$('bAll');if(ba)ba.onclick=()=>{repay(debt);paintTop();paintPickers();rerender('shop');};
   const rs=$('skReset');if(rs)rs.onclick=()=>{sk={};store.set('shg_sk',sk);paintTop();rerender('skill');toast('Skills reset');};
   pg.querySelectorAll('[data-set]').forEach(b=>b.onclick=()=>{const k=b.dataset.set;SET[k]=!SET[k];store.set('shg_set',SET);b.setAttribute('aria-checked',SET[k]);if(k==='sound'){muted=!SET.sound;if(!muted){au();beep(660,.06,'sine',.04);}if(typeof window.adConfig==='function')try{window.adConfig({sound:SET.sound?'on':'off'});}catch(e){}}if(k==='vib')vib(30);if(k==='bgm'||k==='sound')bgm.sync();});
-  const rt=$('reTut');if(rt)rt.onclick=()=>{tutDone=false;store.set('shg_tut',0);tab('trade');if(state==='ready'||state==='result'){card.hidden=true;coachReady();}};
-  const rq=$('retake');if(rq)rq.onclick=()=>{tab('trade');if(state==='ready'||state==='result')startQuiz();};
+  const rt=$('reTut');if(rt)rt.onclick=()=>{tab('trade');if(state!=='ready'&&state!=='result')return toast('💸 Recover your account first, then try again');
+    tutDone=false;store.set('shg_tut',0);paintPickers();setBtn();if(profile){card.hidden=true;coachReady();}};
+  const rq=$('retake');if(rq)rq.onclick=()=>{tab('trade');if(state==='ready'||state==='result')startQuiz();else toast('💸 Recover your account first, then try again');};
   const bo=$('bkOut');if(bo)bo.onclick=()=>{const d={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k.startsWith('shg_'))d[k]=localStorage.getItem(k);}
     const code='SHG1:'+btoa(unescape(encodeURIComponent(JSON.stringify(d))));(navigator.clipboard?navigator.clipboard.writeText(code):Promise.reject()).then(()=>toast('💾 Backup code copied. Paste it in Notes to keep it safe'),()=>prompt('Long-press the code below to copy',code));};
   const bi=$('bkIn');if(bi)bi.onclick=()=>{const code=(prompt('Paste your backup code (current progress will be overwritten)')||'').trim();if(!code)return;
     try{if(!code.startsWith('SHG1:'))throw 0;const d=JSON.parse(decodeURIComponent(escape(atob(code.slice(5)))));if(!d.shg_bal)throw 0;
-      Object.keys(localStorage).filter(k=>k.startsWith('shg_')).forEach(k=>localStorage.removeItem(k));for(const k in d)if(k.startsWith('shg_'))localStorage.setItem(k,d[k]);toast('📥 Loading…');setTimeout(()=>location.reload(),500);}
+      Object.keys(localStorage).filter(k=>k.startsWith('shg_')).forEach(k=>localStorage.removeItem(k));for(const k in d)if(k.startsWith('shg_')&&typeof d[k]==='string')try{JSON.parse(d[k]);localStorage.setItem(k,d[k]);}catch(_){}toast('📥 Loading…');setTimeout(()=>location.reload(),500);}
     catch(e){toast('Invalid backup code');}};
-  const w=$('wipe');if(w)w.onclick=()=>{if(Date.now()-resetArm>3000){resetArm=Date.now();w.textContent='Really reset? Tap again within 3 sec';return;}
+  const w=$('wipe');if(w)resetArm=0;
+  if(w)w.onclick=()=>{const dt=Date.now()-resetArm;if(dt<700)return;
+    if(dt>3000){resetArm=Date.now();w.textContent='Really reset? Tap again within 3 sec';clearTimeout(w._t);w._t=setTimeout(()=>{if(w.isConnected){resetArm=0;w.textContent='Reset All Progress';}},3000);return;}
     try{Object.keys(localStorage).filter(k=>k.startsWith('shg_')).forEach(k=>localStorage.removeItem(k));}catch(e){}location.reload();};
 }
 /* ---------- loop ---------- */
@@ -1959,7 +2031,7 @@ function frame(ts){
   if(adPause&&(state==='holding'||state==='ghost')){draw();requestAnimationFrame(frame);return;}
   if(state==='holding'||state==='ghost'){
     const prev=cur;
-    t+=dt*(state==='ghost'?3:.6*(run.it.slow?.6:1)*(SET.slow?.8:1)*(1-.02*skl('mind'))*(gear.chair?.97:1));
+    t+=dt*(state==='ghost'?3:holdRate());if(state==='holding')run.hold=(run.hold||0)+dt;
     const b=base(t);
     if(state==='holding'){
       if(!run.tut&&!warned&&base(t+1)>=run.crashAt){warned=true;if(Math.random()<(profile==='fox'?.65:.4)+.04*skl('intel')+(run.T.warn||0))news('⚠ '+newsPick(0),'bear');}
@@ -1971,16 +2043,16 @@ function frame(ts){
     }
     if(b>=run.crashAt){cur=run.crashAt;peak=Math.max(peak,cur);crash();}
     else{
-      cur=Math.max(run.liqLine?.3:.85,b*(1+(wig(t)-1)*(run.T.wig||1)*(run.rg.wig||1))*newsF(t));peak=Math.max(peak,cur);
+      cur=Math.max(run.lev>1?.3:.85,b*(1+(wig(t)-1)*(run.T.wig||1)*(run.rg.wig||1))*newsF(t));peak=Math.max(peak,cur);
       if(state==='holding'&&run.liqLine&&cur<=run.liqLine){if(inv.noliq>0){inv.noliq--;store.set('shg_inv',inv);stats.c.items++;store.set('shg_stats',stats);run.liqLine=0;toast('🧯 Liquidation Shield used! Saved!');}else{run.liq=1;stamp('💀 Liquidated','dn');crash();draw();requestAnimationFrame(frame);return;}}
       const idx=runBase+Math.floor(t/CD);
       while(candles.length<=idx){const pc=candles.length?candles[candles.length-1].c:1;candles.push({o:pc,h:pc,l:pc,c:pc,v:0,ghost:state==='ghost',r:1});if(state==='holding')sfx.tick(cur);}
       const c=candles[candles.length-1];c.h=Math.max(c.h,cur);c.l=Math.min(c.l,cur);c.c=cur;
       const dv=dt*(1+Math.abs(cur-prev)/prev*300+(events.some(e=>t>=e.t0&&t<=e.t0+1.4)?3:0))*rnd(.6,1.4);c.v+=dv;volTotal+=dv*(1+cur);
       if(state==='holding'&&run.boss&&!run.re){const hp=Math.max(0,1-(cur-1)/(run.boss.target-1));$('bossHp').style.width=(hp*100).toFixed(1)+'%';if(hp<=0&&!run.boss.down){run.boss.down=1;stamp('💥 HP 0! Sell now to win');}}
-      if(state==='holding'){events.forEach(e=>{if(e.shake&&!e.shown&&t>=e.t0){e.shown=1;run.sawDip=true;news('⚠ Whales dumping to shake out retail ants','bear');talk('fear');}});tension(dt);if(run.tut)tutTick();while(run.mi<MS.length&&cur>=MS[run.mi][0]){if(!(MS[run.mi][0]===1.3&&!run.T.limit))stamp(MS[run.mi][1]);run.mi++;}}
-      if(state==='holding'){const lev=run.lev,g=run.re?run.re.bet*(cur/run.re.entry-1)*lev:run.bet*(cur-1)*lev;
-        $('pnl').innerHTML='Unrealized P/L <span class="'+(g>=0?'up':'dn')+'">'+sw(g)+'</span>'+(lev>1?' <span class="gd">x'+lev+'</span>':'')+(run.allin?' <span class="gd">🎲</span>':'');}
+      if(state==='holding'){events.forEach(e=>{if(e.shake&&!e.shown&&t>=e.t0){e.shown=1;run.sawDip=true;news('⚠ Whales dumping to shake out retail ants','bear');talk('fear');}});tension(dt);if(run.tut)tutTick();while(run.mi<MS.length&&cur*(MS[run.mi][0]===1.3?eM:1)>=MS[run.mi][0]){if(!(MS[run.mi][0]===1.3&&!run.T.limit&&!run.tut))stamp(MS[run.mi][1]);run.mi++;}}
+      if(state==='holding'){if(run.chal){$('pnl').innerHTML='<span class="gd">🏆 '+(cur>=1?'+':'')+((cur-1)*100).toFixed(1)+' pts</span>';}else{const lev=run.lev,g0=run.re?run.re.bet*(cur/run.re.entry-1)*lev:run.bet*(cur-1)*lev,g=g0>0?g0*profitMul():g0;
+        $('pnl').innerHTML='Unrealized P/L <span class="'+(g>=0?'up':'dn')+'">'+sw(g)+'</span>'+(lev>1?' <span class="gd">x'+lev+'</span>':'')+(run.allin?' <span class="gd">🎲</span>':'');}}
     }
     paintQuote();
   }else{
@@ -1989,13 +2061,14 @@ function frame(ts){
     paintQuote();
     if(state==='ready'){talkT+=dt;if(talkT>1.6){talkT=0;talk('idle');}}
   }
-  tradeT+=dt;if(tradeT>(state==='holding'?rnd(.04,.16):state==='ghost'?.12:rnd(.4,.9))){tradeT=0;pushTrade(!run?liveM:cur);}
+  tradeT+=dt;if(tradeT>(state==='holding'?rnd(.04,.16):state==='ghost'?.12:rnd(.4,.9))){tradeT=0;pushTrade(!run?liveM:crashed?Math.min(cur,run.crashAt*.62):cur);}
   bookT+=dt;if(bookT>(state==='holding'||state==='ghost'?.12:.5)){bookT=0;renderBook();}
   draw();requestAnimationFrame(frame);
 }
 
 if(chal&&chal.pend!=null){const pt=chal.pend;delete chal.pend;chal.score+=pt;chal.res.push(pt);chal.i++;if(chal.i<5)store.set('shg_chalRun',chal);else chalFinish(1);}
-buildChartIdle();paintTop();paintPickers();paintQuote();renderBook();setBtn();if(spFree()<0){sk={};store.set('shg_sk',sk);setTimeout(()=>toast('Skill tree updated, so all your SP was refunded'),1500);}paintTop();boot();talk('idle');talk('idle');
+if(streak>=5){app.classList.add('fever');$('fever').hidden=false;}
+offers=makeOffers();buildChartIdle();paintTop();paintPickers();paintQuote();renderBook();setBtn();if(spFree()<0){sk={};store.set('shg_sk',sk);setTimeout(()=>toast('Skill tree updated, so all your SP was refunded'),1500);}paintTop();boot();talk('idle');talk('idle');
 try{navigator.clearAppBadge&&navigator.clearAppBadge()}catch(e){}
 if(/selftest/.test(location.search)){
   window.__t={start,release,reenter,declareBankrupt,takeLoan,repay,tab,
@@ -2003,7 +2076,7 @@ if(/selftest/.test(location.search)){
     set allin(v){allin=v},set lev(v){levSel=v},set pct(v){betPct=v},set sel(v){Object.assign(sel,v)},closeCard(){card.hidden=true;$('modal').hidden=true;}};
   if(/fast/.test(location.search)){draw=()=>{};}
 }
-setTimeout(()=>{try{if(tutDone&&profile&&state==='ready'&&balance+invTotal()<100000){state='over';showOver(0);setBtn();}}catch(e){}},900);
+setTimeout(()=>{try{if(tutDone&&profile&&state==='ready'&&balance+invTotal()<100000&&!(chal&&chal.i<5&&debt<=debtLimit())){state='over';$('sheet').hidden=true;showOver(0);paintPickers();setBtn();}}catch(e){}},900);
 requestAnimationFrame(frame);
 })();
 </script>

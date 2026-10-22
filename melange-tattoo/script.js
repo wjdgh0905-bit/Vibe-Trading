@@ -16,7 +16,7 @@
     { region: "AU", where: { en: "Melbourne", ko: "멜버른" },
       cities: { en: "Melbourne", ko: "멜버른" },
       when: { en: "Dec 1 – 9", ko: "12월 1일 ~ 9일" }, start: "2026-12-01", end: "2026-12-09",
-      note: { en: "Australian Tattoo Expo, Dec 4–6 · models wanted", ko: "오스트레일리안 타투 엑스포 12월 4~6일 · 모델 모집" },
+      note: { en: "Australian Tattoo Expo, Dec 4–6 · models wanted", ko: "오스트레일리안 타투 엑스포 12월 4~6일 · 모델 모집 (영문 페이지)" },
       link: { en: "/melbourne/", ko: "/melbourne/" }, noteUntil: "2026-12-06", noteTz: "Australia/Melbourne" },
     { region: "KR", where: { en: "Korea", ko: "한국" },
       cities: { en: "Home studio", ko: "홈 스튜디오" },
@@ -474,19 +474,28 @@
   menu.addEventListener("click", function (e) { if (e.target.closest("a, [data-close]")) closeMenu(); });
   document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeMenu(); });
 
-  /* ---------- first-visit popup (expo model call) ----------
-     Shows right after the page loads (0.3s), until its data-until date. Closing it keeps it away
-     for 3 days in this browser. Skipped when the visitor arrives at a specific section (#book…). */
+  /* ---------- home popup (expo model call) ----------
+     Opens every time the home page loads, until its data-until date. Close / ✕ / Esc / backdrop
+     only close it for now; "Don't show for 3 days" keeps it away for 3 days in this browser.
+     Skipped when the visitor is already heading somewhere specific (#book, #melbourne, a flash
+     design booking), or has clicked something / started typing before it opens. */
   (function () {
     var pop = $("#pop");
     if (!pop) return;
     if (pop.dataset.until && dateIn(pop.dataset.tz) > pop.dataset.until) return;
-    if (location.hash || location.search.indexOf("design=") > -1) return;
-    var KEY = "melange.pop.expo2026", WAIT = 3 * 24 * 60 * 60 * 1000;
+    if (/^#(book|melbourne)$/.test(location.hash) || location.search.indexOf("design=") > -1) return;
+    var KEY = "melange.pop.expo2026.later", WAIT = 3 * 24 * 60 * 60 * 1000;
     try { var t = +localStorage.getItem(KEY); if (t && Date.now() - t < WAIT) return; } catch (e) {}
-    var opener = null;
-    function close() {
-      try { localStorage.setItem(KEY, String(Date.now())); } catch (e) {}
+    var opener = null, movedOn = false;
+    // If the visitor already clicked a link/button, jumped to a section or started typing in a form
+    // before it opens, don't interrupt them. Scrolling (touch, wheel or keys) doesn't count.
+    function moved() { movedOn = true; }
+    function onFocus(e) { if (e.target.matches && e.target.matches("input, textarea, select")) moved(); }
+    window.addEventListener("hashchange", moved);
+    document.addEventListener("click", moved);
+    document.addEventListener("focusin", onFocus);
+    function close(later) {
+      if (later) { try { localStorage.setItem(KEY, String(Date.now())); } catch (e) {} }
       pop.classList.remove("open");
       document.body.style.overflow = "";
       setTimeout(function () { pop.hidden = true; }, reduce ? 0 : 350);
@@ -494,18 +503,19 @@
       if (opener && opener.focus) opener.focus({ preventScroll: true });
     }
     function onKey(e) {
-      if (e.key === "Escape") return close();
+      if (e.key === "Escape") return close(false);
       if (e.key === "Tab") { // keep focus inside the popup
         var f = $$("a[href], button", pop), first = f[0], last = f[f.length - 1];
         if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
         else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
       }
     }
-    $$("[data-pop-close]", pop).forEach(function (b) { b.addEventListener("click", close); });
-    pop.addEventListener("click", function (e) { if (e.target === pop) close(); });
-    $(".pop-go", pop).addEventListener("click", function () { try { localStorage.setItem(KEY, String(Date.now())); } catch (e) {} });
+    $$("[data-pop-close]", pop).forEach(function (b) { b.addEventListener("click", function () { close(false); }); });
+    $$("[data-pop-later]", pop).forEach(function (b) { b.addEventListener("click", function () { close(true); }); });
+    pop.addEventListener("click", function (e) { if (e.target === pop) close(false); });
     setTimeout(function () {
-      if ($("#menu.open") || $("#lb.open")) return; // don't stack on top of the menu or photo viewer
+      window.removeEventListener("hashchange", moved); document.removeEventListener("click", moved); document.removeEventListener("focusin", onFocus);
+      if (movedOn || $("#menu.open") || $("#lb.open")) return; // don't stack on the menu / photo viewer or interrupt the visitor
       opener = document.activeElement;
       pop.hidden = false;
       document.body.style.overflow = "hidden";

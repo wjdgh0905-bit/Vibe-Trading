@@ -58,6 +58,28 @@ list follow the same order. `when` is shown exactly as written, so use months ("
 when exact dates aren't fixed; an entry hides itself once `end` has passed. To take a trip down
 early (for example when it's fully booked), delete its entry. With no entries the bar stays hidden.
 
+## Melbourne expo model call (until Dec 6, 2026)
+
+The Australian Tattoo Expo model call lives in five places:
+
+- `melbourne/index.html` — the English-only page and application form (`model-form.js`)
+- `index.html` and `ko/index.html` — the `#melbourne` section after Work, and the `#pop` popup
+- `script.js` — the `note`/`link` on the Melbourne entry in `GUEST_SPOTS` (the table link)
+
+All of them hide themselves after `data-until="2026-12-06"` (the table link after `noteUntil`),
+counted in Melbourne time (`data-tz` / `noteTz` = `Australia/Melbourne`).
+
+The popup opens every time the home page loads. Close / ✕ / Esc only close it for that visit;
+"Don't show for 3 days" hides it for 3 days in that browser (localStorage key
+`melange.pop.expo2026.later`). It isn't shown when the visitor arrives at `#book`, `#melbourne`
+or a flash-design booking link, or clicks something / starts typing before it opens (scrolling
+doesn't count).
+
+**To close the call early** (e.g. once enough models have signed up): change every
+`data-until="2026-12-06"` to yesterday's date in `index.html`, `ko/index.html` and
+`melbourne/index.html`, and set `noteUntil` on the Melbourne entry in `script.js` to the same date.
+The `/melbourne/` page then shows a "this call has closed" note instead of the form.
+
 ## Booking form
 
 The inquiry form posts to Formspree (`FORMSPREE_ENDPOINT` in `script.js`, currently

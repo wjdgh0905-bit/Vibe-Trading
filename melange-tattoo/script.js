@@ -475,7 +475,7 @@
   document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeMenu(); });
 
   /* ---------- first-visit popup (expo model call) ----------
-     Shows a moment after the page loads, until its data-until date. Closing it keeps it away
+     Shows right after the page loads (0.3s), until its data-until date. Closing it keeps it away
      for 3 days in this browser. Skipped when the visitor arrives at a specific section (#book…). */
   (function () {
     var pop = $("#pop");
@@ -512,7 +512,7 @@
       requestAnimationFrame(function () { pop.classList.add("open"); });
       $(".pop-go", pop).focus({ preventScroll: true });
       document.addEventListener("keydown", onKey);
-    }, reduce ? 300 : 1400);
+    }, 300);
   })();
 
   /* ---------- KST clock, year ---------- */

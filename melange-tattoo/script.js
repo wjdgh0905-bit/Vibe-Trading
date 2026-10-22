@@ -8,18 +8,19 @@
        region: KR | AU | US | UK | EU (matches the table rows)
        where:  shown in the banner       cities: shown in the table
        when:   shown as written (use months when exact dates aren't fixed)
-       start/end: only used to sort and to hide the entry once it's over
+       end:    the entry hides itself after this date
+       note/link/noteUntil/noteTz (optional): extra linked line in the table, shown until noteUntil (in noteTz)
+     Trips show in the order written here (table, banner and booking form).
      ------------------------------------------------------------ */
   var GUEST_SPOTS = [
-    { region: "US", where: { en: "United States", ko: "미국" },
-      cities: { en: "Seattle → San Jose → LA → Denver", ko: "시애틀 → 산호세 → LA → 덴버" },
-      when: { en: "Oct – early Nov", ko: "10월 ~ 11월 초" }, start: "2026-10-01", end: "2026-11-15" },
-    { region: "KR", where: { en: "Korea", ko: "한국" },
-      cities: { en: "Home studio", ko: "홈 스튜디오" },
-      when: { en: "November", ko: "11월" }, start: "2026-11-01", end: "2026-11-30" },
     { region: "AU", where: { en: "Melbourne", ko: "멜버른" },
       cities: { en: "Melbourne", ko: "멜버른" },
-      when: { en: "Dec 1 – 9", ko: "12월 1일 ~ 9일" }, start: "2026-12-01", end: "2026-12-09" }
+      when: { en: "Dec 1 – 9", ko: "12월 1일 ~ 9일" }, start: "2026-12-01", end: "2026-12-09",
+      note: { en: "Australian Tattoo Expo, Dec 4–6 · models wanted", ko: "오스트레일리안 타투 엑스포 12월 4~6일 · 모델 모집" },
+      link: { en: "/melbourne/", ko: "/melbourne/" }, noteUntil: "2026-12-06", noteTz: "Australia/Melbourne" },
+    { region: "KR", where: { en: "Korea", ko: "한국" },
+      cities: { en: "Home studio", ko: "홈 스튜디오" },
+      when: { en: "November", ko: "11월" }, start: "2026-11-01", end: "2026-11-30" }
   ];
 
   var FORMSPREE_ENDPOINT = "https://formspree.io/f/mwlkpjyw";
@@ -59,6 +60,11 @@
   var fine = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
   var $ = function (s, r) { return (r || document).querySelector(s); };
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+  // Today's date (YYYY-MM-DD) in a given time zone — cut-offs follow local time where the event is
+  function dateIn(tz) {
+    try { return new Intl.DateTimeFormat("en-CA", { timeZone: tz || "UTC", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date()); }
+    catch (e) { return new Date().toISOString().slice(0, 10); }
+  }
 
   /* ---------- headline word splits ---------- */
   function split(el, cls) {
@@ -215,20 +221,31 @@
     });
   }
 
+  /* ---------- time-limited sections (e.g. the expo model call) ---------- */
+  (function () {
+    $$("[data-until]").forEach(function (el) { if (dateIn(el.dataset.tz) > el.dataset.until) el.hidden = true; });
+  })();
+
   /* ---------- guest spots: table + announcement ---------- */
   (function () {
     var today = new Date().toISOString().slice(0, 10);
-    var upcoming = GUEST_SPOTS.filter(function (s) { return s.end >= today; })
-      .sort(function (a, b) { return a.start < b.start ? -1 : 1; });
+    var upcoming = GUEST_SPOTS.filter(function (s) { return s.end >= today; });
     upcoming.forEach(function (s) {
       var row = $('.tbl tr[data-region="' + s.region + '"]');
-      if (!row || row.dataset.filled) return; // first (soonest) trip per region wins
+      if (!row || row.dataset.filled) return; // first trip listed per region wins
       row.dataset.filled = "1";
-      $(".d", row).textContent = s.cities[L];
+      var cell = $(".d", row);
+      cell.textContent = s.cities[L];
+      if (s.note && !(s.noteUntil && dateIn(s.noteTz) > s.noteUntil)) {
+        var a = document.createElement(s.link ? "a" : "span");
+        a.className = "note"; a.textContent = s.note[L];
+        if (s.link) a.href = s.link[L];
+        cell.appendChild(document.createElement("br")); cell.appendChild(a);
+      }
       $(".st", row).innerHTML = '<span class="pill"></span>';
       $(".pill", row).textContent = s.when[L];
     });
-    // scheduled trips first, in date order; regions without dates keep their place below
+    // scheduled trips first, in the order listed; regions without dates keep their place below
     var tbody = $(".tbl tbody");
     if (tbody) {
       var rows = $$("tr", tbody), dated = rows.filter(function (r) { return r.dataset.filled; });
@@ -265,7 +282,6 @@
     if (!sel) return;
     var today = new Date().toISOString().slice(0, 10), other = sel.options[sel.options.length - 1];
     GUEST_SPOTS.filter(function (s) { return s.end >= today; })
-      .sort(function (a, b) { return a.start < b.start ? -1 : 1; })
       .forEach(function (s) {
         var stops = s.region === "KR" ? [s.where] : s.cities.en.split("→").map(function (en, i) {
           return { en: en.trim(), ko: s.cities.ko.split("→")[i].trim() };
@@ -457,6 +473,47 @@
   });
   menu.addEventListener("click", function (e) { if (e.target.closest("a, [data-close]")) closeMenu(); });
   document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeMenu(); });
+
+  /* ---------- first-visit popup (expo model call) ----------
+     Shows a moment after the page loads, until its data-until date. Closing it keeps it away
+     for 3 days in this browser. Skipped when the visitor arrives at a specific section (#book…). */
+  (function () {
+    var pop = $("#pop");
+    if (!pop) return;
+    if (pop.dataset.until && dateIn(pop.dataset.tz) > pop.dataset.until) return;
+    if (location.hash || location.search.indexOf("design=") > -1) return;
+    var KEY = "melange.pop.expo2026", WAIT = 3 * 24 * 60 * 60 * 1000;
+    try { var t = +localStorage.getItem(KEY); if (t && Date.now() - t < WAIT) return; } catch (e) {}
+    var opener = null;
+    function close() {
+      try { localStorage.setItem(KEY, String(Date.now())); } catch (e) {}
+      pop.classList.remove("open");
+      document.body.style.overflow = "";
+      setTimeout(function () { pop.hidden = true; }, reduce ? 0 : 350);
+      document.removeEventListener("keydown", onKey);
+      if (opener && opener.focus) opener.focus({ preventScroll: true });
+    }
+    function onKey(e) {
+      if (e.key === "Escape") return close();
+      if (e.key === "Tab") { // keep focus inside the popup
+        var f = $$("a[href], button", pop), first = f[0], last = f[f.length - 1];
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      }
+    }
+    $$("[data-pop-close]", pop).forEach(function (b) { b.addEventListener("click", close); });
+    pop.addEventListener("click", function (e) { if (e.target === pop) close(); });
+    $(".pop-go", pop).addEventListener("click", function () { try { localStorage.setItem(KEY, String(Date.now())); } catch (e) {} });
+    setTimeout(function () {
+      if ($("#menu.open") || $("#lb.open")) return; // don't stack on top of the menu or photo viewer
+      opener = document.activeElement;
+      pop.hidden = false;
+      document.body.style.overflow = "hidden";
+      requestAnimationFrame(function () { pop.classList.add("open"); });
+      $(".pop-go", pop).focus({ preventScroll: true });
+      document.addEventListener("keydown", onKey);
+    }, reduce ? 300 : 1400);
+  })();
 
   /* ---------- KST clock, year ---------- */
   var kst = new Intl.DateTimeFormat("en-GB", { timeZone: "Asia/Seoul", hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false });

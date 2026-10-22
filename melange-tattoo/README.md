@@ -6,12 +6,14 @@ Static site, no build step. Netlify publishes this folder as-is.
 index.html        # English page  (/)
 404.html          # shown for any address that doesn't exist
 ko/index.html     # Korean page   (/ko/)
+melbourne/        # Australian Tattoo Expo model call (English only), form in model-form.js;
+                  # the page's form and the home-page callout hide themselves after data-until
 styles.css        # shared styles — cobalt "blue ink on paper"
 gallery.js        # gallery data (subject, placement and alt text per photo)
 script.js         # behaviour: gallery filters/lightbox, booking form, guest spots, motion
 assets/work/      # gallery photos as WebP: <id>-480.webp and <id>-1080.webp
 assets/gallery/   # original JPGs (source files, not loaded by the pages)
-sitemap.xml       # both pages, with hreflang alternates
+sitemap.xml       # every page (hreflang pairs where a Korean version exists), plus all gallery images
 ```
 
 ## Editing copy
@@ -50,10 +52,11 @@ var GUEST_SPOTS = [
 ```
 
 `region` is `KR`, `AU`, `US`, `UK` or `EU`. That row of the Guest spots table shows `cities` and
-`when`, and scheduled rows move to the top in date order. The bar across the top of both pages
-lists every upcoming trip (`where` + `when`). `when` is shown exactly as written, so use months
-("Oct – early Nov") when exact dates aren't fixed; `start`/`end` are only used for sorting and to
-hide an entry once it's over. With no upcoming entries the bar stays hidden.
+`when`, and scheduled rows move to the top **in the order they're written** — put the trip you want
+first at the top of the list. The bar across the top of both pages and the booking form's location
+list follow the same order. `when` is shown exactly as written, so use months ("Oct – early Nov")
+when exact dates aren't fixed; an entry hides itself once `end` has passed. To take a trip down
+early (for example when it's fully booked), delete its entry. With no entries the bar stays hidden.
 
 ## Booking form
 

@@ -86,6 +86,7 @@
         if (!r.ok) throw new Error(r.status);
         status.className = "status ok"; status.textContent = T.ok; form.reset();
         if (typeof window.fbq === "function") window.fbq("track", "Lead", { content_name: "Melbourne expo model" });
+        if (typeof window.gtag === "function") window.gtag("event", "generate_lead", { form: "melbourne_expo_model" });
       })
       .catch(function () { status.className = "status fail"; status.textContent = T.fail; })
       .then(function () { btn.disabled = false; });

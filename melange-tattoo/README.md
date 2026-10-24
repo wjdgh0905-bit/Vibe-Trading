@@ -83,6 +83,12 @@ typing before it opens (scrolling doesn't count).
 `melbourne/index.html`, and set `noteUntil` on the Melbourne entry in `script.js` to the same date.
 The `/melbourne/` page then shows a "this call has closed" note instead of the form.
 
+## Tracking
+
+Every page loads the Google tag (Analytics measurement ID `G-WC2TXY1EGH`) right after `<head>`,
+and the Meta Pixel (`957190954111173`). A sent booking or model form also records a
+`generate_lead` event in Analytics and a `Lead` event in Meta.
+
 ## Booking form
 
 The inquiry form posts to Formspree (`FORMSPREE_ENDPOINT` in `script.js`, currently

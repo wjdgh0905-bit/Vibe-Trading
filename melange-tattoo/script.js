@@ -332,6 +332,7 @@
           if (!r.ok) throw new Error(r.status);
           statusEl.className = "status ok"; statusEl.textContent = TXT.ok; form.reset();
           if (typeof window.fbq === "function") window.fbq("track", "Lead"); // Meta Pixel: inquiry sent
+          if (typeof window.gtag === "function") window.gtag("event", "generate_lead", { form: "booking" }); // Google Analytics
         })
         .catch(function () { statusEl.className = "status fail"; statusEl.textContent = TXT.fail; })
         .then(function () { btn.disabled = false; });

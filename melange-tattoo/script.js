@@ -500,10 +500,17 @@
       };
       $$("[data-pop-close]", bar).forEach(function (b) { b.addEventListener("click", function () { hideBar(false); }); });
       $$("[data-pop-later]", bar).forEach(function (b) { b.addEventListener("click", function () { hideBar(true); }); });
+      // reserve room so the bar never sits on top of the end of the page, focused fields or back-to-top
+      var measure = function () { if (!bar.hidden) document.documentElement.style.setProperty("--pnote-h", bar.offsetHeight + "px"); };
+      addEventListener("resize", measure);
+      // step aside while the expo section itself is on screen (its buttons would sit right behind the bar)
+      var expo = $("#melbourne");
+      if (expo && "IntersectionObserver" in window) {
+        new IntersectionObserver(function (es) { bar.classList.toggle("tuck", es[es.length - 1].isIntersecting); }).observe(expo); // newest entry wins
+      }
       setTimeout(function () {
         bar.hidden = false;
-        // reserve room so the bar never sits on top of the end of the page or the back-to-top button
-        document.documentElement.style.setProperty("--pnote-h", bar.offsetHeight + "px");
+        measure();
         document.body.classList.add("pnote-on");
         requestAnimationFrame(function () { bar.classList.add("on"); });
       }, 300);

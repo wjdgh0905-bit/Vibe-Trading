@@ -72,7 +72,8 @@ counted in Melbourne time (`data-tz` / `noteTz` = `Australia/Melbourne`).
 
 On screens wider than 960px a popup opens every time the home page loads; on phones and tablets
 a small bar sits above the bottom booking bar instead (it follows the scroll and doesn't cover the
-page). Close / ✕ / Esc only close them for that visit;
+page; it steps aside while the expo section itself is on screen, and turns into one compact row
+on short landscape screens). Close / ✕ / Esc only close them for that visit;
 "Don't show for 3 days" hides it for 3 days in that browser (localStorage key
 `melange.pop.expo2026.later`, shared by both). The desktop popup isn't shown when the visitor
 arrives at `#book`, `#melbourne` or a flash-design booking link, or clicks something / starts

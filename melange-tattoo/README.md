@@ -63,17 +63,20 @@ early (for example when it's fully booked), delete its entry. With no entries th
 The Australian Tattoo Expo model call lives in five places:
 
 - `melbourne/index.html` — the English-only page and application form (`model-form.js`)
-- `index.html` and `ko/index.html` — the `#melbourne` section after Work, and the `#pop` popup
+- `index.html` and `ko/index.html` — the `#melbourne` section after Work, the `#pop` popup (desktop)
+  and the `#pnote` bar (phones and tablets, ≤960px)
 - `script.js` — the `note`/`link` on the Melbourne entry in `GUEST_SPOTS` (the table link)
 
 All of them hide themselves after `data-until="2026-12-06"` (the table link after `noteUntil`),
 counted in Melbourne time (`data-tz` / `noteTz` = `Australia/Melbourne`).
 
-The popup opens every time the home page loads. Close / ✕ / Esc only close it for that visit;
+On screens wider than 960px a popup opens every time the home page loads; on phones and tablets
+a small bar sits above the bottom booking bar instead (it follows the scroll and doesn't cover the
+page). Close / ✕ / Esc only close them for that visit;
 "Don't show for 3 days" hides it for 3 days in that browser (localStorage key
-`melange.pop.expo2026.later`). It isn't shown when the visitor arrives at `#book`, `#melbourne`
-or a flash-design booking link, or clicks something / starts typing before it opens (scrolling
-doesn't count).
+`melange.pop.expo2026.later`, shared by both). The desktop popup isn't shown when the visitor
+arrives at `#book`, `#melbourne` or a flash-design booking link, or clicks something / starts
+typing before it opens (scrolling doesn't count).
 
 **To close the call early** (e.g. once enough models have signed up): change every
 `data-until="2026-12-06"` to yesterday's date in `index.html`, `ko/index.html` and

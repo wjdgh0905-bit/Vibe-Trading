@@ -474,18 +474,45 @@
   menu.addEventListener("click", function (e) { if (e.target.closest("a, [data-close]")) closeMenu(); });
   document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeMenu(); });
 
-  /* ---------- home popup (expo model call) ----------
-     Opens every time the home page loads, until its data-until date. Close / ✕ / Esc / backdrop
-     only close it for now; "Don't show for 3 days" keeps it away for 3 days in this browser.
-     Skipped when the visitor is already heading somewhere specific (#book, #melbourne, a flash
-     design booking), or has clicked something / started typing before it opens. */
+  /* ---------- home popup / phone bar (expo model call) ----------
+     Desktop (wider than 960px): a popup. Phones and tablets: a small bar above the bottom booking
+     bar that stays put while scrolling and doesn't cover the page.
+     Both show every time the home page loads, until their data-until date. ✕ / Close (and Esc or
+     the backdrop for the popup) only close it for now; "Don't show for 3 days" keeps both away for
+     3 days in this browser. The popup (not the bar) is skipped when the visitor is already heading
+     somewhere specific (#book, #melbourne, a flash design booking) or has clicked something /
+     started typing before it opens. */
   (function () {
+    var KEY = "melange.pop.expo2026.later", WAIT = 3 * 24 * 60 * 60 * 1000;
+    function later() { try { localStorage.setItem(KEY, String(Date.now())); } catch (e) {} }
+    try { var t = +localStorage.getItem(KEY); if (t && Date.now() - t < WAIT) return; } catch (e) {}
+    var phone = window.matchMedia("(max-width: 960px)").matches;
+
+    if (phone) {
+      var bar = $("#pnote");
+      if (!bar || (bar.dataset.until && dateIn(bar.dataset.tz) > bar.dataset.until)) return;
+      var hideBar = function (keepAway) {
+        if (keepAway) later();
+        bar.classList.remove("on");
+        document.body.classList.remove("pnote-on");
+        setTimeout(function () { bar.hidden = true; }, reduce ? 0 : 350);
+      };
+      $$("[data-pop-close]", bar).forEach(function (b) { b.addEventListener("click", function () { hideBar(false); }); });
+      $$("[data-pop-later]", bar).forEach(function (b) { b.addEventListener("click", function () { hideBar(true); }); });
+      setTimeout(function () {
+        bar.hidden = false;
+        // reserve room so the bar never sits on top of the end of the page or the back-to-top button
+        document.documentElement.style.setProperty("--pnote-h", bar.offsetHeight + "px");
+        document.body.classList.add("pnote-on");
+        requestAnimationFrame(function () { bar.classList.add("on"); });
+      }, 300);
+      return;
+    }
+
     var pop = $("#pop");
     if (!pop) return;
     if (pop.dataset.until && dateIn(pop.dataset.tz) > pop.dataset.until) return;
     if (/^#(book|melbourne)$/.test(location.hash) || location.search.indexOf("design=") > -1) return;
-    var KEY = "melange.pop.expo2026.later", WAIT = 3 * 24 * 60 * 60 * 1000;
-    try { var t = +localStorage.getItem(KEY); if (t && Date.now() - t < WAIT) return; } catch (e) {}
     var opener = null, movedOn = false;
     // If the visitor already clicked a link/button, jumped to a section or started typing in a form
     // before it opens, don't interrupt them. Scrolling (touch, wheel or keys) doesn't count.
@@ -494,8 +521,8 @@
     window.addEventListener("hashchange", moved);
     document.addEventListener("click", moved);
     document.addEventListener("focusin", onFocus);
-    function close(later) {
-      if (later) { try { localStorage.setItem(KEY, String(Date.now())); } catch (e) {} }
+    function close(keepAway) {
+      if (keepAway) later();
       pop.classList.remove("open");
       document.body.style.overflow = "";
       setTimeout(function () { pop.hidden = true; }, reduce ? 0 : 350);

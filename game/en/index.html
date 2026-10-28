@@ -1087,12 +1087,12 @@ function paintPickers(){
   const fa=document.activeElement,fk=fa&&fa.closest&&fa.closest('#items,#betrow,#offers')?(fa.id?'#'+fa.id:fa.dataset.i?'#items [data-i="'+fa.dataset.i+'"]':fa.dataset.pct?'#betrow [data-pct="'+fa.dataset.pct+'"]':null):null;
   const lock=state==='holding'||state==='ghost'||state==='over';
   const chOn=!tutDone||(chal&&chal.i<5),crL=T=>{let L=T.loss;if(chOn)return Math.round(L*100);if(levSel>1)L*=levSel*.6;const sh=sel.shield&&rankOf(xp)>=ITEMS.shield.lv;if(sh)L=Math.min(L,Math.max(.1,L*.25));if(profile==='turtle'&&!sh)L*=.8;L*=1-.03*skl('risk');return Math.round(L*100);};
-  const crX=T=>crL(T)>100?' (can exceed bet)':'';
-  const chP=tutDone&&chal&&chal.i<5,crT=T=>chP?'If it crashes before you sell: −30 points · no cash at risk':'If it crashes before you sell, you lose '+crL(T)+'% of your trade amount'+crX(T),crS=T=>chP?'Crash −30 pts':'Crash −'+crL(T)+'%'+(crX(T)?'⚠':'');
+  const crX=T=>crL(T)>100?' (can exceed your trade)':'';
+  const chP=tutDone&&chal&&chal.i<5,crT=T=>!tutDone?'Practice round · a crash costs you nothing':chP?'If it crashes before you sell: −30 points · no cash at risk':'If it crashes before you sell, you lose '+crL(T)+'% of your trade amount'+crX(T),crS=T=>!tutDone?'Practice':chP?'Crash −30 pts':'Crash −'+crL(T)+'%'+(crX(T)?'⚠':'');
   const co=curOffer(),CT=TIERS[co.k],spark=(o,w,h)=>{const mn=Math.min(...o.spark),mx=Math.max(...o.spark);return `<svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" aria-hidden="true"><polyline fill="none" stroke="${o.chg>=0?C.up:C.down}" stroke-width="1.6" points="${o.spark.map((v,i)=>(i/(o.spark.length-1)*w).toFixed(1)+','+(h-1-(v-mn)/((mx-mn)||1)*(h-2)).toFixed(1)).join(' ')}"/></svg>`;};
   $('offers').innerHTML=co.k==='boss'?`<button class="pick1 bosschip" type="button" ${lock?'disabled':''} title="${crT(CT)}"><span class="pe">${bossInfo(co.ni).B.e}</span><span class="pt"><b>${bossInfo(co.ni).B.n} Lv.${co.ni+1}</b><small>${crS(CT)} · Sell above the goal to win · SP +2</small></span></button>`
    :`<button class="pick1" type="button" id="openSheet" ${lock?'disabled':''} title="${crT(CT)}"><span class="pe">${CT.e}</span><span class="pt"><b>${co.name}</b><small>${crS(CT)} · ${CT.label}</small></span>${spark(co,54,24)}<span class="pc"> ${offers.length} stocks ▾</span></button>`;
-  $('shList').innerHTML=offers.map(o=>{const T=TIERS[o.k];return `<button class="srow ${o.id===co.id?'on':''}" type="button" data-o="${o.id}"><span class="pe">${T.e}</span><span class="pt"><b>${o.name}</b><small>${T.label} · ${chP?'Crash −30 pts':'Crash −'+crL(T)+'%'+crX(T)}${T.desc?' · '+T.desc:''}</small></span>${spark(o,64,26)}<span class="pr ${o.chg>=0?'up':'dn'}">${o.chg>=0?'+':''}${o.chg.toFixed(1)}%</span></button>`}).join('');
+  $('shList').innerHTML=offers.map(o=>{const T=TIERS[o.k];return `<button class="srow ${o.id===co.id?'on':''}" type="button" data-o="${o.id}"><span class="pe">${T.e}</span><span class="pt"><b>${o.name}</b><small>${T.label} · ${!tutDone?'Practice':chP?'Crash −30 pts':'Crash −'+crL(T)+'%'+crX(T)}${T.desc?' · '+T.desc:''}</small></span>${spark(o,64,26)}<span class="pr ${o.chg>=0?'up':'dn'}">${o.chg>=0?'+':''}${o.chg.toFixed(1)}%</span></button>`}).join('');
   const ri=rankOf(xp);
   $('offers').hidden=state==='holding'||state==='ghost';$('items').hidden=$('betrow').hidden=$('offers').hidden||!!chOn;
   const AI=allin&&ri>=2,maxBet=AI?maxStake(1):Math.min(balance,maxStake(0))*betPct;
@@ -1144,7 +1144,7 @@ function setBtn(){
   const cool=state==='result'&&performance.now()<readyAt;
   const canRe=state==='ghost'&&sell&&!crashed&&run&&!run.tut&&!run.chal&&!run.re&&Math.min(balance,run.bet)>=1e4&&performance.now()-sellAt>=700;
   btn.className=state==='holding'?'on':canRe?'re':(state==='ghost'||cool||state==='over'||!profile&&!$('qSkip'))?'wait':'';if(bossBtn()&&profile&&!(chal&&chal.i<5))btn.classList.add('boss');
-  btnTxt(state==='holding'?sellLbl():canRe?'🔁 Re-enter (one more)':state==='ghost'?'Watching chart…':state==='over'?'Choose how to continue':state==='result'?(cool?'⏳ One sec…':chal&&tutDone&&chal.i<5?'🏆 '+(chal.i+1)+'/5 Buy':bossBtn()||'Buy next stock'):profile?bossBtn()||'Tap to Buy':$('qSkip')?'▶ Just play':'🧪 Take the quiz first!');
+  btnTxt(state==='holding'?sellLbl():canRe?'🔁 Re-enter (one more)':state==='ghost'?'Watching chart…':state==='over'?'Choose how to continue':state==='result'?(cool?'⏳ One sec…':chal&&tutDone&&chal.i<5?'🏆 '+(chal.i+1)+'/5 Buy':bossBtn()||(tutDone?'Buy next stock':'Tap to Buy')):profile?bossBtn()||'Tap to Buy':$('qSkip')?'▶ Just play':'🧪 Take the quiz first!');
 }
 
 function selectOffer(id){if(state==='holding'||state==='ghost'||state==='over')return;const o=offers.find(x=>x.id===id);if(!o||o.k==='boss')return;selId=id;tierSel=o.k;store.set('shg_tier',tierSel);
@@ -1215,7 +1215,7 @@ function start(){
   if(!tut&&!ch)crashAt=Math.max(1.002,crashAt);
   if(!tut&&!ch&&(stats.rounds||0)<5)crashAt=Math.max(crashAt,1.2+Math.random()*.3);
   const it={...useSel};if(cry)it.insider=false;let hint=null;
-  if(!tut&&!ch){for(const k in sel)sel[k]=false;allin=false;}
+  if(!tut&&!ch){const had=allin||Object.values(sel).some(Boolean);for(const k in sel)sel[k]=false;allin=false;if(had&&!store.get('shg_itemTip',0)){store.set('shg_itemTip',1);setTimeout(()=>toast('🧪 Items and All-in last one round only · switch them on again next round'),900);}}
   if(it.insider){const real=Math.random()<.7+.03*skl('radar');hint={real,v:real?Math.max(Math.min(1.02,crashAt*.99),crashAt*rnd(.88,.98)):crashAt*rnd(1.4,3)};}
   if(cry){armed.crystal--;store.set('shg_armed',armed);crashAt=Math.max(crashAt,Math.exp(T.rate*(rg.rate||1)*.14));hint={real:true,v:Math.max(Math.min(1.02,crashAt*.99),crashAt*rnd(.94,.99)),crystal:1};}
   cgPlay(true);
@@ -1224,7 +1224,7 @@ function start(){
   if(ch){ch.pend=-30;store.set('shg_chalRun',ch);}
   if(!tut&&!ch&&o.k==='boss'&&armed.bossT>0&&(stats.rounds+1)%10!==0){armed.bossT--;store.set('shg_armed',armed);}
   if(ai)setTimeout(()=>stamp('🎲 All-in '+won(bet)),60);else if(lv>=5)setTimeout(()=>stamp('⚡ '+lv+'×'),60);
-  run.rg=rg;const rgi=REGIMES.indexOf(rg);if(!tut&&!ch&&stats.lastRg!==rgi){const seen=stats.lastRg===rg.n;stats.lastRg=rgi;store.set('shg_stats',stats);if(!seen)setTimeout(()=>{stamp(rg.e+' '+rg.n);toast(rg.e+' '+rg.n+' begins · '+rg.d);},80);}
+  run.rg=rg;const rgi=REGIMES.indexOf(rg);if(!tut&&!ch&&stats.lastRg==null&&rgi===0){stats.lastRg=0;store.set('shg_stats',stats);}if(!tut&&!ch&&stats.lastRg!==rgi){const seen=stats.lastRg===rg.n;stats.lastRg=rgi;store.set('shg_stats',stats);if(!seen)setTimeout(()=>{stamp(rg.e+' '+rg.n);toast(rg.e+' '+rg.n+' begins · '+rg.d);},80);}
   run.boss=o.k==='boss'&&!ch&&!tut?bossInfo(stats.bossLv||0):null;$('bossbar').hidden=!run.boss;
   if(run.boss){$('bossName').innerHTML=run.boss.B.e+'<span class="bn"> '+esc(run.boss.B.n)+'</span> Lv.'+(run.boss.lv+1);$('bossGoal').textContent='Goal +'+Math.round((run.boss.target-1)*100)+'%';bossFit();$('bossHp').style.width='100%';setTimeout(()=>stamp('⚔️ Boss fight!'),50);}tutStep=0;
   card.hidden=true;newsIdle();
@@ -1238,7 +1238,7 @@ function start(){
 function reenter(){
   if(adReq||adPause||!(state==='ghost'&&sell&&!crashed&&run&&!run.tut&&!run.chal&&!run.re)||performance.now()-sellAt<700)return;
   const bet=Math.min(balance,run.bet),fee=gear.vip?0:bet*(.003+.002*(run.lev-1));if(bet<1e4)return;
-  balance-=fee;run.re={bet,entry:cur,fee};run.tMin=t+.3*holdRate();while(run.mi<MS.length&&cur*(MS[run.mi][0]===1.3?eM:1)>=MS[run.mi][0])run.mi++;run.liqLine=run.lev>1?cur*(1-(gear.jet?.95:.85)/run.lev):0;
+  balance-=fee;run.re={bet,entry:cur,fee};run.tMin=t+.3*holdRate();while(run.mi<MS.length&&cur*(MS[run.mi][0]===1.3&&!run.tut?eM:1)>=MS[run.mi][0])run.mi++;run.liqLine=run.lev>1?cur*(1-(gear.jet?.95:.85)/run.lev):0;
   state='holding';vib(30);sfx.tick(cur);stamp('🔁 Re-entry!');toast('🔁 '+won(bet)+' back in · Sell again before the crash');
   paintTop();setBtn();
 }
@@ -1329,7 +1329,7 @@ function crash(){
     lastAmt=net;showWin(pct,xg);if(rl){streak=0;app.classList.remove('fever');$('fever').hidden=true;}
   }
   missionsUpdate(res);recordRound(res);
-  if(!pendBust&&state==='result'&&run.promo&&!card.hidden&&!card.querySelector('.promo')){const b=card.querySelector('.big');if(b)b.insertAdjacentHTML('afterend',promoLine());}
+  if(!pendBust&&state==='result'&&run.promo&&!card.hidden){const o=card.querySelector('.promo');if(o)o.outerHTML=promoLine();else{const b=card.querySelector('.big');if(b)b.insertAdjacentHTML('afterend',promoLine());}}
   if(pendBust){const P=pendBust;pendBust=null;if(balance+invNet()<100000){state='over';showOver(P.loss);}else{state='result';showBust(P.loss,P.L,P.xg,P.rw,P.sh,P.ps);if(balance<100000)setTimeout(()=>toast('💼 Out of cash! Withdraw from the Invest tab'),900);}}
   else if(state==='result'&&balance+invNet()<100000&&!$('adWin')){state='over';showOver(run.re&&run.re.caught?Math.max(0,Math.min(run.re.loss,-lastAmt)):0);}
   offers=makeOffers();
@@ -1365,8 +1365,9 @@ function shareOut(text){const full=text+'\n👉 '+GAME_URL;
 function shareBtn(x=''){return '<div class="btns" style="flex-wrap:wrap">'+x+'<button type="button" id="share">📤 Share result</button></div>'}
 function bindShare(){const b=$('share');if(!b)return;b.onclick=()=>shareOut(shareText);}
 function showWin(pct,xg){
+  const cap=(sell.m-1)/Math.max(1e-9,peak-1)*100;
   const rc=!!(run.re&&run.re.caught),s1=sell.gain+sell.bonus-(sell.tax||0),rl=!!run.re&&(rc||lastAmt<=0),wb=Math.floor(Math.max(0,run.re?s1+(run.re.gain||0)-(run.re.loss||0)-run.re.fee:s1)*.5),lb=wb>0||!rc?0:Math.floor(Math.max(0,Math.min(run.re.loss||0,-lastAmt))*.3);
-  const g=rc?(run.liq?['💀 Re-entry liquidated','dn','You jumped back in and got liquidated.']:['Re-entry caught','dn','You sold, jumped back in, and got caught by the crash.']):rl?['Re-entry loss','dn','You jumped back in and lost money on the round.']:run.boss&&sell.bossReward?['⚔️ Boss defeated!','gd','Goal +'+Math.round((run.boss.target-1)*100)+'% cleared!']:run.re&&sell.m<1?['Re-entry comeback','up','You cut your loss, jumped back in, and finished in profit.']:sell.m<1?['Stop loss','dn','Cut your losses and got out.']:lastAmt-(run.cost||0)<0?['Fees Ate It','dn','Fees and items ate the profit.']:pct>=95?['Golden Touch','gd','Sold right at the peak.']:pct>=80?['Pro','up','Nice sell near the top.']:pct>=50?['Not Bad','','Got half. The rest went to the whales.']:['Played It Safe','','Win locked in. It kept going, though…'];
+  const g=rc?(run.liq?['💀 Re-entry liquidated','dn','You jumped back in and got liquidated.']:['Re-entry caught','dn','You sold, jumped back in, and got caught by the crash.']):rl?['Re-entry loss','dn','You jumped back in and lost money on the round.']:run.boss&&sell.bossReward?['⚔️ Boss defeated!','gd','Goal +'+Math.round((run.boss.target-1)*100)+'% cleared!']:run.re&&sell.m<1?['Re-entry comeback','up','You cut your loss, jumped back in, and finished in profit.']:sell.m<1?['Stop loss','dn','Cut your losses and got out.']:lastAmt-(run.cost||0)<0?['Fees Ate It','dn','Fees and items ate the profit.']:pct>=95?['Golden Touch','gd','Sold right at the peak.']:cap>=70?['Pro','up','Nice sell near the top.']:cap>=40?['Not Bad','','Got half. The rest went to the whales.']:['Played It Safe','','Win locked in. It kept going, though…'];
   const close=!rc&&(crashT-sell.t)<.4?'<div class="sub gd">Crash '+gapS().toFixed(2)+'s away — escaped!</div>':'';
   const shook=sell.dip&&peak>=sell.m*1.5?'<div class="sub dn">That bad news was just a shakeout.</div>':'';
   const o=run.offer,pp=x=>nf(1).format((x-1)*100)+'%';
@@ -1580,7 +1581,7 @@ addEventListener('pagehide',flushRound);
 addEventListener('resize',()=>{if(state==='holding'&&getComputedStyle($('rotate')).display!=='none')forceSell();});
 let tabStale=0,tabRp=0;const adOffer=()=>!card.hidden&&!!card.querySelector('#adWin,#adLoss');
 const TAB_TAKE={shg_streak:v=>{streak=Math.max(0,Math.floor(+v||0));app.classList.toggle('fever',streak>=5);$('fever').hidden=streak<5;},shg_season:v=>season=v,shg_daily:v=>{daily=v;ensureDaily();},shg_weekly:v=>{weekly=v;ensureDaily();},shg_inv:v=>inv=v,shg_armed:v=>armed=v,shg_inv2:v=>invest=v,shg_gear:v=>gear=v,shg_col:v=>col=Array.isArray(v)?v.filter((id,i)=>COL.some(c=>c.id===id)&&v.indexOf(id)===i):[],shg_ach:v=>ach=v,shg_achc:v=>achC=v,shg_sk:v=>{sk=cntMap(v);fixSk();},shg_league:v=>league=v,shg_nick:v=>nick=v,shg_profile:v=>profile=Object.prototype.hasOwnProperty.call(TYPES,v)?v:null,shg_home:v=>lastHome=v,shg_intPaid:v=>intPaid=!!v,shg_best:v=>best=Math.max(best,+v||0),shg_stats:v=>{Object.assign(stats,v);fixStats();lowFlag=!!stats.low;},shg_decor:v=>Object.assign(decor,v)},
-  TAB_KEEP=['shg_bal','shg_debt','shg_credit','shg_xp','shg_spin','shg_adSpin','shg_adRevive','shg_adc','shg_chalDay','shg_chalMax','shg_chalRun','shg_chalPaid','shg_tutPaid','shg_tutBonus','shg_tut','shg_set','shg_pct','shg_ipct','shg_tier','shg_levTip'];
+  TAB_KEEP=['shg_bal','shg_debt','shg_credit','shg_xp','shg_spin','shg_adSpin','shg_adRevive','shg_adc','shg_chalDay','shg_chalMax','shg_chalRun','shg_chalPaid','shg_tutPaid','shg_tutBonus','shg_tut','shg_set','shg_pct','shg_ipct','shg_tier','shg_levTip','shg_itemTip'];
 addEventListener('storage',e=>{const k=e.key;if(e.storageArea&&e.storageArea!==localStorage)return;if(k!==null&&(k.slice(0,4)!=='shg_'||k==='shg_errlog'))return;
   if(k==='shg_prem'||k==='shg_premEq'){if(PREM_ON)premTake(k);return;}if(k==='shg_premReset'){if(PREM_ON&&e.newValue)premReset();return;}
   if(tabStale!==1&&k!==null&&e.newValue!==null&&(adPause||adReq||adOffer()||!document.hidden&&(tabStale===2||state==='holding'||state==='ghost'))&&(TAB_TAKE[k]||TAB_KEEP.includes(k))){store.seen[k]=e.newValue;const d=(+e.newValue||0)-(+e.oldValue||0);
@@ -1623,7 +1624,7 @@ function liveTick(dt){
   liveV+=rnd(-1,1)*.00045*w-liveV*.025+(1-liveM)*.0006;
   if(Math.random()<dt*.18){liveV=(Math.random()<.55?1:-1)*rnd(.0025,.006)*w;if(liveV>0&&Math.random()<.5)talk('hype');}
   liveM*=1+liveV*.6+rnd(-1,1)*.0012*w;liveM=Math.max(.8,Math.min(1.25,liveM));
-  if(profile&&(state==='ready'||(state==='result'&&performance.now()>=readyAt))){const d=(liveM-1)*100,bb=chal&&tutDone?'':bossBtn();btn.classList.toggle('boss',!!bb);btnTxt(bb||(chal&&tutDone?'🏆 '+(chal.i+1)+'/5 Buy':state==='result'?'Buy next stock':'Tap to Buy')+(Math.abs(d)>=.5?(d>0?' · ▲':' · ▼')+Math.abs(d).toFixed(1)+'%':''));}
+  if(profile&&(state==='ready'||(state==='result'&&performance.now()>=readyAt))){const d=(liveM-1)*100,bb=chal&&tutDone?'':bossBtn();btn.classList.toggle('boss',!!bb);btnTxt(bb||(chal&&tutDone?'🏆 '+(chal.i+1)+'/5 Buy':state==='result'&&tutDone?'Buy next stock':'Tap to Buy')+(Math.abs(d)>=.5?(d>0?' · ▲':' · ▼')+Math.abs(d).toFixed(1)+'%':''));}
   let c=candles[candles.length-1];
   if(!c||liveT>=CD){liveT=0;c={o:prev,h:prev,l:prev,c:prev,v:0};candles.push(c);if(candles.length>240)candles.splice(0,candles.length-240);}
   c.h=Math.max(c.h,liveM);c.l=Math.min(c.l,liveM);c.c=liveM;c.v+=dt*rnd(.4,1.4);cur=liveM;
@@ -1657,7 +1658,7 @@ function draw(){
   const pill=(txt,x,y,w,col)=>{ctx.globalAlpha=.85;ctx.fillStyle=P.panel;ctx.beginPath();if(ctx.roundRect)ctx.roundRect(x-3,y-7,w+6,14,4);else ctx.rect(x-3,y-7,w+6,14);ctx.fill();ctx.globalAlpha=1;ctx.fillStyle=col;ctx.fillText(txt,x,y);boxes.push([x-3,y-7,x+w+3,y+7]);};
   if(run&&run.liqLine&&state==='holding')hl(run.liqLine,P.down,'💀 Liquidation',[6,3]);
   hl(1/eM,P.muted,'Base price',[2,3]);
-  if(!T.hidden)hl(1.3/eM,P.gold,T.limit?'Limit up +30%':'+30%',[4,4]);
+  if(!T.hidden)hl(run&&run.tut?1.3:1.3/eM,P.gold,T.limit&&!(run&&run.tut)?'Limit up +30%':'+30%',[4,4]);
   else if(run&&run.boss)hl(run.boss.target,P.gold,'Goal +'+Math.round((run.boss.target-1)*100)+'%',[4,4]);
   if(run&&run.hint&&state!=='ready'){ctx.lineWidth=2;hl(run.hint.v,P.rumor,run.hint.crystal?'Crystal Ball':'Insider tip target',[2,5]);ctx.lineWidth=1;}
   // volume
@@ -1823,11 +1824,11 @@ if(document.fonts){document.fonts.ready.then(placeCoach);if(document.fonts.addEv
 function hideCoach(){$('coach').hidden=true;document.querySelectorAll('.glow').forEach(g=>g.classList.remove('glow'));}
 function coachReady(){coach('👇 Tap this button <b>once to Buy</b>.<br>Tap again to sell. (Practice round: you can’t lose any cash)',btn,'above');}
 function tutTick(){
-  if(tutStep<2&&cur*eM>=1.3){tutStep=2;coach('🔥 <b>+30% breakout!</b> Tap now to sell and lock in your profit. You could hold longer, but…',btn,'above');}
+  if(tutStep<2&&cur>=1.3){tutStep=2;coach('🔥 <b>+30% breakout!</b> Tap now to sell and lock in your profit. You could hold longer, but…',btn,'above');}
   else if(tutStep<3&&cur>=1.6){tutStep=3;coach('💓 Heartbeat speeding up? It could pop any second. <b>Tap now to sell!</b>',btn,'above');}
 }
 let tutFail=0;
-const tutTapOff=()=>state==='holding'&&run&&run.tut&&run.retry&&cur*eM<1.3;
+const tutTapOff=()=>state==='holding'&&run&&run.tut&&run.retry&&tutStep<2&&cur<1.3;
 function tutEnd(won){
   state='result';
   if(won){
@@ -1846,7 +1847,7 @@ function boot(){
   if(!profile){card.innerHTML=tw('<div class="grade"><span class="up">Stonks</span> Tycoon</div><div class="sub">Press once to buy, again to sell.'+(MOUSE.matches?' (or press Space)':'')+'<br>Sell before the crash to win. All money is virtual.</div><div class="sub">First, what kind of investor are you?</div><div class="btns" style="flex-wrap:wrap"><button class="pri" id="qStart" type="button" style="white-space:nowrap">🧪 Investor Type Quiz (5 Qs)</button><button id="qSkip" type="button" style="white-space:nowrap">▶ Just play</button></div>');
     showCard();$('qStart').onclick=startQuiz;$('qSkip').onclick=()=>{if(profile)return;setProfile('squirrel');card.hidden=true;if(!tutDone)coachReady();else showIntro();};setBtn();}
   else if(!tutDone){card.hidden=true;coachReady();}
-  else showIntro();
+  else{let bk=false;try{bk=balance+invNet()<100000&&!(chal&&chal.i<5&&debt<=debtLimit());}catch(e){}if(!bk)showIntro();}
 }
 
 
@@ -2124,7 +2125,7 @@ const ptsL=n=>LANG==='en'?n+(Math.abs(n)===1?' pt':' pts'):n+' pts';
 function chalPoints(){const r=seedRng('SHG'+dayNum());return Array.from({length:5},()=>Math.min(20,Math.max(1.15,.94/(1-r()))));}
 const chalOk=()=>{if(state==='over'&&debt>debtLimit()&&!unOver()){toast('🚨 Can’t play the challenge while in default · settle up first');return false;}return true;};
 function chalStart(){if(!tutDone){toast('Finish the tutorial first!');return;}if(Math.max(+store.get('shg_chalDay',0)||0,+store.get('shg_chalMax',0)||0)>=dayNum()){toast('Already did today’s challenge. Come back tomorrow!');return;}if(!chalOk())return;
-  chal={day:dayNum(),pts:chalPoints(),i:0,score:0,res:[],id:Date.now()+'-'+Math.floor(Math.random()*1e6)};store.set('shg_chalRun',chal);store.set('shg_chalMax',Math.max(+store.get('shg_chalMax',0)||0,chal.day));if(state==='over'&&debt<=debtLimit())resetView();if(state!=='holding'&&state!=='ghost'){offers=makeOffers();if(!run){buildChartIdle();paintQuote();renderBook();}}card.hidden=true;tab('trade');paintTop();paintPickers();setBtn();toast('🏆 Today’s Challenge is on! Sell before the crash for 5 rounds');}
+  chal={day:dayNum(),pts:chalPoints(),i:0,score:0,res:[],id:Date.now()+'-'+Math.floor(Math.random()*1e6)};store.set('shg_chalRun',chal);store.set('shg_chalMax',Math.max(+store.get('shg_chalMax',0)||0,chal.day));if(state==='over'&&debt<=debtLimit())resetView();if(state!=='holding'&&state!=='ghost'){offers=makeOffers();if(!run){buildChartIdle();paintQuote();renderBook();}}if(!card.querySelector('#adWin,#adLoss'))card.hidden=true;tab('trade');paintTop();paintPickers();setBtn();toast('🏆 Today’s Challenge is on! Sell before the crash for 5 rounds');}
 function chalRound(sold){
   state='result';delete chal.pend;const pt=sold?Math.round((sell.m-1)*100):-30;chal.score+=pt;chal.res.push(pt);chal.i++;
   if(chal.i<5){store.set('shg_chalRun',chal);card.innerHTML='<div class="grade '+(pt>=0?'up':'dn')+'">'+(pt>=0?'+':'')+ptsL(pt)+'</div><div class="sub">Challenge '+chal.i+'/5 · Total '+ptsL(chal.score)+'</div><div class="sub">'+(sold?'Crash point was x'+chal.pts[chal.i-1].toFixed(2):'Caught (-30 pts)')+'</div>';showCard();return;}
@@ -2421,7 +2422,7 @@ function frame(ts){
       const c=candles[candles.length-1];c.h=Math.max(c.h,cur);c.l=Math.min(c.l,cur);c.c=cur;
       const dv=dt*(1+Math.abs(cur-prev)/prev*300+(events.some(e=>t>=e.t0&&t<=e.t0+1.4)?3:0))*rnd(.6,1.4);c.v+=dv;volTotal+=dv*(1+cur);
       if(state==='holding'&&run.boss&&!run.re){const pn=performance.now(),hp=run.boss.down&&pn<run.boss.downAt+1050?0:Math.max(0,1-(cur-1)/(run.boss.target-1));$('bossHp').style.width=(hp*100).toFixed(1)+'%';if(hp<=0&&!run.boss.down){run.boss.down=1;run.boss.downAt=pn+Math.max(0,stampAt-pn);stamp('💥 HP 0! Sell now to win');}}
-      if(state==='holding'){events.forEach(e=>{if(e.shake&&!e.shown&&t>=e.t0){e.shown=1;run.sawDip=true;news('⚠️ Whales dumping to shake out retail ants','bear');talk('fear');}});tension(dt);if(run.tut)tutTick();while(run.mi<MS.length&&cur*(MS[run.mi][0]===1.3?eM:1)>=MS[run.mi][0]){if(!(MS[run.mi][0]===1.3&&!run.T.limit&&!run.tut))stamp(MS[run.mi][1]);run.mi++;}}
+      if(state==='holding'){events.forEach(e=>{if(e.shake&&!e.shown&&t>=e.t0){e.shown=1;run.sawDip=true;news('⚠️ Whales dumping to shake out retail ants','bear');talk('fear');}});tension(dt);if(run.tut)tutTick();while(run.mi<MS.length&&cur*(MS[run.mi][0]===1.3&&!run.tut?eM:1)>=MS[run.mi][0]){if(!(MS[run.mi][0]===1.3&&!run.T.limit&&!run.tut))stamp(MS[run.mi][1]);run.mi++;}}
       if(state==='holding'){if(run.chal){const pv=Math.round((cur-1)*100);$('pnl').innerHTML='<span class="gd">🏆 '+(pv>=0?'+':'')+ptsL(pv)+'</span>';}else{const lev=run.lev,g0=run.re?run.re.bet*(cur/run.re.entry-1)*lev:run.bet*(cur-1)*lev,g=g0>0?g0*profitMul():g0;
         $('pnl').innerHTML='Unrealized P/L <span class="'+(g>=0?'up':'dn')+'">'+sw(g)+'</span>'+(lev>1?' <span class="gd">⚡'+lev+'×</span>':'')+(run.allin?' <span class="gd">🎲</span>':'');}}
       if(state==='holding')btnTxt(sellLbl());
@@ -2449,7 +2450,7 @@ if(/selftest/.test(location.search)){
     prem:{on:PREM_ON,pay:PAY.id,grant:grantPremium,equip:premEquip,get own(){return prem.slice()},get eq(){return Object.assign({},premEq)},get theme(){return CP===C?null:premEq.th}}};
   if(/fast/.test(location.search)){draw=()=>{};}
 }
-setTimeout(()=>{try{if(tutDone&&profile&&state==='ready'&&balance+invNet()<100000&&!(chal&&chal.i<5&&debt<=debtLimit())){state='over';$('sheet').hidden=true;if(debt>debtLimit())showDefault();else showOver(0);paintPickers();setBtn();}}catch(e){}},900);
+setTimeout(()=>{try{if(tutDone&&profile&&state==='ready'&&balance+invNet()<100000&&!(chal&&chal.i<5&&debt<=debtLimit())){state='over';$('sheet').hidden=true;if(debt>debtLimit())showDefault(1);else showOver(0,1);paintPickers();setBtn();}}catch(e){}},900);
 requestAnimationFrame(frame);
 })();
 </script>

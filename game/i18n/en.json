@@ -1408,7 +1408,7 @@
 "빚 한도가 차서 더 빌릴 수 없어요 · 먼저 갚아 주세요": "Debt limit reached · repay some first to borrow again",
 "폭락에 물리면 판돈의": "If it crashes before you sell, you lose",
 "%를 잃어요": "% of your trade amount",
-"(판돈 초과 가능)": "(can exceed bet)",
+"(판돈 초과 가능)": "(can exceed your trade)",
 "배: 수익·손실 모두 커지고 폭락도 더 빨리 와요 ·": "×: bigger wins AND bigger losses, and crashes come sooner ·",
 "· 보스전 · 목표 수익 넘기고 팔면 처치 · SP +2": "· Sell above the goal to win · SP +2",
 "👋 다시 왔군요!": "👋 Welcome back!",
@@ -1428,5 +1428,8 @@
 "폭락에 물리면 -30점 · 내 돈은 안 걸려요": "If it crashes before you sell: −30 points · no cash at risk",
 "수정구슬 선 바로 위에서 터졌어요. 다음엔 선에 닿기 전에 파세요.": "It crashed just above the Crystal Ball line. Next time, sell before the price reaches it.",
 "🔮 예언대로 폭락": "🔮 Crashed as Foretold",
-"⏳ 아직! 노란 +30% 줄을 넘으면 파세요": "⏳ Not yet! Sell above the yellow +30% line"
+"⏳ 아직! 노란 +30% 줄을 넘으면 파세요": "⏳ Not yet! Sell above the yellow +30% line",
+"연습 판": "Practice",
+"연습 판 · 물려도 돈은 그대로예요": "Practice round · a crash costs you nothing",
+"🧪 아이템·영끌은 이번 판에만 적용돼요 · 다음 판엔 다시 켜세요": "🧪 Items and All-in last one round only · switch them on again next round"
 }

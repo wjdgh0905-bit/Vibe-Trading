@@ -10,6 +10,8 @@ def R(a,b,cnt=1):
 # 1) 애드센스 고정 태그 제거 + 코드상 애드센스 끄기 (포털 규정: 외부 광고 금지)
 s,n=re.subn(r'<script async[^>]*adsbygoogle\.js[^>]*></script>\n?','',s); assert n==1,n
 R("const CFG={adClient:'ca-pub-2213068202184499',","const CFG={adClient:'',")
+R("sc.src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client='+CFG.adClient;","sc.src='';") # 실행되지 않는 코드지만 포털 심사 스캔에 외부 광고 주소가 안 걸리게 주소 문자열도 제거
+assert 'googlesyndication' not in s and 'ca-pub-' not in s
 # 1-1) 프리미엄 상점은 CFG.iap로만 켬 (주소 ?iap 미리보기 제거. ?devbuy는 iapDev가 false면 localhost 밖에서 안 켜짐)
 R("const PREM_ON=!!CFG.iap||premQ('iap')&&PREM_DEVHOST;","const PREM_ON=!!CFG.iap;")
 assert "iapDev:false}" in s,'CFG.iapDev must be false in portal builds (it would allow ?devbuy free grants)'

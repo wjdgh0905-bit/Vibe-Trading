@@ -13,7 +13,7 @@
 <meta property="og:type" content="website">
 <meta property="og:title" content="떡상 계좌 키우기 📈 폭락 전에 팔아라">
 <meta property="og:description" content="폭락 전에 팔고 계좌를 키워라. 고시원에서 달 기지까지. 무료 · 설치 없음 · 가상 머니">
-<meta property="og:image" content="https://melange-lab.github.io/og.png">
+<meta property="og:image" content="https://melange-lab.github.io/og.png?v=52">
 <meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
 <meta property="og:url" content="https://melange-lab.github.io/">
 <meta name="twitter:card" content="summary_large_image">
@@ -116,6 +116,7 @@ canvas{position:absolute;top:0;right:0;bottom:0;left:0;width:100%;height:100%}
 .card .big{font-family:var(--mono);font-weight:800;font-size:20px;margin-top:6px;font-variant-numeric:tabular-nums}
 .card .bar{height:7px;border-radius:4px;background:var(--line);margin-top:9px;overflow:hidden}
 .card .bar i{display:block;height:100%;background:var(--gold)}
+.card .goal .pb{height:4px;background:var(--line);border-radius:2px;margin-top:3px;overflow:hidden}.card .goal .pb u{display:block;height:100%;background:var(--gold)} /* 결과 카드의 다음 목표 막대 */
 .card .row{display:flex;justify-content:space-between;gap:8px;font-family:var(--mono);font-size:11.5px;color:var(--muted);margin-top:5px}
 .card .btns{display:flex;gap:6px;justify-content:center;margin-top:10px}
 .card button{font:inherit;font-size:13px;font-weight:700;background:var(--panel2);color:var(--fg);border:1px solid var(--line);border-radius:9px;padding:8px 14px;cursor:pointer}
@@ -127,6 +128,7 @@ canvas{position:absolute;top:0;right:0;bottom:0;left:0;width:100%;height:100%}
 .talk p{margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:16px;animation:slide .2s ease-out}
 .talk p b{color:var(--muted);font-weight:500;margin-right:6px}
 .talk p:first-child{opacity:.55}
+.talk{position:relative}.talk::before{content:attr(data-l);position:absolute;top:3px;right:8px;font-size:10px;line-height:12px;color:var(--muted);opacity:.75;pointer-events:none}.talk p:first-child{padding-right:76px}body.noChat .talk{display:none!important} /* 진짜 사람 채팅으로 오해하지 않게 '가상' 표시, 포털이 채팅 끄기를 켜면 숨김 */
 
 /* pickers */
 .offers{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;flex:none}
@@ -218,6 +220,7 @@ canvas{position:absolute;top:0;right:0;bottom:0;left:0;width:100%;height:100%}
 #fever{top:30px!important}
 #giftBtn.ready{animation:pulse .6s infinite alternate;border-color:var(--gold)}
 .wheel{font-size:72px;text-align:center;margin:10px 0}
+.gbx{display:inline-block;animation:gbx .45s ease-in-out 2}@keyframes gbx{25%{transform:rotate(-9deg) scale(1.06)}75%{transform:rotate(9deg) scale(1.06)}}@media (prefers-reduced-motion:reduce){.gbx{animation:none}} /* 선물 상자는 흔들리다 열림 (슬롯머신처럼 그림이 돌아가지 않게) */
 .achgrid div{display:flex;flex-direction:column;align-items:center;gap:1px}
 .achgrid .stars{font-style:normal;font-size:11px;letter-spacing:-1px;white-space:nowrap}
 .achgrid .stars span{opacity:.3}
@@ -281,8 +284,9 @@ body{font-size:14px;line-height:1.4}
 #bal.bump{animation:bump .5s ease-out}
 @keyframes bump{30%{transform:scale(1.12);color:var(--gold)}}
 #coach{position:fixed;left:50%;transform:translateX(-50%);width:min(340px,calc(100% - 32px));box-sizing:border-box;background:var(--gold);color:#1a1300;font-weight:700;font-size:14px;line-height:1.5;padding:11px 14px;border-radius:12px;z-index:19;pointer-events:none;box-shadow:0 8px 28px #000c;animation:slide .25s ease-out}
-#coach.above::after{content:"";position:absolute;left:50%;bottom:-8px;margin-left:-8px;border:8px solid transparent;border-bottom:0;border-top-color:var(--gold)}
-#coach b{font-weight:900}
+#coach.above::after{content:"";position:absolute;left:var(--ax,50%);bottom:-8px;margin-left:-8px;border:8px solid transparent;border-bottom:0;border-top-color:var(--gold)}
+#coach.below::after{content:"";position:absolute;left:var(--ax,50%);top:-8px;margin-left:-8px;border:8px solid transparent;border-top:0;border-bottom-color:var(--gold)} /* 위쪽 버튼(SP)을 가리키는 말풍선 */
+#coach b{font-weight:900}#coach.noar::after{display:none}
 .glow{outline:3px solid var(--gold)!important;outline-offset:2px}
 .card .q{font-family:var(--display);font-size:22px;line-height:1.3;margin:6px 0 10px;text-wrap:balance}
 html[lang=en] #card .grade,html[lang=en] #card .sub,html[lang=en] #card button,html[lang=en] .spass em{text-wrap:balance} /* 영어판: 결과 카드·광고 버튼·시즌 패스 칸에서 마지막 단어만 다음 줄로 넘어가지 않게 */
@@ -524,7 +528,7 @@ html[lang=en] .rank{max-width:none} /* 영어 등급명은 길어서 넓은 화�
 .spass .sp{font:inherit;background:var(--panel2);color:var(--muted);border:1px solid var(--line);border-radius:10px;padding:5px 2px;display:flex;flex-direction:column;align-items:center;gap:1px;min-height:64px;cursor:pointer}
 .spass .sp i{font-style:normal;font-size:20px}.spass .sp small{font-size:10px}.spass .sp em{font-style:normal;font-size:9.5px;line-height:1.15;text-align:center}
 .spass .sp.ok{border-color:var(--gold);color:var(--fg);background:color-mix(in srgb,var(--gold) 16%,var(--panel2));animation:pulse .8s infinite alternate}
-.spass .sp.got{opacity:.45}.spass .sp:disabled{cursor:default}
+.spass .sp.got{opacity:.45}.spass .sp:disabled{cursor:default}.spass .sp.lk{border-style:dashed;opacity:.6}
 @media (max-width:359px){.spass{gap:4px}.spass .sp{padding-inline:1px}.spass .sp em{font-size:8.5px}}
 /* color-mix() 못 읽는 브라우저(iOS 16.1 이하): var()가 든 선언은 계산할 때 버려져 투명해지므로 같은 색을 직접 지정 */
 @supports not (background:color-mix(in srgb,red,blue)){
@@ -556,7 +560,7 @@ header h1{display:none}
 .main{display:contents}
 .chart{grid-area:3/1/8/2;min-height:0}
 #book{grid-area:3/2;min-height:0}
-#talk{grid-area:8/1}
+#talk{grid-area:8/1}body.noChat .chart{grid-area:3/1/9/2} /* 포털이 채팅을 끄면 차트가 그 칸까지 */
 #offers{grid-area:4/2}
 #items{grid-area:5/2}
 #betrow{grid-area:6/2}
@@ -591,6 +595,7 @@ header h1{display:none}
 @media (max-height:620px){.modal .box{display:flex;flex-direction:column}#modalBody{overflow:auto;min-height:0}#modalClose{flex:none}.rk{max-height:none;overflow:visible}} /* 낮은 창: 레벨 창의 계급 목록이 스크롤 안의 스크롤이 되지 않게 (닫기는 늘 보임) */
 @media (max-height:620px){.app{--rg:6px;padding-block:8px}#hold{height:48px!important;font-size:19px}#news{height:24px;line-height:22px;font-size:12px}.book .hd{padding:2px 0}.ob .p{font-size:12.5px}.ob .q{font-size:10.5px}.book .ft{padding:2px 6px;font-size:11px}}
 @media (max-height:520px){.app>.talk{display:none}.chart{grid-area:3/1/9/2}.app{--rg:5px;padding-block:6px}#hold{height:42px!important;font-size:17px}#betrow>button{min-height:30px}.book .hd{display:none}.ob .p{font-size:11.5px}.ob .q{font-size:10px}.ob .p,.ob .q{line-height:1}.ob.now{outline-width:1px;outline-offset:-1px}}
+.tabs button{font-size:12px;letter-spacing:-.2px}.acct small{font-size:12px}.qn .tier,#regime,.ob .q,.items .chip.ic small{font-size:11px}.trs .th,.trs .th span{font-size:11px!important} /* DPR 1 데스크톱·포털 창(800x450·907x510 등): 가장 작은 글자도 11px, 탭·계좌 이름은 12px (위의 낮은 창 규칙보다 뒤, 큰 화면 규칙보다 앞 · 세로 폰은 그대로) */
 @media (min-height:880px) and (min-width:1400px){
  :root{--rw:clamp(380px,24vw,440px)}
  .app{--rg:10px;padding-block:16px}
@@ -602,7 +607,7 @@ header h1{display:none}
  .pick1{padding:10px 14px}.pick1 b{font-size:16px}.pick1 small{font-size:12.5px}.pick1 .pc{font-size:13px}
  .items .chip.ic{padding:8px 4px}.items .chip.ic b{font-size:13.5px}.items .chip.ic small{font-size:11.5px}
  .betrow span,.betrow b{font-size:13.5px}.betrow button{font-size:14px;padding:8px 0}
- .tabs button{font-size:11.5px;padding:6px 0 5px}.tabs button i{font-size:20px}
+ .tabs button{font-size:12px;padding:6px 0 5px}.tabs button i{font-size:20px}
  .book .hd{font-size:12.5px;padding:6px 0}.ob .p{font-size:15.5px}.ob .q{font-size:12.5px}.book .trs{font-size:12.5px}.trs .th,.tr{line-height:18px}.book .ft{font-size:13px;padding:6px}
  .app>.talk{font-size:13.5px}.talk p{line-height:19px}
  #regime{font-size:13px;padding:2px 10px}#pnl{font-size:14px}#fever{font-size:14px}
@@ -638,13 +643,27 @@ header h1{display:none}
 .pitems .setbtn[aria-pressed="true"]{border-color:var(--gold);color:var(--gold)}
 .prem .pact{display:grid;gap:6px;padding:10px 0 12px}
 .setbtn.pbuy{background:linear-gradient(135deg,#9be9ff,#c7adff);color:#10131a;min-width:72px} /* 실제 돈 가격 버튼은 게임 머니 버튼(노랑)과 다르게 */
+/* 동물 친구: 카드 위 빈 곳에 서 있는 장식 (누르기는 통과, 위치·크기는 bdPlace가 카드 윗변에 맞춤) · 결과 그림은 가로 띠를 steps()로 한 번 재생 → 마지막 장(쉬는 자세)에서 숨쉬기 */
+#buddy{position:fixed;left:0;top:0;width:0;height:0;z-index:19;pointer-events:none}
+#buddy i{display:block;width:100%;height:100%;background:no-repeat 50% 100%/contain;transform-origin:50% 100%;filter:drop-shadow(0 5px 5px rgba(0,0,0,.45))}
+@keyframes bdPlay{from{background-position:0 100%}to{background-position:100% 100%}}
+@keyframes bdBr{0%,100%{transform:none}50%{transform:scale(1.015,1.035)}}
+@keyframes bdIn{from{opacity:0;transform:translateY(10px)}}
+/* 타이틀 화면(첫 화면·환영 카드): 화면 전체에 인트로 그림 + 어두운 그라데이션, 카드는 그 위 · 그림 주소는 스크립트가 세로/가로에 맞춰 넣음 */
+#tbg{position:fixed;top:0;right:0;bottom:0;left:0;z-index:18;background:#0b1a2a no-repeat 50% 100%/cover;animation:tbgIn .35s ease-out}
+@keyframes tbgIn{from{opacity:0}}
+.card .ttl img{display:block;margin:0 auto;height:clamp(58px,11vh,104px);width:auto;max-width:100%;object-fit:contain}
+.card .ttl.sm img{height:clamp(42px,7vh,72px)}
+.card .ttl+.grade{margin-top:6px}
+.card.tt{background:var(--bg)} /* 타이틀 화면 카드는 불투명 (밝은 배경 그림이 비치면 아래 버튼 줄 바탕만 어둡게 띠처럼 보임) */
+@media (prefers-reduced-motion:reduce){#buddy i{animation:none!important}#tbg{animation:none}}
 </style>
 
 <div class="app" id="app">
   <header>
     <h1><b>떡상</b> 계좌 키우기</h1>
     <div class="rank" id="rankBtn" role="button" tabindex="0" aria-label="레벨·경험치 보기"><span id="rankName">주린이 Lv.1</span><i><b id="rankBar" style="width:0"></b></i></div>
-    <button class="ib gd" id="giftBtn" type="button" aria-label="매일 룰렛">🎁</button>
+    <button class="ib gd" id="giftBtn" type="button" aria-label="매일 선물">🎁</button>
     <button class="ib gd" id="spBtn" type="button">🌳 SP 0</button>
   </header>
   <div class="acct">
@@ -662,7 +681,7 @@ header h1{display:none}
     <div class="book" id="book"></div>
     <div id="card" class="card" hidden></div>
   </div>
-  <div class="talk" id="talk"></div>
+  <div class="talk" id="talk" data-l="🤖 가상 채팅"></div>
   <div class="offers" id="offers"></div>
   <div class="items" id="items"></div>
   <div class="betrow" id="betrow"></div>
@@ -677,6 +696,7 @@ header h1{display:none}
     <button type="button" data-tab="set"><i>⚙️</i>설정</button>
   </nav>
 </div>
+<div id="tbg" hidden aria-hidden="true"></div><div id="buddy" hidden aria-hidden="true"></div>
 <section class="page" id="page" hidden></section>
 <div id="toast" hidden></div>
 <div id="sr" role="status" aria-live="polite" aria-atomic="true" style="position:fixed;top:0;left:0;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap"></div>
@@ -703,6 +723,7 @@ const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim
 const C={up:css('--up'),down:css('--down'),gold:css('--gold'),line:css('--line'),muted:css('--muted'),rumor:css('--rumor'),fg:css('--fg'),panel:css('--panel')};
 // 좁은 칸용 짧은 금액: 조 이상은 큰 단위만
 const LANG='ko';
+const ASSET=''; // 그림 폴더(chars/·brand/) 위치: 한국어판은 사이트 맨 위라 '', 영어판(/en/)은 en/build.py가 '../'로, 포털 빌드는 build_portal.py가 다시 ''로 (그림을 빌드 폴더에 같이 넣음)
 const USDU=[[1e45,'Qad'],[1e42,'Td'],[1e39,'Dd'],[1e36,'Ud'],[1e33,'Dc'],[1e30,'No'],[1e27,'Oc'],[1e24,'Sp'],[1e21,'Sx'],[1e18,'Qi'],[1e15,'Qa'],[1e12,'T'],[1e9,'B'],[1e6,'M']];
 const usd=n=>{const a=Math.abs(n)/1000,sg=n<0?'-':'';if(!isFinite(a))return sg+'$∞';for(const [U,nm] of USDU)if(a>=U*(1-1e-9)){const v=a/U;return sg+'$'+(v>=100?Math.floor(v).toLocaleString('en-US'):+v.toFixed(2))+nm;}const r=Math.round(a*100)/100;return sg+'$'+(r>=1000?Math.floor(r).toLocaleString('en-US'):(r%1?r.toFixed(2):String(r)));};
 const tierLbl=n=>LANG==='en'?'Tier '+n:n+'단계'; // 영어는 'Tier 3' 어순
@@ -720,8 +741,18 @@ const PRES_NEED=()=>1e12*Math.pow(10,pres); // 1조, 10조, 100조…
 const swS=n=>(n>0?'+':n<0?'-':'')+wonS(Math.abs(n));
 const pick=a=>a[Math.floor(Math.random()*a.length)];
 const rnd=(a,b)=>a+Math.random()*(b-a);
-const store={off:0,seen:{},get(k,d){try{const v=localStorage.getItem(k);store.seen[k]=v;return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){if(store.off)return;try{const s=JSON.stringify(v);if(store.seen[k]===s)return;localStorage.setItem(k,s);store.seen[k]=s;}catch(e){}}}; // off: 다른 탭이 더 새 기록을 저장함 → 덮어쓰지 않음, seen: 이 탭이 마지막으로 읽거나 쓴 값
+// 저장소가 막힌 브라우저(사파리 개인 모드·서드파티 저장소 차단 iframe 등): 메모리에 대신 저장해 이번 세션은 그대로 플레이. 이 아래의 localStorage는 모두 이 이름을 씀 (새로고침·백업 불러오기는 창 이름 window.name에 잠시 맡겨 이어감)
+function MemLS(){}MemLS.prototype={getItem(k){return Object.prototype.hasOwnProperty.call(this,k)?this[k]:null},setItem(k,v){this[k]=String(v);if(this._r)try{this._r.setItem(k,v);}catch(e){}},removeItem(k){delete this[k];if(this._r)try{this._r.removeItem(k);}catch(e){}},key(i){const k=Object.keys(this)[i];return k===undefined?null:k},clear(){Object.keys(this).forEach(k=>delete this[k])},get length(){return Object.keys(this).length}};
+const memSnap=()=>{try{if(String(window.name||'').startsWith('shgMem:')){const d=JSON.parse(window.name.slice(7));if(d&&typeof d==='object'){const o={};for(const k in d)if(/^shg_\w+$/.test(k)&&typeof d[k]==='string')o[k]=d[k];return o;}}}catch(e){}return null;}; // 이 탭이 새로고침 전에 창 이름에 맡긴 기록
+const memLS=(src,snap)=>{const m=new MemLS(),d=snap&&memSnap();try{if(d)for(const k in d)m.setItem(k,d[k]);else if(src)for(let i=0;i<src.length;i++){const k=src.key(i);if(k&&k.startsWith('shg_'))m.setItem(k,src.getItem(k));}}catch(e){}if(src)Object.defineProperty(m,'_r',{value:src});return m;}; // 맡긴 기록이 있으면 그것만 (처음 옮길 때 src를 다 담았음 → 그 뒤 지운 키가 src에서 되살아나지 않게), 없으면 읽기는 되는 진짜 저장소 src(용량 초과 등)의 지금 기록 · _r: 쓰기·지우기는 src에도 해 봄 (들어가는 키는 계속 저장, 지우기는 용량이 없어도 됨)
+let localStorage=(()=>{try{const s=window.localStorage,k='_shgProbe';s.setItem(k,'1');const ok=s.getItem(k)==='1';s.removeItem(k);if(ok)return s;}catch(e){}return null;})(),memSave=0;if(!localStorage){let src=null;try{src=window.localStorage;src.length;}catch(e){src=null;}localStorage=memLS(src,1);memSave=1;memWarn();}else if(String(window.name||'').startsWith('shgMem:')){const d=memSnap();let bad=0;if(d)for(const k in d)try{localStorage.setItem(k,d[k]);}catch(e){bad=1;}if(bad){localStorage=memLS(localStorage,1);memSave=2;memWarn();}else window.name='';} // 시험 키는 shg_로 시작하지 않게 (다른 탭이 새 기록으로 알고 새로고침하지 않게) · memSave: 이번 세션 기록이 메모리에만 있음 · 저장소가 되면 지난번에 맡긴 기록을 다시 써 넣고, 다 들어가야 창 이름을 비움 (하나라도 안 들어가면 맡긴 기록으로 메모리 저장을 이어감)
+function memWarn(){if(memWarn.on)return;memWarn.on=1;setTimeout(()=>toast('⚠️ 이 브라우저는 저장이 막혀 있어요 · 설정의 백업 코드 복사로 기록을 보관하세요'),2500);} // 한 번만, 첫 화면이 뜬 뒤에 (게임은 막지 않음)
+function lsSet(k,s){try{localStorage.setItem(k,s);}catch(e){if(memSave)throw e;localStorage=memLS(localStorage);memSave=2;localStorage.setItem(k,s);memWarn();}} // 쓰다가 막히면(용량 초과·차단) 지금까지 기록을 메모리로 옮겨 이어서 저장 (하루 횟수 같은 값이 세션 안에서는 지켜지게)
+const store={off:0,seen:{},get(k,d){try{const v=localStorage.getItem(k);store.seen[k]=v;return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){if(store.off)return;try{const s=JSON.stringify(v);if(store.seen[k]===s)return;lsSet(k,s);store.seen[k]=s;}catch(e){}}}; // off: 다른 탭이 더 새 기록을 저장함 → 덮어쓰지 않음, seen: 이 탭이 마지막으로 읽거나 쓴 값
 const fin=v=>isFinite(v=+v)?v:0; // 숫자가 아니거나 무한대면 0
+// 저장 형식 버전: 저장 모양을 바꿀 때 SAVE_V를 올리고 MIG에 '옛 버전 → 다음 버전' 변환을 추가 (기록에 없으면 0 = v2.1까지의 저장). 백업 코드에도 shg_ver가 같이 들어가고, 옛 코드는 불러온 뒤 새로고침 때 여기서 변환됨
+const SAVE_V=1,MIG=[()=>{const p=store.get('shg_profile',null);if(p&&p!=='squirrel'){let a=store.get('shg_tips',[]);if(!Array.isArray(a))a=[];if(!a.includes('quiz'))store.set('shg_tips',a.concat('quiz'));}}]; // MIG[n]: 버전 n → n+1 · 0 → 1: 다람쥐가 아닌 성향은 테스트를 끝내야만 생기니 '테스트 함'으로 표시 (예전 저장엔 shg_tips가 없어 기록 탭·6판째에 테스트를 다시 권하던 것)
+{const v=Math.max(0,Math.floor(fin(store.get('shg_ver',0))));for(let i=v;i<SAVE_V;i++)try{MIG[i]();}catch(e){}if(v<SAVE_V)store.set('shg_ver',SAVE_V);} // 더 새 빌드가 쓴 기록(v>SAVE_V)은 버전을 내리지 않음
 const START=1000000,CD=0.35;
 // 한국 주식 호가 단위
 const tickOf=p=>p<2000?1:p<5000?5:p<20000?10:p<50000?50:p<200000?100:p<500000?500:1000;
@@ -730,6 +761,8 @@ const isUsd=()=>{const o=offer();return !!(o&&TIERS[o.k].usd)};
 const NF={},nf=d=>NF[d]||(NF[d]=new Intl.NumberFormat('en-US',{minimumFractionDigits:d,maximumFractionDigits:d}));
 const fmtP=(p,ref=p)=>{if(isUsd())return '$'+nf(2).format(p);if(LANG!=='en')return Math.round(p).toLocaleString('ko-KR');const o=offer(),b=o?Math.min(o.p0,ref):ref;return '$'+nf(ref>=500000?0:b<5000&&ref<100000?3:2).format(p/1000);}; // en: 호가 단위가 1센트 미만(5천원 미만)이면 소수 3자리 (100달러가 넘게 오르면 2자리: 차트 오른쪽 가격 글자가 잘리지 않게), ref=기준 가격(호가창·등락폭을 현재가 자릿수에 맞춤)
 
+const tkOf=s=>{const w=String(s).replace(/\(.*?\)/g,'').match(/[A-Za-z0-9]+/g)||['STK'];return (w.length<2?w[0].slice(0,4):w[0].length<3?(w[0]+w[1]).slice(0,4):w[0].slice(0,3)+w[1][0]).toUpperCase();}; // 영어판 종목 코드: 이름에서 3~4글자 티커 (숫자 6자리는 한국 거래소 코드로 보여서)
+const crS=c=>LANG==='en'?['AAA','AA','A','BBB','BB','B','CCC','CC','C','D'][Math.min(10,Math.max(1,c|0))-1]:c+'등급'; // 영어판은 높을수록 좋은 글자 등급으로 보여 주기만 (1등급=AAA … 10등급=D, 계산은 그대로)
 const TIERS={
   blue:{e:'🏛️',label:'우량주',rate:.7,scale:.6,loss:.45,instant:.01,limit:true,p:[30000,180000],lv:0,unit:40,news:.6,amp:.7,wig:.6,
     names:['한빛전자','대한중공업','삼진화학','국민통신','동방제철','미래금융지주','태평양건설','한국그리드']},
@@ -743,7 +776,7 @@ const TIERS={
     desc:'호가 1원, 출렁임 최강',names:['대박전자','국일테크','삼영물산','미래씨앤씨','동아에너지','한성피앤씨']},
   ipo:{e:'🎉',label:'공모주',rate:1.7,scale:2,loss:.85,instant:.14,limit:true,p:[10000,50000],lv:4,unit:300,wig:1.4,
     desc:'상장 첫날, 따상 아니면 폭망',names:['(신규)로봇에이아이','(신규)스페이스원','(신규)퀀텀랩스','(신규)그린수소','(신규)K뷰티랩']},
-  us:{e:'🇺🇸',label:'미국주식',rate:.9,scale:1.1,loss:.6,instant:.02,limit:false,usd:true,p:[20,400],lv:6,unit:25,news:.8,amp:.8,wig:.8,
+  us:{e:LANG==='en'?'🌐':'🇺🇸',label:'미국주식',rate:.9,scale:1.1,loss:.6,instant:.02,limit:false,usd:true,p:[20,400],lv:6,unit:25,news:.8,amp:.8,wig:.8,
     desc:'달러 표시, 상한가 없음',names:[['노바 다이내믹스','NOVA'],['아틀라스 칩스','ATLC'],['블루오션 EV','BOEV'],['퀀텀 클라우드','QNTC'],['메가 소셜','MGSO']]},
   pump:{e:'🎭',label:'작전주',rate:1.1,scale:1.6,loss:.92,instant:.03,limit:true,p:[1000,8000],lv:8,unit:600,news:1.6,amp:1.5,warn:.35,
     desc:'세력의 펌프, 경고는 대부분 진짜',names:['신화테크','코리아스타','에이스홀딩스','세종인더','태양바이오']},
@@ -772,7 +805,7 @@ const ACH=[
   ['mission','📋','성실한 개미','일일 미션 첫 완료'],
   ['billion','🏢','건물주','자산 1억 돌파'],
   ['comeback','🧟','기사회생','30만 원 밑에서 100만 원 회복'],
-  ['hangang','🥫','깡통 계좌','첫 파산'],
+  ['hangang',LANG==='en'?'💸':'🥫','깡통 계좌','첫 파산'],
   ['bk5','🔁','오뚝이','파산 5회, 그래도 다시'],
   ['bk10','💀','깡통 장인','파산 10회'],
   ['legend','👑','시장 그 자체','최고 계급 달성'],
@@ -780,7 +813,7 @@ const ACH=[
   ['boss1','⚔️','첫 보스 처치','보스전에서 목표 수익 달성'],
   ['boss5','🐉','보스 헌터','보스 5마리 처치'],
   ['liq','💀','청산의 맛','강제청산 당하기'],
-  ['allin','🎲','인생은 한 방','영끌로 x2 이상 익절'],
+  ['allin','💯','영끌 장인','영끌로 x2 이상 익절'],
   ['gear1','🛒','플렉스','상점에서 첫 장비 구매'],
   ['debt1','💳','빚의 시작','대출 받기'],
   ['payoff','🙌','빚 청산','빚을 모두 갚기'],
@@ -807,7 +840,7 @@ const MISSIONS=[
   {id:'ipo2',t:'🎉 공모주로 익절 2번',n:2,lv:4,f:r=>r.win&&r.key==='ipo'},
   {id:'lev3',t:'⚡ 레버리지로 익절 3번',n:3,lv:1,f:r=>r.win&&r.lev>1},
   {id:'lev5',t:'⚡ 5배 이상 레버리지로 익절 2번',n:2,lv:5,f:r=>r.win&&r.lev>=5},
-  {id:'allin2',t:'🎲 영끌로 익절 2번',n:2,lv:2,f:r=>r.win&&r.allin},
+  {id:'allin2',t:'💯 영끌로 익절 2번',n:2,lv:2,f:r=>r.win&&r.allin},
   {id:'us3',t:'🇺🇸 미국주식으로 익절 3번',n:3,lv:6,f:r=>r.win&&r.key==='us'},
   {id:'pump2',t:'🎭 작전주로 익절 2번',n:2,lv:8,f:r=>r.win&&r.key==='pump'}
 ];
@@ -818,9 +851,9 @@ const CAREER=[
   {id:'p90',e:'🎯',t:'고점 근접도 90%',b:5,m:2},{id:'p95',e:'🙏',t:'고점 근접도 95%',b:3,m:2},
   {id:'fever',e:'🔥',t:'FEVER 돌입',b:2,m:2},{id:'boss',e:'⚔️',t:'보스 처치',b:1,m:2},
   {id:'profit',e:'🏦',t:'누적 수익',b:1e7,m:10,money:1},{id:'levWin',e:'⚡',t:'5배+ 레버리지 익절',b:3,m:2},
-  {id:'allinWin',e:'🎲',t:'영끌 익절',b:3,m:2},{id:'liq',e:'💀',t:'강제청산 당하기',b:1,m:2.5},
+  {id:'allinWin',e:'💯',t:'영끌 익절',b:3,m:2},{id:'liq',e:'💀',t:'강제청산 당하기',b:1,m:2.5},
   {id:'dip',e:'🧱',t:'악재 버티고 익절',b:5,m:2},{id:'daily',e:'☀️',t:'일일 미션 완료',b:8,m:2},
-  {id:'weekly',e:'🗓️',t:'주간 미션 완료',b:3,m:2},{id:'bk',e:'🥫',t:'파산',b:1,m:2.5},
+  {id:'weekly',e:'🗓️',t:'주간 미션 완료',b:3,m:2},{id:'bk',e:LANG==='en'?'💸':'🥫',t:'파산',b:1,m:2.5},
   {id:'gear',e:'🛒',t:'장비 구매',b:1,m:1.6},{id:'items',e:'🧪',t:'소모품 사용',b:5,m:2}
 ];
 const WEEKLY=[
@@ -875,7 +908,7 @@ const NICK=['개미','존버','단타왕','물린자','라면장인','부자될�
 const dayKey=()=>{const d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()};
 const dayN=()=>{const d=new Date();return d.getFullYear()*1e4+(d.getMonth()+1)*100+d.getDate();},dayOrd=k=>{const m=String(k||'').match(/^(\d+)-(\d+)-(\d+)$/);return m?+m[1]*1e4+ +m[2]*100+ +m[3]:0;},usedToday=k=>dayOrd(store.get(k,''))>=dayN(); // 날짜는 앞으로만: 기기 시계를 되돌려도 하루 보상이 다시 열리지 않음
 let best=fin(store.get('shg_best',0)),ach=store.get('shg_ach',[]),xp=Math.min(1e9,Math.max(0,fin(store.get('shg_xp',0))));if(!Array.isArray(ach))ach=[];ach=ach.filter(id=>typeof id==='string');
-const SET=Object.assign({sound:true,bgm:true,vib:true,heart:true,fx:true,slow:false},store.get('shg_set',{}));for(const k in SET)SET[k]=!!SET[k];
+const SET=Object.assign({sound:true,bgm:true,vib:true,heart:true,fx:true,slow:false,chars:true},store.get('shg_set',{}));for(const k in SET)SET[k]=!!SET[k];
 let muted=!SET.sound,adPause=false,cgMute=false; // adPause: 광고가 화면을 덮고 있는 동안
 const PD=window.PointerEvent?'pointerdown':'touchstart'; // 옛 iOS(12 이하)는 포인터 이벤트가 없음
 let touched=false;addEventListener(PD,()=>touched=true,{capture:true,once:true});addEventListener('keydown',()=>touched=true,{once:true});
@@ -904,7 +937,7 @@ let pres=store.get('shg_pres',0),debt=store.get('shg_debt',0),credit=store.get('
 const cntMap=o=>{const r={};if(o&&typeof o==='object'&&!Array.isArray(o))for(const k in o){const n=Math.floor(fin(o[k]));if(/^\w+$/.test(k)&&n>0)r[k]=Math.min(n,1e9);}return r;}; // 개수표(소모품·장비·스킬 등)는 양의 정수만
 pres=Math.max(0,Math.floor(fin(pres)));debt=Math.max(0,fin(debt));credit=Math.min(10,Math.max(1,Math.round(fin(credit))||5));if(![.1,.25,.5,1].includes(betPct))betPct=.25;if(store.get('shg_pct',null)===null)store.set('shg_pct',betPct);inv=cntMap(inv);gear=cntMap(gear);armed=cntMap(armed);
 const LEVS=[[1,0],[2,1],[3,3],[5,5],[10,7],[20,9]]; // [배수, 해금 계급]
-const unlOf=i=>{const u=Object.values(ITEMS).filter(it=>it.lv===i).map(it=>it.name);if(i===2)u.push('🎲 영끌');Object.values(TIERS).filter(T=>!T.hidden&&T.lv===i).forEach(T=>u.push(T.e+' '+T.label));LEVS.filter(l=>l[1]===i&&l[0]>1).forEach(l=>u.push('⚡ 레버리지 '+l[0]+'배'));return u;}; // 계급 i에서 열리는 것 (아이템·영끌·종목·레버리지): 레벨 창과 승급 토스트가 같이 씀
+const unlOf=i=>{const u=Object.values(ITEMS).filter(it=>it.lv===i).map(it=>it.name);if(i===2)u.push('💯 영끌');Object.values(TIERS).filter(T=>!T.hidden&&T.lv===i).forEach(T=>u.push(T.e+' '+T.label));LEVS.filter(l=>l[1]===i&&l[0]>1).forEach(l=>u.push('⚡ 레버리지 '+l[0]+'배'));return u;}; // 계급 i에서 열리는 것 (아이템·영끌·종목·레버리지): 레벨 창과 승급 토스트가 같이 씀
 let selId='o0',state='ready',balance=store.get('shg_bal',START),streak=Math.max(0,Math.floor(+store.get('shg_streak',0)||0)),round=1,tierSel=store.get('shg_tier','theme'),sel={shield:false,insider:false,slow:false};balance=fin(balance);
 let offers=makeOffers(),run=null,candles=[],t=0,cur=1,peak=1,sell=null,crashed=false,crashT=0,readyAt=0,sellAt=0,lastTs=0,intPaid=store.get('shg_intPaid',false); // intPaid: 이자는 냈는데 판이 시작되지 못함 (다음 판에 또 안 붙임)
 let events=[],warned=false,newsTimer=0,talkT=0,bookT=0,lowFlag=false,volTotal=0;
@@ -919,7 +952,7 @@ function makeOffers(){ // 내가 고른 종류 + 해금된 종류 중 랜덤 2�
   const used=new Set(),order=Object.keys(TIERS);
   const list=keys.map(k=>{const T=TIERS[k];let n,name,tries=0;
     do{n=pick(T.names);name=Array.isArray(n)?n[0]:n;tries++;}while(used.has(name)&&tries<12);used.add(name);
-    const code=Array.isArray(n)?(T.usd?n[1]+(LANG==='en'?' · US':' · NASDAQ'):n[1]+(LANG==='en'?'/USD':'/KRW')):String(Math.floor(rnd(100000,999999)));
+    const code=Array.isArray(n)?(T.usd?n[1]+(LANG==='en'?'':' · NASDAQ'):n[1]+(LANG==='en'?'':'/KRW')):LANG==='en'?tkOf(name):String(Math.floor(rnd(100000,999999)));
     const sp=[1];for(let i=0;i<15;i++)sp.push(sp[i]*(1+rnd(-.04,.045)*(T.wig||1)));
     return {k,ni:T.names.indexOf(n),name,code,p0:roundTick(rnd(T.p[0],T.p[1]),T.usd),chg:(sp[15]-1)*100,spark:sp};
   }).sort((a,b)=>order.indexOf(a.k)-order.indexOf(b.k));
@@ -932,7 +965,7 @@ const priceOf=m=>roundTick(offer().p0*eM*m,isUsd());
 
 /* ---------- audio ---------- */
 let ac=null;
-function au(){if(!ac){try{ac=new(window.AudioContext||window.webkitAudioContext)()}catch(e){}}if(ac&&ac.state==='suspended')ac.resume();return ac}
+function au(){if(!ac){try{ac=new(window.AudioContext||window.webkitAudioContext)()}catch(e){}}if(ac&&ac.state!=='running'&&ac.state!=='closed')try{const p=ac.resume();if(p&&p.catch)p.catch(()=>{});}catch(e){}return ac} // 'suspended'만이 아니라 iOS 사파리의 'interrupted'(전화·앱 전환 뒤)도 다시 깨움
 function beep(f,d=.06,type='square',vol=.035,to){
   if(muted||cgMute||!touched||document.hidden)return;const a=au();if(!a)return;
   const o=a.createOscillator(),g=a.createGain(),n=a.currentTime;
@@ -975,6 +1008,8 @@ const bgm=(()=>{
 })();
 document.addEventListener(PD,e=>{if(e.target.closest&&e.target.closest('button,.chip,summary'))sfx.click();bgm.sync();},true);
 document.addEventListener('keydown',e=>{if(e.key==='Escape'||e.repeat)return;touched=true;bgm.sync();},true); // 키보드로만 하는 플레이어도 배경음악이 나오게 (마우스 누름과 같이). 이 문서 캡처 리스너가 window의 touched 리스너보다 먼저 돌아서 여기서 touched를 켬
+['pointerup','touchend','click','keydown'].forEach(n=>addEventListener(n,e=>{if(!e.isTrusted||e.key==='Escape'||ac&&ac.state==='running'||!SET.sound&&!SET.bgm||cgMute)return;touched=true;const a=au();if(!a)return;try{const s=a.createBufferSource();s.buffer=a.createBuffer(1,1,22050);s.connect(a.destination);s.start(0);}catch(_){}bgm.sync();},true)); // iOS 사파리는 손을 뗄 때(touchend·click)를 사용자 동작으로 쳐서 그때 소리를 풀어 줌: 무음 1샘플을 틀어 깨움 (소리가 이미 돌고 있으면 바로 건너뜀, 전화 뒤 다시 멈추면 다음 탭에서 또 깨움)
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&ac&&touched)au();}); // 다른 앱·탭에서 돌아오면 멈춘 오디오를 다시 깨움
 
 /* ---------- ui helpers ---------- */
 const toastQ=[];let toastBusy=0;
@@ -987,7 +1022,38 @@ function toast(txt){
 }
 function nextToast(){const t=toastQ.shift();if(t!==undefined){showToast(t);if(toastQ.length)setTimeout(nextToast,toastBusy-performance.now());}}
 function say(t){const s=$('sr');if(!s||!t)return;clearTimeout(say.tm);say.q=(say.q?say.q+' · ':'')+t;s.textContent='';say.tm=setTimeout(()=>{s.textContent=say.q;say.q='';},60);} // 화면 낭독기에 읽어 줌 (한꺼번에 오면 이어서)
-function showCard(){card.hidden=false;say(card.innerText.replace(/^✕\s*/,''));} // 닫기 ✕ 글자는 빼고 읽음
+/* ---------- 동물 친구 · 타이틀 화면 (꾸밈 전용: 돈·확률·저장과 무관, 설정에서 끌 수 있음) ---------- */
+const CHARS={lion:'사자',fox:'여우',squirrel:'다람쥐',turtle:'거북이',hamster:'햄스터',corgi:'코기',dragon:'아기 드래곤',cat:'고양이',penguin:'펭귄',panda:'판다',bull:'황소',bear:'곰'},CH_IDS=Object.keys(CHARS);
+const BDM={happy:[12,110],shock:[10,120]},BDW={lion:[147,151],fox:[136,155],squirrel:[160,168],turtle:[128,123],hamster:[249,147],corgi:[148,176],dragon:[153,172],cat:[157,205],penguin:[171,178],panda:[151,187],bull:[151,134],bear:[195,185]}; // 가로 띠 그림(chars_meta.json): 한 장 높이 200 · happy 12장×110ms, shock 10장×120ms · BDW = [happy, shock] 한 장 너비
+const RM=window.matchMedia?matchMedia('(prefers-reduced-motion:reduce)'):{matches:false}; // 움직임 줄이기: 띠 재생·숨쉬기 없이 정지 그림
+const imgC={}; // 그림 미리 받기 (주소 → ok 0 받는 중 · 1 성공 · -1 실패): 실패한 그림은 조용히 안 보임
+function imgGet(u,cb){let c=imgC[u];if(!c){c=imgC[u]={ok:0,cb:[]};const im=new Image();im.onload=()=>{c.ok=1;c.cb.splice(0).forEach(f=>f());};im.onerror=()=>{c.ok=-1;c.cb.length=0;};im.src=u;c.im=im;}if(cb&&!c.ok&&!c.cb.includes(cb))c.cb.push(cb);return c.ok;}
+const chU=(id,k)=>ASSET+'chars/'+id+(k&&k!=='still'&&!RM.matches?'_'+k:'')+'.webp';
+let bdLast='',bdCur=null,bdNext=null,bdGen=0,bdDrawn=-1,bdAr=1,bdN=0,ttl=false; // bdNext: 다음 showCard 카드의 친구 {k:happy|shock|still, id, t:타이틀 화면} · bdGen이 바뀌면 띠를 처음부터
+const bdEl=$('buddy'),bdRand=()=>{const a=CH_IDS.filter(k=>k!==bdLast);return bdLast=a[Math.floor(Math.random()*a.length)];}; // 직전 친구는 빼고 무작위 (판 결과·확률과 무관)
+function bdRound(tut){const id=tut?profile||'hamster':bdRand();if(SET.chars)(RM.matches?['still']:['happy','shock']).forEach(k=>imgGet(chU(id,k)));return id;} // 판 시작 때 고르고 결과 그림 둘 다 미리 받음 (카드가 바로 뜨게) · 튜토리얼(연습)은 내 성향 동물
+const sTop=()=>parseFloat(getComputedStyle(document.documentElement).paddingTop)||0; // 노치 높이 (페이지 머리의 :root padding-top이 safe-area)
+const ttlTxt='<span class="up">떡상</span> 계좌 키우기',ttlH=sm=>'<div class="grade ttl'+(sm?' sm':'')+'"><img src="'+ASSET+'brand/title_'+(LANG==='en'?'en':'ko')+'.webp" alt="떡상 계좌 키우기" width="720" height="'+(LANG==='en'?284:343)+'" draggable="false"></div>'; // 카드 안 제목 그림 (크기를 미리 잡아 받는 동안 카드가 안 출렁임)
+function ttlFix(){card.querySelectorAll('.ttl img').forEach(im=>{const f=()=>{const d=im.parentNode;if(d){d.className='grade';d.innerHTML=ttlTxt;}};im.onerror=f;if(im.complete&&!im.naturalWidth)f();});} // 제목 그림을 못 받으면 글자 제목으로
+function bdSet(nb){if(!(nb&&bdCur&&nb.k===bdCur.k&&nb.id===bdCur.id&&!card.hidden))bdGen++;bdCur=nb;ttl=!!(nb&&nb.t);card.classList.toggle('tt',ttl);} // 떠 있는 카드를 같은 친구로 다시 그리면(바닥 화면 갱신) 띠를 다시 틀지 않음
+function bdSync(){const vis=!card.hidden&&!app.classList.contains('pgopen')&&$('page').hidden,tb=$('tbg');if(vis)fitCard();
+  let tbOn=false;if(vis&&ttl){const u=ASSET+'brand/intro_'+(innerHeight>innerWidth?'portrait':'landscape')+'.webp';if(imgGet(u,bdSync)===1){tbOn=true;if(tb.dataset.u!==u){tb.dataset.u=u;tb.style.backgroundImage='linear-gradient(rgba(7,9,13,.5),rgba(7,9,13,.16) 36%,rgba(7,9,13,.1) 62%,rgba(7,9,13,.42)),url("'+u+'")';}}}tb.hidden=!tbOn; // 세로 화면은 세로 그림, 아니면 가로 그림 (다 받은 뒤에만)
+  const on=vis&&!!bdCur&&SET.chars&&$('modal').hidden&&$('sheet').hidden;
+  if(!on){if(bdDrawn>=0){bdDrawn=-1;bdEl.hidden=true;bdEl.textContent='';}return;} // 카드가 닫히거나 창·페이지가 열리면 숨김 (다시 보이면 처음부터)
+  if(bdDrawn!==bdGen){const c=bdCur,st=c.k==='still'||RM.matches,u=chU(c.id,c.k),m=st?0:BDM[c.k],d=m?(m[0]-1)*m[1]:0;if(imgGet(u,bdSync)<1){bdEl.hidden=true;return;} // 받는 중이면 다 받은 뒤 다시 불림, 실패면 조용히 안 보임
+    bdDrawn=bdGen;bdEl.innerHTML='<i role="img" aria-label="'+CHARS[c.id]+'"></i>';bdAr=st?1:BDW[c.id][c.k==='happy'?0:1]/200;bdN=m?m[0]:0;const i=bdEl.firstChild;i.style.backgroundImage='url("'+u+'")';
+    i.style.animation=RM.matches?'none':m?'bdIn .2s ease-out,bdPlay '+d+'ms steps('+(m[0]-1)+') forwards,bdBr 3.4s ease-in-out '+(d+300)+'ms infinite':'bdIn .35s ease-out both,bdBr 3.4s ease-in-out .35s infinite';bdEl.hidden=false;} // 새 요소라 애니메이션이 늘 처음부터: 띠를 한 번 재생(마지막 장 유지) → 숨쉬기
+  bdPlace();}
+function bdPlace(){if(bdDrawn<0||bdEl.hidden)return;const i=bdEl.firstChild,c=card.getBoundingClientRect();if(!i||!c.height)return;
+  const dk=DESK.matches,cr=chart.getBoundingClientRect(),g=$('regime').getBoundingClientRect(),co=$('coach'),ar=bdAr,mx=Math.round(Math.min(dk?170:ttl?140:128,innerHeight*(ttl?.2:dk?.24:.15)));
+  let top=ttl?sTop()+4:dk?Math.max(cr.top,g.height?g.bottom:0)+3:Math.max(sTop()+4,app.querySelector('.quote').getBoundingClientRect().bottom+2),h,x,y; // 위 한계: 타이틀 화면은 맨 위, 폰은 시세 줄 아래(예수금·종목·가격 글자를 안 가림), 데스크톱은 차트 장세 배지 아래
+  if(!co.hidden){const r=co.getBoundingClientRect();if(r.bottom<=c.top+12&&r.right>c.left&&r.left<c.right)top=Math.max(top,r.bottom+3);} // 카드 위로 비킨 말풍선은 가리지 않게
+  h=Math.min(mx,Math.floor(c.top+8-top));x=c.left+c.width/2-h*ar/2;y=c.top+8-h; // 카드 윗변 가운데에 8px 걸쳐 섬 (카드 안쪽 여백만 덮음, 닫기 ✕는 오른쪽 끝)
+  if(!dk&&!ttl&&g.height&&y<g.bottom&&y+h>g.top&&x<g.right+4&&x+h*ar>g.left-4){if(g.right+4+h*ar<=c.right-4)x=g.right+4;else{h=Math.min(h,Math.floor(c.top+6-g.bottom));x=c.left+c.width/2-h*ar/2;y=c.top+8-h;}} // 폰: 장세 배지(남은 판 수)를 가리면 배지 오른쪽으로 비켜 섬, 자리가 없으면 배지 아래로 작게 (64px 밑이면 아래에서 숨김)
+  if(h<64&&dk&&!ttl){h=Math.floor(Math.min(mx,c.height*.55,(cr.right-(isUsd()?70:50)*CK-4-c.right+8)/ar));x=c.right-8;y=c.bottom-6-h;} // 데스크톱에서 위가 좁으면(바닥 화면) 카드 오른쪽 옆 차트 빈 곳에 (가격 눈금은 피함)
+  if(!(h>=64)){bdEl.style.visibility='hidden';return;} // 자리가 모자라면 숨김 (카드는 그대로, 너무 작은 친구는 안 보임)
+  const w=Math.round(h*ar);Object.assign(bdEl.style,{visibility:'',left:Math.round(x)+'px',top:Math.round(y)+'px',width:w+'px',height:h+'px'});if(bdN)i.style.backgroundSize=bdN*w+'px '+h+'px';}
+function showCard(){bdSet(bdNext);bdNext=null;card.hidden=false;if(card.querySelector('.ttl img'))ttlFix();bdSync();const ti=card.querySelector('.ttl img');say((ti?ti.alt+' · ':'')+card.innerText.replace(/^✕\s*/,''));} // 닫기 ✕ 글자는 빼고 읽음 · 제목 그림은 innerText에 없어 alt를 앞에 붙임 · 친구는 카드를 그린 쪽이 bdNext로 정함 (안 정하면 없음)
 function showToast(txt){
   const d=Math.min(4500,Math.max(2300,txt.length*45)); // 긴 알림(승급 해금 목록 등)은 더 오래 보이게
   toastBusy=performance.now()+d-1000;
@@ -1050,9 +1116,10 @@ const REGIMES=[
   {e:'💸',n:'유동성 파티',d:'투자 한도 2배',s:'한도 2배',cap:2},{e:'🦢',n:'블랙스완 주의보',d:'폭락 25% 빨리 옴 · 수익 +60%',s:'폭락↑↑ 수익↑↑',crash:.75,pay:1.6}
 ];
 const rgOrd=c=>{const o=REGIMES.map((_,i)=>i);let h=c^0x5bd1e995;for(let i=o.length-1;i>0;i--){h=Math.imul(h^h>>>16,2246822507);h=Math.imul(h^h>>>13,3266489909);h^=h>>>16;const j=(h>>>0)%(i+1);[o[i],o[j]]=[o[j],o[i]];h+=i;}return o;}; // 8개 장세를 한 바퀴마다 섞기 (곱셈 해시 % 8은 매번 같은 순서였음)
+const rgCyc=c=>{const o=rgOrd(c),hd=v=>(REGIMES[v].crash||1)<1||!!REGIMES[v].wig;if(!c){const g=o.filter(v=>!hd(v)).sort();let j=0;o.forEach((v,i)=>{if(!hd(v))return;let k;do k=g[j++%g.length];while(k===o[i-1]||k===o[i+1]);o[i]=k;});}return o;}; // 첫 바퀴(45판 전)엔 하락장·변동성 폭발·블랙스완 대신 순한 장세 (신규가 3~5분쯤 연패로 그만두지 않게, 두 번째 바퀴부터 나옴)
 let rgMemo=[-1,null];
 const regime=()=>{let r=0;try{r=stats.rounds}catch(e){}const b=Math.floor(r/5);if(b<1)return REGIMES[0];if(rgMemo[0]===b)return rgMemo[1];
-  const k=b-1,c=Math.floor(k/REGIMES.length),o=rgOrd(c),prev=c?rgOrd(c-1)[REGIMES.length-1]:0;if(o[0]===prev)[o[0],o[1]]=[o[1],o[0]]; // 바퀴가 바뀔 때도 같은 장세가 이어지지 않게
+  const k=b-1,c=Math.floor(k/REGIMES.length),o=rgCyc(c),prev=c?rgCyc(c-1)[REGIMES.length-1]:0;if(o[0]===prev)[o[0],o[1]]=[o[1],o[0]]; // 바퀴가 바뀔 때도 같은 장세가 이어지지 않게
   rgMemo=[b,REGIMES[o[k%REGIMES.length]]];return rgMemo[1];};
 const betCap=noRg=>Math.round(1e6*(noRg?1:(regime().cap||1))*Math.pow(1.22,lvlOf(xp).L-1)*(gear.car?1.1:1)*(gear.yacht?1.2:1)*(gear.firm?1.5:1)/1e4)*1e4;
 // 실제 베팅 한도: 레벨 한도와 예수금 5% 중 큰 쪽
@@ -1070,17 +1137,20 @@ const taxRate=b=>b<1e10?0:Math.min(.65,.05+.1*Math.log10(b/1e10));
 const xpMul=()=>1+.05*skl('xp')+(gear.office?.05:0); // 복기 습관·오피스텔 XP 배수 (표시도 같은 값)
 function gainXp(n){
   n=Math.round(n*xpMul());
-  const before=rankOf(xp),lb=lvlOf(xp).L;xp+=n;store.set('shg_xp',xp);const after=rankOf(xp),la=lvlOf(xp).L,capT=won(betCap(1)); // 한도는 지금 값으로 (토스트가 늦게 떠도 그 레벨 한도)
-  const spG=Math.floor((la-1)/2)-Math.floor((lb-1)/2); // 이번에 늘어난 SP (레벨 2마다 1)
-  if(la>lb&&after===before){setTimeout(()=>{toast('⬆️ 레벨 업! Lv.'+la+(spG>0?' · SP +'+spG:'')+' · 한도 '+capT);sfx.up();burst(innerWidth/2,90,30);},900);}
+  const before=rankOf(xp),lb=lvlOf(xp).L;xp+=n;store.set('shg_xp',xp);const after=rankOf(xp),la=lvlOf(xp).L;
+  if(la>lb||after>before){const P=gainXp.p||(gainXp.p={l:lb,r:before});clearTimeout(gainXp.t);gainXp.t=setTimeout(()=>{gainXp.p=null;const L=lvlOf(xp).L,R=rankOf(xp),capT=won(betCap(1)),spG=Math.floor((L-1)/2)-Math.floor((P.l-1)/2),xv=!card.hidden&&card.querySelector('.xpv'); // 판 끝 XP·미션 XP로 연달아 오른 레벨·승급은 알림 하나로 (SP는 레벨 2마다 1)
+    if(R>P.r&&!(xv&&card.querySelector('.promo'))){const nt=[];for(let i=P.r+1;i<=R;i++)nt.push(...unlOf(i));toast('🎉 승급! '+RANKS[R][1]+(L>P.l?' · Lv.'+L+(spG>0?' · SP +'+spG:'')+' · 한도 '+capT:'')+(nt.length?' · '+nt.join(', ')+' 해금':''));} // 결과 카드에 승급 줄이 떠 있으면 같은 알림은 안 띄움
+    else if(L>P.l&&xv){xv.closest('.row').insertAdjacentHTML('afterend','<div class="sub gd">⬆️ Lv.'+L+(spG>0?' · SP +'+spG:'')+'</div>');say('⬆️ Lv.'+L);} // 결과 카드가 열려 있으면 레벨 업은 카드 XP 줄 아래 한 줄로 (알림 줄이기 · XP 칸에 붙이면 좁아서 두 줄로 깨짐)
+    else if(L>P.l)toast('⬆️ 레벨 업! Lv.'+L+(spG>0?' · SP +'+spG:'')+' · 한도 '+capT);
+    sfx.up();if(R>P.r)cgHappy();if(L>P.l)burst(innerWidth/2,90,30);},900);}
   if(after>before&&run){const u=run.promo?run.promo.u:[];for(let i=before+1;i<=after;i++)u.push(...unlOf(i));run.promo={r:after,u};} // 이번 판 결과 카드에 승급 한 줄 (판마다 run을 새로 만들어 지난 판·판 사이 승급은 안 남음)
-  if(after>before){const nt=unlOf(after);setTimeout(()=>{toast('🎉 승급! '+RANKS[after][1]+(la>lb?' · Lv.'+la+(spG>0?' · SP +'+spG:'')+' · 한도 '+capT:'')+(nt.length?' · '+nt.join(', ')+' 해금':''));sfx.up();},900);if(after===RANKS.length-1)unlock('legend');}
+  if(after===RANKS.length-1&&after>before)unlock('legend');
   return n;
 }
 
 function paintTop(){try{checkHome()}catch(e){}
   store.set('shg_debt',Math.ceil(debt));store.set('shg_credit',credit);
-  {const d=$('debtTag');d.hidden=debt<=0;if(debt>0)d.textContent='빚 '+wonS(debt)+' · 신용 '+credit+'등급';}
+  {const d=$('debtTag');d.hidden=debt<=0;if(debt>0)d.textContent='빚 '+wonS(debt)+' · 신용 '+crS(credit);}
   if(!(balance>=0))balance=0;
   store.set('shg_bal',Math.floor(balance));store.set('shg_streak',streak);
   if(balance>best){best=balance;store.set('shg_best',Math.floor(best));}
@@ -1093,15 +1163,16 @@ function paintTop(){try{checkHome()}catch(e){}
   $('rankBar').style.width=(lv.cur/lv.need*100).toFixed(0)+'%';
   {const R=regime();let left=5,cR=false;try{left=5-stats.rounds%5}catch(e){}try{cR=!!(tutDone&&chal&&chal.i<5)}catch(e){}$('regime').textContent=cR?'🏆 챌린지 판 '+(chal.i+1)+'/5':R.e+' '+(LANG==='en'&&R.s&&R.s!=='기본'?R.s:R.n)+' · '+left+'판 남음';$('regime').title=cR?'':R.d;}
   {let ok=false;try{ok=!usedToday('shg_spin')}catch(e){}$('giftBtn').classList.toggle('ready',ok);}
-  $('spBtn').textContent='🌳 SP '+spFree();$('dotS').hidden=spFree()<=0;ensureDaily();$('dotM').hidden=daily.done.length>=daily.ids.length;
+  $('spBtn').textContent='🌳 SP '+spFree();$('dotS').hidden=spFree()<=0;ensureDaily();{let m=false;try{m=seasonN()>0||tutDone&&chalLeft()}catch(e){}$('dotM').hidden=!m;} // 미션 점은 '받을 게 있음'일 때만 (시즌 보상·오늘의 챌린지)
+  {const g=card.querySelector('.goal');if(g&&!card.hidden)g.innerHTML=goalIn();} // 결과 카드의 다음 목표 줄: 미션 보상·광고 보너스까지 반영
   unOver();
 }
 function paintPickers(){
   const fa=document.activeElement,fk=fa&&fa.closest&&fa.closest('#items,#betrow,#offers')?(fa.id?'#'+fa.id:fa.dataset.i?'#items [data-i="'+fa.dataset.i+'"]':fa.dataset.pct?'#betrow [data-pct="'+fa.dataset.pct+'"]':null):null; // 다시 그려도 누르던 칩에 포커스 유지
   const lock=state==='holding'||state==='ghost'||state==='over';
   const chOn=!tutDone||(chal&&chal.i<5),crL=T=>{let L=T.loss;if(chOn)return Math.round(L*100);if(levSel>1)L*=levSel*.6;const sh=sel.shield&&rankOf(xp)>=ITEMS.shield.lv;if(sh)L=Math.min(L,Math.max(.1,L*.25));if(profile==='turtle'&&!sh)L*=.8;L*=1-.03*skl('risk');return Math.round(L*100);}; // 폭락 손실 % (레버리지·방어권·거북이·리스크 관리 반영, lossFactor와 같은 식, 자동 손절은 운이라 뺌)
-  const crX=T=>crL(T)>100?' (판돈 초과 가능)':''; // 레버리지 폭락 손실은 판돈보다 클 수 있음 (예수금까지만)
-  const chP=tutDone&&chal&&chal.i<5,crT=T=>!tutDone?'연습 판 · 물려도 돈은 그대로예요':chP?'폭락에 물리면 -30점 · 내 돈은 안 걸려요':'폭락에 물리면 판돈의 '+crL(T)+'%를 잃어요'+crX(T),crS=T=>!tutDone?'연습 판':chP?'물리면 -30점':'물리면 -'+crL(T)+'%'+(crX(T)?'⚠':''); // 챌린지 판은 점수만 걸림 (물리면 -30점). 칩은 좁아서 판돈 초과는 ⚠만, 자세한 말은 툴팁·종목 창에
+  const crX=T=>crL(T)>100?' (매수 금액 초과 가능)':''; // 레버리지 폭락 손실은 판돈보다 클 수 있음 (예수금까지만)
+  const chP=tutDone&&chal&&chal.i<5,crT=T=>!tutDone?'연습 판 · 물려도 돈은 그대로예요':chP?'폭락에 물리면 -30점 · 내 돈은 안 걸려요':'폭락에 물리면 매수 금액의 '+crL(T)+'%를 잃어요'+crX(T),crS=T=>!tutDone?'연습 판':chP?'물리면 -30점':'물리면 -'+crL(T)+'%'+(crX(T)?'⚠':''); // 챌린지 판은 점수만 걸림 (물리면 -30점). 칩은 좁아서 판돈 초과는 ⚠만, 자세한 말은 툴팁·종목 창에
   const co=curOffer(),CT=TIERS[co.k],spark=(o,w,h)=>{const mn=Math.min(...o.spark),mx=Math.max(...o.spark);return `<svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" aria-hidden="true"><polyline fill="none" stroke="${o.chg>=0?C.up:C.down}" stroke-width="1.6" points="${o.spark.map((v,i)=>(i/(o.spark.length-1)*w).toFixed(1)+','+(h-1-(v-mn)/((mx-mn)||1)*(h-2)).toFixed(1)).join(' ')}"/></svg>`;};
   $('offers').innerHTML=co.k==='boss'?`<button class="pick1 bosschip" type="button" ${lock?'disabled':''} title="${crT(CT)}"><span class="pe">${bossInfo(co.ni).B.e}</span><span class="pt"><b>${bossInfo(co.ni).B.n} Lv.${co.ni+1}</b><small>${crS(CT)} · 보스전 · 목표 수익 넘기고 팔면 처치 · SP +2</small></span></button>`
    :`<button class="pick1" type="button" id="openSheet" ${lock?'disabled':''} title="${crT(CT)}"><span class="pe">${CT.e}</span><span class="pt"><b>${co.name}</b><small>${crS(CT)} · ${CT.label}</small></span>${spark(co,54,24)}<span class="pc">종목 ${offers.length}개 ▾</span></button>`;
@@ -1112,19 +1183,19 @@ function paintPickers(){
   $('betrow').innerHTML='<span>투자 비율</span>'+[.1,.25,.5,1].map(v=>`<button type="button" data-pct="${v}" aria-pressed="${betPct===v}" ${lock||AI?'disabled':''}>${v*100}%</button>`).join('')+'<b>'+wonS(maxBet)+'</b>';
   $('items').innerHTML=Object.entries(ITEMS).map(([k,it])=>{const lk=ri<it.lv;if(lk)sel[k]=false;return `<button class="chip ic${lk?' lk':''}" type="button" data-i="${k}" aria-pressed="${sel[k]}" ${lock||lk?'disabled':''} title="${it.desc}"><b>${lk?'🔒':it.name.split(' ')[0]} ${it.short}</b><small>${lk?RANKS[it.lv][1]:(it.cost?wonS(itemCost(k,(allin&&ri>=2)?maxStake(1):Math.min(balance,maxStake(0))*betPct)):'무료')}</small></button>`}).join('')+
     `<button class="chip ic ${levSel>=5?'hot':''}${ri<LEVS[1][1]?' lk':''}" type="button" id="levBtn" ${lock||ri<LEVS[1][1]?'disabled':''}><b>${ri<LEVS[1][1]?'🔒 '+LEVS[1][0]:'⚡ '+levSel}배</b><small>${ri<LEVS[1][1]?RANKS[LEVS[1][1]][1]:levSel>1?'청산 -'+Math.round(85/levSel*(gear.jet?95/85:1))+'%':'레버리지'}</small></button>`+
-    `<button class="chip ic ${allin?'hot':''}${ri<2?' lk':''}" type="button" id="allinBtn" aria-pressed="${allin}" ${lock||ri<2?'disabled':''}><b>${ri<2?'🔒':'🎲'} 영끌</b><small>${ri<2?RANKS[2][1]:allin?wonS(maxStake(1)):'전재산 올인'}</small></button>`;
+    `<button class="chip ic ${allin?'hot':''}${ri<2?' lk':''}" type="button" id="allinBtn" aria-pressed="${allin}" ${lock||ri<2?'disabled':''}><b>${ri<2?'🔒':'💯'} 영끌</b><small>${ri<2?RANKS[2][1]:allin?wonS(maxStake(1)):'전재산 투자'}</small></button>`;
   if(fk){const n=document.querySelector(fk);if(n&&!n.disabled)n.focus({preventScroll:true});}
 }
 const volFmt=v=>LANG==='en'?(v<1e4?v.toLocaleString('ko-KR'):v<1e5?Math.floor(v/100)/10+'K':v<1e6?Math.floor(v/1e3)+'K':Math.floor(v/1e5)/10+'M'):(v<1e4?v.toLocaleString('ko-KR'):v<1e6?Math.floor(v/1e3)/10+'만':v<1e8?Math.floor(v/1e4).toLocaleString('ko-KR')+'만':Math.floor(v/1e7)/10+'억'); // 거래량 짧게 (2.3만 · 23.4K)
 function paintQuote(){
-  const o=offer(),T=TIERS[o.k];
-  $('qName').textContent=o.name;
-  $('qCode').innerHTML='<span class="cd">'+o.code+'</span><span class="tier">'+T.label+'</span><span class="vol"> · 거래량 '+volFmt(Math.floor(volTotal*1373))+'</span>'; // 좁은 화면에선 종목 코드가 줄고 거래량 숫자는 안 잘림
+  const o=offer(),T=TIERS[o.k],Q=(id,k,v)=>{const e=$(id);if(e['_'+k]!==v){e['_'+k]=v;e[k]=v;}}; // 같은 값이면 DOM에 다시 안 씀 (대기 화면에서 매 프레임 같은 글자를 새로 쓰던 것)
+  Q('qName','textContent',o.name);
+  Q('qCode','innerHTML','<span class="cd">'+o.code+'</span><span class="tier">'+T.label+'</span><span class="vol"> · 거래량 '+volFmt(Math.floor(volTotal*1373))+'</span>'); // 좁은 화면에선 종목 코드가 줄고 거래량 숫자는 안 잘림
   const m=!run?liveM:(crashed?(run.liq?cur*.8:Math.min(cur,run.crashAt*.62)):cur);
   const p=priceOf(m),d=p-o.p0,pc=d/o.p0*100;
   const cls=d>0?'up':d<0?'dn':'mu';
-  $('qPrice').className='num '+cls;$('qPrice').textContent=fmtP(p);
-  $('qChg').className=cls;$('qChg').textContent=(d>0?'▲ ':d<0?'▼ ':'')+fmtP(Math.abs(d),p)+'  '+(pc>=0?'+':'')+nf(2).format(pc)+'%';
+  Q('qPrice','className','num '+cls);Q('qPrice','textContent',fmtP(p));
+  Q('qChg','className',cls);Q('qChg','textContent',(d>0?'▲ ':d<0?'▼ ':'')+fmtP(Math.abs(d),p)+'  '+(pc>=0?'+':'')+nf(2).format(pc)+'%');
 }
 let bookQ={},trades=[],tradeT=0,tradeM=1;
 function renderBook(){
@@ -1170,7 +1241,7 @@ $('sheet').addEventListener('click',e=>{if(e.target.id==='sheet'||e.target.id===
 $('betrow').addEventListener('click',e=>{if(performance.now()-uiAt<400)return;const b=e.target.closest('[data-pct]');if(b&&!b.disabled){betPct=+b.dataset.pct;store.set('shg_pct',betPct);beep(520,.03,'sine',.03);paintPickers();}});
 $('items').addEventListener('click',e=>{if(performance.now()-uiAt<400)return; // 창·카드를 닫은 연타의 두 번째 탭이 아래 버튼(영끌·레버리지·아이템)을 바꾸지 않게
   const lb=e.target.closest('#levBtn');if(lb&&!lb.disabled){const ri=rankOf(xp),ok=LEVS.filter(l=>l[1]<=ri).map(l=>l[0]);levSel=ok[(ok.indexOf(levSel)+1)%ok.length];if(levSel>1&&!store.get('shg_levTip',0)){store.set('shg_levTip',1);toast('⚡ '+levSel+'배: 수익·손실 모두 커지고 폭락도 더 빨리 와요 · '+Math.round((gear.jet?95:85)/levSel)+'%만 빠져도 강제청산');}if(levSel>=10){vib(30);toast('⚠️ '+levSel+'배: '+Math.round((gear.jet?95:85)/levSel)+'%만 빠져도 강제청산');}paintPickers();return;}
-  const ab=e.target.closest('#allinBtn');if(ab&&!ab.disabled){allin=!allin;if(allin){vib([30,30,30]);toast('🎲 영끌 ON · 전재산 '+wonS(maxStake(1))+' 올인!');}paintPickers();return;}
+  const ab=e.target.closest('#allinBtn');if(ab&&!ab.disabled){allin=!allin;if(allin){vib([30,30,30]);toast('💯 영끌 ON · 전재산 '+wonS(maxStake(1))+' 전부 투자');}paintPickers();return;}
   const b=e.target.closest('[data-i]');if(b&&!b.disabled){sel[b.dataset.i]=!sel[b.dataset.i];paintPickers();}});
 
 /* ---------- game ---------- */
@@ -1185,7 +1256,7 @@ addEventListener('resize',bossFit);if(document.fonts&&document.fonts.addEventLis
 function start(){
   if(presPend||tabNow())return;
   const chRound=tutDone&&chal&&chal.i<5&&debt<=debtLimit(); // 챌린지 판(판돈 0원)은 예수금 검사·이자·투자·신용 등 판 정산을 건너뜀 (바닥이어도 가능, 신용불량은 그대로)
-  if(adReq||adHold&&state==='result'){toast('📺 광고 준비 중…');return;} // adHold: 30판째 결과 화면에서 바로 다음 판을 누르면 전면 광고가 뜰 때까지 잠깐 막음 (빠르게 이어 하는 플레이어도 광고가 계속 밀리지 않게)
+  if(adReq||adHold&&state==='result'&&!card.querySelector('#adWin,#adLoss,#adRevive')){toast('📺 광고 준비 중…');return;} // adHold: 30판째 결과 화면에서 바로 다음 판을 누르면 전면 광고가 뜰 때까지 잠깐 막음 (빠르게 이어 하는 플레이어도 광고가 계속 밀리지 않게) · 보상 광고 버튼이 떠 있으면 adDecide가 전면 광고를 다음 판 뒤로 미루니 막지 않음
   if(!profile&&$('qSkip')&&curTab==='trade'&&$('modal').hidden&&$('sheet').hidden){$('qSkip').click();return;} // 첫 화면(테스트·바로 시작 고르기)에서 큰 버튼·스페이스를 누르면 ▶ 바로 시작과 같게
   if(curTab==='trade'&&$('modal').hidden&&$('sheet').hidden&&(!profile||(!card.hidden&&card.querySelector('.opts')))){toast('🧪 먼저 투자 성향 테스트를 끝내 주세요');return;}
   if(adPause||curTab!=='trade'||!profile||!$('modal').hidden||!$('sheet').hidden||state==='ghost'||(state==='over'&&!unOver()&&!chRound)||state==='holding')return;
@@ -1202,7 +1273,7 @@ function start(){
     if(ex>0&&balance>=ex){repay(ex);toast('🏦 빚 한도 넘는 '+won(ex)+'은 예수금으로 자동 상환했어요');}
     if(debt>debtLimit()){intPaid=true;store.set('shg_intPaid',true);showDefault();paintTop();return;}
     if(balance<100000){intPaid=true;store.set('shg_intPaid',true);paintTop();paintPickers();low();return;}}
-  else{stats.cleanRounds=(stats.cleanRounds||0)+1;if(stats.cleanRounds>=(credit>3?15:30)&&credit>1){credit--;stats.cleanRounds=0;toast('📈 신용등급 상승 · '+credit+'등급');}store.set('shg_stats',stats);}
+  else{stats.cleanRounds=(stats.cleanRounds||0)+1;if(stats.cleanRounds>=(credit>3?15:30)&&credit>1){credit--;stats.cleanRounds=0;if(stats.rounds>=20)toast('📈 신용등급 상승 · '+crS(credit));}store.set('shg_stats',stats);} // 처음 20판은 신용 알림 생략 (등급은 그대로 오름)
   if(!chRound)overLoss=0; // 진짜 판이 시작되면 지난 바닥 화면의 손실 복구는 끝
   if(intPaid&&tutDone&&!chRound){intPaid=false;store.set('shg_intPaid',false);}if(tutDone&&!chRound)tickInvest(); // 연습(튜토리얼)·챌린지 판은 '이자 이미 냄' 표시를 쓰지 않음
   const tut=!tutDone,ch=!tut&&chal&&chal.i<5?chal:null,useSel=tut||ch?{}:sel;hideCoach(); // 챌린지·튜토리얼 판은 아이템 없이 (켜 둔 아이템 선택은 그대로 둠)
@@ -1224,20 +1295,20 @@ function start(){
   if(!tut&&!ch&&armed.luck>0){armed.luck--;crashAt=1+(crashAt-1)*1.12;store.set('shg_armed',armed);}
   let entryTag='';
   if(!tut&&!ch){const d=liveM-1;if(d<=-.04){crashAt=1+(crashAt-1)*1.08;entryTag='📉 저점 매수 · 폭락 조금 늦게';}else if(d>=.05){crashAt=1+(crashAt-1)*.93;entryTag='🔥 추격 매수 · 폭락 조금 빨리';}}
-  if(entryTag)setTimeout(()=>{if(!crashed)toast(entryTag);},120);
+  if(entryTag&&(stats.rounds||0)>=20)setTimeout(()=>{if(!crashed)toast(entryTag);},120); // 처음 20판은 저점·추격 매수 알림 생략 (효과는 그대로, 첫 몇 분 알림 줄이기)
   if(!tut&&!ch)crashAt=Math.max(1.002,crashAt); // 안전망: 첫 프레임 폭락 방지
-  if(!tut&&!ch&&(stats.rounds||0)<5)crashAt=Math.max(crashAt,1.2+Math.random()*.3); // 신규 보호: 진짜 판 처음 5판은 +20~50% 전엔 폭락 없음 (튜토리얼·챌린지 제외)
+  if(!tut&&!ch){const nr=stats.rounds||0;if(nr<5||nr<10&&Math.random()<(10-nr)/6)crashAt=Math.max(crashAt,1.2+Math.random()*.3);} // 신규 보호: 진짜 판 처음 5판은 +20~50% 전엔 폭락 없음, 5~9판은 보호 확률을 83%→17%로 줄임 (5판째 갑자기 어려워지지 않게, 늘 안전한 판은 아님 · 튜토리얼·챌린지 제외)
   const it={...useSel};if(cry)it.insider=false;let hint=null; // 찌라시·수정구슬은 폭락 지점이 다 정해진 뒤에 계산
   if(!tut&&!ch){const had=allin||Object.values(sel).some(Boolean);for(const k in sel)sel[k]=false;allin=false;if(had&&!store.get('shg_itemTip',0)){store.set('shg_itemTip',1);setTimeout(()=>toast('🧪 아이템·영끌은 이번 판에만 적용돼요 · 다음 판엔 다시 켜세요'),900);}} // 아이템·영끌은 한 판만: 이번 판 효과는 run.it·run.allin에 복사됐으니(재진입도 그대로) 고른 칩은 끔. 레버리지·투자 비율은 설정이라 유지
   if(it.insider){const real=Math.random()<.7+.03*skl('radar');hint={real,v:real?Math.max(Math.min(1.02,crashAt*.99),crashAt*rnd(.88,.98)):crashAt*rnd(1.4,3)};} // 진짜 찌라시는 늘 폭락 지점 아래 (바로 터지는 판이면 매수가 근처)
   if(cry){armed.crystal--;store.set('shg_armed',armed);crashAt=Math.max(crashAt,Math.exp(T.rate*(rg.rate||1)*.14));hint={real:true,v:Math.max(Math.min(1.02,crashAt*.99),crashAt*rnd(.94,.99)),crystal:1};} // 수정구슬: 폭락은 늘 산 뒤 2초쯤 지나서 (선을 보고 팔 시간), 선은 매수가 위
   cgPlay(true);
   run={offer:o,T,key:o.k,crashAt,entryTag,it,hint,sawDip:false,tut,chal:!!ch,cost:cost+fee,bet,lev:lv,allin:ai,liqLine:lv>1?1-(gear.jet?.95:.85)/lv:0};run.tMin=.3*holdRate(); // tMin: 0.3초 들고 있으면 닿는 차트 시간 (강제 매도도 이때까지는 차트를 진행)
-  if(tut&&tutFail)run.retry=1;
+  if(tut&&tutFail)run.retry=1;run.bd=bdRound(tut); // 이번 판의 동물 친구 (꾸밈 전용)
   if(ch){ch.pend=-30;store.set('shg_chalRun',ch);} // 챌린지: 시작하자마자 기록 (새로고침하면 물린 판으로 처리)
   if(!tut&&!ch&&o.k==='boss'&&armed.bossT>0&&(stats.rounds+1)%10!==0){armed.bossT--;store.set('shg_armed',armed);}
-  if(ai)setTimeout(()=>stamp('🎲 영끌 '+won(bet)),60);else if(lv>=5)setTimeout(()=>stamp('⚡ '+lv+'배'),60);
-  run.rg=rg;const rgi=REGIMES.indexOf(rg);if(!tut&&!ch&&stats.lastRg==null&&rgi===0){stats.lastRg=0;store.set('shg_stats',stats);}if(!tut&&!ch&&stats.lastRg!==rgi){const seen=stats.lastRg===rg.n;stats.lastRg=rgi;store.set('shg_stats',stats);if(!seen)setTimeout(()=>{stamp(rg.e+' '+rg.n);toast(rg.e+' '+rg.n+' 시작 · '+rg.d);},80);}
+  if(ai)setTimeout(()=>stamp('💯 영끌 '+won(bet)),60);else if(lv>=5)setTimeout(()=>stamp('⚡ '+lv+'배'),60);
+  run.rg=rg;const rgi=REGIMES.indexOf(rg);if(!tut&&!ch&&stats.lastRg==null&&rgi===0){stats.lastRg=0;store.set('shg_stats',stats);}if(!tut&&!ch&&stats.lastRg!==rgi){const seen=stats.lastRg===rg.n,rep=(stats.rgSeen|0)>>rgi&1;stats.lastRg=rgi;stats.rgSeen=(stats.rgSeen|0)|1<<rgi;store.set('shg_stats',stats);if(!seen)setTimeout(()=>{stamp(rg.e+' '+rg.n);if(!rep)toast(rg.e+' '+rg.n+' 시작 · '+rg.d);},80);} // 장세 설명 알림은 처음 볼 때만 (다시 오면 차트 도장·배지만, 배지를 누르면 설명)
   run.boss=o.k==='boss'&&!ch&&!tut?bossInfo(stats.bossLv||0):null;$('bossbar').hidden=!run.boss;
   if(run.boss){$('bossName').innerHTML=run.boss.B.e+'<span class="bn"> '+esc(run.boss.B.n)+'</span> Lv.'+(run.boss.lv+1);$('bossGoal').textContent='목표 +'+Math.round((run.boss.target-1)*100)+'%';bossFit();$('bossHp').style.width='100%';setTimeout(()=>stamp('⚔️ 보스전 시작'),50);}tutStep=0;
   card.hidden=true;newsIdle();
@@ -1282,7 +1353,7 @@ function release(){
   $('pnl').innerHTML='<span class="dn">매도 체결</span> <span class="'+(gain+bonus>=0?'up':'dn')+'">'+sw(gain+bonus-tax)+'</span>';
   if(gain>0)unlock('first');
   if(run.boss&&!run.tut&&(cur>=run.boss.target||run.boss.down&&performance.now()<run.boss.downAt+1050)){const rw=run.bet*.5;balance+=rw;sell.bossReward=rw;stats.bossLv=(stats.bossLv||0)+1;stats.bossSP=(stats.bossSP||0)+2;store.set('shg_stats',stats);
-    unlock('boss1');if(stats.bossLv>=5)unlock('boss5');gainXp(60);setTimeout(()=>{stamp('⚔️ 보스 처치!');burst(innerWidth/2,innerHeight*.4,70);},200);paintTop();}
+    unlock('boss1');if(stats.bossLv>=5)unlock('boss5');gainXp(60);setTimeout(()=>{stamp('⚔️ 보스 처치!');burst(innerWidth/2,innerHeight*.4,70);cgHappy();},200);paintTop();}
   if(cur>=10)unlock('ten');
   if(fever)unlock('streak5');
   if(run.key==='meme'&&cur>=5)unlock('meme5');
@@ -1348,6 +1419,7 @@ function crash(){
   offers=makeOffers();
   readyAt=performance.now()+800;
   paintTop();paintPickers();setBtn();setTimeout(setBtn,820);scheduleSwitch();
+  nudge();
 }
 function missionsUpdate(r){
   const dn=[],wn=[]; // 한 판에 여러 개 끝나면 알림은 하나로
@@ -1375,53 +1447,56 @@ function shareOut(text){const full=text+'\n👉 '+GAME_URL;
   const copy=()=>(navigator.clipboard?navigator.clipboard.writeText(full):Promise.reject()).then(()=>toast('링크와 함께 복사했습니다. 단톡방에 붙여넣기!'),()=>ask('아래 내용을 길게 눌러 복사하세요',0,0,full));
   if(navigator.share){navigator.share({title:'떡상 계좌 키우기',text,url:GAME_URL}).catch(e=>{if(!e||e.name!=='AbortError')copy();});return;} // 사용자가 닫은 것(AbortError)만 무시, 막힌 경우(iframe 권한 등)는 복사로
   copy();}
-function shareBtn(x=''){return '<div class="btns" style="flex-wrap:wrap">'+x+'<button type="button" id="share">📤 결과 공유</button></div>'} // 광고 버튼도 같은 줄에 (따로 두면 둘 다 아래에 붙어 겹침)
+function shareBtn(x='',sh=1){return x||sh?'<div class="btns" style="flex-wrap:wrap">'+x+(sh?'<button type="button" id="share">📤 결과 공유</button>':'')+'</div>':''} // 광고 버튼도 같은 줄에 (따로 두면 둘 다 아래에 붙어 겹침). sh=0: 공유 버튼 없음
 function bindShare(){const b=$('share');if(!b)return;b.onclick=()=>shareOut(shareText);}
 function showWin(pct,xg){
-  const cap=(sell.m-1)/Math.max(1e-9,peak-1)*100; // 등급 문구용: 오른 폭 중 챙긴 비율
+  const soldT='매도 +'+nf(1).format((sell.m-1)*100)+'%',plain=!run.re&&run.lev<=1&&!sell.tax&&!sell.bossReward&&!Object.values(run.it||{}).some(Boolean); // plain: 아이템·레버리지·세금·재진입·보스 보상 없는 판 → 수수료는 큰 숫자(순손익)에 합치고 수수료 줄은 숨김
   const rc=!!(run.re&&run.re.caught),s1=sell.gain+sell.bonus-(sell.tax||0),rl=!!run.re&&(rc||lastAmt<=0),wb=Math.floor(Math.max(0,run.re?s1+(run.re.gain||0)-(run.re.loss||0)-run.re.fee:s1)*.5),lb=wb>0||!rc?0:Math.floor(Math.max(0,Math.min(run.re.loss||0,-lastAmt))*.3); // 재진입한 판은 판 전체 손익 기준, lb: 재진입했다가 물려 판 전체(보스 보상·수수료 포함)가 손해면 그 손해의 30% 복구 광고
-  const g=rc?(run.liq?['💀 재진입 강제청산','dn','다시 탔다가 강제청산 당했습니다.']:['재진입 물림','dn','팔고 다시 탔다가 폭락에 물렸습니다.']):rl?['재진입 손해','dn','다시 탔다가 손해를 봤습니다.']:run.boss&&sell.bossReward?['⚔️ 보스 처치!','gd','목표 +'+Math.round((run.boss.target-1)*100)+'% 돌파!']:run.re&&sell.m<1?['재진입 만회','up','손절 후 다시 타서 수익으로 마감했습니다.']:sell.m<1?['손절','dn','손해를 줄이고 빠져나왔습니다.']:lastAmt-(run.cost||0)<0?['수수료에 털림','dn','수수료·아이템값에 수익이 다 나갔어요.']:pct>=95?['신의 손','gd','고점에서 정확히 던졌습니다.']:cap>=70?['고수','up','꼭지 근처에서 잘 팔았습니다.']:cap>=40?['반타작','','반은 먹었습니다. 나머지는 세력 몫.']:['새가슴','','너무 일찍 팔았습니다. 더 갔어요…'];
+  const g=rc?(run.liq?['💀 재진입 강제청산','dn','다시 탔다가 강제청산 당했습니다.']:['재진입 물림','dn','팔고 다시 탔다가 폭락에 물렸습니다.']):rl?['재진입 손해','dn','다시 탔다가 손해를 봤습니다.']:run.boss&&sell.bossReward?['⚔️ 보스 처치!','gd','목표 +'+Math.round((run.boss.target-1)*100)+'% 돌파!']:run.re&&sell.m<1?['재진입 만회','up','손절 후 다시 타서 수익으로 마감했습니다.']:sell.m<1?['손절','dn','손해를 줄이고 빠져나왔습니다.']:lastAmt-(run.cost||0)<0?['수수료에 털림','dn','수수료·아이템값에 수익이 다 나갔어요.']:pct>=95?['신의 손','gd','고점에서 정확히 던졌습니다.']:sell.m>=2?['🚀 큰 수익!','gd',soldT]:sell.m>=1.3?['익절 성공 ✅','up',soldT]:['소소한 익절 👍','',soldT]; // 익절 등급은 수익률로 (고점 대비로 매기면 대부분 '너무 일찍 팔았다'가 됨)
   const close=!rc&&(crashT-sell.t)<.4?'<div class="sub gd">폭락 '+gapS().toFixed(2)+'초 전 탈출!</div>':'';
   const shook=sell.dip&&peak>=sell.m*1.5?'<div class="sub dn">그 악재 뉴스는 개미털기였습니다.</div>':'';
   const o=run.offer,pp=x=>nf(1).format((x-1)*100)+'%';
   shareText=`[떡상 계좌 키우기] ${o.name} ${sell.m>=1?'+':''}${pp(sell.m)} 매도 · 고점 근접도 ${pct.toFixed(0)}% · ${g[0]}${!rl&&streak>=5?' 🔥'+streak+(LANG==='en'?'-win streak':'연속'):''}\n자산 ${won(balance)}`;
   card.innerHTML='<div class="grade '+g[1]+'">'+g[0]+'</div><div class="sub">'+g[2]+'</div>'+close+shook+
-   (()=>{const tot=sell.gain+sell.bonus-(sell.tax||0)+(run.re?(run.re.gain||0)-(run.re.loss||0):0);return '<div class="big '+(tot>=0?'up':'dn')+'">'+sw(tot)+'</div>'+(run.re?'<div class="sub">1차 매도 '+sw(sell.gain+sell.bonus-(sell.tax||0))+'</div>':'');})()+promoLine()+
+   (()=>{const tot=sell.gain+sell.bonus-(sell.tax||0)+(run.re?(run.re.gain||0)-(run.re.loss||0):0)-(plain?run.cost||0:0);return '<div class="big '+(tot>=0?'up':'dn')+'">'+sw(tot)+'</div>'+(run.re?'<div class="sub">1차 매도 '+sw(sell.gain+sell.bonus-(sell.tax||0))+'</div>':'');})()+promoLine()+
    (run.re?'<div class="sub '+(run.re.caught?run.re.rw?'gd':'dn':(run.re.gain||0)>=0?'up':'dn')+'">🔁 '+(run.re.caught?(run.liq?'재진입 강제청산 ':'재진입 물림 ')+(run.re.rw?'⏪ 손실 복구권 · '+won(0):sw(-(run.re.loss||0))):'재진입 매도 '+sw(run.re.gain||0))+'</div>':'')+
    (sell.tax?'<div class="sub dn">🏛️ 부자세 '+Math.round(sell.taxR*100)+'% '+sw(-sell.tax)+' (반영됨)</div>':'')+
    (run.boss&&sell.bossReward?'<div class="sub gd">⚔️ '+run.boss.B.n+' 처치! '+sw(sell.bossReward)+' · SP +2 · XP +'+Math.round(60*xpMul())+'</div>':'')+ // 보스 보상은 큰 숫자에 안 들어가고 순손익에는 들어감 → 순손익 줄 바로 위에
-   (()=>{const c=(run.cost||0)+(run.re?run.re.fee||0:0);return c>0?'<div class="sub dn">🧾 수수료·아이템 '+sw(-c)+' · 순손익 '+sw(lastAmt-(run.cost||0))+'</div>':'';})()+ // 매수 때 뗀 수수료·아이템값 (lastAmt는 재진입 수수료까지 뺀 값, 아이템값은 recordRound에서 뺌)
+   (()=>{const c=(run.cost||0)+(run.re?run.re.fee||0:0);return c>0&&!plain?'<div class="sub dn">🧾 수수료·아이템 '+sw(-c)+' · 순손익 '+sw(lastAmt-(run.cost||0))+'</div>':'';})()+ // 매수 때 뗀 수수료·아이템값 (lastAmt는 재진입 수수료까지 뺀 값, 아이템값은 recordRound에서 뺌)
    ((sell.repaid||0)+((run.re&&run.re.repaid)||0)?'<div class="sub dn">💸 빚 자동 상환 '+sw(-((sell.repaid||0)+((run.re&&run.re.repaid)||0)))+(debt>0?' · 남은 빚 '+won(debt):' · 빚 청산!')+'</div>':'')+
-   (run.lev>1||run.allin?'<div class="sub gd">'+(run.lev>1?'⚡ 레버리지 '+run.lev+'배 ':'')+(run.allin?'🎲 영끌':'')+'</div>':'')+
+   (run.lev>1||run.allin?'<div class="sub gd">'+(run.lev>1?'⚡ 레버리지 '+run.lev+'배 ':'')+(run.allin?'💯 영끌':'')+'</div>':'')+
    (sell.bonus?'<div class="sub gd">'+(sell.fever?'🔥 FEVER ':'')+streak+'연속 보너스 '+sw(sell.bonus)+'</div>':'')+
-   '<div class="bar"><i style="width:'+pct.toFixed(0)+'%"></i></div>'+
-   '<div class="row"><span>매도가 '+fmtP(priceOf(sell.m))+' ('+(sell.m>=1?'+':'')+pp(sell.m)+')</span><span>고점 +'+pp(peak)+'</span></div>'+
    (run.boss&&!sell.bossReward?'<div class="sub dn">👹 보스가 살아남았다 (목표 +'+Math.round((run.boss.target-1)*100)+'%)</div>':'')+
-   '<div class="row"><span>고점 근접도 '+pct.toFixed(0)+'%</span><span class="gd">+'+xg+' XP</span></div>'+hintLine()+
-   shareBtn(wb>0&&adOk('win')?'<button class="pri" id="adWin" type="button">📺 광고 보고 수익 +50% ('+swS(wb)+') · '+(AD_LIM.win-adCnt('win'))+'/'+AD_LIM.win+'</button>':lb>0&&adOk('loss')?'<button class="pri" id="adLoss" type="button">📺 광고 보고 손실 30% 복구 ('+swS(lb)+') · '+(AD_LIM.loss-adCnt('loss'))+'/'+AD_LIM.loss+'</button>':'');
-  showCard();bindShare();
+   '<div class="row"><span>'+(sell.m>1?'고점 +'+pp(peak)+' · 근접도 '+pct.toFixed(0)+'%':'손절 '+pp(sell.m)+' · 고점 +'+pp(peak))+'</span><span class="gd xpv">+'+xg+' XP</span></div>'+hintLine()+goalLine()+ // 매도가·고점·근접도 막대 대신 작은 한 줄
+   shareBtn(wb>0&&adOk('win')&&adWinBig(wb)?'<button id="adWin" type="button">📺 광고 보고 수익 +50% ('+swS(wb)+') · '+(AD_LIM.win-adCnt('win'))+'/'+AD_LIM.win+'</button>':lb>0&&adOk('loss')&&adBig(Math.max(0,Math.min(run.re.loss||0,-lastAmt)))?'<button id="adLoss" type="button">📺 광고 보고 손실 30% 복구 ('+swS(lb)+') · '+(AD_LIM.loss-adCnt('loss'))+'/'+AD_LIM.loss+'</button>':'',!onCG||sell.m>=2||!!sell.bossReward); // 크레이지게임즈판은 링크 없이 글만 공유됨 → 2배 이상·보스 처치 판에만 공유 버튼
+  bdNext={k:g[1]==='dn'?'shock':'happy',id:run.bd||bdRand()};showCard();bindShare(); // 익절·보스 처치는 기뻐하고, 손해로 끝난 판(손절·재진입 물림·수수료)은 놀람
   if($('adWin'))$('adWin').onclick=()=>{const b=$('adWin'),p0=pres;if(adFull('win'))return b.remove();b.disabled=true;rewardAd('winx',()=>{if(pres!==p0||b.dataset.paid)return;if(adFull('win'))return b.remove();b.dataset.paid=1;adUse('win');balance+=wb;stats.net+=wb;store.set('shg_stats',stats);b.remove();paintTop();paintPickers();setBtn();stamp('📺 +50%');toast('📺 보너스 '+swS(wb)+' 지급!');});setTimeout(()=>{if(b.isConnected)b.disabled=false;},3000);};
   if($('adLoss'))$('adLoss').onclick=()=>{const b=$('adLoss'),p0=pres;if(adFull('loss'))return b.remove();b.disabled=true;rewardAd('lossback',()=>{if(pres!==p0||b.dataset.paid)return;if(adFull('loss'))return b.remove();b.dataset.paid=1;adUse('loss');balance+=lb;stats.net+=lb;store.set('shg_stats',stats);b.remove();paintTop();paintPickers();setBtn();stamp('📺 복구');toast('📺 '+swS(lb)+' 돌려받았어요');});setTimeout(()=>{if(b.isConnected)b.disabled=false;},3000);};
 }
+function goalIn(){const nw=balance+invTotal()-debt,hi=homeIdx(),nh=HOMES[hi+1],ri=rankOf(xp),nr=RANKS[ri+1],u=nr?unlOf(ri+1):[],hp=nh?nw/nh.min:-1,rp=nr?(xp-RANKS[ri][0])/(nr[0]-RANKS[ri][0]):-1,rk=!!nr&&(u.length>0||!nh)&&rp>hp; // 다음 집과 다음 계급 해금 중 더 가까운 목표 하나만 (승급 직후엔 집이, 해금이 코앞이면 해금이 보임)
+  if(!nh&&!nr)return '';const p=Math.max(0,Math.min(99,Math.floor((rk?rp:hp)*100))); // 해금이 여럿이면 '외 N개' ('+2'는 아이템 강화처럼 읽힘, 숫자만 다음 줄로 떨어지지 않게 &nbsp;)
+  return '<div class="row"><span style="min-width:0;text-align:left">'+(rk?(u.length?'🎖️ <b>'+nr[1]+'</b> 승급 시 '+u[0]+(u.length>1?' 외&nbsp;N개'.replace('N',u.length-1):''):'🎖️ 다음 계급 <b>'+nr[1]+'</b>'):'🏠 다음 집 <b>'+nh.n+'</b> · '+wonS(nh.min))+'</span><span class="gd">'+p+'%</span></div><div class="pb"><u style="width:'+p+'%"></u></div>';}
+const goalLine=()=>'<div class="goal">'+goalIn()+'</div>';
 function promoLine(){const p=run&&run.promo;return p?'<div class="sub gd promo">🎉 승급! '+RANKS[p.r][1]+(p.u.length?' · '+p.u.join(', ')+' 해금':'')+'</div>':'';}
 function hintLine(){return run.hint&&!run.hint.crystal?'<div class="row"><span>찌라시</span><span>'+(run.hint.real?'진짜였음 🕵️ (폭락은 이 선 위)':'가짜였음 🤡')+'</span></div>':'';}
 function showBust(loss,L,xg,rw,sh,ps){
-  const lb=Math.floor(loss*.3);
+  const lb=Math.floor(loss*.3),plain=run.lev<=1&&!Object.values(run.it||{}).some(Boolean)&&!rw; // plain: 아이템·레버리지 없는 판은 수수료를 손실 숫자에 합치고 수수료 줄은 숨김
   const early=peak<1.1,cry=!!(run.hint&&run.hint.crystal)&&!run.liq; // cry: 수정구슬 판 (선을 보고도 못 판 경우)
   shareText=`[떡상 계좌 키우기] ${run.offer.name} 고점 +${nf(1).format((peak-1)*100)}%에서 못 팔고 물림 ${Math.round(L*100)}% 손실 😵\n자산 ${won(balance)}`;
   card.innerHTML='<div class="grade dn">'+(run.liq?'💀 강제청산':cry?'🔮 예언대로 폭락':early?'시초가 폭락':'물렸습니다')+'</div>'+
-   '<div class="sub">'+(run.liq?run.lev+'배 레버리지 · 가격이 청산가에 닿아 강제로 팔렸습니다.':cry?'수정구슬 선 바로 위에서 터졌어요. 다음엔 선에 닿기 전에 파세요.':early?'사자마자 터졌습니다. 운이 없었어요.':'+'+nf(1).format((peak-1)*100)+(Math.round((peak-1)*1000)>=500?'%까지 갔는데 욕심을 부렸습니다.':'%에서 터졌습니다. 이번엔 일찍 왔어요.'))+'</div>'+
-   (rw?'<div class="sub gd">⏪ 손실 복구권 발동! 손실 0원</div>':'<div class="big dn">'+sw(-loss)+' ('+Math.round(L*100)+'%)</div>')+promoLine()+
+   '<div class="sub">'+(run.liq?run.lev+'배 레버리지 · 가격이 청산가에 닿아 강제로 팔렸습니다.':cry?'수정구슬 선 바로 위에서 터졌어요. 다음엔 선에 닿기 전에 파세요.':early?'사자마자 터졌습니다. 운이 없었어요.':'+'+nf(1).format((peak-1)*100)+(Math.round((peak-1)*1000)>=500?'%까지 갔는데 너무 오래 들고 있었어요.':'%에서 터졌습니다. 이번엔 일찍 왔어요.'))+'</div>'+
+   (rw?'<div class="sub gd">⏪ 손실 복구권 발동! 손실 0원</div>':'<div class="big dn">'+sw(-loss-(plain?run.cost||0:0))+' ('+Math.round(L*100)+'%)</div>')+promoLine()+
    (peak>1.05?'<div class="sub gd">고점에서 팔았으면 '+sw(run.bet*(peak-1)*run.lev*profitMul())+'이었는데…</div>':'')+
    (sh?'<div class="sub gd">🛡️ 손절보험이 손실을 줄였습니다.</div>':'')+
-   (run.cost?'<div class="sub dn">🧾 수수료·아이템 '+sw(-run.cost)+'</div>':'')+
-   '<div class="row"><span>'+(ps>1?ps+'연속 익절 끊김':'위로 경험치')+'</span><span class="gd">+'+xg+' XP</span></div>'+hintLine()+
+   (run.cost&&!plain?'<div class="sub dn">🧾 수수료·아이템 '+sw(-run.cost)+'</div>':'')+
+   '<div class="row"><span>'+(ps>1?ps+'연속 익절 끊김':'위로 경험치')+'</span><span class="gd xpv">+'+xg+' XP</span></div>'+hintLine()+
    (run.boss?'<div class="sub dn">👹 보스가 살아남았다 (목표 +'+Math.round((run.boss.target-1)*100)+'%)</div>':'')+
-   shareBtn(lb>0&&adOk('loss')?'<button class="pri" id="adLoss" type="button">📺 광고 보고 손실 30% 복구 ('+swS(lb)+') · '+(AD_LIM.loss-adCnt('loss'))+'/'+AD_LIM.loss+'</button>':'');
-  showCard();bindShare();
+   shareBtn(lb>0&&adOk('loss')&&adBig(loss)?'<button id="adLoss" type="button">📺 광고 보고 손실 30% 복구 ('+swS(lb)+') · '+(AD_LIM.loss-adCnt('loss'))+'/'+AD_LIM.loss+'</button>':'',!onCG); // 크레이지게임즈판은 물린 판 공유 버튼 없음 (링크 없는 글만 공유됨)
+  bdNext={k:'shock',id:run.bd||bdRand()};showCard();bindShare();
   if($('adLoss'))$('adLoss').onclick=()=>{const b=$('adLoss'),p0=pres;if(adFull('loss'))return b.remove();b.disabled=true;rewardAd('lossback',()=>{if(pres!==p0||b.dataset.paid)return;if(adFull('loss'))return b.remove();b.dataset.paid=1;adUse('loss');balance+=lb;stats.net+=lb;store.set('shg_stats',stats);b.remove();paintTop();paintPickers();setBtn();stamp('📺 복구');toast('📺 '+swS(lb)+' 돌려받았어요');});setTimeout(()=>{if(b.isConnected)b.disabled=false;},3000);};
 }
-const RAGE=['세력이 당신의 계좌를 보며 웃고 있습니다','방금 판 사람이 최고점에 팔았습니다','종토방: "ㅋㅋ 또 물린 사람?"','개미 털기 성공 (당함)','차트가 당신이 판 직후 반등했습니다','오늘의 교훈: 욕심은 금물… 이었는데'];
+const TIPS=['💡 투자 비율을 25%로 낮추면 폭락을 맞아도 다시 해 볼 돈이 남아요','💡 5연속 익절하면 FEVER로 보너스가 2배예요','💡 작은 수익이라도 꾸준히 챙기면 연속 익절 보너스가 쌓여요','💡 매일 선물과 미션 보상으로 현금을 다시 모을 수 있어요','💡 수익 중에 악재 뉴스가 뜨면 팔고 다음 판을 노리는 것도 방법이에요'];
+const overTip=()=>{const r=rankOf(xp),u=r+1<RANKS.length?unlOf(r+1):[],D=[];if(u.length)D.push('🔓 '+RANKS[r+1][1]+' 계급이 되면 열려요: '+u.join(', '));if(spFree()>0&&skl('risk')<15)D.push('🌳 남은 SP로 🛡️ 리스크 관리를 올리면 폭락 손실이 줄어요');return D.length&&Math.random()<.5?pick(D):pick(TIPS);}; // 바닥 화면 한 줄: 놀리는 말 대신 다시 일어설 팁 (절반은 다음 계급 해금·스킬처럼 이 사람에게 맞는 것)
 /* ---------- 빚 · 신용등급 ---------- */
 const LOAN_X=[0,5,4,3.5,3,2.5,2,1.6,1.3,1,.8],LOAN_R=[0,.003,.004,.005,.007,.01,.013,.017,.022,.028,.035];
 const loanAmt=()=>Math.max(START,Math.round(betCap(1)*LOAN_X[credit]/1e4)*1e4);
@@ -1429,8 +1504,8 @@ const loanRate=()=>LOAN_R[credit];
 const debtLimit=()=>Math.max(START*30,betCap(1)*25);
 const canLoan=()=>{if(credit>=10)return false;const d=debt+loanAmt();return d+Math.ceil(d*LOAN_R[Math.min(10,credit+1)])<=debtLimit();}; // 다음 판 이자(대출 후 등급)까지 붙어도 한도 안이어야
 function takeLoan(){if(!canLoan())return false;const a=loanAmt();debt+=a;balance+=a;credit=Math.min(10,credit+1);stats.loans=(stats.loans||0)+1;const nl=stats.loanAt!==stats.rounds;stats.loanAt=stats.rounds;store.set('shg_stats',stats);if(nl)unlock('debt1');
-  vib(40);toast('💳 대출 '+won(a)+' · 신용 '+credit+'등급'+(credit>=8?' (사채)':''));return true;}
-function repay(a){a=Math.min(a,debt,balance);if(a<=0)return;balance-=a;debt-=a;if(debt<1){debt=0;intPaid=false;store.set('shg_intPaid',false);credit=Math.max(1,credit-1);if(state==='holding'||!(stats.loanAt>=stats.rounds))unlock('payoff');toast('🙌 빚 청산! 신용 '+credit+'등급');sfx.up();}}
+  vib(40);toast('💳 대출 '+won(a)+' · 신용 '+crS(credit)+(credit>=8?' (사채)':''));return true;}
+function repay(a){a=Math.min(a,debt,balance);if(a<=0)return;balance-=a;debt-=a;if(debt<1){debt=0;intPaid=false;store.set('shg_intPaid',false);credit=Math.max(1,credit-1);if(state==='holding'||!(stats.loanAt>=stats.rounds))unlock('payoff');toast('🙌 빚 청산! 신용 '+crS(credit));sfx.up();}}
 function resetView(){streak=0;app.classList.remove('fever');$('fever').hidden=true;round=1;state='ready';card.hidden=true;candles=[];sell=null;crashed=false;run=null;eM=1;
   $('pnl').hidden=true;$('bossbar').hidden=true;buildChartIdle();newsIdle();paintTop();paintPickers();paintQuote();setBtn();}
 function unOver(){ // 바닥 화면에서 룰렛·시즌 보상·대출 등으로 10만원 이상 생기면 바로 이어서 거래 (빚 한도 초과분은 판 시작 때처럼 예수금으로 자동 상환)
@@ -1443,7 +1518,7 @@ function declareBankrupt(forced){ // 파산 신청: 빚이 있으면 장비·소
   const seized=debt>0,gotSP=stats.bankrupts<=5;if(gotSP)stats.bonusSP=(stats.bonusSP||0)+1;
   if(seized){gear={};inv={};armed={};invest={};store.set('shg_inv2',invest);store.set('shg_gear',gear);store.set('shg_inv',inv);store.set('shg_armed',armed);credit=10;stats.cleanRounds=0;if(forced)unlock('default');offers=makeOffers();}
   debt=0;intPaid=false;overLoss=0;store.set('shg_intPaid',false);balance=START*(1+.2*skl('seed'));lowFlag=false;stats.low=0;store.set('shg_stats',stats);resetView();sfx.up();
-  stamp(seized?'🚨 압류 완료':'🔥 복수전 시작');setTimeout(()=>toast((seized?'🚨 장비·소모품·투자금 압류 · 신용 10등급 · ':'')+(gotSP?'😤 오기 SP +1':'다시 시작')),400);
+  stamp(seized?'🚨 압류 완료':'🌱 새 출발!');setTimeout(()=>toast((seized?'🚨 장비·소모품·투자금 압류 · 신용 10등급 · ':'')+(gotSP?'😤 오기 SP +1':'다시 시작')),400);
 }
 let overSig='',overLoss=0;const overNow=()=>(debt>debtLimit()?'D':'O')+'|'+Math.ceil(debt)+'|'+credit+'|'+canLoan()+'|'+Math.floor(balance); // 바닥·신용불량 카드가 보여 주는 값 (바뀌면 카드를 다시 그림)
 function staleOver(){if(state==='over'&&overSig&&!adPause&&!adReq&&overNow()!==overSig){if(debt>debtLimit())showDefault(true);else showOver(overLoss,true);paintPickers();setBtn();}return false;} // 은행 상환·룰렛 등으로 빚·예수금이 바뀌었는데 아직 못 일어나면 카드 내용만 새로 (한도 밑으로 갚았으면 신용불량 → 일반 바닥 화면)
@@ -1453,37 +1528,43 @@ function showDefault(quiet){ // 빚이 한도를 넘으면 강제 신용불량
    '<div class="row"><span>압류 대상</span><span class="dn">장비 전부 ('+Object.keys(gear).length+'개) · 소모품 전부</span></div>'+
    '<div class="row"><span>잃는 돈</span><span class="dn">예수금 '+wonS(balance)+(invTotal()>0?' · 투자금 '+wonS(invTotal()):'')+'</span></div>'+
    '<div class="sub">레벨, 스킬, 업적은 남습니다.</div><div class="btns"><button class="pri" id="again" type="button">🥫 받아들이고 처음부터</button></div>';overSig=overNow();
-  showCard();$('again').onclick=()=>{const k=overSig;if(unOver()||overSig!==k)return;declareBankrupt(debt>debtLimit());};paintPickers();setBtn(); // 그사이 은행에서 한도 밑으로 갚았으면 그냥 이어서
+  bdNext={k:'shock',id:run&&run.bd||bdCur&&bdCur.id||bdRand()};showCard();$('again').onclick=()=>{const k=overSig;if(unOver()||overSig!==k)return;declareBankrupt(debt>debtLimit());};paintPickers();setBtn(); // 그사이 은행에서 한도 밑으로 갚았으면 그냥 이어서
 }
 
 /* ---------- 수익화: 보상형 광고 · 후원 (설정값 넣으면 켜짐) ---------- */
 const CFG={adClient:'ca-pub-2213068202184499',adTest:false,donateUrl:'',iap:false,iapDev:false}; // adClient: 'ca-pub-…' (구글 애드센스 H5 게임 광고), donateUrl: 후원 링크, iap: 프리미엄 꾸미기 상점 켜기 (끄면 화면·플레이 중 저장이 지금 그대로, localhost 주소에 ?iap를 붙이면 개발 미리보기), iapDev: localhost가 아닌 곳에서도 ?iap 미리보기와 ?iap&devbuy 개발용 즉시 지급 허용 (배포본에서는 꼭 false)
 // 크레이지게임즈 포털에서 실행되면 그쪽 SDK 광고 사용
-const CG={on:false,S:null,last:0},onCG=/crazygames/.test(location.hostname)||(window.top!==window&&/crazygames/.test(document.referrer))||/[?&]cg\b/.test(location.search);
+const CG={on:false,S:null,last:0,noAds:0,done:0},onCG=/crazygames/.test(location.hostname)||(window.top!==window&&/crazygames/.test(document.referrer))||/[?&]cg\b/.test(location.search); // noAds: 이번 접속에서 광고 요청이 한 번이라도 실패·시간 초과 → 광고가 꺼진 것으로 보고 📺 버튼을 숨김 (Basic Launch·애드블록에서 효과 없는 버튼 금지), done: SDK 준비가 끝났거나 실패함
+const BUILD='v2.3 · b261029 · '+LANG+'-'+(onCG?'cg':/(^|\.)itch\.(io|zone)$|hwcdn\.net$/.test(location.hostname)||/itch\.io/.test(document.referrer)?'itch':'web'); // 설정 맨 아래 버전 줄: 버그 신고에 정확한 빌드가 찍히게 (배포할 때 날짜 bYYMMDD를 갱신, 언어·포털은 실행 환경에서)
 if(onCG){const sc=document.createElement('script');sc.src='https://sdk.crazygames.com/crazygames-sdk-v3.js';
-  sc.onload=async()=>{try{const S=window.CrazyGames.SDK;await S.init();if(S.environment!=='disabled'){CG.S=S;CG.on=true;try{const ms=v=>{v=v&&typeof v==='object'?v:S.game.settings;cgMute=!!(v&&v.muteAudio);if(touched||cgMute)bgm.sync();};ms();S.game.addSettingsChangeListener(ms);}catch(e){}if(state==='holding'||state==='ghost')cgPlay(true);}}catch(e){}};document.head.appendChild(sc);}
+  sc.onload=async()=>{try{const S=window.CrazyGames.SDK;await S.init();if(S.environment!=='disabled'){CG.S=S;CG.on=true;cgLoad();try{const ms=v=>{v=v&&typeof v==='object'?v:S.game.settings;cgMute=!!(v&&v.muteAudio);document.body.classList.toggle('noChat',!!(v&&v.disableChat));if(touched||cgMute)bgm.sync();};ms();S.game.addSettingsChangeListener(ms);}catch(e){}if(state==='holding'||state==='ghost')cgPlay(true);}}catch(e){}CG.done=1;};sc.onerror=()=>{CG.done=1;};document.head.appendChild(sc);}
 let cgG=false; // 마지막으로 보낸 gameplay 상태 (짝 안 맞는 stop·중복 호출 막기)
 const cgPlay=on=>{on=!!on;if(!CG.on||cgG===on)return;cgG=on;try{on?CG.S.game.gameplayStart():CG.S.game.gameplayStop();}catch(e){}};
+function cgLoad(){try{CG.S.game.loadingStart();}catch(e){}let done=0;const end=()=>{if(done)return;done=1;try{CG.S.game.loadingStop();}catch(e){}};try{document.fonts.ready.then(()=>requestAnimationFrame(end),end);}catch(e){end();}setTimeout(end,4000);} // 포털 로딩 표시: 게임은 SDK보다 먼저 떠 있으니 글꼴까지 그려지면 바로 끝 (글꼴이 늦어도 4초 뒤엔 끝)
+function cgHappy(){try{const n=performance.now();if(!CG.on||n-(cgHappy.t||-1e9)<180000)return;cgHappy.t=n;CG.S.game.happytime();}catch(e){}} // 포털 축하 효과: 보스 처치·승급·이사·최고 배수 같은 드문 순간에만, 3분에 한 번까지
 // 광고가 떠 있는 동안: 효과음·배경음 끄고, 새 판 시작 막고, 진행 중인 차트는 멈춤
 let adTok=0;const adStart=tk=>{adTok=tk;adPause=true;muted=true;bgm.sync();if(state==='holding'||state==='ghost')cgPlay(false);},adEnd=tk=>{if(tk!==adTok)return;adTok=0;adPause=false;muted=!SET.sound;bgm.sync();if(state==='holding'||state==='ghost')cgPlay(true);}; // tk: 광고 요청 번호 (제한 시간 넘어 늦게 온 지난 요청의 응답이 지금 떠 있는 광고의 멈춤·음소거를 풀지 않게)
 let adHold=0,adDue=0,adPend=0,adReq=0,adReqT=0,presPend=0; // adPend: 판 도중이라 미룬 전면 광고, adReq: 광고를 요청했고 아직 화면에 안 뜸 (그사이 새 판 시작 막음), presPend: 은퇴 확인 뒤 적용 대기 (그사이 새 판 시작 막음)
 const reqEnd=()=>{adReq=0;clearTimeout(adReqT);};
-function adDecide(){adDue=0;adHold=0;if(state==='holding'||state==='ghost'||document.hidden)adPend=1;else midAd();} // adDue: 30판째 판이 끝나고 전면 광고를 띄울지 정하는 때 (게임 시계 기준, frame()에서 확인)
+function adDecide(){adDue=0;adHold=0;if(state==='holding'||state==='ghost'||document.hidden||(state==='result'||state==='over')&&card.querySelector('#adWin,#adLoss,#adRevive'))adPend=1;else midAd();} // adDue: 30판째 판이 끝나고 전면 광고를 띄울지 정하는 때 (게임 시계 기준, frame()에서 확인)
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&adDue)adDecide();}); // 그사이 다른 탭으로 가면 다음 판 끝난 뒤로 미룸
-function midAd(){if(premOwn('noads'))return;if(!adsOn())return;if(adPause||adReq){adPend=1;return;}adReq=1;adReqT=setTimeout(reqEnd,CG.on?45000:10000);const tk=adReqT,on=()=>{if(adReqT===tk)reqEnd();adStart(tk);},off=()=>{if(adReqT===tk)reqEnd();adEnd(tk);}; // 전면 광고도 뜰 때까지 새 판·보상 광고 요청을 막음 // 광고 제거 패스(noads)는 30판마다 전면 광고만 없앰 (보상형 광고는 그대로)
-  try{if(CG.on)CG.S.ad.requestAd('midgame',{adStarted:on,adFinished:off,adError:off});else window.adBreak({type:'next',name:'round30',beforeAd:on,afterAd:off,adBreakDone:off});}catch(e){off();}}
+function midAd(){if(premOwn('noads'))return;if(!adsOn())return;if(adPause||adReq){adPend=1;return;}adReq=1;adReqT=setTimeout(()=>{reqEnd();adsOff();},CG.on?45000:10000);const tk=adReqT,on=()=>{if(adReqT===tk)reqEnd();adStart(tk);},off=()=>{if(adReqT===tk)reqEnd();adEnd(tk);}; // 전면 광고도 뜰 때까지 새 판·보상 광고 요청을 막음 // 광고 제거 패스(noads)는 30판마다 전면 광고만 없앰 (보상형 광고는 그대로)
+  try{if(CG.on)CG.S.ad.requestAd('midgame',{adStarted:on,adFinished:off,adError:()=>{off();adsOff();}});else window.adBreak({type:'next',name:'round30',beforeAd:on,afterAd:off,adBreakDone:off});}catch(e){off();adsOff();}} // 한 번 쉴 때 광고는 하나만: 결과·바닥 카드에 보상 광고 버튼이 있으면 전면 광고는 다음 판 뒤로
 // 광고 보상 하루 횟수
 const AD_LIM={win:5,loss:3,item:3};
 const adCnt=k=>{const a=store.get('shg_adc',{});return dayOrd(a.d)>=dayN()?(a[k]||0):0;};
 const adUse=k=>{let a=store.get('shg_adc',{});if(dayOrd(a.d)<dayN())a={d:dayKey()};a[k]=(a[k]||0)+1;store.set('shg_adc',a);};
 const adOk=k=>adsOn()&&adCnt(k)<AD_LIM[k];
 const adFull=k=>{if(adCnt(k)<AD_LIM[k])return false;toast('오늘 광고 보상은 다 받았어요');return true;}; // 버튼을 그린 뒤 다른 탭에서 오늘 횟수를 다 썼으면 누를 때·보상 줄 때 다시 막음
-const adsOn=()=>onCG?CG.on:(!!CFG.adClient&&typeof window.adBreak==='function'&&!!(window.adsbygoogle&&window.adsbygoogle.loaded));
+const adsOn=()=>onCG?CG.on&&!CG.noAds:(!!CFG.adClient&&typeof window.adBreak==='function'&&!!(window.adsbygoogle&&window.adsbygoogle.loaded));
+const adsWait=()=>(onCG?!CG.done:!!CFG.adClient&&!adsOn())&&performance.now()<10000; // 광고 SDK(크레이지게임즈·애드센스)가 아직 준비 중일 수 있음 → 처음 10초는 무료 복귀 지원금을 서둘러 띄우지 않음 (광고가 늦게 준비되면 광고 버튼으로)
+const adsOff=say=>{if(!onCG||CG.noAds)return;CG.noAds=1;let n=0;if($('adSpin'))$('modal').hidden=true;['adWin','adLoss','adRevive','adItem','adSpin'].forEach(id=>{const b=$(id);if(b){b.remove();n++;}});if(say||n)toast('지금은 광고 보상을 받을 수 없어요');if(overRev)overRev();}; // 크레이지게임즈: 광고 요청이 한 번이라도 실패(오류 종류 무관)·시간 초과면 이번 접속 동안 광고 끔 → 보이는 📺 버튼을 다 지우고 알림은 한 번만 (바닥 화면은 무료 복귀 지원금으로 바뀜)
+const adBig=l=>l>0&&l>=.3*(balance+l),adWinBig=w=>w>=stakeCap()*.25||!!sell&&(sell.m>=2||!!sell.fever||!!sell.bossReward); // 보상 광고는 클 때만: 손실 복구는 판 전 예수금의 30% 넘게 잃었을 때, +50%는 보너스가 투자 한도의 25% 이상이거나 x2·FEVER·보스 처치일 때
 if(CFG.adClient&&!onCG){if(!document.querySelector('script[src*=adsbygoogle]')){const sc=document.createElement('script');sc.async=true;sc.src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client='+CFG.adClient;sc.crossOrigin='anonymous';
   if(CFG.adTest)sc.dataset.adbreakTest='on';sc.dataset.adFrequencyHint='120s';document.head.appendChild(sc);}
   window.adsbygoogle=window.adsbygoogle||[];window.adBreak=window.adConfig=function(o){window.adsbygoogle.push(o);};window.adConfig({preloadAdBreaks:'on',sound:SET.sound||SET.bgm?'on':'off'});}
-function rewardAd(name,onReward){if(store.off&&tabNow())return;if(!adsOn()){toast('광고를 불러올 수 없어요');return;}if(adReq||adPause){toast('📺 광고 준비 중…');return;}adReq=1;adReqT=setTimeout(()=>{reqEnd();toast('광고를 불러올 수 없어요');},CG.on?45000:10000);const tk=adReqT,end=()=>{if(adReqT===tk)reqEnd();};let ok=false; // end: 제한 시간(크레이지게임즈 45초 · 애드센스 10초)이 지나 새 요청이 나간 뒤 늦게 온 응답은 그 요청을 풀지 않게. SDK가 끝내 응답이 없어도 제한 시간 뒤엔 다시 플레이 가능 (크레이지게임즈 SDK는 늦어도 adFinished/adError로 꼭 끝나니 길게)
-  if(CG.on){CG.last=performance.now();try{CG.S.ad.requestAd('rewarded',{adStarted:()=>{end();adStart(tk);},adFinished:()=>{end();adEnd(tk);onReward();},adError:()=>{end();adEnd(tk);if(!adPause)toast('지금은 볼 수 있는 광고가 없어요');}});}catch(e){reqEnd();adEnd(tk);toast('광고를 불러올 수 없어요');}return;}
+function rewardAd(name,onReward){if(store.off&&tabNow())return;if(!adsOn()){toast('광고를 불러올 수 없어요');return;}if(adReq||adPause){toast('📺 광고 준비 중…');return;}adReq=1;adReqT=setTimeout(()=>{reqEnd();if(CG.on)adsOff(1);else toast('광고를 불러올 수 없어요');},CG.on?45000:10000);const tk=adReqT,end=()=>{if(adReqT===tk)reqEnd();};let ok=false; // end: 제한 시간(크레이지게임즈 45초 · 애드센스 10초)이 지나 새 요청이 나간 뒤 늦게 온 응답은 그 요청을 풀지 않게. SDK가 끝내 응답이 없어도 제한 시간 뒤엔 다시 플레이 가능 (크레이지게임즈 SDK는 늦어도 adFinished/adError로 꼭 끝나니 길게)
+  if(CG.on){CG.last=performance.now();try{CG.S.ad.requestAd('rewarded',{adStarted:()=>{end();adStart(tk);},adFinished:()=>{end();adEnd(tk);onReward();},adError:()=>{end();adEnd(tk);adsOff(!adPause);}});}catch(e){reqEnd();adEnd(tk);adsOff(1);}return;}
   try{window.adBreak({type:'reward',name,beforeAd:()=>{end();adStart(tk);},afterAd:()=>adEnd(tk),beforeReward:show=>{if(state==='holding'||state==='ghost'){end();return;}show();},adViewed:()=>{ok=true;onReward();},adDismissed:()=>toast('끝까지 봐야 보상을 받아요'),adBreakDone:i=>{end();adEnd(tk);if(!adPause&&!ok&&i&&i.breakStatus!=='viewed'&&i.breakStatus!=='dismissed')toast('지금은 볼 수 있는 광고가 없어요');}});}catch(e){reqEnd();adEnd(tk);toast('광고를 불러올 수 없어요');}}
 // 앱 아이콘 배지: 오늘 룰렛 안 돌렸으면 1
 const badge=()=>{try{if(!navigator.setAppBadge)return;if(!usedToday('shg_spin'))navigator.setAppBadge(1);else navigator.clearAppBadge();}catch(e){}};
@@ -1491,20 +1572,21 @@ document.addEventListener('visibilitychange',()=>{if(document.hidden)badge();});
 let overRev=null; // 바닥 화면이 떠 있는 동안 광고 복구 버튼을 다시 확인하는 함수
 function showOver(loss,quiet){if(loss>0)overLoss=loss;else loss=overLoss; // 챌린지 등으로 바닥 화면을 잠시 닫았다 다시 띄워도 안 받은 손실 복구 광고는 그대로
   const near=run&&!sell&&!run.chal&&!run.tut&&run.bet>0&&peak>1.05?'<div class="sub gd near">고점(+'+nf(1).format((peak-1)*100)+'%)에서 팔았으면 '+sw(run.bet*(peak-1)*(run.lev||1)*profitMul())+'이었습니다</div>':'';
-  const la=loanAmt(),ok=canLoan(),revHtml='<button class="pri" id="adRevive" type="button">📺 광고 보고 '+won(START*3)+' 받기 (하루 1번)</button>';
+  const la=loanAmt(),ok=canLoan(),revHtml='<button class="pri" id="adRevive" type="button">📺 광고 보고 '+won(START*3)+' 받기 (하루 1번)</button>',freeHtml='<button class="pri" id="freeRev" type="button">🎁 복귀 지원금 '+won(START*3)+' 받기 (하루 1번)</button>'; // freeHtml: 광고가 꺼졌을 때(포털 Basic Launch·광고 실패·광고 차단) 같은 하루 1번 지원금을 광고 없이
   const lb=Math.floor((loss||0)*.3),lossHtml=lb>0&&adOk('loss')?'<button class="pri" id="adLoss" type="button">📺 광고 보고 손실 30% 복구 ('+swS(lb)+') · '+(AD_LIM.loss-adCnt('loss'))+'/'+AD_LIM.loss+'</button>':''; // 폭락으로 바닥나도 물림 카드처럼 손실 복구 광고
   const revOk=()=>{const b=balance+START*3,i=tutDone&&debt>0&&!intPaid?Math.ceil(debt*loanRate()):0,ex=Math.ceil(debt+i-debtLimit());return !(ex>0&&b<ex)&&b-Math.max(0,ex)>=100000;}; // 받고 나서 다음 판 시작(이자·한도 초과분 상환) 때 바로 압류·바닥이면 안 띄움
   if(!quiet){vib([200,80,200,80,400]);flash('#000');}
-  card.innerHTML='<div class="grade dn">💸 돈이 바닥났습니다</div><div class="sub">'+(run&&run.liq?'반대매매로 계좌가 털렸습니다.':'계좌가 바닥났습니다.')+'<span class="rage"><br><b>'+pick(sell?RAGE:RAGE.filter((x,i)=>i!==4))+'</b></span></div>'+near+
-   '<div class="row" style="flex-wrap:wrap;justify-content:center;column-gap:14px"><span>빚 <b class="'+(debt?'dn':'')+'">'+(debt?won(debt):'없음')+'</b></span><span>신용등급 <b>'+credit+'등급</b></span><span>이번 계좌 버틴 판수 <b>'+(stats.curRun||0)+'판</b></span></div>'+
-   (adsOn()&&!usedToday('shg_adRevive')&&!revOk()?'<div class="sub dn">빚이 한도에 닿아 광고 지원금으로는 다음 판을 못 버텨요</div>':'')+
-   (ok?'<div class="sub">💳 대출 '+won(la)+' · 판당 이자 '+(LOAN_R[Math.min(10,credit+1)]*100).toFixed(1)+'% → 신용 '+Math.min(10,credit+1)+'등급'+(credit+1>=8?' (사채)':'')+'</div>':'<div class="sub dn">더 이상 대출이 안 됩니다</div>')+
-   '<div class="btns" id="overBtns" style="flex-wrap:wrap">'+(adsOn()&&!usedToday('shg_adRevive')&&revOk()?revHtml:'')+(debt>0?'':'<button class="pri" type="button" id="again">🔄 새로 시작 · '+won(START*(1+.2*skl('seed')))+(stats.bankrupts<5?' · SP +1':'')+'</button><div class="sub" style="width:100%;margin:-2px 0 4px">빚이 없으니 새로 시작해도 레벨·스킬·장비·소모품은 그대로예요</div>')+lossHtml+(ok?'<button class="pri" id="loanBtn" type="button">💳 대출 받고 계속</button>':'')+(debt>0?'<button type="button" id="again">🥫 파산 신청 (압류)</button><div class="sub" style="width:100%;margin:-2px 0 0">빚 탕감 · 장비·소모품·투자금 압류 · 신용 10등급</div>':'')+'</div>';overSig=overNow(); // 빚이 없으면 공짜 새로 시작을 광고 복구 바로 다음에, 설명은 그 버튼 바로 아래에 (작은 화면에서도 스크롤 없이 보이게)
-  showCard();
-  const rev=()=>rewardAd('revive',()=>{if(usedToday('shg_adRevive'))return;store.set('shg_adRevive',dayKey());lowFlag=false;stats.low=0;store.set('shg_stats',stats);balance+=START*3;if(state==='over')resetView();paintTop();paintPickers();setBtn();stamp('📺 복구 완료');toast('📺 '+won(START*3)+' 지급! 다시 가보자');});
+  card.innerHTML='<div class="grade dn">💸 돈이 바닥났습니다</div><div class="sub">'+(run&&run.liq?'반대매매로 계좌가 털렸습니다.':'계좌가 바닥났습니다.')+'<span class="rage"><br><b>'+overTip()+'</b></span></div>'+near+
+   '<div class="row" style="flex-wrap:wrap;justify-content:center;column-gap:14px"><span>빚 <b class="'+(debt?'dn':'')+'">'+(debt?won(debt):'없음')+'</b></span><span>신용등급 <b>'+crS(credit)+'</b></span><span>이번 계좌 버틴 판수 <b>'+(stats.curRun||0)+'판</b></span></div>'+
+   (!usedToday('shg_adRevive')&&!revOk()&&(adsOn()||!adsWait())?'<div class="sub dn">'+(adsOn()?'빚이 한도에 닿아 광고 지원금으로는 다음 판을 못 버텨요':'빚이 한도에 닿아 복귀 지원금으로는 다음 판을 못 버텨요')+'</div>':'')+
+   (ok?'<div class="sub">💳 대출 '+won(la)+' · 판당 이자 '+(LOAN_R[Math.min(10,credit+1)]*100).toFixed(1)+'% → 신용 '+crS(Math.min(10,credit+1))+(credit+1>=8?' (사채)':'')+'</div>':'<div class="sub dn">더 이상 대출이 안 됩니다</div>')+
+   '<div class="btns" id="overBtns" style="flex-wrap:wrap">'+(!usedToday('shg_adRevive')&&revOk()?adsOn()?revHtml:adsWait()?'':freeHtml:'')+(debt>0?'':'<button class="pri" type="button" id="again">🔄 새로 시작 · '+won(START*(1+.2*skl('seed')))+(stats.bankrupts<5?' · SP +1':'')+'</button><div class="sub" style="width:100%;margin:-2px 0 4px">빚이 없으니 새로 시작해도 레벨·스킬·장비·소모품은 그대로예요</div>')+lossHtml+(ok?'<button class="pri" id="loanBtn" type="button">💳 대출 받고 계속</button>':'')+(debt>0?'<button type="button" id="again">🥫 파산 신청 (압류)</button><div class="sub" style="width:100%;margin:-2px 0 0">빚 탕감 · 장비·소모품·투자금 압류 · 신용 10등급</div>':'')+'</div>';overSig=overNow(); // 빚이 없으면 공짜 새로 시작을 광고 복구 바로 다음에, 설명은 그 버튼 바로 아래에 (작은 화면에서도 스크롤 없이 보이게)
+  bdNext={k:'shock',id:run&&run.bd||bdCur&&bdCur.id||bdRand()};showCard();
+  const revPay=e=>{if(usedToday('shg_adRevive'))return;store.set('shg_adRevive',dayKey());lowFlag=false;stats.low=0;store.set('shg_stats',stats);balance+=START*3;if(state==='over')resetView();paintTop();paintPickers();setBtn();stamp(e+' 복구 완료');toast(e+' '+won(START*3)+' 지급! 다시 가보자');},rev=()=>rewardAd('revive',()=>revPay('📺'));
+  const freeGo=()=>{const k=overSig;if(store.off){tabNow();return;}if(unOver()||overSig!==k)return;if(usedToday('shg_adRevive')||!revOk()){const b=$('freeRev');if(b)b.remove();return;}revPay('🎁');}; // 광고 지원금과 같은 날짜 기록(shg_adRevive)이라 둘을 합쳐 하루 1번 · 다른 탭과도 공유 (저장 못 하는 탭에서는 새로고침부터)
   const revGo=()=>{const bs=['adRevive','adLoss','loanBtn','again'].map(id=>$(id)).filter(Boolean);bs.forEach(b=>b.disabled=true);const re=()=>{if(adPause||adReq)return setTimeout(re,500);bs.forEach(b=>{if(b.isConnected)b.disabled=false;});};setTimeout(re,3000);rev();}; // 광고 기다리는 동안 대출·파산과 겹치지 않게
-  if($('adRevive'))$('adRevive').onclick=revGo;
-  const ob=$('overBtns'),addRev=()=>{if(!ob.isConnected||state!=='over'||$('adRevive')||usedToday('shg_adRevive')||!revOk()||!adsOn())return;ob.insertAdjacentHTML('afterbegin',revHtml);$('adRevive').onclick=revGo;};overRev=addRev;
+  if($('adRevive'))$('adRevive').onclick=revGo;if($('freeRev'))$('freeRev').onclick=freeGo;
+  const ob=$('overBtns'),addRev=()=>{if(!ob.isConnected||state!=='over'||$('adRevive')||$('freeRev')||usedToday('shg_adRevive')||!revOk())return;if(!adsOn()){if(!adsWait()){ob.insertAdjacentHTML('afterbegin',freeHtml);$('freeRev').onclick=freeGo;}return;}if(adHold||adDue||adReq||adPause)return;ob.insertAdjacentHTML('afterbegin',revHtml);$('adRevive').onclick=revGo;};overRev=addRev; // 전면 광고를 기다리거나 띄우는 중에는 광고 복구 버튼을 새로 붙이지 않음 (한 번 쉴 때 광고는 하나만)
   let n=0;const iv=setInterval(()=>{if(!ob.isConnected||state!=='over'){if(overRev===addRev)overRev=null;return clearInterval(iv);}if(++n<=60||n%10===0)addRev();},500); // 광고가 늦게 준비되거나(앱 막 켰을 때) 화면을 띄워 둔 채 날짜가 바뀌면 버튼 추가 (처음 30초는 0.5초마다, 그 뒤 5초마다)
   if($('loanBtn'))$('loanBtn').onclick=()=>{const k=overSig;if(unOver()||overSig!==k)return;if(!takeLoan())return showOver(0);resetView();stamp('💳 빚투 시작');};
   $('again').onclick=()=>{const k=overSig;if(unOver()||overSig!==k)return;declareBankrupt(false);}; // 누른 순간 카드가 새로 그려졌으면 바뀐 내용을 먼저 보여 줌
@@ -1514,16 +1596,19 @@ function showOver(loss,quiet){if(loss>0)overLoss=loss;else loss=overLoss; // 챌
 }
 function showIntro(){
   const ms=daily.ids.filter(id=>!daily.done.includes(id)).map(id=>MISSIONS.find(m=>m.id===id)).filter(Boolean).map(m=>m.t); // 이미 깬 미션은 빼고
-  let wb='';if((stats.rounds||0)>=30){seasonFix();const n=spFree(),tier=Math.min(SEASON_T,Math.floor(season.xp/SEASON_XP)),sn=Array.from({length:tier},(_,i)=>i+1).filter(t=>!season.got.includes(t)).length,ch=Math.max(+store.get('shg_chalDay',0)||0,+store.get('shg_chalMax',0)||0)<dayNum();
-    wb='<div class="sub">👋 다시 왔군요!</div>'+(n>0||ch||sn>0?'<ul>'+(n>0?'<li>🌳 쓰지 않은 SP <b class="gd">'+n+'</b> · 스킬 탭</li>':'')+(ch?'<li>🏆 오늘의 챌린지 아직 안 했어요 · 미션 탭</li>':'')+(sn>0?'<li>🎫 시즌 패스 보상 <b class="gd">'+sn+'</b>개 대기 · 미션 탭</li>':'')+'</ul>':'');} // 30판 넘게 한 사람에겐 규칙 대신 할 일만
-  card.innerHTML=tw('<div class="grade"><span class="up">떡상</span> 계좌 키우기</div>'+(wb||
+  if((stats.rounds||0)>=3){seasonFix();let gf=false;try{gf=!usedToday('shg_spin')}catch(e){}const n=spFree(),sn=seasonN(),ch=chalLeft(),dn=daily.done.length,dl=daily.ids.length,dm=dn<dl?'☀️ 오늘의 미션 '+dn+'/'+dl:''; // 3판 넘게 한 사람에겐 규칙 대신 받을 것·할 일만 (받을 게 없으면 막는 카드 대신 알림 한 줄)
+    const li=(gf?'<li>🎁 오늘의 선물을 받을 수 있어요 · 위쪽 🎁 버튼</li>':'')+(n>0?'<li>🌳 쓰지 않은 SP <b class="gd">'+n+'</b> · 스킬 탭</li>':'')+(sn>0?'<li>🎫 시즌 패스 보상 <b class="gd">'+sn+'</b>개 대기 · 미션 탭</li>':'')+(ch?'<li>🏆 오늘의 챌린지 아직 안 했어요 · 미션 탭</li>':'');
+    if(!li){toast('👋 다시 왔군요!'+(dm?' · '+dm:''));return;}
+    card.innerHTML=tw(ttlH(1)+'<div class="grade">👋 다시 왔군요!</div><ul>'+li+(dm?'<li>'+dm+' · 미션 탭</li>':'')+'</ul><div class="btns"><button class="pri" type="button" data-close>▶ 시작하기</button></div>');bdNext={k:'still',id:bdRand()};showCard();return;} // 환영 카드는 타이틀 화면으로 안 함: 배경 그림이 안내하는 🎁 버튼·탭을 덮어 못 누름 (작은 제목 그림 + 무작위 친구만)
+  let wb='';
+  card.innerHTML=tw(ttlH()+(wb||
    '<ul><li>버튼을 <b>한 번 누르면 매수</b>, <b>다시 누르면 매도</b>합니다.</li>'+(MOUSE.matches?'<li>⌨️ 키보드 스페이스바로도 사고팔 수 있어요.</li>':'')+'<li>언젠가 반드시 폭락합니다. 그 전에 파세요.</li><li>악재 뉴스는 진짜 신호일 수도, 개미털기일 수도 있습니다.</li><li>한 판에 거는 돈은 <b>투자 한도</b>까지예요. 한도는 레벨이 오를수록 커집니다.</li><li>5연속 익절하면 <b class="gd">FEVER</b>로 보너스가 2배입니다.</li><li>아이템은 계급이 오를 때마다 하나씩 열립니다.</li></ul>')+
    '<div class="sub" style="text-align:left;margin-top:10px"><b class="gd">오늘의 미션</b><br>'+(ms.length?'· '+ms.slice(0,3).join('<br>· ')+(ms.length>3?'<br>· 외 '+(ms.length-3)+'개는 미션 탭에서':''):'모두 완료 ✅')+'</div>'+
    '<div class="btns"><button class="pri" type="button" data-close>닫고 시작하기</button></div>');
-  showCard();
+  bdNext={k:'still',id:profile||'hamster',t:1};showCard(); // 규칙 안내(타이틀 화면)엔 내 성향 동물
 }
 
-/* ---------- 매일 룰렛 · 보물상자 ---------- */
+/* ---------- 매일 선물 · 보물상자 ---------- */
 const PRIZES=[
   {w:30,e:'💵',t:'현금',f:()=>{const v=betCap(1)*.5;balance+=v;return won(v);}},
   {w:8,e:'💰',t:'현금 대박',f:()=>{const v=betCap(1)*2;balance+=v;return won(v);}},
@@ -1533,18 +1618,20 @@ const PRIZES=[
   {w:3,e:'🎟️',t:'보스 소환권',f:()=>{inv.bossT=(inv.bossT||0)+1;store.set('shg_inv',inv);return '보스 소환권 +1';}}
 ];
 function rollPrize(noSP){const pool=PRIZES.filter(p=>!(noSP&&p.t==='SP'));let r=Math.random()*pool.reduce((a,p)=>a+p.w,0);for(const p of pool){r-=p.w;if(r<=0)return p;}return pool[0];}
-let spinning=false; // 룰렛 애니메이션 중 (연타·닫고 다시 열기 막기)
+let spinning=false; // 선물 상자 애니메이션 중 (연타·닫고 다시 열기 막기)
 $('giftBtn').onclick=()=>{
   if(spinning||state==='holding'||state==='ghost')return;
-  if(usedToday('shg_spin')){if(adsOn()&&!usedToday('shg_adSpin')&&dayOrd(store.get('shg_spin',''))<=dayN()){openModal('<h2>🎁 오늘 룰렛 끝!</h2><p class="note">광고를 보면 한 번 더 돌릴 수 있어요 (하루 1번)</p><button class="setbtn" type="button" id="adSpin" style="width:100%">📺 광고 보고 한 번 더</button>');$('adSpin').onclick=()=>rewardAd('spin',()=>{$('modal').hidden=true;if(!usedToday('shg_spin')){setTimeout(()=>$('giftBtn').click(),300);return;}if(usedToday('shg_adSpin')||dayOrd(store.get('shg_spin',''))>dayN())return;store.set('shg_adSpin',dayKey());store.set('shg_spin','');setTimeout(()=>$('giftBtn').click(),300);});return;}toast('🎁 오늘 룰렛은 끝! 내일 다시 돌려요');return;}
+  if(usedToday('shg_spin')){if(adsOn()&&!usedToday('shg_adSpin')&&dayOrd(store.get('shg_spin',''))<=dayN()){openModal('<h2>🎁 오늘 선물 받음!</h2><p class="note">광고를 보면 보너스 선물 · 📚 경험치 +'+Math.round(100*xpMul())+' XP (하루 1번)</p><button class="setbtn" type="button" id="adSpin" style="width:100%">📺 광고 보고 보너스 선물</button>');$('adSpin').onclick=()=>rewardAd('spin',()=>{$('modal').hidden=true;if(!usedToday('shg_spin')){setTimeout(()=>$('giftBtn').click(),300);return;}if(usedToday('shg_adSpin')||dayOrd(store.get('shg_spin',''))>dayN())return;store.set('shg_adSpin',dayKey());const lb='📚 +'+gainXp(100)+' XP';toast('📺 보너스 선물 · '+lb);say(lb);beep(440,.14,'sine',.06,880);burst(innerWidth/2,innerHeight*.45,30);paintTop();paintPickers();});return;}toast('🎁 오늘 선물은 받았어요! 내일 또 만나요');return;} // 광고 보너스는 다시 뽑기가 아니라 정해진 선물 (뽑기처럼 안 보이게)
   spinning=true;const pz=rollPrize(false),txt=pz.f();store.set('shg_spin',dayKey());store.set('shg_bal',Math.floor(balance)); // 누르는 순간 결과 확정·저장, 애니메이션은 보여주기만
-  openModal('<h2>🎁 매일 룰렛</h2><p class="note">하루 한 번 · 현금, 소모품, 경험치, 낮은 확률로 SP</p><div class="wheel" id="wheel">🎰</div><div class="note" id="wheelTxt" style="text-align:center">돌리는 중…</div>');
-  au();let i=0;const em=PRIZES.map(p=>p.e),iv=setInterval(()=>{const w=$('wheel');if(!w)return;w.textContent=em[i++%em.length];beep(400+i*25,.03,'square',.025);},70);
-  setTimeout(()=>{clearInterval(iv);spinning=false;const w=$('wheel'),wt=$('wheelTxt');if(w)w.textContent=pz.e;const lb=pz.s||txt.indexOf(pz.t)===0?txt:pz.t+' · '+txt;if(wt)wt.innerHTML='<b class="gd" style="font-size:18px">'+lb+'</b>';if(!wt||$('modal').hidden)toast('🎁 '+lb);else say(lb);sfx.up();burst(innerWidth/2,innerHeight*.45,50);paintTop();paintPickers();},1500);
+  openModal('<h2>🎁 매일 선물</h2><p class="note">하루 한 번 · 현금, 소모품, 경험치, 낮은 확률로 SP</p><div class="wheel" id="wheel"><span class="gbx">🎁</span></div><div class="note" id="wheelTxt" style="text-align:center">여는 중…</div>');
+  au(); // 그림을 돌리거나 삑삑대지 않고 상자만 흔들린 뒤 한 번 '퐁' (도박처럼 안 보이게)
+  setTimeout(()=>{spinning=false;const w=$('wheel'),wt=$('wheelTxt');if(w)w.textContent=pz.e;const lb=pz.s||txt.indexOf(pz.t)===0?txt:pz.t+' · '+txt;if(wt)wt.innerHTML='<b class="gd" style="font-size:18px">'+lb+'</b>';if(!wt||$('modal').hidden)toast('🎁 '+lb);else say(lb);beep(440,.14,'sine',.06,880);burst(innerWidth/2,innerHeight*.45,50);paintTop();paintPickers();},1000);
 };
 /* ---------- card close ---------- */
 function ovlCls(){document.body.classList.toggle('ovl',!card.hidden||!$('modal').hidden);placeToast();} // 카드·안내 창이 열리면 알림을 위로 (옛 브라우저용)
-function fitCard(){if(card.hidden)return;const ov=!!card.querySelector('#overBtns');card.classList.toggle('cmp',DESK.matches&&ov&&innerHeight<500);if(DESK.matches&&ov){card.style.removeProperty('top');card.style.removeProperty('max-height');return;}if(DESK.matches){const r=chart.getBoundingClientRect(),g=$('regime').getBoundingClientRect(),top=Math.max(r.top,g.bottom||r.top)+6,bot=r.bottom-6; // 데스크톱: 카드를 차트 칸 안(장세 배지 아래)에 가운데로, 넘치면 카드 안에서 스크롤
+function fitCard(){if(card.hidden)return;
+  if(ttl){const t0=sTop(),vh=innerHeight;card.classList.remove('cmp');card.style.setProperty('left','50%','important');card.style.setProperty('max-height',(vh-t0-16)+'px','important');const h=card.offsetHeight,t=Math.max(t0+8,Math.min(t0+8+Math.round(vh*.16),vh-8-h));card.style.setProperty('top',(t+h/2)+'px','important');return;} // 타이틀 화면: 배경 그림이 매수 버튼·탭까지 덮으니 화면 전체를 씀 · 위쪽엔 친구 자리, 아래쪽엔 그림 속 캐릭터가 보이게 카드를 위로 · 데스크톱도 차트 칸이 아닌 화면 가운데 (그림이 화면 전체)
+  card.style.removeProperty('left');const ov=!!card.querySelector('#overBtns');card.classList.toggle('cmp',DESK.matches&&ov&&innerHeight<500);if(DESK.matches&&ov){card.style.removeProperty('top');card.style.removeProperty('max-height');return;}if(DESK.matches){const r=chart.getBoundingClientRect(),g=$('regime').getBoundingClientRect(),top=Math.max(r.top,g.bottom||r.top)+6,bot=r.bottom-6; // 데스크톱: 카드를 차트 칸 안(장세 배지 아래)에 가운데로, 넘치면 카드 안에서 스크롤
     if(bot-top>=160){card.style.setProperty('top',((top+bot)/2)+'px','important');card.style.setProperty('max-height',(bot-top)+'px','important');}else{card.style.removeProperty('top');card.style.removeProperty('max-height');}return;}const r=(ov&&$('tabs')||btn).getBoundingClientRect(),lim=Math.min(r.height?r.top:innerHeight,innerHeight)-10; // 결과 카드가 매수 버튼을 덮지 않게: 위쪽 알림 자리와 버튼 사이 가운데에 (넘치면 카드 안에서 스크롤)
   if(lim<250){card.style.removeProperty('top');card.style.removeProperty('max-height');return;}
   const tp=lim>=350?'(env(safe-area-inset-top,0px) + 50px)':'8px';card.style.setProperty('top','calc(('+tp+' + '+lim+'px) / 2)','important');card.style.setProperty('max-height','calc('+lim+'px - '+tp+')','important');}
@@ -1552,6 +1639,8 @@ new MutationObserver(()=>{card.scrollTop=0;fitCard();ovlCls();}).observe(card,{c
 new MutationObserver(()=>{if(card.hidden||card.querySelector('.cx')||card.querySelector('#again,.opts,#qStart,#qGo'))return;
   card.insertAdjacentHTML('afterbegin','<button class="cx" type="button" data-close aria-label="닫기">✕</button>');}).observe(card,{childList:true,attributes:true,attributeFilter:['hidden']});
 card.addEventListener('click',e=>{const cb=e.target.closest('button');if(cb&&e.detail>0)cb.blur();if(e.target.closest('[data-close]')){card.hidden=true;hideCoach();if(!tutDone&&(state==='ready'||state==='result'))coachReady();}});
+[card,$('modal'),$('sheet'),$('page')].forEach(el=>new MutationObserver(bdSync).observe(el,{attributes:true,attributeFilter:['hidden']}));new MutationObserver(bdSync).observe(app,{attributes:true,attributeFilter:['class']}); // 동물 친구·타이틀 배경: 카드가 닫히거나 창·종목 창·페이지(탭)가 열리면 숨김
+new MutationObserver(bdPlace).observe($('coach'),{attributes:true,attributeFilter:['hidden','style','class']});addEventListener('resize',bdSync);app.addEventListener('scroll',bdPlace,{passive:true});if(window.ResizeObserver)new ResizeObserver(()=>{if(ttl)fitCard();bdPlace();}).observe(card); // 카드 높이가 바뀌면(글꼴·추가된 줄) 다시 맞춤
 /* ---------- modals ---------- */
 let mdAt=0,mdBg=false; // 안내 창을 연 시각, 바깥(어두운 곳)에서 누르기 시작했는지
 function openModal(html){const was=$('modal').hidden;if(was){ovRet.modal=document.activeElement;mdAt=performance.now();mdBg=false;}$('modalBody').innerHTML=html;$('modal').hidden=false;if(was)$('modal').firstChild.scrollTop=$('modalBody').scrollTop=0;$('modal').firstChild.focus({preventScroll:true});} // 새로 열 때는 맨 위부터 (스크롤은 보인 뒤에 되돌려야 먹힘)
@@ -1564,7 +1653,7 @@ function showLevel(){if(state==='holding'||state==='ghost')return;
    '<div class="xpbar"><u style="width:'+pct+'%"></u></div><p class="mu" style="margin:4px 0 10px;font-size:12.5px">다음 레벨까지 '+(lv.need-lv.cur).toLocaleString('ko-KR')+' XP ('+lv.cur.toLocaleString('ko-KR')+' / '+lv.need.toLocaleString('ko-KR')+') · 누적 '+xp.toLocaleString('ko-KR')+' XP</p>'+
    '<div class="lvl"><div><small>레벨 투자 한도</small><b>'+won(prevCap)+'</b></div><div><small>다음 계급</small><b>'+(nx?nx[1]+' · '+(nx[0]-xp).toLocaleString('ko-KR')+' XP 남음':'최고 계급!')+'</b></div></div>'+
    '<p class="mu" style="font-size:12px;margin:10px 0 4px">레벨업마다 레벨 한도 +22% · 2레벨마다 SP +1</p>'+
-   '<h3 style="margin:12px 0 4px;font-size:13px">XP 얻는 법</h3><p class="mu" style="font-size:12px;margin:0;line-height:1.6">익절 '+xv(8*sq)+(LANG==='en'?'–':'~')+xv(48*sq)+' XP (배수·근접도↑, 피버 2배) · 물림 '+xv(3)+' XP · 보스 처치 '+xv(60)+' XP · 일일미션 완료 · 선물 룰렛</p>'+
+   '<h3 style="margin:12px 0 4px;font-size:13px">XP 얻는 법</h3><p class="mu" style="font-size:12px;margin:0;line-height:1.6">익절 '+xv(8*sq)+(LANG==='en'?'–':'~')+xv(48*sq)+' XP (배수·근접도↑, 피버 2배) · 물림 '+xv(3)+' XP · 보스 처치 '+xv(60)+' XP · 일일미션 완료 · 매일 선물</p>'+
    '<h3 style="margin:12px 0 4px;font-size:13px">계급표</h3><div class="rk">'+RANKS.map((r,i)=>'<div class="'+(i===ri?'on':i<ri?'ok':'')+'"><b>'+(i<ri?'✓ ':i===ri?'▶ ':'')+r[1]+'</b><small>'+r[0].toLocaleString('ko-KR')+' XP'+(unl(i)?' · 🔓 '+unl(i):'')+'</small></div>').join('')+'</div>');
 }
 $('regime').onclick=()=>{if(tutDone&&chal&&chal.i<5){toast('💵 내 돈은 안 걸려요 · 점수만 걸려요');return;}const R=regime();toast(R.e+' '+R.n+' · '+R.d);};$('rankBtn').onclick=showLevel;$('rankBtn').onkeydown=e=>{if((e.key==='Enter'||e.key===' '&&kbNav)&&!e.repeat&&state!=='holding'&&state!=='ghost'){e.preventDefault();e.stopPropagation();showLevel();}};
@@ -1595,12 +1684,13 @@ const flushRound=()=>{forceSell();if(state!=='ghost'||!run||crashed)return; // �
   crash();};
 document.addEventListener('visibilitychange',()=>{if(document.hidden)flushRound();else if(!tabCheck()){ensureDaily();paintTop();if(overRev)overRev();}});
 addEventListener('pagehide',flushRound);
+addEventListener('pagehide',()=>{if(memSave)try{window.name='shgMem:'+JSON.stringify(Object.assign({},localStorage));}catch(e){}}); // 저장소가 막힌 세션: 판 기록(flushRound)까지 넣은 뒤 창 이름에 맡김 → 새로고침·백업 불러오기·언어 전환 뒤에도 같은 탭이면 이어서
 addEventListener('resize',()=>{if(state==='holding'&&getComputedStyle($('rotate')).display!=='none')forceSell();}); // 판 도중 가로로 돌려 안내 화면이 덮으면 바로 매도
 // 같은 기기의 다른 탭(한국어·영어 페이지는 저장소를 같이 씀)이 저장하면 이 탭 기록은 낡은 것 → 덮어쓰지 않고 새로고침
 let tabStale=0,tabRp=0;const adOffer=()=>!card.hidden&&!!card.querySelector('#adWin,#adLoss'); // adOffer: 결과·바닥 카드에 아직 안 받은 광고 보상 버튼이 있음 (받거나 닫을 때까지 새로고침 미룸)
 // tabStale 2: 보고 있던 판은 마저 끝냄 (돈·빚·신용·XP는 차액만, 나머지는 저쪽 새 값을 이어받아 그 위에 저장), 1: 저장 멈춤
 const TAB_TAKE={shg_streak:v=>{streak=Math.max(0,Math.floor(+v||0));app.classList.toggle('fever',streak>=5);$('fever').hidden=streak<5;},shg_season:v=>season=v,shg_daily:v=>{daily=v;ensureDaily();},shg_weekly:v=>{weekly=v;ensureDaily();},shg_inv:v=>inv=v,shg_armed:v=>armed=v,shg_inv2:v=>invest=v,shg_gear:v=>gear=v,shg_col:v=>col=Array.isArray(v)?v.filter((id,i)=>COL.some(c=>c.id===id)&&v.indexOf(id)===i):[],shg_ach:v=>ach=v,shg_achc:v=>achC=v,shg_sk:v=>{sk=cntMap(v);fixSk();},shg_league:v=>league=v,shg_nick:v=>nick=v,shg_profile:v=>profile=Object.prototype.hasOwnProperty.call(TYPES,v)?v:null,shg_home:v=>lastHome=v,shg_intPaid:v=>intPaid=!!v,shg_best:v=>best=Math.max(best,+v||0),shg_stats:v=>{Object.assign(stats,v);fixStats();lowFlag=!!stats.low;},shg_decor:v=>Object.assign(decor,v)},
-  TAB_KEEP=['shg_bal','shg_debt','shg_credit','shg_xp','shg_spin','shg_adSpin','shg_adRevive','shg_adc','shg_chalDay','shg_chalMax','shg_chalRun','shg_chalPaid','shg_tutPaid','shg_tutBonus','shg_tut','shg_set','shg_pct','shg_ipct','shg_tier','shg_levTip','shg_itemTip']; // 차액 반영 키, 쓸 때마다 저장소에서 다시 읽는 키·설정. 이 밖의 키(환생·불러오기·초기화 등)가 바뀌면 이 판은 저장하지 않음 (shg_prem·shg_premEq는 이 목록 대신 위 storage 처리 맨 앞에서 합집합으로 따로 받음)
+  TAB_KEEP=['shg_bal','shg_debt','shg_credit','shg_xp','shg_spin','shg_adSpin','shg_adRevive','shg_adc','shg_chalDay','shg_chalMax','shg_chalRun','shg_chalPaid','shg_tutPaid','shg_tutBonus','shg_tut','shg_set','shg_pct','shg_ipct','shg_tier','shg_levTip','shg_itemTip','shg_tips']; // 차액 반영 키, 쓸 때마다 저장소에서 다시 읽는 키·설정. 이 밖의 키(환생·불러오기·초기화 등)가 바뀌면 이 판은 저장하지 않음 (shg_prem·shg_premEq는 이 목록 대신 위 storage 처리 맨 앞에서 합집합으로 따로 받음)
 addEventListener('storage',e=>{const k=e.key;if(e.storageArea&&e.storageArea!==localStorage)return;if(k!==null&&(k.slice(0,4)!=='shg_'||k==='shg_errlog'))return;
   if(k==='shg_prem'||k==='shg_premEq'){if(PREM_ON)premTake(k);return;}if(k==='shg_premReset'){if(PREM_ON&&e.newValue)premReset();return;} // 프리미엄 보유·장착: 새로고침 없이 바로 합침 (구매 목록은 합집합이라 어느 탭도 덮어써서 잃지 않음, 꺼져 있으면 무시)
   if(tabStale!==1&&k!==null&&e.newValue!==null&&(adPause||adReq||adOffer()||!document.hidden&&(tabStale===2||state==='holding'||state==='ghost'))&&(TAB_TAKE[k]||TAB_KEEP.includes(k))){store.seen[k]=e.newValue;const d=(+e.newValue||0)-(+e.oldValue||0);
@@ -1637,13 +1727,13 @@ function buildChartIdle(){ // 종목의 지난 흐름을 만들고, 이후엔 �
   const f=candles[candles.length-1].c;candles.forEach(c=>{c.o/=f;c.c/=f;c.h/=f;c.l/=f;});
   liveM=1;liveT=0;liveV=0;eM=1;cur=1;chartStock=offer();trades=[];bookQ={};tradeM=1;tradeT=0;volTotal=0; // 이전 종목의 호가·체결 내역·거래량은 버림
 }
-function liveTick(dt){ // 매수 전 실시간 시세
+function liveTick(dt,paint){ // 매수 전 실시간 시세 · paint: 이번 프레임에 화면도 그림 (대기 중엔 초당 20번)
   const T=TIERS[offer().k],prev=liveM;liveT+=dt*.6;
   const w=T.wig||1;
   liveV+=rnd(-1,1)*.00045*w-liveV*.025+(1-liveM)*.0006;
   if(Math.random()<dt*.18){liveV=(Math.random()<.55?1:-1)*rnd(.0025,.006)*w;if(liveV>0&&Math.random()<.5)talk('hype');}
   liveM*=1+liveV*.6+rnd(-1,1)*.0012*w;liveM=Math.max(.8,Math.min(1.25,liveM));
-  if(profile&&(state==='ready'||(state==='result'&&performance.now()>=readyAt))){const d=(liveM-1)*100,bb=chal&&tutDone?'':bossBtn();btn.classList.toggle('boss',!!bb);btnTxt(bb||(chal&&tutDone?'🏆 챌린지 '+(chal.i+1)+'/5 매수':state==='result'&&tutDone?'탭해서 다음 종목 매수':'탭해서 매수')+(Math.abs(d)>=.5?(d>0?' · ▲':' · ▼')+Math.abs(d).toFixed(1)+'%':''));}
+  if(paint&&profile&&(state==='ready'||(state==='result'&&performance.now()>=readyAt))){const d=(liveM-1)*100,bb=chal&&tutDone?'':bossBtn();btn.classList.toggle('boss',!!bb);btnTxt(bb||(chal&&tutDone?'🏆 챌린지 '+(chal.i+1)+'/5 매수':state==='result'&&tutDone?'탭해서 다음 종목 매수':'탭해서 매수')+(Math.abs(d)>=.5?(d>0?' · ▲':' · ▼')+Math.abs(d).toFixed(1)+'%':''));}
   let c=candles[candles.length-1];
   if(!c||liveT>=CD){liveT=0;c={o:prev,h:prev,l:prev,c:prev,v:0};candles.push(c);if(candles.length>240)candles.splice(0,candles.length-240);}
   c.h=Math.max(c.h,liveM);c.l=Math.min(c.l,liveM);c.c=liveM;c.v+=dt*rnd(.4,1.4);cur=liveM;
@@ -1817,13 +1907,13 @@ function quizStep(i,sc){
   showCard();const shownAt=performance.now(); // 같은 자리에 다음 문제가 뜨니 두 번 탭이 다음 문제까지 답하지 않게
   card.querySelectorAll('.opts button').forEach(b=>b.onclick=()=>{if(performance.now()-shownAt<300)return;au();beep(660,.05,'sine',.04);sc[opts[+b.dataset.j][1]]++;quizStep(i+1,sc);});
 }
-function setProfile(k){profile=k;store.set('shg_profile',k);const T=TYPES[k];tierSel=T.tier;store.set('shg_tier',tierSel);offers=makeOffers();paintTop();paintPickers();paintQuote();renderBook();buildChartIdle();setBtn();return T;}
+function setProfile(k){profile=k;store.set('shg_profile',k);const T=TYPES[k];tierSel=k==='lion'&&rankOf(xp)<2?'theme':T.tier;store.set('shg_tier',tierSel);offers=makeOffers();paintTop();paintPickers();paintQuote();renderBook();buildChartIdle();setBtn();return T;}
 function quizResult(sc){
   const k=Object.keys(sc).reduce((a,b)=>sc[b]>sc[a]?b:a);
-  const T=setProfile(k);
+  const T=setProfile(k);tipSet('quiz'); // 테스트를 한 사람에겐 나중에 다시 권하지 않음
   card.innerHTML='<div class="sub">당신의 투자 성향은</div><div class="emo">'+T.e+'</div><div class="grade gd">'+T.n+'</div><div class="sub">'+T.d+'</div><div class="perk">특전 · '+T.perk+'</div>'+
-    '<div class="sub">추천 종목: '+TIERS[T.tier].label+'</div><div class="btns"><button class="pri" id="qGo" type="button">'+(tutDone?'게임으로':'튜토리얼 시작')+'</button></div>';
-  showCard();sfx.up();burst(innerWidth/2,innerHeight*.45,40);const shownAt=performance.now(); // 마지막 답을 두 번 탭해도 결과를 못 보고 넘어가지 않게
+    '<div class="sub">추천 종목: '+TIERS[tierSel].label+'</div><div class="btns"><button class="pri" id="qGo" type="button">'+(tutDone?'게임으로':'튜토리얼 시작')+'</button></div>';
+  bdNext={k:'happy',id:k};showCard();sfx.up();burst(innerWidth/2,innerHeight*.45,40);const shownAt=performance.now(); // 마지막 답을 두 번 탭해도 결과를 못 보고 넘어가지 않게
   $('qGo').onclick=()=>{if(performance.now()-shownAt<300)return;card.hidden=true;if(!tutDone)coachReady();};
 }
 let coachAt=null; // 화면 크기·글꼴이 바뀌면 말풍선 위치를 다시 잡음
@@ -1832,16 +1922,29 @@ function coach(html,target,pos){if(curTab!=='trade')return;
   document.querySelectorAll('.glow').forEach(g=>g.classList.remove('glow'));target.classList.add('glow');
   coachAt=[target,pos];placeCoach();
 }
-function placeCoach(){const el=$('coach');if(el.hidden||!coachAt)return;const[target,pos]=coachAt,r=target.getBoundingClientRect(),h=el.offsetHeight;
+function placeCoach(){const el=$('coach');if(el.hidden||!coachAt)return;placeCoach0(el);if(card.hidden)return;const c=card.getBoundingClientRect(),a=el.getBoundingClientRect(),h=el.offsetHeight,y=parseFloat(el.style.top);if(y<c.bottom-4&&y+h>c.top+4&&a.left<c.right&&a.right>c.left&&c.top-h-12>=8){el.style.top=(c.top-h-12)+'px';el.classList.remove('above','side');el.classList.add('noar');}} // 결과 카드를 가리면 카드 위쪽 빈 곳으로 (화살표 없이, 대상은 빛나는 테두리로) · 짧은 화면에서도 카드 버튼(공유 등)을 안 가리게 (위쪽 알림과는 잠깐 겹칠 수 있음)
+function placeCoach0(el){const[t0,pos]=coachAt,tb=!!t0.closest('#tabs'),target=tb?btn:t0,r=target.getBoundingClientRect(),h=el.offsetHeight;el.classList.toggle('noar',tb); // 아래 탭을 가리킬 때: 탭 바로 위는 큰 매수 버튼 자리라 말풍선은 매수 버튼 위에 두고 화살표는 없앰 (탭에는 빛나는 테두리)
   if(DESK.matches){const w=el.offsetWidth,side=pos==='above'&&r.top-h-14<8; // 데스크톱: 말풍선을 대상 바로 위 가운데에, 위가 모자라면(오른쪽 칸 위쪽의 호가창) 왼쪽 옆에 두고 화살표를 오른쪽으로
     el.classList.toggle('side',side);el.classList.toggle('above',pos==='above'&&!side);
-    el.style.left=Math.min(innerWidth-w/2-8,Math.max(w/2+8,side?r.left-14-w/2:r.left+r.width/2))+'px';
-    el.style.top=(side?Math.max(8,Math.min(innerHeight-h-8,r.top+r.height/2-h/2)):Math.max(8,pos==='above'?r.top-h-14:r.top+30))+'px';return;}
-  el.classList.remove('side');el.classList.toggle('above',pos==='above');el.style.removeProperty('left');
-  el.style.top=Math.max(8,pos==='above'?r.top-h-14:r.top+30)+'px';}
+    const cx=Math.min(innerWidth-w/2-8,Math.max(w/2+8,side?r.left-14-w/2:r.left+r.width/2));el.style.left=cx+'px';el.style.setProperty('--ax',Math.max(16,Math.min(w-16,r.left+r.width/2-cx+w/2))+'px');
+    el.style.top=(side?Math.max(8,Math.min(innerHeight-h-8,r.top+r.height/2-h/2)):Math.max(8,pos==='above'?r.top-h-14:r.bottom+14))+'px';return;}
+  el.classList.remove('side');el.classList.toggle('above',pos==='above');el.style.removeProperty('left');el.style.setProperty('--ax',Math.max(16,Math.min(el.offsetWidth-16,r.left+r.width/2-(innerWidth-el.offsetWidth)/2))+'px'); // 가운데 말풍선의 화살표를 대상 쪽으로 (탭 버튼 등)
+  el.style.top=Math.max(8,pos==='above'?r.top-h-14:r.bottom+14)+'px';}
 addEventListener('resize',placeCoach);addEventListener('orientationchange',()=>setTimeout(placeCoach,200));$('app').addEventListener('scroll',placeCoach,{passive:true});addEventListener('scroll',placeCoach,{passive:true}); // 짧은 화면에서 게임 칸을 스크롤해도 말풍선이 버튼을 따라감
 if(document.fonts){document.fonts.ready.then(placeCoach);if(document.fonts.addEventListener)document.fonts.addEventListener('loadingdone',placeCoach);}
 function hideCoach(){$('coach').hidden=true;document.querySelectorAll('.glow').forEach(g=>g.classList.remove('glow'));}
+const tipGot=k=>{const a=store.get('shg_tips',[]);return Array.isArray(a)&&a.includes(k);},tipSet=k=>{let a=store.get('shg_tips',[]);if(!Array.isArray(a))a=[];if(!a.includes(k)){a.push(k);store.set('shg_tips',a);}}; // 한 번만 보여 줄 안내 (다른 탭과 같이 쓰도록 쓸 때마다 저장소에서 읽음)
+function nudge(){ // 판이 끝난 뒤: 첫 세션에 한해 다음 할 일을 말풍선 하나로 (판마다 최대 하나, 각 안내는 한 번만), 몇 판 뒤 성향 테스트를 한 번 권함
+  if(!tutDone||state!=='result'||card.hidden||(stats.rounds||0)>=50)return;
+  if(profile==='squirrel'&&stats.rounds>=6&&!tipGot('quiz')&&!tipGot('quizAsk')&&!card.querySelector('#again,.opts')){let qb=card.querySelector('.btns');if(!qb){card.insertAdjacentHTML('beforeend','<div class="btns" style="flex-wrap:wrap"></div>');qb=card.lastElementChild;} // 크레이지게임즈판 작은 익절 카드는 공유 버튼 줄이 없음 → 줄을 만들어서 넣기
+    tipSet('quizAsk');qb.insertAdjacentHTML('afterbegin','<button type="button" id="qOffer">🧪 내 투자 성향 찾고 특전 받기</button>');$('qOffer').onclick=()=>{if(state==='result'&&curTab==='trade')startQuiz();};return;} // 바로 시작한 사람(기본 다람쥐)에게만
+  const rr=run;setTimeout(()=>{if(run!==rr||state!=='result'||curTab!=='trade'||card.hidden||!$('modal').hidden||!$('sheet').hidden||!$('coach').hidden)return;
+    const ri=rankOf(xp),it=Object.entries(ITEMS).find(([k,v])=>ri>=v.lv&&!tipGot('it_'+k)),tb=n=>document.querySelector('#tabs [data-tab="'+n+'"]');let t=null;
+    if(it)t=['it_'+it[0],'🆕 새 아이템 <b>'+it[1].name+'</b> · '+it[1].desc+'<br>아래 칩을 탭해서 켜고 매수해 보세요',$('items')];
+    else if(spFree()>=2&&!tipGot('sp'))t=['sp','🌳 쓰지 않은 SP <b>'+spFree()+'</b> · 이 버튼을 탭해서 스킬을 골라 보세요',$('spBtn'),'below'];
+    else if(seasonN()>0&&!tipGot('season'))t=['season','🎫 시즌 패스 보상이 기다려요 · 미션 탭에서 받으세요',tb('mission')];
+    if(!t||!t[2]||t[2].hidden||!t[2].getClientRects().length)return;coach(t[1],t[2],t[3]||'above');const e=$('coach'),a=e.getBoundingClientRect(),y=parseFloat(e.style.top)||a.top,c=card.getBoundingClientRect();if(y<c.bottom-4&&y+e.offsetHeight>c.top+4&&a.left<c.right&&a.right>c.left){hideCoach();return;}tipSet(t[0]);},1600); // 카드 위로 비켜도 가리면(짧은 화면의 승급·보스 카드처럼 긴 카드) 숨기고 다음 판으로 미룸 (등장 애니메이션 중이라 세로 위치는 style.top으로) // 결과 카드를 먼저 보여 준 뒤 (다음 판을 누르면 사라짐)
+}
 function coachReady(){coach('👇 이 버튼을 <b>한 번 눌러서 매수</b>하세요.<br>다시 누르면 팔아요. (연습 판이라 돈을 잃지 않아요)',btn,'above');}
 function tutTick(){
   if(tutStep<2&&cur>=1.3){tutStep=2;coach('🔥 <b>+30% 돌파!</b> 지금 버튼을 누르면 수익 확정이에요. 더 버틸 수도 있지만…',btn,'above');}
@@ -1861,11 +1964,11 @@ function tutEnd(won){
     card.innerHTML=tw('<div class="grade dn">💥 이게 폭락이에요</div><div class="sub">연습이라 돈은 그대로예요.<br><b>노란 +30% 줄을 넘으면</b> 버튼을 눌러 파세요!</div>');
     setTimeout(()=>{if(state==='result'&&!tutDone)coach('👇 다시 <b>매수!</b> 이번엔 +30% 줄을 넘으면 눌러서 파세요.',btn,'above');},900);
   }
-  showCard();
+  bdNext={k:won?'happy':'shock',id:run&&run.bd||profile||'hamster'};showCard();
 }
 function boot(){
-  if(!profile){card.innerHTML=tw('<div class="grade"><span class="up">떡상</span> 계좌 키우기</div><div class="sub">한 번 누르면 매수, 다시 누르면 매도.'+(MOUSE.matches?' (스페이스바도 돼요)':'')+'<br>폭락 전에 팔면 이기는 게임이에요.</div><div class="sub">먼저 나는 어떤 투자자인지 알아볼까요?</div><div class="btns" style="flex-wrap:wrap"><button class="pri" id="qStart" type="button" style="white-space:nowrap">🧪 투자 성향 테스트 (5문항)</button><button id="qSkip" type="button" style="white-space:nowrap">▶ 바로 시작</button></div>');
-    showCard();$('qStart').onclick=startQuiz;$('qSkip').onclick=()=>{if(profile)return;setProfile('squirrel');card.hidden=true;if(!tutDone)coachReady();else showIntro();};setBtn();} // 바로 시작: 기본 성향(다람쥐·테마주), 테스트는 설정에서 언제든
+  if(!profile){card.innerHTML=tw(ttlH()+'<div class="sub">한 번 누르면 매수, 다시 누르면 매도.'+(MOUSE.matches?' (스페이스바도 돼요)':'')+'<br>폭락 전에 팔면 이기는 게임이에요.</div><div class="sub">투자 성향 테스트는 선택이에요. 나중에 기록 탭에서 해도 돼요.</div><div class="btns" style="flex-wrap:wrap"><button class="pri" id="qSkip" type="button" style="white-space:nowrap">▶ 바로 시작</button><button id="qStart" type="button" style="white-space:nowrap">🧪 투자 성향 테스트 (5문항)</button></div>');
+    bdNext={k:'still',id:'hamster',t:1};showCard();$('qStart').onclick=startQuiz;$('qSkip').onclick=()=>{if(profile)return;setProfile('squirrel');card.hidden=true;if(!tutDone)coachReady();else showIntro();};setBtn();} // 바로 시작이 기본: 기본 성향(다람쥐·테마주), 테스트는 몇 판 뒤 한 번 권하고 기록·설정 탭에서 언제든
   else if(!tutDone){card.hidden=true;coachReady();}
   else{let bk=false;try{bk=balance+invNet()<100000&&!(chal&&chal.i<5&&debt<=debtLimit());}catch(e){}if(!bk)showIntro();} // 파산 상태면 곧 바닥 카드가 뜨니 환영 카드는 생략
 }
@@ -1906,7 +2009,7 @@ const cTarget=(d,tier)=>d.money?Math.round(d.b*Math.pow(d.m,tier)):Math.ceil(d.b
 function careerCheck(){ // 기록 미션: 달성할 때마다 다음 단계 목표가 커지는 무한 미션
   stats.ct=stats.ct||{};let got=0;
   CAREER.forEach(d=>{let tier=stats.ct[d.id]||0;while(tier<1e4&&cVal(d)>=cTarget(d,tier)){tier++;got++;const sp=tier%2===0;if(sp)stats.careerSP=(stats.careerSP||0)+1;
-    const tt=tier;setTimeout(()=>{toast('🏅 기록 미션 '+d.e+' '+d.t+(LANG==='en'?' · ':' ')+tierLbl(tt)+' 달성'+(sp?' · SP +1':''));sfx.up();},2600+got*1200);}stats.ct[d.id]=tier;});
+    const tt=tier;if(stats.rounds>=20)setTimeout(()=>{toast('🏅 기록 미션 '+d.e+' '+d.t+(LANG==='en'?' · ':' ')+tierLbl(tt)+' 달성'+(sp?' · SP +1':''));sfx.up();},2600+got*1200);}stats.ct[d.id]=tier;}); // 처음 20판은 기록 미션 알림 생략 (보상은 그대로, 첫 몇 분 알림 줄이기)
   if(got){gainXp(30*got);store.set('shg_stats',stats);}
 }
 function recordRound(r){
@@ -1914,7 +2017,7 @@ function recordRound(r){
   try{seasonXp(r.win?20:10);}catch(e){}
   const c=stats.c;c.rounds++;if(r.win){c.wins++;if(r.m>=2)c.x2++;if(r.m>=3)c.x3++;if(r.m>=5)c.x5++;if(r.m>=10)c.x10++;if(r.pct>=90)c.p90++;if(r.pct>=95)c.p95++;if(r.streak===5)c.fever++;if(r.lev>=5)c.levWin++;if(r.allin)c.allinWin++;if(r.sawDip)c.dip++;if(r.allin&&r.m>=2)unlock('allin');}
   if(r.liq)c.liq++;
-  stats.rounds++;stats.curRun=(stats.curRun||0)+1;if(r.win){stats.wins++;stats.bestM=Math.max(stats.bestM,r.m);stats.bestPct=Math.max(stats.bestPct,r.pct);}
+  stats.rounds++;stats.curRun=(stats.curRun||0)+1;if(r.win){stats.wins++;if(r.m>=3&&r.m>stats.bestM)cgHappy();stats.bestM=Math.max(stats.bestM,r.m);stats.bestPct=Math.max(stats.bestPct,r.pct);}
   lastAmt-=run.cost||0;stats.maxStreak=Math.max(stats.maxStreak,streak);stats.net+=lastAmt;
   stats.types=stats.types||[];if(!stats.types.includes(run.key))stats.types.push(run.key);if(stats.types.filter(k=>!TIERS[k].hidden).length>=Object.keys(TIERS).filter(k=>!TIERS[k].hidden).length)unlock('spread');
   stats.hist.unshift({n:run.offer.name,k:run.offer.k,ni:run.offer.ni,w:r.win,s:sell&&!(run.re&&run.re.caught)?1:0,m:sell?sell.m:peak,a:lastAmt,l:run.lev,y:run.allin?1:0,q:r.liq?1:0,i:Object.keys(run.it||{}).filter(k=>run.it[k])});stats.hist=stats.hist.slice(0,20);
@@ -2106,28 +2209,31 @@ function premBind(pg){if(!PREM_ON)return;
     try{const q=JSON.stringify(premEq);localStorage.setItem('shg_premReset',String(Date.now()));localStorage.setItem('shg_prem','[]');localStorage.setItem('shg_premEq',q);localStorage.removeItem('shg_premReset');store.seen.shg_prem='[]';store.seen.shg_premEq=q;}catch(e){}premApply();toast('🧪 보유 목록을 비웠어요');rerender('shop');};} // 비우라는 신호를 먼저 보내야 다른 탭이 '[]'를 지워진 영수증으로 보고 되살리지 않음
 
 /* ---------- 주간 시즌 패스 ---------- */
-const SEASON_T=30,SEASON_XP=100;
+const SEASON_T=30,SEASON_XP=100,SEASON_DAY=5;
+const seasonGate=(d=0)=>Math.min(SEASON_T,SEASON_DAY*(1+d+(new Date().getDay()+6)%7)); // 하루 5단계씩 열림 (월 5·화 10…토 30, 못 한 날 몫은 다음 날 이어서) → 첫날에 다 끝나지 않고 며칠 다시 오게
+const seasonCapMsg=()=>{seasonFix();const t=Math.floor(season.xp/SEASON_XP);if(t>=SEASON_T||season.xp<seasonGate()*SEASON_XP)return '';let d=1;while(d<6&&seasonGate(d)<=t)d++;return d===1?'🎫 다음 단계는 내일 열려요':'🎫 다음 단계는 '+d+'일 뒤 열려요';}; // 오늘 열린 단계를 다 채웠을 때 안내 (예전 저장으로 이미 앞서 있으면 며칠 뒤)
 let season=store.get('shg_season',{wk:'',xp:0,got:[]});if(!season||typeof season!=='object'||!Array.isArray(season.got))season={wk:'',xp:0,got:[]};season.xp=Math.max(0,fin(season.xp));
 const seasonFix=()=>{const wk=weekKey();if(wkOrd(season.wk)<wkOrd(wk)){const reach=Math.min(SEASON_T,Math.floor(season.xp/SEASON_XP)),old=season.got;season={wk,xp:0,got:[]};store.set('shg_season',season); // 지난 시즌에 도달만 하고 안 받은 단계는 자동 지급 (시즌을 먼저 바꿔 저장해 두 번 받지 않음)
   let n=0;for(let t=1;t<=reach;t++)if(!old.includes(t))try{seasonReward(t).f();n++;}catch(e){}
   if(n){store.set('shg_bal',Math.floor(balance));setTimeout(()=>{paintTop();toast('🎫 지난 시즌 보상 '+n+(LANG==='en'&&n===1?' reward auto-claimed':'개 자동 지급'));},0);}}};
+const seasonN=()=>{if(wkOrd(season.wk)<wkOrd(weekKey()))return 0;const t=Math.min(SEASON_T,Math.floor(season.xp/SEASON_XP));let n=0;for(let i=1;i<=t;i++)if(!season.got.includes(i))n++;return n;}; // 지금 받을 수 있는 시즌 단계 수 (지난주 것은 seasonFix가 자동 지급)
 const seasonReward=t=>{const own=id=>decor.own.includes(id),cash=m=>{const v=Math.round(betCap(1)*m/1e4)*1e4;return {e:'💵',n:'현금 '+wonS(v),f:()=>{balance+=v;}};},
   sp1={e:'🌳',n:'SP +1',f:()=>{stats.bonusSP=(stats.bonusSP||0)+1;store.set('shg_stats',stats);}},dec=(id,e,n)=>own(id)?cash(3):{e,n,f:()=>giveDecor(id)}; // 이미 받은 꾸미기(지난 주 시즌)는 현금으로 대신
   return t===30?(own('d_cup')?sp1:{e:'🏆',n:'시즌 우승컵 + SP +1',f:()=>{giveDecor('d_cup');sp1.f();}}):
   t===10?dec('w_sakura','🌸','벚꽃 벽지'):t===15?dec('d_tree','🎄','반짝 트리'):t===20?dec('f_cloud','☁️','구름 바닥'):t===25?dec('d_alien','👾','외계인 친구'):
   t%5===0?sp1:cash(1+t%5*.5);};
-function seasonXp(n){seasonFix();const before=Math.floor(season.xp/SEASON_XP);season.xp+=n;store.set('shg_season',season);const after=Math.floor(season.xp/SEASON_XP);if(after>before&&before<SEASON_T)setTimeout(()=>toast('🎫 시즌 패스 '+Math.min(after,SEASON_T)+'단계! 미션 탭에서 보상 받기'),1200);}
-function seasonHtml(){seasonFix();const tier=Math.min(SEASON_T,Math.floor(season.xp/SEASON_XP)),into=season.xp%SEASON_XP;
+function seasonXp(n){seasonFix();const before=Math.floor(season.xp/SEASON_XP);season.xp=Math.max(season.xp,Math.min(seasonGate()*SEASON_XP,season.xp+n));store.set('shg_season',season);const after=Math.floor(season.xp/SEASON_XP),cm=seasonCapMsg();if(after>before&&before<SEASON_T)setTimeout(()=>toast('🎫 시즌 패스 '+Math.min(after,SEASON_T)+'단계! 미션 탭에서 보상 받기'+(cm?' · '+cm.slice(3):'')),1200);} // 오늘 열린 단계까지만 쌓임 (예전 저장이 이미 넘었으면 그대로 두고 더 안 쌓음)
+function seasonHtml(){seasonFix();const tier=Math.min(SEASON_T,Math.floor(season.xp/SEASON_XP)),into=season.xp%SEASON_XP,gt=seasonGate(),cm=seasonCapMsg();
   const d=new Date(),left=(8-(d.getDay()||7));
-  return '<h3>🎫 주간 시즌 패스 · '+tierLbl(tier+'/'+SEASON_T)+(left>1||tier>=3?' <span class="mu">· '+left+(LANG==='en'&&left===1?' day left':'일 남음')+'</span>':'')+'</h3><div class="pan" style="padding:10px 14px"><div class="xpbar"><u style="width:'+(tier>=SEASON_T?100:into)+'%"></u></div><p class="mu" style="font-size:12px;margin:4px 0 8px">판마다 +10 XP, 익절하면 +20 XP · 100 XP마다 1단계 · 월요일 초기화</p><div class="spass">'+
-   Array.from({length:SEASON_T},(_,i)=>{const t=i+1,r=seasonReward(t),ok=tier>=t,got=season.got.includes(t);return '<button type="button" class="sp '+(got?'got':ok?'ok':'')+'" data-stier="'+t+'"'+(ok&&!got?'':' disabled')+'><small>'+t+'</small><i>'+r.e+'</i><em>'+(got?'받음':r.n)+'</em></button>';}).join('')+'</div></div>';}
+  return '<h3>🎫 주간 시즌 패스 · '+tierLbl(tier+'/'+SEASON_T)+(left>1||tier>=3?' <span class="mu">· '+left+(LANG==='en'&&left===1?' day left':'일 남음')+'</span>':'')+'</h3><div class="pan" style="padding:10px 14px"><div class="xpbar"><u style="width:'+(tier>=SEASON_T?100:into)+'%"></u></div><p class="mu" style="font-size:12px;margin:4px 0 8px">판마다 +10 XP, 익절하면 +20 XP · 100 XP마다 1단계 · 월요일 초기화<br>하루 '+SEASON_DAY+'단계씩 열려요'+(gt<SEASON_T?' (오늘 '+tierLbl(gt)+'까지)':'')+(cm?'<br><b class="gd">'+cm+'</b>':'')+'</p><div class="spass">'+
+   Array.from({length:SEASON_T},(_,i)=>{const t=i+1,r=seasonReward(t),ok=tier>=t,got=season.got.includes(t);return '<button type="button" class="sp '+(got?'got':ok?'ok':t>gt?'lk':'')+'" data-stier="'+t+'"'+(ok&&!got?'':' disabled')+'><small>'+t+'</small><i>'+r.e+'</i><em>'+(got?'받음':r.n)+'</em></button>';}).join('')+'</div></div>';}
 function seasonBind(pg){pg.querySelectorAll('[data-stier]').forEach(b=>b.onclick=()=>{const t=+b.dataset.stier,wk0=season.wk;seasonFix();
   if(season.wk!==wk0){toast('🎫 새 시즌이 시작됐어요');rerender('mission');return;} // 화면을 켜 둔 채 월요일이 지나면 낡은 단계 버튼 대신 새 시즌을 보여 줌
   if(season.got.includes(t)||Math.floor(season.xp/SEASON_XP)<t){rerender('mission');return;}const r=seasonReward(t);r.f();season.got.push(t);store.set('shg_season',season);sfx.up();toast('🎫 '+tierLbl(t)+' 보상: '+r.e+' '+r.n);paintTop();rerender('mission');});}
 function pageShop(){
   return '<h2>🛒 상점</h2><p class="lead">모은 돈은 여기서 쓰세요. 소모품은 효과를 다 쓰면 사라지고, 장비는 영구 보너스입니다.</p>'+
    '<div class="sphead"><div><small>예수금</small><b style="font-size:22px;white-space:nowrap">'+wonS(balance)+'</b></div><div style="text-align:right"><small>소모품은 예수금에 비례 · 많이 가질수록 1.6배씩 비싸짐</small></div></div>'+
-   '<h3>🏦 은행</h3><div class="pan" style="padding:6px 14px 12px">'+[['빚',debt?won(debt):'없음'],['신용등급',credit+'등급'+(credit>=8?' · 사채':'')],['판당 이자',(loanRate()*100).toFixed(1)+'%'],['빚 한도',won(debtLimit())]].map(([k,v])=>`<div class="row" style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--line);font-size:14px"><span class="mu">${k}</span><b>${v}</b></div>`).join('')+
+   '<h3>🏦 은행</h3><div class="pan" style="padding:6px 14px 12px">'+[['빚',debt?won(debt):'없음'],['신용등급',crS(credit)+(credit>=8?' · 사채':'')],['판당 이자',(loanRate()*100).toFixed(1)+'%'],['빚 한도',won(debtLimit())]].map(([k,v])=>`<div class="row" style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--line);font-size:14px"><span class="mu">${k}</span><b>${v}</b></div>`).join('')+
    '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:10px"><button class="setbtn" type="button" id="bLoan" '+(canLoan()?'':'disabled')+'>💳 대출<br>'+wonS(loanAmt())+'</button><button class="setbtn ghost" type="button" id="bHalf" '+(debt&&balance>0?'':'disabled')+'>절반 상환</button><button class="setbtn ghost" type="button" id="bAll" '+(debt&&balance>0?'':'disabled')+'>전액 상환</button></div>'+(canLoan()?'':'<p class="lead" style="margin:8px 0 0">'+(credit>=10?(debt>0?'신용 10등급은 대출이 막혀요 · 빚을 다 갚으면 신용이 올라요':'신용 10등급은 대출이 막혀요 · 빚 없이 15판 버티면 신용이 올라요'):'빚 한도가 차서 더 빌릴 수 없어요 · 먼저 갚아 주세요')+'</p>')+
    '<p class="lead" style="margin:8px 0 0">대출받으면 신용이 1등급 떨어지고, 다 갚으면 1등급 오릅니다. 빚이 한도를 넘으면 넘는 만큼 예수금에서 자동 상환, 못 갚으면 신용불량 · 장비·투자금 압류. 익절하면 수익의 30%가 자동 상환됩니다.</p></div>'+
    '<h3>🧪 소모품</h3>'+(adOk('item')?'<button class="setbtn" id="adItem" type="button" style="width:100%;margin-bottom:8px">📺 광고 보고 소모품 1개 받기 · '+(AD_LIM.item-adCnt('item'))+'/'+AD_LIM.item+'</button>':'')+'<div class="pan">'+CONSUM.map(c=>{const pr=cPrice(c),own=inv[c.id]||0,arm=armed[c.id]||0;
@@ -2146,7 +2252,7 @@ let chal=store.get('shg_chalRun',null);if(chal&&!(Number.isInteger(chal.day)&&ch
 const esc=v=>String(v).replace(/[&<>"']/g,c=>'&#'+c.charCodeAt(0)+';'); // 사용자 입력(닉네임)을 HTML에 넣을 때
 const nickClean=v=>String(v==null?'':v).replace(/[\s<>&"'`\\]/g,''),nickBad=n=>!n||n==='__proto__'||n==='constructor'||n==='prototype'; // 닉네임: 공백·HTML 특수문자 제거, 객체 키로 위험한 이름 거부
 let nick=store.get('shg_nick','');if(typeof nick==='string')nick=nick.replace(/^Retail ?Ant(?=\d{4}$)/,'Ant'); // 예전 영어판 기본 닉(공백 포함) → 'Ant1234'
-nick=nickClean(nick).slice(0,10);if(nickBad(nick)||nick.length<2){nick=(LANG==='en'?'Ant':'개미')+Math.floor(1000+Math.random()*9000);}if(nick!==store.get('shg_nick',''))store.set('shg_nick',nick);
+nick=nickClean(nick).slice(0,10);if(nickBad(nick)||nick.length<2){nick=(LANG==='en'?'Trader':'개미')+Math.floor(1000+Math.random()*9000);}if(nick!==store.get('shg_nick',''))store.set('shg_nick',nick);
 let league=store.get('shg_league',{wk:'',me:{},fr:{}});
 const lgOk=v=>v>=-150&&v<=12500; // 하루 5판: 최저 5×-30, 최고 x20 폭락선에 흔들림·호재를 더해도 판당 2,500 안쪽
 const lgFix=()=>{const wk=weekKey();if(!league||typeof league!=='object'||wkOrd(league.wk)<wkOrd(wk))league={wk,me:{},fr:{}};
@@ -2155,12 +2261,12 @@ const lgFix=()=>{const wk=weekKey();if(!league||typeof league!=='object'||wkOrd(
   const num=o=>{for(const d of Object.keys(o))o[d]=+o[d]||0;};num(league.me);for(const n of Object.keys(league.fr)){const o=league.fr[n];num(o);for(const d of Object.keys(o))if(!lgOk(o[d]))delete o[d];if(!Object.keys(o).length)delete league.fr[n];}}; // 점수는 숫자로만, 나올 수 없는 친구 점수는 버림
 const ptsL=n=>LANG==='en'?n+(Math.abs(n)===1?' pt':' pts'):n+'점'; // 영어는 1점이면 단수
 function chalPoints(){const r=seedRng('SHG'+dayNum());return Array.from({length:5},()=>Math.min(20,Math.max(1.15,.94/(1-r()))));}
-const chalOk=()=>{if(state==='over'&&debt>debtLimit()&&!unOver()){toast('🚨 신용불량 상태에선 챌린지를 할 수 없어요 · 먼저 정리하세요');return false;}return true;}; // 신용불량 화면에선 챌린지 판이 안 열림 (start의 chRound와 같은 조건)
+const chalLeft=()=>Math.max(+store.get('shg_chalDay',0)||0,+store.get('shg_chalMax',0)||0)<dayNum(),chalOk=()=>{if(state==='over'&&debt>debtLimit()&&!unOver()){toast('🚨 신용불량 상태에선 챌린지를 할 수 없어요 · 먼저 정리하세요');return false;}return true;}; // 신용불량 화면에선 챌린지 판이 안 열림 (start의 chRound와 같은 조건)
 function chalStart(){if(!tutDone){toast('튜토리얼을 먼저 끝내세요');return;}if(Math.max(+store.get('shg_chalDay',0)||0,+store.get('shg_chalMax',0)||0)>=dayNum()){toast('오늘 챌린지는 이미 했어요. 내일 다시!');return;}if(!chalOk())return;
   chal={day:dayNum(),pts:chalPoints(),i:0,score:0,res:[],id:Date.now()+'-'+Math.floor(Math.random()*1e6)};store.set('shg_chalRun',chal);store.set('shg_chalMax',Math.max(+store.get('shg_chalMax',0)||0,chal.day));if(state==='over'&&debt<=debtLimit())resetView();if(state!=='holding'&&state!=='ghost'){offers=makeOffers();if(!run){buildChartIdle();paintQuote();renderBook();}}if(!card.querySelector('#adWin,#adLoss'))card.hidden=true;tab('trade');paintTop();paintPickers();setBtn();toast('🏆 오늘의 챌린지 시작! 5판 동안 폭락 전에 파세요');}
 function chalRound(sold){
   state='result';delete chal.pend;const pt=sold?Math.round((sell.m-1)*100):-30;chal.score+=pt;chal.res.push(pt);chal.i++;
-  if(chal.i<5){store.set('shg_chalRun',chal);card.innerHTML='<div class="grade '+(pt>=0?'up':'dn')+'">'+(pt>=0?'+':'')+ptsL(pt)+'</div><div class="sub">챌린지 '+chal.i+'/5 · 누적 '+ptsL(chal.score)+'</div><div class="sub">'+(sold?'폭락 지점: x'+chal.pts[chal.i-1].toFixed(2):'물렸어요 (-30점)')+'</div>';showCard();return;}
+  if(chal.i<5){store.set('shg_chalRun',chal);card.innerHTML='<div class="grade '+(pt>=0?'up':'dn')+'">'+(pt>=0?'+':'')+ptsL(pt)+'</div><div class="sub">챌린지 '+chal.i+'/5 · 누적 '+ptsL(chal.score)+'</div><div class="sub">'+(sold?'폭락 전 최고: +'+Math.round((chal.pts[chal.i-1]-1)*100).toLocaleString('ko-KR')+'%':'물렸어요 (-30점)')+'</div>';bdNext={k:pt>=0?'happy':'shock',id:run&&run.bd||bdRand()};showCard();return;}
   chalFinish();
 }
 function chalFinish(quiet){
@@ -2169,7 +2275,7 @@ function chalFinish(quiet){
   const full=sc<=0?0:Math.round(betCap(1)*Math.min(3,sc/100)/1e4)*1e4,rw=!dup?full:same?Math.max(0,full-(+pd.rw||0)):0,tot=same?(+pd.rw||0)+rw:rw;balance+=rw;const cx=!dup?gainXp(40):same?Math.round(40*xpMul()):0;if(!dup||same)store.set('shg_chalPaid',{d,id,rw:tot,q:quiet?1:0});
   if(quiet){setTimeout(()=>toast('🏆 챌린지 완료 · '+ptsL(sc)+(tot?' · '+won(tot):'')),1500);return;}
   shareText='🏆 떡상 계좌 키우기 오늘의 챌린지 '+String(d).slice(4,6)+'/'+String(d).slice(6)+' · '+ptsL(sc)+'! 이 코드 넣고 겨뤄봐 👉 SHG-'+d+'-'+sc+'-'+nick;
-  card.innerHTML='<div class="grade gd">🏆 챌린지 완료</div><div class="big '+(sc>=0?'up':'dn')+'">'+ptsL(sc)+'</div><div class="sub">'+'판별: '+chalLast(sc)+'</div>'+(tot?'<div class="sub up">보상 '+won(tot)+(cx?' · XP +'+cx:'')+'</div>':cx?'<div class="sub">XP +'+cx+'</div>':'')+'<div class="sub">결과 공유로 친구에게 코드를 보내면 친구 리그에서 겨룰 수 있어요.</div>'+shareBtn();showCard();bindShare();
+  card.innerHTML='<div class="grade gd">🏆 챌린지 완료</div><div class="big '+(sc>=0?'up':'dn')+'">'+ptsL(sc)+'</div><div class="sub">'+'판별: '+chalLast(sc)+'</div>'+(tot?'<div class="sub up">보상 '+won(tot)+(cx?' · XP +'+cx:'')+'</div>':cx?'<div class="sub">XP +'+cx+'</div>':'')+'<div class="sub">결과 공유로 친구에게 코드를 보내면 친구 리그에서 겨룰 수 있어요.</div>'+shareBtn();bdNext={k:sc>=0?'happy':'shock',id:run&&run.bd||bdRand()};showCard();bindShare();
 }
 const chalLast=sc=>sc>=300?'전설의 단타':sc>=150?'고수':sc>=50?'선방':sc>=0?'본전치기':'물림 파티';
 function chalHtml(){lgFix();const today=dayNum(),played=store.get('shg_chalDay',0)>=today,myT=league.me[today];
@@ -2192,19 +2298,19 @@ function pageMission(){ensureDaily();
    '<h3>☀️ 일일 미션 · '+daily.done.length+'/'+daily.ids.length+' <span class="mu">· 완료마다 '+won(1000000*(1+.1*skl('mission'))*(gear.building?2:1))+' + '+Math.round(80*xpMul())+' XP</span></h3><div class="pan">'+daily.ids.map(id=>MISSIONS.find(x=>x.id===id)).filter(Boolean).map(m=>row(m,daily.prog,daily.done)).join('')+'</div>'+
    '<h3>🗓️ 주간 미션 · '+weekly.done.length+'/'+weekly.ids.length+' <span class="mu">· 완료마다 SP +1 · '+Math.round(200*xpMul())+' XP</span></h3><div class="pan">'+weekly.ids.map(id=>WEEKLY.find(x=>x.id===id)).filter(Boolean).map(m=>row(m,weekly.prog,weekly.done)).join('')+'</div>'+
    '<h3>🏅 기록 미션 · 끝없이 이어지는 단계 <span class="mu">· 2단계마다 SP +1 · '+Math.round(30*xpMul())+' XP</span></h3><div class="pan">'+CAREER.map(d=>{const tier=(stats.ct||{})[d.id]||0,tg=cTarget(d,tier),v=cVal(d);return `<div class="li"><i>${d.e}</i><div><b>${d.t}${LANG==='en'?': ':' '}${d.money?won(tg):tg.toLocaleString('ko-KR')+(LANG==='en'?'':'번')} <span class="mu">· ${tierLbl(tier+1)}</span></b><small>${d.money?won(v):v.toLocaleString('ko-KR')} / ${d.money?won(tg):tg.toLocaleString('ko-KR')}</small><div class="pb"><u style="width:${Math.min(100,v/tg*100)}%"></u></div></div></div>`}).join('')+'</div>'+
-   '<h3>🎖️ 계급 · '+RANKS[rankOf(xp)][1]+'</h3><div class="pan">'+RANKS.map((r,i)=>`<div class="li ${xp>=r[0]?'':'lock'}"><i>${i===RANKS.length-1?'👑':i===rankOf(xp)?'⭐':xp>=r[0]?'✔':'·'}</i><div><b>${r[1]}</b><small>${r[0].toLocaleString('ko-KR')} XP${Object.values(ITEMS).filter(it=>it.lv===i).map(it=>' · '+it.name+' 해금').join('')}${LEVS.filter(l=>l[1]===i&&l[0]>1).map(l=>' · ⚡ 레버리지 '+l[0]+'배').join('')}${i===2?' · 🎲 영끌':''}${i?Object.values(TIERS).filter(T=>T.lv===i).map(T=>' · '+T.e+' '+T.label+' 종목 해금').join(''):''}</small></div></div>`).join('')+'</div>';
+   '<h3>🎖️ 계급 · '+RANKS[rankOf(xp)][1]+'</h3><div class="pan">'+RANKS.map((r,i)=>`<div class="li ${xp>=r[0]?'':'lock'}"><i>${i===RANKS.length-1?'👑':i===rankOf(xp)?'⭐':xp>=r[0]?'✔':'·'}</i><div><b>${r[1]}</b><small>${r[0].toLocaleString('ko-KR')} XP${Object.values(ITEMS).filter(it=>it.lv===i).map(it=>' · '+it.name+' 해금').join('')}${LEVS.filter(l=>l[1]===i&&l[0]>1).map(l=>' · ⚡ 레버리지 '+l[0]+'배').join('')}${i===2?' · 💯 영끌':''}${i?Object.values(TIERS).filter(T=>T.lv===i).map(T=>' · '+T.e+' '+T.label+' 종목 해금').join(''):''}</small></div></div>`).join('')+'</div>';
 }
 const histName=h=>{if(h.ni==null||h.ni<0)return h.n;if(h.k==='boss'){const bi=bossInfo(h.ni);return bi.B.e+' '+bi.B.n+' Lv.'+(bi.lv+1);}const n=TIERS[h.k]&&TIERS[h.k].names[h.ni];return n?(Array.isArray(n)?n[0]:n):h.n;}; // 저장은 번호로, 표시는 지금 언어로
 function pageRecord(){
   const wr=stats.rounds?Math.round(stats.wins/stats.rounds*100):0,T=profile&&TYPES[profile];
-  return '<h2>📊 기록</h2>'+roomHtml()+(T?'<div class="pan" style="padding:12px 14px"><div class="typecard"><i>'+T.e+'</i><div><b>'+T.n+'</b><br><small class="mu">'+T.perk+' · '+RANKS[rankOf(xp)][1]+' · '+xp.toLocaleString('ko-KR')+' XP</small></div></div></div>':'')+
-   '<h3>내 자산</h3><div class="tiles">'+[['현재 자산',wonS(balance)],['투자 평가금',wonS(invTotal())],['빚',debt?'-'+wonS(debt):'없음'],['순자산',swS(balance+invTotal()-debt)],['컬렉션',col.length+' / '+COL.length],['신용등급',credit+'등급'+(credit>=8?' 😱':credit<=3?' 😎':'')],['다음 대출',canLoan()?wonS(loanAmt()):'불가'],['빚 한도',wonS(debtLimit())]].map(([k,v])=>`<div class="tile"><small>${k}</small><b>${v}</b></div>`).join('')+'</div>'+
+  return '<h2>📊 기록</h2>'+roomHtml()+(T?'<div class="pan" style="padding:12px 14px"><div class="typecard"><i>'+T.e+'</i><div><b>'+T.n+'</b><br><small class="mu">'+T.perk+' · '+RANKS[rankOf(xp)][1]+' · '+xp.toLocaleString('ko-KR')+' XP</small></div></div>'+(tipGot('quiz')?'':'<button class="setbtn ghost" type="button" id="retake" style="width:100%;margin-top:10px">🧪 투자 성향 테스트 (5문항)</button>')+'</div>':'')+ // 테스트를 안 한 사람은 기록 탭에서 바로 (설정의 다시 하기와 같은 동작)
+   '<h3>내 자산</h3><div class="tiles">'+[['현재 자산',wonS(balance)],['투자 평가금',wonS(invTotal())],['빚',debt?'-'+wonS(debt):'없음'],['순자산',swS(balance+invTotal()-debt)],['컬렉션',col.length+' / '+COL.length],['신용등급',crS(credit)+(credit>=8?' 😱':credit<=3?' 😎':'')],['다음 대출',canLoan()?wonS(loanAmt()):'불가'],['빚 한도',wonS(debtLimit())]].map(([k,v])=>`<div class="tile"><small>${k}</small><b>${v}</b></div>`).join('')+'</div>'+
    (()=>{const nw=balance+invTotal()-debt,need=PRES_NEED();return '<h3>🔁 은퇴 · 환생 '+(pres?'⭐'+pres:'')+'</h3><div class="pan" style="padding:12px 14px"><p class="lead" style="margin:0 0 8px">순자산 <b>'+wonS(need)+'</b>을 넘기면 은퇴할 수 있어요. 돈·투자·장비·소모품·빚은 사라지고, <b>레벨·스킬·업적·컬렉션은 유지</b>돼요. 환생할 때마다 <b>익절 수익 +10%, SP +2</b> 영구 보너스.</p><div class="xpbar"><u style="width:'+Math.max(0,Math.min(100,nw/need*100))+'%"></u></div><p class="mu" style="font-size:12px;margin:4px 0 8px">현재 순자산 '+swS(nw)+' · 현재 보너스 익절 +'+pres*10+'%</p><button class="setbtn" type="button" id="prestige" style="width:100%"'+(nw>=need?'':' disabled')+'>🔁 은퇴하고 '+(pres+2)+'회차 시작</button></div>';})()+
    '<h3>통산 성적</h3><div class="tiles">'+
-   [['플레이',(stats.rounds||0).toLocaleString('ko-KR')+'판'],['승률',wr+'%'],['최고 배수','x'+(stats.bestM||0).toFixed(2)],['최고 근접도',Math.round(stats.bestPct)+'%'],['최장 연승',stats.maxStreak+(LANG==='en'?'':'연속')],['파산',stats.bankrupts+(LANG==='en'?(stats.bankrupts===1?' time':' times'):'회')],['누적 손익',swS(stats.net)],['최고 자산',best?wonS(best):'-'],['캐릭터 레벨','Lv.'+lvlOf(xp).L],['보스 처치',(stats.bossLv||0)+'마리'],['업적 별',ACH.reduce((n,a)=>n+achStars(a[0]).st,0)+'/'+ACH.length*5]]
+   [['플레이',(stats.rounds||0).toLocaleString('ko-KR')+'판'],['승률',wr+'%'],['최고 수익률','+'+Math.round(Math.max(0,(stats.bestM||1)-1)*100).toLocaleString('ko-KR')+'%'],['최고 근접도',Math.round(stats.bestPct)+'%'],['최장 연승',stats.maxStreak+(LANG==='en'?'':'연속')],['파산',stats.bankrupts+(LANG==='en'?(stats.bankrupts===1?' time':' times'):'회')],['누적 손익',swS(stats.net)],['최고 자산',best?wonS(best):'-'],['캐릭터 레벨','Lv.'+lvlOf(xp).L],['보스 처치',(stats.bossLv||0)+'마리'],['업적 별',ACH.reduce((n,a)=>n+achStars(a[0]).st,0)+'/'+ACH.length*5]]
      .map(([k,v])=>`<div class="tile"><small>${k}</small><b>${v}</b></div>`).join('')+'</div>'+
    '<h3>장비 컬렉션</h3><div class="achgrid">'+GEAR.map(g=>`<div class="${gear[g.id]?'':'lock'}"><i>${g.e}</i>${g.n}</div>`).join('')+'</div>'+
-   '<h3>최근 거래</h3><div class="pan">'+(stats.hist.length?stats.hist.map(h=>`<div class="hist"><span>${h.w&&h.a>=0?'🔴 익절':h.w?'🔵 손해':h.s?'🔵 손절':'🔵 물림'} · ${esc(histName(h))} <small class="mu">x${h.m.toFixed(2)}</small>${h.l>1?`<b class="tg">⚡${h.l}배</b>`:''}${h.y?'<b class="tg y">영끌</b>':''}${h.q?'<b class="tg q">청산</b>':''}${(h.i||[]).map(t=>`<b class="tg i">${esc(ITEMS[t]?ITEMS[t].short:t)}</b>`).join('')}</span><span class="${h.a>=0?'up':'dn'}">${sw(h.a)}</span></div>`).join(''):'<div class="hist"><span class="mu">아직 거래 기록이 없습니다.</span></div>')+'</div>'+
+   '<h3>최근 거래</h3><div class="pan">'+(stats.hist.length?stats.hist.map(h=>`<div class="hist"><span>${h.w&&h.a>=0?'🔴 익절':h.w?'🔵 손해':h.s?'🔵 손절':'🔵 물림'} · ${esc(histName(h))} <small class="mu">${LANG==='en'?(h.m>=1?'+':'')+nf(1).format((h.m-1)*100)+'%':'x'+h.m.toFixed(2)}</small>${h.l>1?`<b class="tg">⚡${h.l}배</b>`:''}${h.y?'<b class="tg y">'+(LANG==='en'?'Max Buy':'영끌')+'</b>':''}${h.q?'<b class="tg q">청산</b>':''}${(h.i||[]).map(t=>`<b class="tg i">${esc(ITEMS[t]?ITEMS[t].short:t)}</b>`).join('')}</span><span class="${h.a>=0?'up':'dn'}">${sw(h.a)}</span></div>`).join(''):'<div class="hist"><span class="mu">아직 거래 기록이 없습니다.</span></div>')+'</div>'+
    '<h3>업적</h3><div class="achgrid">'+ACH.map(a=>`<div class="${ach.includes(a[0])?'':'lock'}" title="${a[3]} · ${(achC[a[0]]||0).toLocaleString('ko-KR')}${LANG==='en'?(achC[a[0]]===1?' time':' times'):'회'}"><i>${a[1]}</i>${a[2]}${starHtml(a[0])}<small>${a[3]}${achStars(a[0]).next?' · 다음 '+(achC[a[0]]||0).toLocaleString('ko-KR')+'/'+achStars(a[0]).next.toLocaleString('ko-KR'):''}</small></div>`).join('')+'</div>';
 }
 
@@ -2280,7 +2386,7 @@ const HOMES=[ // 벽(왼/오), 바닥 2톤, 창문, 바닥 소품 [이모지,u,v
 ];
 const homeIdx=()=>{const w=balance+invTotal()-debt;let i=0;HOMES.forEach((h,j)=>{if(w>=h.min)i=j;});return i;};
 let lastHome=store.get('shg_home',-1);
-function checkHome(){const h=homeIdx();if(lastHome<0){lastHome=h;store.set('shg_home',h);return;}if(h>lastHome){lastHome=h;store.set('shg_home',h);setTimeout(()=>{stamp('🏠 이사!');toast('🏠 '+HOMES[h].n+'(으)로 이사했습니다!');},400);}} // 최고 기록을 넘을 때만 축하
+function checkHome(){const h=homeIdx();if(lastHome<0){lastHome=h;store.set('shg_home',h);return;}if(h>lastHome){lastHome=h;store.set('shg_home',h);setTimeout(()=>{stamp('🏠 이사!');toast('🏠 '+HOMES[h].n+'(으)로 이사했습니다!');cgHappy();},400);}} // 최고 기록을 넘을 때만 축하
 function roomHtml(){
   const hi=homeIdx(),H=HOMES[hi],nx=HOMES[hi+1],ri=rankOf(xp);
   return '<div class="room iso"><canvas class="roomcv" width="200" height="150"></canvas><div class="ava2"><b>'+(hi===0?'라면 또 먹냐…':hi<3?RANKS[ri][1]:'성공했다 '+RANKS[ri][1])+'</b></div>'+
@@ -2377,10 +2483,10 @@ function glossary(){
     L('📊','호가 · 잔량','사려는(빨강)·팔려는(파랑) 가격과 수량. 노란 칸이 현재가')+L('🧾','체결 · 체결강도','실제로 거래된 가격. 체결강도 100% 넘으면 사는 쪽이 셈')+L('📰','뉴스 바','호재(빨강)·악재(파랑)·찌라시(보라). 악재 뒤엔 출렁임이 옴')+L('🌡️','장세 배지','5판마다 바뀌는 시장 분위기. 불장·하락장 등'),1)+
   G('💰 매매 용어',
     L(LANG==='en'?'🟢':'🔴','매수 → 익절',tw('버튼을 눌러 사고, 다시 눌러 팔아 수익 확정'))+L('🔁','재진입','매도 후 폭락 전이면 한 번 더 같은 금액으로 들어갈 수 있음. 또 팔아야 함')+L('📉','저점 매수 · 추격 매수','매수 전 차트가 기준가보다 4% 아래면 폭락이 조금 늦게, 5% 위면 조금 빨리 옴')+L(LANG==='en'?'🔴':'🔵','물림 · 손절','못 팔고 폭락을 맞거나, 산 값보다 낮게 판 경우')+L('✖','배수 (x2.0)','산 가격 대비 몇 배인지. x2면 +100%')+L('🎯','근접도','폭락 직전 고점에 얼마나 가깝게 팔았는지')+
-    L('⚡','레버리지','수익도 손실도 배수로 커짐. 물리면 판돈의 몇 배를 잃고, 배율이 높을수록 폭락도 빨리 옴. 청산가에 닿으면 판돈만 잃고 끝')+L('🎲','영끌','투자 비율 무시하고 전재산 올인 (한도 없음). 잃으면 크게 잃음')+L('%','투자 비율','투자 한도 중 이번 판에 걸 비율 (예수금이 한도보다 적으면 예수금 기준)')+L('🧾','수수료','매수할 때 떼는 비용. 레버리지가 높을수록 비쌈')+L('🏛️','부자세','예수금 100억부터 수익에 세금. 100억 5% → 1조 25% → 100조 45% → 최대 65%')+L('🌊','유동성 한도','일반 매수는 한 판 최대 1경. 영끌은 예외')+L('📉','자산 리스크','예수금 10억부터 폭락이 빨라지고 즉시 폭락 확률↑. 1조면 약 10%, 최대 30%')+L('💀','고레벨 난이도','Lv.20부터 레벨마다 폭락이 조금씩 빨라짐 (최대 35%)'))+
+    L('⚡','레버리지','수익도 손실도 배수로 커짐. 물리면 매수 금액의 몇 배를 잃고, 배율이 높을수록 폭락도 빨리 옴. 청산가에 닿으면 매수 금액만 잃고 끝')+L('💯',LANG==='en'?'Max Buy':'영끌','투자 비율 무시하고 전재산 투자 (한도 없음). 잃으면 크게 잃음')+L('%','투자 비율','투자 한도 중 이번 판에 걸 비율 (예수금이 한도보다 적으면 예수금 기준)')+L('🧾','수수료','매수할 때 떼는 비용. 레버리지가 높을수록 비쌈')+L('🏛️','부자세','예수금 100억부터 수익에 세금. 100억 5% → 1조 25% → 100조 45% → 최대 65%')+L('🌊','유동성 한도','일반 매수는 한 판 최대 1경. 영끌은 예외')+L('📉','자산 리스크','예수금 10억부터 폭락이 빨라지고 즉시 폭락 확률↑. 1조면 약 10%, 최대 30%')+L('💀','고레벨 난이도','Lv.20부터 레벨마다 폭락이 조금씩 빨라짐 (최대 35%)'))+
   G('🏷️ 종목 종류',Object.values(TIERS).filter(T=>!T.hidden).map(T=>L(T.e,T.label,`물리면 -${Math.round(T.loss*100)}% · 대박 크기 x${T.scale}`)).join('')+L('👹','보스전','10판마다 등장. 목표 배수까지 버티고 팔면 처치'))+
   G('🧰 아이템 · 성장',Object.values(ITEMS).map(it=>L(it.name.split(' ')[0],it.name.split(' ').slice(1).join(' '),it.desc+' · 판마다 비용')).join('')+
-    L('🌳','SP · 스킬','레벨업·업적·미션으로 얻는 포인트. 스킬 탭에서 강화')+L('🎁','선물','하루 한 번 룰렛, 가끔 보물상자')+L('📋','미션','일일 8개 · 주간 10개 · 커리어 20개')+L('⭐','업적 별','반복 달성하면 ★1→★5, 그 뒤엔 색이 바뀜')+L('🛒','상점','소모품·장비 구매, 은행(대출·상환)'))+
+    L('🌳','SP · 스킬','레벨업·업적·미션으로 얻는 포인트. 스킬 탭에서 강화')+L('🎁','선물','하루 한 번 선물, 가끔 보물상자')+L('📋','미션','일일 8개 · 주간 10개 · 커리어 20개')+L('⭐','업적 별','반복 달성하면 ★1→★5, 그 뒤엔 색이 바뀜')+L('🛒','상점','소모품·장비 구매, 은행(대출·상환)'))+
   G('🌡️ 장세 (차트 위 배지)',REGIMES.map(r=>L(r.e,r.n,r.d)).join('')+L('⏱️','N판 남음','장세는 5판마다 바뀜'))+
   G('💼 투자 · 컬렉션',PROD.map(P=>L(P.e,P.n,P.d)).join('')+L('🏆','컬렉션','8개 분류 50종. 살 때마다 SP, 분류를 다 모으면 보너스 SP +3'))+
   G('🏆 챌린지 · 리그 · 시즌',L('🏆','오늘의 챌린지','하루 한 번, 모두 같은 폭락 지점으로 5판. 매도 수익률이 점수, 물리면 -30점')+L('👥','친구 리그','친구가 공유한 SHG- 코드를 넣으면 이번 주 점수로 순위를 매겨요')+L('🎫','시즌 패스','판마다 XP가 쌓여 30단계 보상. 월요일마다 새 시즌')+L('🛋️','미니룸 꾸미기','상점에서 벽지·바닥·소품을 사서 방을 꾸며요')+L('💾','백업 코드','설정에서 복사해 두면 폰을 바꿔도 이어서 할 수 있어요'))+
@@ -2391,13 +2497,14 @@ function glossary(){
 }
 function pageSet(){
   const row=(k,t,d)=>`<div class="setrow"><div><b>${t}</b><small>${d}</small></div><button class="sw" type="button" role="switch" data-set="${k}" aria-checked="${SET[k]}" aria-label="${t}"></button></div>`;
-  return '<h2>⚙️ 설정</h2><div class="pan">'+row('sound','효과음','버튼, 틱, 매도·폭락 소리')+row('bgm','배경음악','잔잔한 비트 · 매수 중엔 빨라짐')+row('heart','심장 박동','보유 중 긴장감 사운드')+row('vib','진동','지원하는 기기에서만 작동')+row('fx','화려한 효과','파티클, 섬광, 화면 흔들림')+row('slow','느린 차트','차트 속도 20% 감소')+'</div>'+glossary()+
+  return '<h2>⚙️ 설정</h2><div class="pan">'+row('sound','효과음','버튼, 틱, 매도·폭락 소리')+row('bgm','배경음악','잔잔한 비트 · 매수 중엔 빨라짐')+row('heart','심장 박동','보유 중 긴장감 사운드')+row('vib','진동','지원하는 기기에서만 작동')+row('fx','화려한 효과','파티클, 섬광, 화면 흔들림')+row('slow','느린 차트','차트 속도 20% 감소')+row('chars','캐릭터','결과·환영 카드에 동물 친구 표시')+'</div>'+glossary()+
    '<h3>다시 하기</h3><div style="display:grid;gap:8px"><button class="setbtn ghost" type="button" id="retake">🧪 투자 성향 테스트 다시 하기</button><button class="setbtn ghost" type="button" id="reTut">🎓 튜토리얼 다시 보기</button></div>'+
    '<h3>백업</h3><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><button class="setbtn" type="button" id="bkOut">💾 백업 코드 복사</button><button class="setbtn ghost" type="button" id="bkIn">📥 백업 불러오기</button></div><p class="lead" style="margin-top:8px">기록은 이 폰의 브라우저에만 저장돼요. 아이폰은 홈 화면에 추가하지 않으면 오래 안 쓸 때 지워질 수 있으니, 가끔 백업 코드를 메모장에 저장해 두세요. 다른 폰으로 옮길 때도 써요.</p>'+
+   (memSave?'<p class="lead" style="margin-top:8px;color:var(--gold)">⚠️ 지금 이 브라우저는 저장을 막고 있어서 기록이 이 창에만 남아요. 창을 닫기 전에 백업 코드를 복사해 두고, 다음에 백업 불러오기로 이어서 하세요.</p>':'')+ // 저장소 차단: 저장 안내를 실제 상태에 맞춤
    '<h3>개인정보</h3><p class="lead">이 게임은 회원가입이 없고, 플레이 기록은 이 기기 브라우저에만 저장되며 서버로 보내지 않습니다. 글꼴은 Google Fonts, 광고는 Google AdSense(CrazyGames에서는 CrazyGames SDK)에서 불러오며, 광고 업체가 쿠키를 사용할 수 있습니다.</p>'+
    '<h3>데이터</h3><button class="setbtn danger" type="button" id="wipe" style="width:100%">모든 기록 초기화</button><p class="lead" style="margin-top:8px">기록은 이 기기의 브라우저에만 저장됩니다. 초기화하면 계급, 스킬, 업적이 모두 사라집니다.'+(PREM_ON?' 💎 구매한 프리미엄 아이템은 그대로 남아요.':'')+'</p>'+
    (CFG.donateUrl?'<h3>개발자 응원</h3><a class="setbtn" style="display:block;text-align:center;text-decoration:none;width:100%" href="'+CFG.donateUrl+'" target="_blank" rel="noopener">☕ 커피 한 잔 후원하기</a><p class="lead" style="margin-top:8px">후원은 게임 내 보상과 무관한 순수 응원이에요.</p>':'')+'<h3>친구 초대</h3><button class="setbtn" type="button" id="invite" style="width:100%">📤 친구에게 게임 공유하기</button>'+
-   '<p class="lead" style="margin-top:10px">떡상 계좌 키우기 v2.1 · 가상 머니 게임이며 실제 투자·현금과 무관합니다. 실제 돈은 쓰이지 않습니다.</p>';
+   '<p class="lead" style="margin-top:10px">떡상 계좌 키우기 '+BUILD+' · 가상 머니 게임이며 실제 투자·현금과 무관합니다. 실제 돈은 쓰이지 않습니다.</p>';
 }
 function bindPage(name){
   const pg=$('page');
@@ -2424,7 +2531,7 @@ function bindPage(name){
   const bh=$('bHalf');if(bh)bh.onclick=()=>{if(!once())return;repay(Math.ceil(debt/2));paintTop();paintPickers();rerender('shop');};
   const ba=$('bAll');if(ba)ba.onclick=()=>{repay(debt);paintTop();paintPickers();rerender('shop');};
   const rs=$('skReset');if(rs)rs.onclick=()=>{sk={};store.set('shg_sk',sk);paintTop();rerender('skill');toast('스킬을 초기화했습니다');};
-  pg.querySelectorAll('[data-set]').forEach(b=>b.onclick=()=>{const k=b.dataset.set;SET[k]=!SET[k];store.set('shg_set',SET);b.setAttribute('aria-checked',SET[k]);if(k==='sound'){muted=!SET.sound;if(!muted){au();beep(660,.06,'sine',.04);}}if(k==='vib')vib(30);if(k==='bgm'||k==='sound'){if(typeof window.adConfig==='function')try{window.adConfig({sound:SET.sound||SET.bgm?'on':'off'});}catch(e){}bgm.sync();}});
+  pg.querySelectorAll('[data-set]').forEach(b=>b.onclick=()=>{const k=b.dataset.set;SET[k]=!SET[k];store.set('shg_set',SET);b.setAttribute('aria-checked',SET[k]);if(k==='sound'){muted=!SET.sound;if(!muted){au();beep(660,.06,'sine',.04);}}if(k==='vib')vib(30);if(k==='chars')bdSync();if(k==='bgm'||k==='sound'){if(typeof window.adConfig==='function')try{window.adConfig({sound:SET.sound||SET.bgm?'on':'off'});}catch(e){}bgm.sync();}});
   const rt=$('reTut');if(rt)rt.onclick=()=>{tab('trade');if(state!=='ready'&&state!=='result')return toast('💸 계좌를 먼저 복구한 뒤 다시 해 주세요'); // 바닥(over)에서 튜토리얼로 바꾸면 계좌 복구(unOver)가 막힘
     tutDone=false;store.set('shg_tut',0);offers=makeOffers();if(!run){buildChartIdle();paintQuote();renderBook();}paintPickers();setBtn();if(profile){card.hidden=true;coachReady();}};
   const rq=$('retake');if(rq)rq.onclick=()=>{tab('trade');if(state==='ready'||state==='result')startQuiz();else toast('💸 계좌를 먼저 복구한 뒤 다시 해 주세요');};
@@ -2444,11 +2551,13 @@ function bindPage(name){
     try{Object.keys(localStorage).filter(k=>k.startsWith('shg_')&&k!=='shg_prem'&&k!=='shg_premEq').forEach(k=>localStorage.removeItem(k));}catch(e){}location.reload();}; // 구매한 프리미엄(영수증·장착)은 진행 기록이 아니라서 남김
 }
 /* ---------- loop ---------- */
+let drawT=-1e9,drawW=0,drawH=0; // 마지막으로 차트를 그린 때·캔버스 크기
 function frame(ts){
   const dt=Math.min(.05,(ts-lastTs)/1000||0);lastTs=ts;
   if(adDue&&performance.now()>=adDue)adDecide();
   stepFx(dt);
-  const hid=adPause||app.classList.contains('pgopen'); // 페이지가 차트를 다 덮었거나 광고 중이면 차트·호가·시세는 안 그림 (시세 흐름은 계속)
+  const hid=adPause||app.classList.contains('pgopen'),live=state==='holding'||state==='ghost'; // 페이지가 차트를 다 덮었거나 광고 중이면 차트·호가·시세는 안 그림 (시세 흐름은 계속)
+  const idle=!live&&!hid&&(ts-drawT>=48||cv.width!==drawW||cv.height!==drawH); // 판이 없을 땐 차트·시세·매수 버튼을 초당 20번만 그림 (CPU 절약, 실시간 흐름은 그대로) · 캔버스 크기가 바뀌면(지워짐) 바로
   if(freezeT>0){freezeT-=dt;draw();requestAnimationFrame(frame);return;}
   if(adPause&&(state==='holding'||state==='ghost')){draw();requestAnimationFrame(frame);return;} // 광고 중엔 차트 멈춤
   if(state==='holding'||state==='ghost'){
@@ -2474,19 +2583,19 @@ function frame(ts){
       if(state==='holding'&&run.boss&&!run.re){const pn=performance.now(),hp=run.boss.down&&pn<run.boss.downAt+1050?0:Math.max(0,1-(cur-1)/(run.boss.target-1));$('bossHp').style.width=(hp*100).toFixed(1)+'%';if(hp<=0&&!run.boss.down){run.boss.down=1;run.boss.downAt=pn+Math.max(0,stampAt-pn);stamp('💥 HP 0! 지금 팔면 처치');}} // downAt: 안내가 실제로 뜨는 때 (앞 도장에 밀릴 수 있음), 그 뒤 잠깐은 팔면 처치
       if(state==='holding'){events.forEach(e=>{if(e.shake&&!e.shown&&t>=e.t0){e.shown=1;run.sawDip=true;news('⚠️ 세력의 개미털기 매도 폭탄','bear');talk('fear');}});tension(dt);if(run.tut)tutTick();while(run.mi<MS.length&&cur*(MS[run.mi][0]===1.3&&!run.tut?eM:1)>=MS[run.mi][0]){if(!(MS[run.mi][0]===1.3&&!run.T.limit&&!run.tut))stamp(MS[run.mi][1]);run.mi++;}}
       if(state==='holding'){if(run.chal){const pv=Math.round((cur-1)*100);$('pnl').innerHTML='<span class="gd">🏆 '+(pv>=0?'+':'')+ptsL(pv)+'</span>';}else{const lev=run.lev,g0=run.re?run.re.bet*(cur/run.re.entry-1)*lev:run.bet*(cur-1)*lev,g=g0>0?g0*profitMul():g0; // 팔 때와 같은 수익 배율 (연승 보너스·부자세 전)
-        $('pnl').innerHTML='평가손익 <span class="'+(g>=0?'up':'dn')+'">'+sw(g)+'</span>'+(lev>1?' <span class="gd">⚡'+lev+'배</span>':'')+(run.allin?' <span class="gd">🎲</span>':'');}}
+        $('pnl').innerHTML='평가손익 <span class="'+(g>=0?'up':'dn')+'">'+sw(g)+'</span>'+(lev>1?' <span class="gd">⚡'+lev+'배</span>':'')+(run.allin?' <span class="gd">💯</span>':'');}}
       if(state==='holding')btnTxt(sellLbl()); // 매 프레임 매도 버튼 수익률 갱신 (평가손익 줄과 같은 값, 글자가 같으면 btnTxt가 건너뜀)
     }
     paintQuote();
   }else{
     if(tabStale)tabGo();
-    if(!run)liveTick(dt);
-    if(!hid)paintQuote();
+    if(!run)liveTick(dt,idle);
+    if(idle)paintQuote();
     if(state==='ready'){talkT+=dt;if(talkT>1.6){talkT=0;talk('idle');}}
   }
   tradeT+=dt;if(tradeT>(state==='holding'?rnd(.04,.16):state==='ghost'?.12:rnd(.4,.9))){tradeT=0;pushTrade(!run?liveM:crashed?(run.liq?cur*.8:Math.min(cur,run.crashAt*.62)):cur);}
   bookT+=dt;if(bookT>(state==='holding'||state==='ghost'?.12:.5)&&!hid){bookT=0;renderBook();}
-  if(!hid)draw();requestAnimationFrame(frame);
+  if(!hid&&(live||idle)){drawT=ts;drawW=cv.width;drawH=cv.height;draw();}requestAnimationFrame(frame);
 }
 
 if(chal&&chal.pend!=null){const pt=chal.pend;delete chal.pend;chal.score+=pt;chal.res.push(pt);chal.i++;if(chal.i<5)store.set('shg_chalRun',chal);else chalFinish(1);} // 하다 만 챌린지 판은 판 기록(팔았으면 그 점수, 아니면 -30)으로 확정
@@ -2495,9 +2604,11 @@ if(PREM_ON)premApply(1);offers=makeOffers();buildChartIdle();paintTop();paintPic
 try{navigator.clearAppBadge&&navigator.clearAppBadge()}catch(e){}
 if(/selftest/.test(location.search)){ // 자동 테스트 전용 (일반 플레이엔 영향 없음)
   window.__t={start,release,reenter,declareBankrupt,takeLoan,repay,tab,
-    get s(){return {state,balance,debt,credit,cur,crashed,re:!!(run&&run.re),inv:invTotal(),xp,pres,tut:tutDone,streak,ready:performance.now()>=readyAt&&!(adHold&&state==='result'),curTab,modal:!$('modal').hidden,card:!card.hidden,col:col.length,net:stats.net,rounds:stats.rounds,hist:stats.hist.length}},
+    get s(){return {state,balance,debt,credit,cur,crashed,re:!!(run&&run.re),inv:invTotal(),xp,pres,tut:tutDone,streak,ready:performance.now()>=readyAt&&!(adHold&&state==='result'&&!card.querySelector('#adWin,#adLoss,#adRevive')),curTab,modal:!$('modal').hidden,card:!card.hidden,col:col.length,net:stats.net,rounds:stats.rounds,hist:stats.hist.length}},
     set allin(v){allin=v},set lev(v){levSel=v},set pct(v){betPct=v},set sel(v){Object.assign(sel,v)},closeCard(){card.hidden=true;$('modal').hidden=true;},
-    prem:{on:PREM_ON,pay:PAY.id,grant:grantPremium,equip:premEquip,get own(){return prem.slice()},get eq(){return Object.assign({},premEq)},get theme(){return CP===C?null:premEq.th}}};
+    prem:{on:PREM_ON,pay:PAY.id,grant:grantPremium,equip:premEquip,get own(){return prem.slice()},get eq(){return Object.assign({},premEq)},get theme(){return CP===C?null:premEq.th}},
+    ads:{get on(){return adsOn()},get cg(){return {on:CG.on,noAds:CG.noAds,done:CG.done}},off:adsOff}};
+  setInterval(()=>{if(adsOn())return;const b=['adWin','adLoss','adRevive','adItem','adSpin'].filter(id=>{const e=$(id);return e&&e.offsetParent;});if(b.length)throw new Error('ad button visible while ads are off: '+b.join(','));},500); // 광고가 꺼졌는데 📺 버튼이 보이면 오류 (퍼즈 봇이 pageerror로 잡음)
   if(/fast/.test(location.search)){draw=()=>{};}
 }
 setTimeout(()=>{try{if(tutDone&&profile&&state==='ready'&&balance+invNet()<100000&&!(chal&&chal.i<5&&debt<=debtLimit())){state='over';$('sheet').hidden=true;if(debt>debtLimit())showDefault(1);else showOver(0,1);paintPickers();setBtn();}}catch(e){}},900);

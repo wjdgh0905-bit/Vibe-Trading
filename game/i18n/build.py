@@ -3,6 +3,8 @@ d={}
 for f in sorted(glob.glob('out*.json')):d.update(json.load(open(f)))
 s,miss=apply(open('../sanghanga.html').read(),d)
 s=s.replace("const LANG='ko';","const LANG='en';",1)
+assert s.count("const ASSET='';")==1,'ASSET const missing in sanghanga.html'
+s=s.replace("const ASSET='';","const ASSET='../';",1) # 영어판은 /en/ 안이라 그림 폴더(chars/·brand/)가 한 단계 위
 s=s.replace('--up:#f2313f;--down:#2f7bff','--up:#16c784;--down:#f2313f',1)
 s=s.replace("'ko-KR'","'en-US'")
 s=s.replace("const GAME_URL='https://melange-lab.github.io/'","const GAME_URL='https://melange-lab.github.io/en/'")

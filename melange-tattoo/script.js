@@ -33,6 +33,9 @@
       custom: "Custom",
       count: function (n, total) { return "Showing " + n + " of " + total; },
       more: "See more",
+      ask: "Ask about this style",
+      askFlash: "See the flash sheet",
+      askIdea: function (name, id) { return "I'd like something in the style of the \u201c" + name + "\u201d piece in your gallery (" + id + "): "; },
       required: "Please fill this in.",
       emailBad: "That email doesn't look right.",
       contact: "Add an email or Instagram handle so we can reply.",
@@ -46,6 +49,9 @@
       custom: "커스텀",
       count: function (n, total) { return "전체 " + total + "개 중 " + n + "개"; },
       more: "더 보기",
+      ask: "이 스타일로 상담하기",
+      askFlash: "플래시 도안 보기",
+      askIdea: function (name, id) { return "갤러리의 \u300c" + name + "\u300d(" + id + ") 같은 스타일로 받고 싶어요: "; },
       required: "이 항목을 입력해주세요.",
       emailBad: "이메일 주소를 다시 확인해주세요.",
       contact: "답장을 받을 이메일이나 인스타그램 아이디를 적어주세요.",
@@ -110,7 +116,9 @@
     return desc || shortTitle(d) + (L === "ko" ? " 타투, 멜란지 작업" : " tattoo by Melange");
   }
   function shortTitle(d) {
-    if (d.cat === "character") return (L === "ko" ? d.nameKo : d.nameEn) || TXT.cats.character;
+    var name = L === "ko" ? d.nameKo : d.nameEn;
+    if (name) return name;
+    if (d.cat === "character") return TXT.cats.character;
     if (d.cat === "more") return TXT.custom;
     if (d.cat === "animal") return L === "ko" ? "동물" : "Animal";
     if (d.cat === "floral") return L === "ko" ? "꽃" : "Flower";
@@ -118,6 +126,9 @@
     return TXT.cats[d.cat] || TXT.custom;
   }
 
+  function srcset(id) {
+    return [480, 720, 1080].map(function (w) { return "/assets/work/" + id + "-" + w + ".webp " + w + "w"; }).join(", ");
+  }
   function card(d, k) {
     var fig = document.createElement("figure");
     fig.className = "card enter";
@@ -125,7 +136,7 @@
     var h = Math.round(d.h * 480 / d.w);
     fig.innerHTML =
       '<button type="button" data-id="' + d.id + '"><div class="ph"><img src="/assets/work/' + d.id + '-480.webp" ' +
-      'srcset="/assets/work/' + d.id + '-480.webp 480w, /assets/work/' + d.id + '-1080.webp 1080w" ' +
+      'srcset="' + srcset(d.id) + '" ' +
       'sizes="(max-width: 960px) 68vw, 24vw" width="480" height="' + h + '" loading="lazy" decoding="async" alt=""></div>' +
       '<span class="cap"><span></span><span></span></span></button>';
     fig.querySelector("img").alt = alt(d);
@@ -135,9 +146,17 @@
     return fig;
   }
 
-  function renderMore() {
-    var next = list.slice(shown, shown + PAGE);
-    next.forEach(function (d, k) { grid.appendChild(card(d, k)); });
+  var rowMq = window.matchMedia("(max-width: 960px)"); // phones/tablets: the grid is one swipe row
+  function renderMore(e) {
+    var next = list.slice(shown, shown + PAGE), firstNew = null;
+    next.forEach(function (d, k) { var c = card(d, k); grid.appendChild(c); if (!k) firstNew = c; });
+    if (e && firstNew && rowMq.matches) {
+      requestAnimationFrame(function () {
+        var pad = parseFloat(getComputedStyle(grid).scrollPaddingLeft) || 0;
+        var x = grid.scrollLeft + firstNew.getBoundingClientRect().left - grid.getBoundingClientRect().left - pad;
+        grid.scrollTo({ left: x, behavior: reduce ? "auto" : "smooth" });
+      });
+    }
     shown += next.length;
     countEl.textContent = TXT.count(shown, list.length);
     moreBtn.hidden = shown >= list.length;
@@ -163,19 +182,43 @@
       b.addEventListener("click", function () { setFilter(c); });
       chips.appendChild(b);
     });
-    moreBtn.innerHTML = TXT.more + ' <span class="arr">↓</span>';
+    var moreArrow = function () { moreBtn.innerHTML = TXT.more + ' <span class="arr">' + (rowMq.matches ? "→" : "↓") + "</span>"; };
+    moreArrow();
+    if (rowMq.addEventListener) rowMq.addEventListener("change", moreArrow);
     moreBtn.addEventListener("click", renderMore);
     setFilter("all");
   }
 
   /* ---------- lightbox ---------- */
-  var lb = $("#lb"), lbImg = lb && $("img", lb), lbCap = lb && $("figcaption", lb), lbIdx = 0, lbReturn = null;
+  var lb = $("#lb"), lbImg = lb && $("img", lb), lbCap = lb && $("figcaption", lb), lbIdx = 0, lbReturn = null, lbTok = 0, lbAsk = null;
+  if (lb) {
+    lbCap.innerHTML = '<span class="lb-line"><span class="lb-t"></span><span class="lb-p"></span><span class="lb-n"></span></span>';
+    lbAsk = document.createElement("a");
+    lbAsk.className = "lb-ask";
+    lbCap.appendChild(lbAsk);
+  }
   function lbShow(i) {
     lbIdx = (i + list.length) % list.length;
-    var d = list[lbIdx];
-    lbImg.src = "/assets/work/" + d.id + "-1080.webp";
-    lbImg.alt = alt(d);
-    lbCap.textContent = [shortTitle(d), place(d)].filter(Boolean).join(" — ") + "  ·  " + (lbIdx + 1) + " / " + list.length;
+    var d = list[lbIdx], url = "/assets/work/" + d.id + "-1080.webp", tok = ++lbTok;
+    // fade the old photo out, swap once the new one is decoded, fade back in
+    var swap = function () {
+      if (tok !== lbTok) return;
+      lbImg.src = url; lbImg.alt = alt(d);
+      lbImg.classList.remove("swap");
+    };
+    if (lb.classList.contains("open") && !reduce) {
+      lbImg.classList.add("swap");
+      var pre = new Image(); pre.src = url;
+      var ready = pre.decode ? pre.decode() : Promise.resolve();
+      Promise.all([ready.catch(function () {}), new Promise(function (r) { setTimeout(r, 160); })]).then(swap);
+    } else swap();
+    $(".lb-t", lbCap).textContent = shortTitle(d);
+    $(".lb-p", lbCap).textContent = place(d) || "";
+    $(".lb-n", lbCap).textContent = (lbIdx + 1) + " / " + list.length;
+    var flash = d.id === "flash-01";
+    lbAsk.href = flash ? (L === "ko" ? "/ko/flash/" : "/flash/") : "#book";
+    lbAsk.dataset.id = d.id;
+    lbAsk.innerHTML = (flash ? TXT.askFlash : TXT.ask) + ' <span class="arr">→</span>';
     // warm the neighbours so arrowing feels instant
     [lbIdx + 1, lbIdx - 1].forEach(function (j) { var n = list[(j + list.length) % list.length]; (new Image()).src = "/assets/work/" + n.id + "-1080.webp"; });
   }
@@ -198,6 +241,19 @@
       for (var i = 0; i < list.length; i++) if (list[i].id === b.dataset.id) return lbOpen(i);
     });
     $(".lb-close", lb).addEventListener("click", lbClose);
+    // "Ask about something in this style": close the viewer and start the booking form with this piece as the reference
+    lbAsk.addEventListener("click", function (e) {
+      if (lbAsk.getAttribute("href") !== "#book" || !form) return;
+      e.preventDefault();
+      var d = list[lbIdx], idea = form.elements.idea, line = TXT.askIdea(shortTitle(d), d.id);
+      if (idea && (!idea.value.trim() || idea.dataset.auto === idea.value)) { idea.value = line; idea.dataset.auto = line; }
+      lbReturn = null;
+      lbClose();
+      $("#book").scrollIntoView({ behavior: reduce ? "auto" : "smooth" });
+      var bookH = $("#book .h2");
+      if (idea && fine) idea.focus({ preventScroll: true });
+      else if (bookH) { bookH.tabIndex = -1; bookH.focus({ preventScroll: true }); } // no keyboard pop-up on phones
+    });
     $(".lb-prev", lb).addEventListener("click", function () { lbShow(lbIdx - 1); });
     $(".lb-next", lb).addEventListener("click", function () { lbShow(lbIdx + 1); });
     lb.addEventListener("click", function (e) { if (e.target === lb) lbClose(); });
@@ -207,7 +263,7 @@
       else if (e.key === "ArrowRight") lbShow(lbIdx + 1);
       else if (e.key === "ArrowLeft") lbShow(lbIdx - 1);
       else if (e.key === "Tab") { // keep focus inside the viewer
-        var f = $$(".lb-btn", lb), first = f[0], last = f[f.length - 1];
+        var f = $$(".lb-btn, .lb-ask", lb), first = f[0], last = f[f.length - 1];
         if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
         else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
       }
@@ -349,7 +405,7 @@
     var pool = ALL.filter(function (d) { return d.id !== "flash-01" && place(d); });
     shuffle(pool.slice()).slice(0, imgs.length).forEach(function (d, k) {
       var im = imgs[k];
-      im.srcset = "/assets/work/" + d.id + "-480.webp 480w, /assets/work/" + d.id + "-1080.webp 1080w";
+      im.srcset = srcset(d.id);
       im.src = "/assets/work/" + d.id + "-1080.webp";
       im.width = 1080; im.height = Math.round(d.h * 1080 / d.w);
       im.dataset.cap = shortTitle(d); im.dataset.pl = place(d);
@@ -411,6 +467,7 @@
   /* ---------- scroll: progress, pinned nav, back-to-top, hero parallax ---------- */
   var progress = $(".progress"), mini = $(".mini"), heroEl = $(".hero"), heroGrid = $(".hero-grid"), ghost = $(".ghost");
   var heroNav = $(".hero .nav"), toTop = $(".totop");
+  var darkBits = $$(".on-blue, .ticker, .strip, .foot"), footRow = $(".foot-row"), lift = 0;
   var ticking = false, miniOn = null;
   function onScroll() {
     ticking = false;
@@ -425,6 +482,24 @@
       mini.setAttribute("aria-hidden", String(!on));
     }
     toTop.classList.toggle("is-on", y > innerHeight * .8);
+    // back-to-top rides up with the footer's last row instead of covering its links,
+    // and turns white over the blue sections so it doesn't disappear into them
+    var tb = toTop.getBoundingClientRect(), base = tb.bottom + lift;
+    var nl = 0;
+    if (footRow) {
+      var top = Infinity, rg = document.createRange();
+      for (var c = footRow.firstElementChild; c; c = c.nextElementSibling) {
+        rg.selectNodeContents(c); // the text itself, not the (sometimes full-width) box around it
+        var cr = rg.getBoundingClientRect();
+        if (cr.width && cr.right > tb.left - 8) top = Math.min(top, cr.top);
+      }
+      if (top < Infinity) nl = Math.max(0, Math.round(base - top + 12));
+      var ceiling = miniOn ? mini.getBoundingClientRect().bottom : 0;
+      nl = Math.min(nl, Math.max(0, Math.round(base - tb.height - ceiling - 8)));
+    }
+    if (nl !== lift) { lift = nl; toTop.style.translate = lift ? "0 " + -lift + "px" : ""; }
+    var mid = base - lift - tb.height / 2;
+    toTop.classList.toggle("on-dark", darkBits.some(function (el) { var r = el.getBoundingClientRect(); return r.top <= mid && r.bottom >= mid; }));
     if (!reduce && y <= hh) {
       heroGrid.style.transform = "translateY(" + (y * .18) + "px)";
       heroGrid.style.opacity = String(Math.max(0, 1 - y / (hh * .85)));
@@ -433,6 +508,17 @@
   }
   addEventListener("scroll", function () { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } }, { passive: true });
   onScroll();
+  // phones: the bottom booking bar (and the expo bar) step aside while the booking form is on screen
+  var bookSec = $("#book");
+  if (bookSec && "IntersectionObserver" in window) {
+    // (the top margin is the pinned nav's height, so the bars come back once the form has scrolled up under it)
+    new IntersectionObserver(function (es) {
+      document.body.classList.toggle("book-in", es[es.length - 1].isIntersecting);
+      onScroll();
+    }, { rootMargin: "-64px 0px -20% 0px" }).observe(bookSec);
+  }
+  toTop.addEventListener("transitionend", function (e) { if (e.propertyName === "bottom") onScroll(); });
+  addEventListener("resize", function () { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } });
   toTop.addEventListener("click", function () {
     window.scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" });
     var brand = $(".hero .brand"); if (brand) brand.focus({ preventScroll: true });
@@ -473,7 +559,14 @@
     });
   });
   menu.addEventListener("click", function (e) { if (e.target.closest("a, [data-close]")) closeMenu(); });
-  document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeMenu(); });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") return closeMenu();
+    if (e.key === "Tab" && menu.classList.contains("open")) { // keep focus inside the open menu
+      var f = $$("a[href], button", menu), first = f[0], last = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    }
+  });
 
   /* ---------- home popup / phone bar (expo model call) ----------
      Desktop (wider than 960px): a popup. Phones and tablets: a small bar above the bottom booking

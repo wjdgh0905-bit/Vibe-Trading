@@ -23,8 +23,14 @@
   <meta property="og:url" content="https://melangetattoo.ink/ko/privacy/">
   <meta property="og:title" content="개인정보처리방침 | 멜란지 타투">
   <meta property="og:description" content="멜란지 타투 홈페이지(melangetattoo.ink)가 어떤 정보를 받고, 어디에 쓰며, 삭제는 어떻게 요청하는지 안내해요.">
-  <meta property="og:image" content="https://melangetattoo.ink/assets/og-image.jpg">
+  <meta property="og:image" content="https://melangetattoo.ink/assets/og/home-ko.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="멜란지 타투: 당신의 몸에 맞춰 그리는 푸른 타투. melangetattoo.ink">
   <meta property="og:locale" content="ko_KR">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://melangetattoo.ink/assets/og/home-ko.jpg">
+  <meta name="twitter:image:alt" content="멜란지 타투: 당신의 몸에 맞춰 그리는 푸른 타투. melangetattoo.ink">
   <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
   <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
   <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
@@ -66,9 +72,10 @@
   <div class="wrap">
     <nav class="nav" aria-label="주요 메뉴">
       <a class="brand x" href="/ko/"><svg class="mark" aria-hidden="true"><use href="#mk"/></svg>Melange Tattoo</a>
-      <div class="links"><a href="/ko/#work">작업</a><a href="/ko/flash/">플래시 도안</a><a href="/ko/aftercare/">애프터케어</a></div>
+      <div class="links"><a href="/ko/#work">작업</a><a href="/ko/#melbourne" data-until="2026-12-06" data-tz="Australia/Melbourne">멜버른</a><a href="/ko/flash/">플래시 도안</a><a href="/ko/aftercare/">애프터케어</a></div>
       <div class="nav-r"><a class="lang" href="/privacy/" hreflang="en" lang="en">English</a><a class="btn" href="/ko/#book">예약</a></div>
     </nav>
+    <script>/* expo nav link: hide once the expo is over (Melbourne time) */(function(){var t;try{t=new Intl.DateTimeFormat("en-CA",{timeZone:"Australia/Melbourne",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date())}catch(e){return}[].forEach.call(document.querySelectorAll(".links [data-until]"),function(a){if(t>a.dataset.until)a.hidden=true})})();</script>
   </div>
 </header>
 

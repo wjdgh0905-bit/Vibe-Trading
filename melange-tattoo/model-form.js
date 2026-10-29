@@ -32,9 +32,11 @@
   var today;
   try { today = new Intl.DateTimeFormat("en-CA", { timeZone: (box && box.dataset.tz) || "UTC", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date()); }
   catch (e) { today = new Date().toISOString().slice(0, 10); }
-  if (box && box.dataset.until && today > box.dataset.until) {
-    box.hidden = true;
-    var closed = document.getElementById("apply-closed");
+  // (also the "Apply" button and the nav link, which carry the same data-until)
+  [].forEach.call(document.querySelectorAll("[data-until]"), function (el) { if (today > el.dataset.until) el.hidden = true; });
+  if (box && box.hidden) {
+    var closed = document.getElementById("apply-closed"), go = document.querySelector(".expo-go");
+    if (closed && go) go.parentNode.insertBefore(closed, go); // near the top, not below the table
     if (closed) closed.hidden = false;
     return;
   }

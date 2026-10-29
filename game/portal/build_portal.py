@@ -32,6 +32,7 @@ assert "iapDev:false}" in s,'CFG.iapDev must be false in portal builds (it would
 s,n=re.subn(r"<script>\nif\('serviceWorker' in navigator\)[^\n]*\n</script>\n",'',s); assert n==1,n
 # 3) 아이콘 경로를 빌드 폴더 안으로 + 그림 폴더(chars/·brand/)도 빌드 폴더 안이라 영어판의 '../'를 다시 ''로 (그림은 아래에서 복사)
 R("const ASSET='../';","const ASSET='';")
+n=s.count(' src="../ui/');assert n>=10,n;s=s.replace(' src="../ui/',' src="ui/') # HTML에 바로 쓴 첫 화면 아이콘도 빌드 폴더 안 ui/로
 s=s.replace('href="../apple-touch-icon.png"','href="icon-192.png"').replace('href="../icon-192.png"','href="icon-192.png"')
 # 4) 공유: 크레이지게임즈는 플레이 가능한 외부 사이트 링크 금지 → 주소 없이 텍스트만
 if cg:
@@ -87,13 +88,17 @@ IC=S+'/assets/icons/icon-192.png';shutil.copy(IC if os.path.exists(IC) else '/ho
 for sub in ('chars','brand'): # 동물 친구 그림·타이틀 그림 (ASSET=''가 가리키는 곳)
   src=f'{S}/assets/{sub}';fs=sorted(f for f in os.listdir(src) if f.endswith('.webp') and f!='title_ko.webp');assert fs,'no assets in '+src # 포털 빌드는 늘 영어판이라 한글 제목 그림은 안 넣음
   os.makedirs(f'{out}/{sub}');[shutil.copy(f'{src}/{f}',f'{out}/{sub}/{f}') for f in fs]
-assert os.path.exists(out+'/chars/hamster_happy.webp') and os.path.exists(out+'/brand/title_en.webp'),'asset copy failed'
+UI=S+'/assets/ui';ui=sorted(f for f in os.listdir(UI) if f.endswith('.webp'));assert len(ui)>=200,'ui icons missing: run design/build_ui.py' # UI 아이콘 그림 (ASSET+'ui/<id>.webp')
+os.makedirs(out+'/ui');[shutil.copy(f'{UI}/{f}',f'{out}/ui/{f}') for f in ui]
+m=re.search(r"const ICM=\{([^}]*)\}",s);assert m,'icon map ICM missing in the page';need={i for i in re.findall(r":'([a-z0-9_]+)'",m.group(1))}|set(re.findall(r"'([a-z0-9_]+)'\]",s[s.index('const ICX='):s.index('\n',s.index('const ICX='))])) # 페이지가 쓰는 그림 id (기본 표 + 뜻에 따라 고르는 표)
+assert need and need<={f[:-5] for f in ui},'icons used by the page but missing in ui/: %s'%sorted(need-{f[:-5] for f in ui})
+assert os.path.exists(out+'/chars/hamster_happy.webp') and os.path.exists(out+'/brand/title_en.webp') and os.path.exists(out+'/ui/chart_up.webp') and len(os.listdir(out+'/ui'))==len(ui),'asset copy failed'
 z=f'{S}/cg/stonks-tycoon-{kind}.zip'
 with zipfile.ZipFile(z,'w',zipfile.ZIP_DEFLATED) as f:
-  for root,dirs,files in os.walk(out): # 하위 폴더(chars/·brand/)까지
+  for root,dirs,files in os.walk(out): # 하위 폴더(chars/·brand/·ui/)까지
     dirs.sort()
     for fn in sorted(files):p=os.path.join(root,fn);f.write(p,os.path.relpath(p,out),compress_type=zipfile.ZIP_STORED if fn.endswith(('.webp','.png')) else zipfile.ZIP_DEFLATED)
-with zipfile.ZipFile(z) as f:assert 'index.html' in f.namelist() and 'chars/lion_shock.webp' in f.namelist() and 'brand/intro_portrait.webp' in f.namelist() and 'brand/title_ko.webp' not in f.namelist(),'zip is missing files (or has the Korean title art)'
+with zipfile.ZipFile(z) as f:assert 'index.html' in f.namelist() and 'ui/chart_up.webp' in f.namelist() and sum(n.startswith('ui/') for n in f.namelist())==len(ui) and 'chars/lion_shock.webp' in f.namelist() and 'brand/intro_portrait.webp' in f.namelist() and 'brand/title_ko.webp' not in f.namelist(),'zip is missing files (or has the Korean title art)'
 print(kind,'ok',os.path.getsize(out+'/index.html'),'bytes ->',z,os.path.getsize(z))
 # 9) 출시 키트(launch-kit 폴더 + stonks-tycoon-launch-kit.zip)도 방금 만든 빌드 zip·listing.md로 갱신 (예전엔 손으로 묶어서 낡은 빌드가 남았음)
 K=f'{S}/cg/launch-kit'

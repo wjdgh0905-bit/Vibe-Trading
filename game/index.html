@@ -649,6 +649,10 @@ header h1{display:none}
 @keyframes bdPlay{from{background-position:0 100%}to{background-position:100% 100%}}
 @keyframes bdBr{0%,100%{transform:none}50%{transform:scale(1.015,1.035)}}
 @keyframes bdIn{from{opacity:0;transform:translateY(10px)}}
+#buddy.s0 i{background-size:auto 80%} /* 아기는 어른보다 작게 (그림이 앉은 꼬마라 키를 다 채움) */
+#buddy .bdx{position:absolute;right:-6%;top:-2%;width:34%;height:34%;display:flex;align-items:center;justify-content:center;font-size:24px;line-height:1;animation:bdX .5s cubic-bezier(.3,1.6,.5,1) .3s both}#buddy.s0 .bdx{top:16%}
+#buddy .bdx .ico{width:100%;height:100%;margin:0;vertical-align:0;filter:drop-shadow(0 2px 3px rgba(0,0,0,.5))}
+@keyframes bdX{from{opacity:0;transform:scale(.2) rotate(-25deg)}}
 /* 타이틀 화면(첫 화면·환영 카드): 화면 전체에 인트로 그림 + 어두운 그라데이션, 카드는 그 위 · 그림 주소는 스크립트가 세로/가로에 맞춰 넣음 */
 #tbg{position:fixed;top:0;right:0;bottom:0;left:0;z-index:18;background:#0b1a2a no-repeat 50% 100%/cover;animation:tbgIn .35s ease-out}
 @keyframes tbgIn{from{opacity:0}}
@@ -656,8 +660,8 @@ header h1{display:none}
 .card .ttl.sm img{height:clamp(42px,7vh,72px)}
 .card .ttl+.grade{margin-top:6px}
 .card.tt{background:var(--bg)} /* 타이틀 화면 카드는 불투명 (밝은 배경 그림이 비치면 아래 버튼 줄 바탕만 어둡게 띠처럼 보임) */
-@media (prefers-reduced-motion:reduce){#buddy i{animation:none!important}#tbg{animation:none}}
-/* 거래 파트너: 차트 오른쪽 아래(가격 눈금 아래 빈 칸)에 서 있는 이번 판 동물 · 캔버스보다 먼저 놓여 가격표·눈금·봉이 늘 위에 그려짐 (누르기 통과, 자리 차지 없음) · 크기·위치는 ptPlace, 반응은 보이는 정보(수익률 구간·뉴스·돌파 도장·매수·매도)로만 */
+@media (prefers-reduced-motion:reduce){#buddy i,#buddy .bdx{animation:none!important}#tbg{animation:none}}
+/* 거래 파트너: 차트 오른쪽 아래(가격 눈금 아래 빈 칸)에 서 있는 내 파트너(지금 단계 그림) · 캔버스보다 먼저 놓여 가격표·눈금·봉이 늘 위에 그려짐 (누르기 통과, 자리 차지 없음) · 크기·위치는 ptPlace, 반응은 보이는 정보(수익률 구간·뉴스·돌파 도장·매수·매도)로만 */
 #pt{position:absolute;right:3px;bottom:1px;width:0;height:0;pointer-events:none}
 #pt b{position:absolute;left:0;top:0;width:100%;height:100%;transform-origin:50% 100%;animation:bdBr 3.4s ease-in-out infinite}
 #pt i{position:absolute;left:50%;bottom:0;background:no-repeat 50% 100%/contain;transform-origin:50% 100%;filter:drop-shadow(0 3px 4px rgba(0,0,0,.45))}
@@ -671,6 +675,38 @@ header h1{display:none}
 @keyframes ptJmp{0%,50%,100%{transform:none}20%,70%{transform:translateY(-22%) scale(.96,1.05)}}
 @keyframes ptSx{20%,85%{translate:var(--sx) 0}} /* 띠 그림의 넓은 장(점프·팔·동전)이 차트 오른쪽 끝에 잘리지 않게 도는 동안만 왼쪽으로 슬쩍 비켰다 돌아옴 (첫·마지막 장은 제자리, 거래량 막대도 ptShift만큼 같이 비킴) */
 @media (prefers-reduced-motion:reduce){#pt b,#pt i{animation:none!important}}
+/* 캐릭터 키우기: 기록 탭 맨 위 파트너 패널(큰 그림·단계·친밀도·12칸 도감) + 성장·합류 카드 · 그림은 아래 맞춤, 숨쉬기는 결과 카드 친구와 같은 bdBr */
+.pst{display:inline-block;font-style:normal;font-size:11px;font-weight:800;line-height:1.3;padding:2px 8px;border-radius:999px;background:var(--panel2);border:1px solid var(--line);color:var(--fg);white-space:nowrap;vertical-align:middle}
+.pst.s0{color:#a9dcff;border-color:#3d6f99;background:#13233a}.pst.s2{color:#1a1300;background:linear-gradient(90deg,#ffe08a,#ffad33);border-color:#ffc63a}
+.pst .ico{width:1.2em;height:1.2em;vertical-align:-.25em;margin:0 .1em 0 -.1em}
+.petp{padding:12px 14px;margin-top:6px}
+.pph{display:flex;gap:12px;align-items:center}
+.ppa{flex:none;width:clamp(96px,30vw,128px);height:clamp(112px,34vw,146px);display:flex;align-items:flex-end;justify-content:center;border-radius:12px;background:radial-gradient(ellipse 70% 40% at 50% 92%,rgba(255,255,255,.1),transparent 70%);font-size:56px;line-height:1}
+.ppa.s0{background:radial-gradient(ellipse 75% 45% at 50% 90%,rgba(130,195,255,.24),transparent 72%)}.ppa.s2{background:radial-gradient(ellipse 80% 60% at 50% 80%,rgba(255,198,58,.32),transparent 72%)}
+.ppa .pim,.petart .pim{display:block;height:100%;width:auto;max-width:100%;object-fit:contain;object-position:50% 100%;transform-origin:50% 100%;filter:drop-shadow(0 4px 5px rgba(0,0,0,.45));animation:bdBr 3.4s ease-in-out infinite}
+.ppi{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px}
+.ppi>small{font-size:11.5px;line-height:1.35}
+.ppn{font-size:19px;font-weight:900;display:flex;align-items:center;flex-wrap:wrap;gap:4px 7px;line-height:1.2}
+.petp .xpbar{height:9px}
+.petp .pnote{font-size:11.5px;color:var(--muted);margin:10px 0 8px;line-height:1.55}
+.petg{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.pc{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:1px;min-width:0;margin:0;padding:6px 3px 7px;border-radius:12px;background:var(--panel2);border:1px solid var(--line);font:inherit;color:var(--fg);text-align:center;cursor:pointer;line-height:1.2}
+.pc .pim{display:block;height:62px;width:100%;object-fit:contain;object-position:50% 100%;margin-bottom:3px}
+.pc b{display:block;max-width:100%;font-size:11.5px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pc small{display:block;max-width:100%;font-size:11px;color:var(--muted);line-height:1.25;overflow-wrap:anywhere}.pc small .ico{width:1.3em;height:1.3em;vertical-align:-.3em;margin:0}
+.pc>.pst{position:absolute;left:3px;top:3px;padding:1px 3px;font-size:10px;line-height:1}.pc>.pst .ico{margin:0;vertical-align:-.2em}
+.pc.on{border-color:var(--gold);box-shadow:inset 0 0 0 1px var(--gold);background:color-mix(in srgb,var(--gold) 9%,var(--panel2))}.pc.on small{color:var(--gold);font-weight:800}
+.pc.lk{cursor:default;background:var(--panel)}.pc.lk small{color:var(--gold)}.pc.lk .pim{filter:brightness(0) invert(.22);opacity:.85}.pc.lk b{color:var(--muted)}
+@media (min-width:560px){.petg{grid-template-columns:repeat(6,minmax(0,1fr))}}
+.card .petart{height:clamp(104px,19vh,168px);display:flex;align-items:flex-end;justify-content:center;gap:2px;margin:8px auto 4px;font-size:72px;line-height:1;border-radius:14px}
+.card .petart.s0{background:radial-gradient(ellipse 50% 40% at 50% 92%,rgba(130,195,255,.22),transparent 72%)}.card .petart.s2{background:radial-gradient(ellipse 55% 60% at 50% 78%,rgba(255,198,58,.34),transparent 72%)}
+.card .petart .pim{animation:petIn .5s cubic-bezier(.3,1.5,.5,1) both,bdBr 3.4s ease-in-out .5s infinite}
+.card .petart.sm{height:clamp(88px,15vh,140px);font-size:56px}.card .petart.row{height:clamp(56px,9vh,88px);font-size:40px}.card .petart.row .pim{max-width:24%}
+.card .pnm{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:4px 8px;font-size:18px;font-weight:900;margin-top:2px}
+@keyframes petIn{from{opacity:0;transform:scale(.55) translateY(12%)}}
+.ppa.s0 .pim,.card .petart.s0 .pim{height:80%} /* 아기는 어른보다 작게 */
+.card .petart.row .pmore{align-self:center;font-size:17px;font-weight:900;color:var(--muted);padding:0 2px}
+@media (prefers-reduced-motion:reduce){.ppa .pim,.petart .pim{animation:none!important}}
 /* 그림 아이콘(ui/<id>.webp): 글자 크기(em)에 맞춘 고정 상자라 그림을 받기 전에도 자리·줄바꿈이 그대로 · 한글·영어 글줄 가운데에 맞춤 */
 .ico{display:inline-block;width:1.25em;height:1.25em;object-fit:contain;vertical-align:-.26em;margin:0 .02em;-webkit-user-drag:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;pointer-events:none}
 .gdot{display:inline-block;width:.68em;height:.68em;border-radius:50%;vertical-align:-.01em;margin:0 .14em 0 .06em}.gdot.r{background:#f2313f}.gdot.b{background:#2f7bff}.gdot.g{background:#16c784} /* 결과 점 (한국어: 빨강 익절·파랑 손해, 영어: 초록·빨강) */
@@ -744,7 +780,7 @@ header h1{display:none}
     <button type="button" data-tab="skill"><i><img class="ico" src="ui/skill_tree.webp" alt="" draggable="false" data-e="🌳" onerror="this.replaceWith(this.dataset.e)"></i>스킬<u id="dotS" hidden></u></button>
     <button type="button" data-tab="invest"><i><img class="ico" src="ui/briefcase.webp" alt="" draggable="false" data-e="💼" onerror="this.replaceWith(this.dataset.e)"></i>투자</button>
     <button type="button" data-tab="shop"><i><img class="ico" src="ui/shopping_cart.webp" alt="" draggable="false" data-e="🛒" onerror="this.replaceWith(this.dataset.e)"></i>상점</button>
-    <button type="button" data-tab="record"><i><img class="ico" src="ui/bar_chart.webp" alt="" draggable="false" data-e="📊" onerror="this.replaceWith(this.dataset.e)"></i>기록</button>
+    <button type="button" data-tab="record"><i><img class="ico" src="ui/bar_chart.webp" alt="" draggable="false" data-e="📊" onerror="this.replaceWith(this.dataset.e)"></i>기록<u id="dotR" hidden></u></button>
     <button type="button" data-tab="set"><i><img class="ico" src="ui/gear_cog.webp" alt="" draggable="false" data-e="⚙️" onerror="this.replaceWith(this.dataset.e)"></i>설정</button>
   </nav>
 </div>
@@ -777,7 +813,7 @@ const C={up:css('--up'),down:css('--down'),gold:css('--gold'),line:css('--line')
 const LANG='ko';
 const ASSET=''; // 그림 폴더(chars/·brand/·ui/) 위치: 한국어판은 사이트 맨 위라 '', 영어판(/en/)은 en/build.py가 '../'로, 포털 빌드는 build_portal.py가 다시 ''로 (그림을 빌드 폴더에 같이 넣음) · HTML에 바로 쓴 첫 화면 아이콘(src="ui/…")도 두 빌드가 같이 바꿈
 /* ---------- 그림 아이콘: 화면에 그릴 때만 글 속 이모지 → ui/<id>.webp (문자열·저장·공유 글·낭독 글·문서 제목은 이모지 그대로) ---------- */
-const ICM={'📈':'chart_up','📋':'clipboard','🌳':'skill_tree','💼':'briefcase','🛒':'shopping_cart','📊':'bar_chart','⚙':'gear_cog','🎁':'gift','📺':'watch_ad','📤':'share','📥':'download','💾':'floppy','🔒':'lock','🔓':'unlock','⚠':'warning','📱':'smartphone','✅':'check_badge','⬆':'level_up','⭐':'star','🌟':'star','✨':'sparkles','🏅':'medal','🎖':'rank_insignia','🏆':'trophy','🎉':'party_popper','🎫':'season_ticket','🆕':'new_badge','💓':'heartbeat','💡':'lightbulb','⏳':'hourglass','🔜':'hourglass','🔁':'repeat','🔄':'restart','📰':'newspaper','✏':'pencil','🗓':'calendar','📚':'books','📖':'open_book','🧪':'potion','🎓':'grad_cap','☕':'coffee','🧾':'receipt','🎯':'target','🧰':'toolbox','🔣':'symbols','👍':'thumbs_up','👋':'paw_wave','👇':'point_down','🙌':'raised_paws','🙏':'golden_hand','😤':'grit','😱':'face_scream','😎':'face_cool','👥':'friends','💵':'cash','💰':'money_bag','↩':'money_wings','💸':'money_wings','💳':'credit_card','🏦':'bank','🏛':'classical_building','🥫':'empty_can','💱':'currency_exchange','📜':'scroll','🏷':'price_tag','💎':'gem','🏠':'house','🏢':'office_building','📉':'chart_down','🚫':'no_ads','⏱':'stopwatch','🛡':'shield','🔍':'magnifier','⚡':'lightning','💯':'hundred','🌡':'thermometer','🌊':'wave','🎨':'palette','🔥':'fire','💀':'skull','💥':'explosion','🚨':'siren','⚔':'crossed_swords','🚀':'rocket','💠':'gem','🔮':'crystal_ball','⏪':'rewind','🧯':'extinguisher','🍀':'clover','🎟':'boss_ticket','🪂':'parachute','📡':'satellite_dish','👂':'headset','🧘':'lotus','🐸':'frog_coin','🧬':'dna','🟡':'penny_coin','🇺🇸':'globe_dollar','🌐':'globe_dollar','🎭':'theater_masks','👹':'boss_ogre','🌑':'new_moon','⛔':'stop_sign','🦢':'black_swan','🐻':'bear','🐂':'bull','🌪':'tornado','💤':'zzz','🌱':'sprout','🕹':'joystick','🔟':'ten_badge','🏃':'running_shoe','🧻':'toilet_paper','🎣':'fishing_rod','🤡':'clown','🕵':'detective','🧟':'zombie_hand','👑':'crown','🌍':'earth','🌏':'earth','🥇':'rank_1','🥈':'rank_2','🥉':'rank_3','☀':'sun','🌙':'crescent_moon','🌕':'full_moon','☁':'cloud','🌸':'cherry_blossom','🦁':'type_lion','🐿':'type_squirrel','🐢':'type_turtle','🦊':'type_fox','🐣':'hatching_chick','🐥':'chick','🐤':'chick_teen','🐔':'hen','🦆':'duck','🦉':'owl','🐺':'wolf','🐯':'tiger','🐉':'dragon','🐲':'dragon','🦄':'unicorn','🌌':'milky_way','🐋':'whale','🖥':'dual_monitor','🪑':'gaming_chair','🏎':'supercar','🛥':'yacht','🛩':'private_jet','🐈':'cat','🌵':'cactus','🎮':'game_console','🎸':'guitar','🐠':'aquarium','🤖':'robot','🎶':'mirror_ball','🦖':'dino_toy','🎄':'xmas_tree','👾':'alien','🔔':'bell','🪐':'ringed_planet','🛋':'sofa','🧱':'brick_wall','🟫':'wood_floor','🧸':'teddy','🛌':'bed','🛏':'bed','🍜':'ramen','🕯':'candle','📦':'box','🧺':'basket','🐜':'ant','🌿':'plant','🍷':'wine','🍾':'champagne','🎹':'piano','⌚':'watch','👜':'handbag','💍':'diamond_ring','🥚':'jeweled_egg','🚁':'helicopter','🛳':'mega_yacht','✈':'jumbo_jet','🤿':'submarine','🚄':'bullet_train','🏙':'penthouse','🗽':'skyscraper','🏝':'private_island','🏖':'beach_resort','🌆':'new_city','🖼':'painting','⚾':'baseball','⚽':'soccer_ball','🏀':'basketball','🏁':'race_flag','🏟':'stadium','🗿':'moai','🏴‍☠':'treasure_ship','🔺':'pyramid','🔱':'atlantis_map','🛫':'airliner','🛢':'oil_barrel','⌨':'keyboard','🕳':'black_hole','🌠':'spiral_galaxy','🔘':'reset_button','♾':'infinity','🛸':'space_station','🛰':'satellite','👨‍🚀':'astronaut','🏳':'flag','🥂':'toast_glasses','👟':'sneaker','👠':'high_heel','🌃':'night_city','📟':'retro_terminal'}; // 이모지(FE0F 뺀 모양) → 그림 id (design/icon_catalog.json)
+const ICM={'📈':'chart_up','📋':'clipboard','🌳':'skill_tree','💼':'briefcase','🛒':'shopping_cart','📊':'bar_chart','⚙':'gear_cog','🎁':'gift','📺':'watch_ad','📤':'share','📥':'download','💾':'floppy','🔒':'lock','🔓':'unlock','⚠':'warning','📱':'smartphone','✅':'check_badge','⬆':'level_up','⭐':'star','🌟':'star','✨':'sparkles','🏅':'medal','🎖':'rank_insignia','🏆':'trophy','🎉':'party_popper','🎫':'season_ticket','🆕':'new_badge','💓':'heartbeat','💡':'lightbulb','⏳':'hourglass','🔜':'hourglass','🔁':'repeat','🔄':'restart','📰':'newspaper','✏':'pencil','🗓':'calendar','📚':'books','📖':'open_book','🧪':'potion','🎓':'grad_cap','☕':'coffee','🧾':'receipt','🎯':'target','🧰':'toolbox','🔣':'symbols','👍':'thumbs_up','👋':'paw_wave','👇':'point_down','🙌':'raised_paws','🐾':'raised_paws','🙏':'golden_hand','😤':'grit','😱':'face_scream','😎':'face_cool','👥':'friends','💵':'cash','💰':'money_bag','↩':'money_wings','💸':'money_wings','💳':'credit_card','🏦':'bank','🏛':'classical_building','🥫':'empty_can','💱':'currency_exchange','📜':'scroll','🏷':'price_tag','💎':'gem','🏠':'house','🏢':'office_building','📉':'chart_down','🚫':'no_ads','⏱':'stopwatch','🛡':'shield','🔍':'magnifier','⚡':'lightning','💯':'hundred','🌡':'thermometer','🌊':'wave','🎨':'palette','🔥':'fire','💀':'skull','💥':'explosion','🚨':'siren','⚔':'crossed_swords','🚀':'rocket','💠':'gem','🔮':'crystal_ball','⏪':'rewind','🧯':'extinguisher','🍀':'clover','🎟':'boss_ticket','🪂':'parachute','📡':'satellite_dish','👂':'headset','🧘':'lotus','🐸':'frog_coin','🧬':'dna','🟡':'penny_coin','🇺🇸':'globe_dollar','🌐':'globe_dollar','🎭':'theater_masks','👹':'boss_ogre','🌑':'new_moon','⛔':'stop_sign','🦢':'black_swan','🐻':'bear','🐂':'bull','🌪':'tornado','💤':'zzz','🌱':'sprout','🕹':'joystick','🔟':'ten_badge','🏃':'running_shoe','🧻':'toilet_paper','🎣':'fishing_rod','🤡':'clown','🕵':'detective','🧟':'zombie_hand','👑':'crown','🌍':'earth','🌏':'earth','🥇':'rank_1','🥈':'rank_2','🥉':'rank_3','☀':'sun','🌙':'crescent_moon','🌕':'full_moon','☁':'cloud','🌸':'cherry_blossom','🦁':'type_lion','🐿':'type_squirrel','🐢':'type_turtle','🦊':'type_fox','🐣':'hatching_chick','🐥':'chick','🐤':'chick_teen','🐔':'hen','🦆':'duck','🦉':'owl','🐺':'wolf','🐯':'tiger','🐉':'dragon','🐲':'dragon','🦄':'unicorn','🌌':'milky_way','🐋':'whale','🖥':'dual_monitor','🪑':'gaming_chair','🏎':'supercar','🛥':'yacht','🛩':'private_jet','🐈':'cat','🌵':'cactus','🎮':'game_console','🎸':'guitar','🐠':'aquarium','🤖':'robot','🎶':'mirror_ball','🦖':'dino_toy','🎄':'xmas_tree','👾':'alien','🔔':'bell','🪐':'ringed_planet','🛋':'sofa','🧱':'brick_wall','🟫':'wood_floor','🧸':'teddy','🛌':'bed','🛏':'bed','🍜':'ramen','🕯':'candle','📦':'box','🧺':'basket','🐜':'ant','🌿':'plant','🍷':'wine','🍾':'champagne','🎹':'piano','⌚':'watch','👜':'handbag','💍':'diamond_ring','🥚':'jeweled_egg','🚁':'helicopter','🛳':'mega_yacht','✈':'jumbo_jet','🤿':'submarine','🚄':'bullet_train','🏙':'penthouse','🗽':'skyscraper','🏝':'private_island','🏖':'beach_resort','🌆':'new_city','🖼':'painting','⚾':'baseball','⚽':'soccer_ball','🏀':'basketball','🏁':'race_flag','🏟':'stadium','🗿':'moai','🏴‍☠':'treasure_ship','🔺':'pyramid','🔱':'atlantis_map','🛫':'airliner','🛢':'oil_barrel','⌨':'keyboard','🕳':'black_hole','🌠':'spiral_galaxy','🔘':'reset_button','♾':'infinity','🛸':'space_station','🛰':'satellite','👨‍🚀':'astronaut','🏳':'flag','🥂':'toast_glasses','👟':'sneaker','👠':'high_heel','🌃':'night_city','📟':'retro_terminal'}; // 이모지(FE0F 뺀 모양) → 그림 id (design/icon_catalog.json)
 const ICX={'💎':[[/\uBCF4\uBB3C|[Tt]reasure/,'treasure_chest'],[/\uD551\uD06C|[Pp]ink [Dd]iamond/,'pink_diamond']],'🔁':[[/\uC740\uD1F4|\uD658\uC0DD|[Rr]etire|[Rr]ebirth|[Rr]eborn|[Pp]restige/,'rebirth']],'🧪':[[/\uC131\uD5A5|\uD14C\uC2A4\uD2B8|[Qq]uiz|[Ii]nvestor [Tt]ype|[Pp]ersonality/,'personality_quiz']],'🏆':[[/\uC6D4\uB4DC\uCEF5|[Ww]orld/,'world_trophy']],'🏅':[[/\uC62C\uB9BC\uD53D|[Oo]lympi|[Gg]ames/,'torch']],'⏳':[[/\uD0C0\uC784\uBA38\uC2E0|[Tt]ime [Mm]achine/,'time_machine']],'🐉':[[/\uB4DC\uB798\uACE4 \uC54C|[Dd]ragon [Ee]gg/,'dragon_egg']],'🦖':[[/\uD654\uC11D|[Ff]ossil/,'dino_fossil']],'💾':[[/\uBC18\uB3C4\uCCB4|[Cc]hip|[Ss]emiconductor/,'microchip']],'🔴':[[/\uD654\uC131|[Mm]ars/,'mars']]}; // 같은 이모지가 뜻에 따라 다른 그림: 바로 뒤 글(이름)로 고름 (한·영 둘 다, 없으면 ICM 기본 그림 · 🔴는 화성일 때만 그림)
 const ICG={'🔴':'<span class="gdot r"></span>','🔵':'<span class="gdot b"></span>','🟢':'<span class="gdot g"></span>','⬜':'<span class="gbox"></span>','➕':'<b class="gplus">+</b>'}; // 그림 대신 CSS로 그리는 표시 (결과 점·빈 체크 칸·더하기)
 const ICR=new RegExp(Object.keys(ICM).concat(Object.keys(ICX),Object.keys(ICG)).filter((k,i,a)=>a.indexOf(k)===i).sort((a,b)=>b.length-a.length).map(k=>Array.from(k).map(c=>c+'\uFE0F?').join('')).join('|'),'g'); // 긴 것(결합 이모지)부터, FE0F가 있든 없든
@@ -821,7 +857,10 @@ function lsSet(k,s){try{localStorage.setItem(k,s);}catch(e){if(memSave)throw e;l
 const store={off:0,seen:{},get(k,d){try{const v=localStorage.getItem(k);store.seen[k]=v;return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){if(store.off)return;try{const s=JSON.stringify(v);if(store.seen[k]===s)return;lsSet(k,s);store.seen[k]=s;}catch(e){}}}; // off: 다른 탭이 더 새 기록을 저장함 → 덮어쓰지 않음, seen: 이 탭이 마지막으로 읽거나 쓴 값
 const fin=v=>isFinite(v=+v)?v:0; // 숫자가 아니거나 무한대면 0
 // 저장 형식 버전: 저장 모양을 바꿀 때 SAVE_V를 올리고 MIG에 '옛 버전 → 다음 버전' 변환을 추가 (기록에 없으면 0 = v2.1까지의 저장). 백업 코드에도 shg_ver가 같이 들어가고, 옛 코드는 불러온 뒤 새로고침 때 여기서 변환됨
-const SAVE_V=1,MIG=[()=>{const p=store.get('shg_profile',null);if(p&&p!=='squirrel'){let a=store.get('shg_tips',[]);if(!Array.isArray(a))a=[];if(!a.includes('quiz'))store.set('shg_tips',a.concat('quiz'));}}]; // MIG[n]: 버전 n → n+1 · 0 → 1: 다람쥐가 아닌 성향은 테스트를 끝내야만 생기니 '테스트 함'으로 표시 (예전 저장엔 shg_tips가 없어 기록 탭·6판째에 테스트를 다시 권하던 것)
+const PET_T=[0,50,450]; // 캐릭터 키우기 단계 경계 (친밀도): 아기 0 → 어른 50 → 전설 450 · 한 판 +1, 익절 +1, 보스 처치 +2 (보통 30~40판에 어른, 250~350판에 전설)
+const SAVE_V=2,MIG=[()=>{const p=store.get('shg_profile',null);if(p&&p!=='squirrel'){let a=store.get('shg_tips',[]);if(!Array.isArray(a))a=[];if(!a.includes('quiz'))store.set('shg_tips',a.concat('quiz'));}},
+  ()=>{if(store.get('shg_pet',null))return;const st=store.get('shg_stats',{})||{},r=Math.floor(fin(st.rounds));if(!(r>0))return;const p=store.get('shg_profile',null),id=p;if(!['lion','squirrel','turtle','fox'].includes(id))return;const w=Math.min(r,Math.max(0,Math.floor(fin(st.wins))));
+    store.set('shg_pet',{sel:id,own:{[id]:{xp:Math.max(0,Math.min(PET_T[2]-150,r+w+2*Math.max(0,Math.floor(fin(st.bossLv)))))}},q:['m'],nw:1});}]; // MIG[n]: 버전 n → n+1 · 0 → 1: 다람쥐가 아닌 성향은 테스트를 끝내야만 생기니 '테스트 함'으로 표시 (예전 저장엔 shg_tips가 없어 기록 탭·6판째에 테스트를 다시 권하던 것) · 1 → 2: v2.5까지 플레이한 사람은 성향 동물이 첫 파트너, 지금까지 판수로 친밀도를 채움 (최대 300 = 어른, 전설은 직접 키우게 · 성향이 없는 기록은 성향을 고를 때 petStart가 같은 계산으로) · 이미 오른 계급·업적의 친구는 불러온 뒤 petCheck가 소개 카드 하나로 합류
 {const v=Math.max(0,Math.floor(fin(store.get('shg_ver',0))));for(let i=v;i<SAVE_V;i++)try{MIG[i]();}catch(e){}if(v<SAVE_V)store.set('shg_ver',SAVE_V);} // 더 새 빌드가 쓴 기록(v>SAVE_V)은 버전을 내리지 않음
 const START=1000000,CD=0.35;
 // 한국 주식 호가 단위
@@ -1093,26 +1132,71 @@ function toast(txt){
 function nextToast(){const t=toastQ.shift();if(t!==undefined){showToast(t);if(toastQ.length)setTimeout(nextToast,toastBusy-performance.now());}}
 function say(t){const s=$('sr');if(!s||!t)return;clearTimeout(say.tm);say.q=(say.q?say.q+' · ':'')+t;s.textContent='';say.tm=setTimeout(()=>{s.textContent=say.q;say.q='';},60);} // 화면 낭독기에 읽어 줌 (한꺼번에 오면 이어서)
 /* ---------- 동물 친구 · 타이틀 화면 (꾸밈 전용: 돈·확률·저장과 무관, 설정에서 끌 수 있음) ---------- */
-const CHARS={lion:'사자',fox:'여우',squirrel:'다람쥐',turtle:'거북이',hamster:'햄스터',corgi:'코기',dragon:'아기 드래곤',cat:'고양이',penguin:'펭귄',panda:'판다',bull:'황소',bear:'곰'},CH_IDS=Object.keys(CHARS);
+const CHARS={lion:'사자',fox:'여우',squirrel:'다람쥐',turtle:'거북이',hamster:'햄스터',corgi:'코기',dragon:'드래곤',cat:'고양이',penguin:'펭귄',panda:'판다',bull:'황소',bear:'곰'},CH_IDS=Object.keys(CHARS);
 const BDM={happy:[12,110],shock:[10,120]},BDW={lion:[147,151],fox:[136,155],squirrel:[160,168],turtle:[128,123],hamster:[249,147],corgi:[148,176],dragon:[153,172],cat:[157,205],penguin:[171,178],panda:[151,187],bull:[151,134],bear:[195,185]}; // 가로 띠 그림(chars_meta.json): 한 장 높이 200 · happy 12장×110ms, shock 10장×120ms · BDW = [happy, shock] 한 장 너비
 const RM=window.matchMedia?matchMedia('(prefers-reduced-motion:reduce)'):{matches:false}; // 움직임 줄이기: 띠 재생·숨쉬기 없이 정지 그림
 const imgC={}; // 그림 미리 받기 (주소 → ok 0 받는 중 · 1 성공 · -1 실패): 실패한 그림은 조용히 안 보임
 function imgGet(u,cb){let c=imgC[u];if(!c){c=imgC[u]={ok:0,cb:[]};const im=new Image();im.onload=()=>{c.ok=1;c.cb.splice(0).forEach(f=>f());};im.onerror=()=>{c.ok=-1;c.cb.length=0;};im.src=u;c.im=im;}if(cb&&!c.ok&&!c.cb.includes(cb))c.cb.push(cb);return c.ok;}
 const chU=(id,k)=>ASSET+'chars/'+id+(k&&k!=='still'&&!RM.matches?'_'+k:'')+'.webp';
-let bdLast='',bdCur=null,bdNext=null,bdGen=0,bdDrawn=-1,bdAr=1,bdN=0,ttl=false; // bdNext: 다음 showCard 카드의 친구 {k:happy|shock|still, id, t:타이틀 화면} · bdGen이 바뀌면 띠를 처음부터
-const bdEl=$('buddy'),bdRand=()=>{const a=CH_IDS.filter(k=>k!==bdLast);return bdLast=a[Math.floor(Math.random()*a.length)];}; // 직전 친구는 빼고 무작위 (판 결과·확률과 무관)
-function bdRound(tut){const id=tut?profile||'hamster':ptNext||bdRand();if(!tut)ptNext=null;if(SET.chars)(RM.matches?['still']:['happy','shock']).forEach(k=>imgGet(chU(id,k)));return id;} // 판 시작 때 고르고 결과 그림 둘 다 미리 받음 (카드가 바로 뜨게) · 튜토리얼(연습)은 내 성향 동물
+/* ---------- 캐릭터 키우기: 내가 고른 파트너 하나를 판마다 키우고, 나머지 11마리는 계급·업적으로 합류 (꾸밈 + 작은 경험치 보너스만: 판의 돈·확률·수익 계산엔 안 들어감 · 보너스로 레벨이 조금 빨리 오르는 건 오피스텔·복기 습관 XP 배수와 같아서 레벨에 딸린 투자 한도·SP·Lv20+ 난이도도 그만큼 빨리 옴) ---------- */
+const PET_S=[['아기','🐣','baby'],['어른','⭐',''],['전설','👑','legend']],PET_XP=[0,3,6]; // 단계 이름·배지·그림 꼬리 · 단계별 경험치 보너스(%, 가장 많이 자란 친구 기준 → 파트너를 바꿔도 안 줄어듦)
+const PET_UN={hamster:1,corgi:2,bull:'streak5',penguin:'boss1',cat:3,panda:4,squirrel:5,fox:6,dragon:'boss5',turtle:7,lion:8,bear:9},PET_ORD=Object.keys(PET_UN); // 합류 조건 (보통 오는 순서로): 숫자 = 그 계급 승급, 글자 = 그 업적 · 첫 파트너(성향 동물)는 처음부터 함께
+const PTW={lion:[208,212],fox:[217,215],squirrel:[258,231],turtle:[234,184],hamster:[199,239],corgi:[199,202],dragon:[278,256],cat:[228,195],penguin:[206,209],panda:[198,211],bull:[213,204],bear:[200,204]}; // 아기·전설 정지 그림 너비 (높이 288 · 띠 그림 없음 → 기쁨·놀람은 CSS 깡충·떨기)
+const PET_E={lion:'🦁',fox:'🦊',squirrel:'🐿️',turtle:'🐢',hamster:'🐹',corgi:'🐶',dragon:'🐉',cat:'🐱',penguin:'🐧',panda:'🐼',bull:'🐂',bear:'🐻'}; // 그림을 못 받으면 대신 보일 글자
+const chS=(id,s)=>ASSET+'chars/'+id+(s===1?'':'_'+PET_S[s][2])+'.webp',petLv=x=>x>=PET_T[2]?2:x>=PET_T[1]?1:0; // 단계별 정지 그림 (어른은 원래 그림) · 친밀도 → 단계 0 아기 · 1 어른 · 2 전설
+function petFix(v){const O=o=>!!o&&typeof o==='object'&&!Array.isArray(o);if(!O(v)||!O(v.own))return null;const own={};CH_IDS.forEach(k=>{if(O(v.own[k]))own[k]={xp:Math.min(1e6,Math.max(0,Math.floor(fin(v.own[k].xp))))};});const ids=Object.keys(own);if(!ids.length)return null;
+  return {sel:CH_IDS.includes(v.sel)&&own[v.sel]?v.sel:ids[0],own,q:Array.isArray(v.q)?v.q.filter(x=>typeof x==='string'&&/^(m|u:[a-z]+|s:[a-z]+:[12])$/.test(x)).slice(-24):[],nw:v.nw?1:0,at:Math.max(-1e6,Math.min(1e9,Math.floor(fin(v.at))))};} // 저장 모양 검사·정리 (모르는 동물·이상한 값은 버림) · q: 아직 못 보여 준 카드 (m 옛 기록 옮김 · u:합류 · s:성장) · nw: 기록 탭 점 · at: 마지막 카드를 띄운 판 수
+let pet=petFix(store.get('shg_pet',null)),petAt=-1e9; // 성향을 고르기 전엔 없음 (그동안 파트너 자리는 햄스터)
+const petSt=id=>pet&&CH_IDS.includes(id)&&pet.own[id]?petLv(pet.own[id].xp):1,petSel=()=>pet?pet.sel:profile||'hamster',petBest=()=>pet?Math.max(0,...Object.values(pet.own).map(o=>petLv(o.xp))):0; // 이 동물의 지금 단계 (안 키우는 동물·타이틀 화면은 어른 그림) · 지금 파트너
+function petMod(f){const p=petFix(store.get('shg_pet',null))||pet;if(!p)return;f(p);pet=p;store.set('shg_pet',p);petDot();} // 고칠 때마다 저장소에서 다시 읽음 (다른 탭에서 판을 해도 그쪽 친밀도가 안 사라지게)
+function petDot(){const d=$('dotR');if(d)d.hidden=!(pet&&pet.nw);} // 기록 탭 점: 새 친구·성장 소식을 아직 안 봤음
+function petLoad(id){if(!SET.chars||PT_OFF)return;const s=petSt(id);imgGet(chS(id,s));if(s===1&&!RM.matches)['happy','shock'].forEach(k=>imgGet(chU(id,k)));} // 그림 미리 받기 (어른은 기쁨·놀람 띠까지)
+function petStart(k){const p=petFix(store.get('shg_pet',null))||pet;if(p){const a=Object.keys(p.own);if(!(a.length===1&&a[0]!==k&&!p.own[a[0]].xp))return;} // 첫 파트너 = 처음 고른 성향 동물 (아직 한 판도 안 했으면 다시 고른 성향으로 바꿈)
+  const r=Math.floor(fin(stats.rounds)),x=r>0?Math.max(0,Math.min(PET_T[2]-150,r+Math.min(r,Math.max(0,Math.floor(fin(stats.wins))))+2*Math.max(0,Math.floor(fin(stats.bossLv))))):0; // 파트너 없이 플레이한 기록(성향 없이 넘어온 옛 기록 등)은 MIG와 같은 계산으로 친밀도를 채우고 시작 카드
+  pet={sel:k,own:{[k]:{xp:x}},q:x?['m']:[],nw:1,at:0};store.set('shg_pet',pet);petCheck(1);petLoad(k);}
+function petCheck(quiet){try{if(!pet)return;const ri=rankOf(xp),add=PET_ORD.filter(id=>!pet.own[id]&&(typeof PET_UN[id]==='number'?ri>=PET_UN[id]:Array.isArray(ach)&&ach.includes(PET_UN[id])));if(!add.length)return;
+  petMod(p=>{const m=quiet||p.q.includes('m');add.forEach(id=>{if(p.own[id])return;p.own[id]={xp:0};if(!m)p.q.push('u:'+id);});p.nw=1;});if(SET.chars)add.forEach(id=>imgGet(chS(id,0)));}catch(e){}} // 조건을 채운 친구 합류 → 다음 쉬는 때 소개 카드 (옛 기록을 옮길 땐 시작 카드 하나에 다 같이)
+function petGain(id,n){if(!pet||!pet.own[id]||!(n>0))return;petMod(p=>{const o=p.own[id];if(!o)return;const a=petLv(o.xp);o.xp=Math.min(1e6,o.xp+Math.floor(n));const b=petLv(o.xp);if(b>a){p.q=p.q.filter(x=>x.indexOf('s:'+id+':'));p.q.push('s:'+id+':'+b);p.nw=1;}});if(SET.chars)imgGet(chS(id,petSt(id)));}
+function petRound(r){try{if(!run||run.tut||run.chal)return;petGain(run.bd,1+(r.win?1:0)+(r.bossKill?2:0));petCheck();}catch(e){}} // 진짜 판이 끝날 때만 (연습·챌린지 제외): 이번 판 파트너에게 +1, 익절 +1, 보스 처치 +2
+const petLeft=x=>{const s=petLv(x),w=stats.rounds?Math.min(1,stats.wins/stats.rounds):.5;return s>1?0:Math.max(1,Math.ceil((PET_T[s+1]-x)/(1+Math.max(.2,w))));}; // 다음 단계까지 남은 판 수 (내 승률로 어림)
+const petRn=n=>n+(LANG==='en'&&n===1?' round':'판쯤'); // 남은 판 수 글 (영어 1판은 단수)
+const PET_AC={streak5:'5연속 익절',boss1:'첫 보스 처치',boss5:'보스 5마리 처치'}; // 업적 합류 조건은 업적 이름 대신 할 일로 (불장 업적 ≠ 불장 장세)
+const petCond=(id,lg)=>{const u=PET_UN[id];if(typeof u==='number')return '🎖️ '+RANKS[u][1]+(lg?' 계급 승급':'');const a=ACH.find(a=>a[0]===u);return a?a[1]+' '+(lg?a[2]+' 업적 달성':PET_AC[u]||a[2]):'';}; // 합류 조건 글 (lg: 긴 글)
+const petBg=s=>'<span class="pst s'+s+'">'+PET_S[s][1]+' '+PET_S[s][0]+'</span>',petImg=(id,s,c)=>'<img class="pim'+(c?' '+c:'')+'" src="'+chS(id,s)+'" alt="" draggable="false" data-e="'+(c==='sil'?'🔒':PET_E[id])+'" onerror="this.replaceWith(this.dataset.e)">'; // 단계 배지 · 동물 그림 (못 받으면 글자)
+function petLine(pl,sh){if(!pet)return '';const id=pet.sel,x=pet.own[id].xp,s=petLv(x),n=pl?CHARS[id]:'<b>'+CHARS[id]+'</b>';return '🐾 '+(pl?'':'파트너 ')+n+' · '+PET_S[s][1]+' '+PET_S[s][0]+(s<2&&!sh?' · 다음 단계까지 '+petRn(petLeft(x)):'');} // 환영 카드·알림 한 줄 (pl: 그냥 글)
+function petCue(force){if(!pet||!pet.q.length||!tutDone||!profile||presPend||adPause||adReq||adHold||adDue||curTab!=='trade'||!$('modal').hidden||!$('sheet').hidden||!(state==='ready'||state==='result')||tutDone&&state==='ready'&&balance+invNet()<100000)return false; // 바닥이면 복구한 뒤에 · 30판째 전면 광고가 곧 뜨거나 떠 있으면 그 뒤에
+  if(!card.hidden&&!(force&&card.querySelector('[data-close]')&&!card.querySelector('#again,.opts,#qGo,#qStart,#petGo')))return false; // 결과 카드와 겹치지 않음: 카드를 닫은 뒤, 또는 결과 카드에서 매수를 누른 그 탭에 (판 대신 한 번)
+  const R=Math.floor(fin(stats.rounds)),gp=R-pet.at;if(gp>=0&&gp<5&&!pet.q.some(x=>x==='m'||!x.indexOf('s:')))return false; // 새 친구 소식만 있으면 지난 카드 뒤 5판이 지나서 (초반에 카드가 몰리지 않게 · 성장·옛 기록 카드는 바로, 합류 소식은 그때 같이)
+  let q=[];petMod(p=>{q=p.q;p.q=[];p.at=R;});if(!pet)return false;
+  const own=pet.own,ok=id=>CH_IDS.includes(id)&&!!own[id],M=q.includes('m'),U=[...new Set(q.filter(x=>!x.indexOf('u:')).map(x=>x.slice(2)))].filter(ok),S={};q.forEach(x=>{const a=x.split(':');if(a[0]==='s'&&ok(a[1]))S[a[1]]=Math.max(S[a[1]]||0,Math.min(+a[2]||0,petSt(a[1])));});const G=Object.keys(S).filter(id=>S[id]>0);
+  if(!M&&!U.length&&!G.length)return false;const nm=id=>CHARS[id];
+  if(!SET.chars){toast([M&&'🐾 캐릭터 키우기 시작 · 기록 탭에서 파트너를 만나 보세요',G.length&&'🎉 파트너 성장 · '+G.map(id=>nm(id)+' '+PET_S[S[id]][1]+' '+PET_S[S[id]][0]).join(', '),U.length&&(LANG==='en'&&U.length>1?'🐾 '+U.length+' new friends · ':'🐾 새 친구 합류 · ')+U.map(nm).join(', ')].filter(Boolean).join(' · '));return false;} // 동물 친구를 끈 사람은 알림 한 줄만 (판은 그대로 시작) · 시작·성장·합류 소식을 빠짐없이 한 줄에
+  const big=(id,s,c)=>'<div class="petart s'+s+(c?' sm':'')+'">'+petImg(id,s)+'</div>',row=a=>'<div class="petart row">'+a.slice(0,4).map(id=>petImg(id,petSt(id))).join('')+(a.length>4?'<b class="pmore">+'+(a.length-4)+'</b>':'')+'</div>',nmB=(id,s)=>'<div class="pnm"><b>'+nm(id)+'</b>'+petBg(s)+'</div>';let h;
+  if(M){const id=pet.sel,s=petSt(id),o=PET_ORD.filter(k=>k!==id&&own[k]);h='<div class="grade gd">🐾 캐릭터 키우기 시작!</div>'+big(id,s,o.length)+nmB(id,s)+(PET_XP[petBest()]?'<div class="perk">파트너 보너스 경험치 +'+PET_XP[petBest()]+'%</div>':'')+'<div class="sub">지금까지 플레이한 기록으로 친밀도 <b>'+own[id].xp+'</b></div>'+(o.length?'<div class="sub">계급·업적으로 친구 <b>'+o.length+'</b>'+(LANG==='en'&&o.length===1?' friend':'마리가 합류했어요')+'</div>'+row(o):'')+'<div class="sub">판마다 친밀도가 쌓여 아기 → 어른 → 전설로 자라요</div>';} // v2.5에서 넘어온 사람: 시작 카드 하나
+  else if(G.length){const id=G.includes(pet.sel)?pet.sel:G[0],s=S[id],rest=G.filter(g=>g!==id).map(g=>'s:'+g+':'+S[g]);if(rest.length)petMod(p=>{p.q=rest.concat(p.q.filter(x=>!rest.includes(x)));}); // 여러 친구가 함께 자랐으면 나머지는 다음 카드로 (소식이 사라지지 않게)
+  h='<div class="grade gd">🎉 파트너가 자랐어요!</div>'+big(id,s,U.length)+nmB(id,s)+'<div class="perk">'+(s>1?'👑 전설 배지 · ':'')+'파트너 보너스 경험치 +'+PET_XP[petBest()]+'%</div><div class="sub">'+(s>1?'최고 단계예요! 친밀도는 계속 쌓여요':'다음 단계 👑 전설 · 친밀도 '+PET_T[2])+'</div>'+(U.length?'<div class="sub">새 친구 합류 · '+U.map(nm).join(', ')+'</div>'+row(U):'');} // 성장: 새 단계 그림·보너스
+  else h='<div class="grade gd">'+(U.length>1?'새 친구 '+U.length+'마리가 합류했어요!':'새 친구가 합류했어요!')+'</div>'+(U.length>1?row(U):big(U[0],0))+'<div class="pnm"><b>'+U.map(nm).join(', ')+'</b>'+petBg(0)+'</div><div class="sub">'+U.map(id=>petCond(id,1)).join(' · ')+'</div><div class="sub">기록 탭에서 파트너로 고르면 이 친구도 키울 수 있어요</div>'; // 합류: 아기 그림
+  hideCoach();card.innerHTML=h+'<div class="btns"><button class="pri" type="button" data-close>계속하기</button><button type="button" id="petGo">🐾 파트너 보기</button></div>';bdNext=null;showCard();petAt=performance.now();
+  $('petGo').onclick=()=>{card.hidden=true;tab('record');};sfx.up();vib(30);burst(innerWidth/2,innerHeight*.4,G.length?70:40);if(G.length)cgHappy();return true;}
+function petPanel(){const id=petSel(),o=pet&&pet.own[id],x=o?o.xp:0,s=pet?petLv(x):0,pb=petBest(),nx=PET_T[s+1],pc=nx?Math.min(100,Math.floor((x-PET_T[s])/(nx-PET_T[s])*100)):100; // 기록 탭 맨 위 파트너 패널 (성향을 고르기 전엔 햄스터 아기 자리)
+  return '<div class="pan petp" id="petP"><div class="pph"><div class="ppa s'+s+'">'+petImg(id,s)+'</div><div class="ppi"><small class="mu">'+(!pet?'첫 파트너 · 투자 성향을 고르면 정해져요':s>1?'👑 전설의 파트너':'🐾 내 파트너')+'</small><b class="ppn">'+CHARS[id]+petBg(s)+'</b><div class="xpbar"><u style="width:'+pc+'%"></u></div><small class="mu">친밀도 <b>'+x.toLocaleString('ko-KR')+'</b>'+(nx?' / '+nx.toLocaleString('ko-KR')+' · '+PET_S[s+1][1]+' '+PET_S[s+1][0]+' 단계까지 '+petRn(petLeft(x)):' · 최고 단계')+'</small><small class="gd">'+(PET_XP[pb]?'파트너 보너스 · 경험치 +'+PET_XP[pb]+'%'+(pb>s?' · 가장 많이 자란 친구 기준':''):'⭐ 어른이 되면 경험치 +'+PET_XP[1]+'%')+'</small></div></div>'+
+   '<p class="pnote">판마다 친밀도 +1 · 익절 +1 · 보스 처치 +2 (연습·챌린지 판 제외)<br>🐣 아기 → ⭐ 어른 '+PET_T[1]+' (경험치 +'+PET_XP[1]+'%) → 👑 전설 '+PET_T[2]+' (경험치 +'+PET_XP[2]+'%)</p><div class="petg">'+
+   PET_ORD.map(k=>{const q=pet&&pet.own[k];if(!q)return '<div class="pc lk">'+petImg(k,1,'sil')+'<b>'+CHARS[k]+'</b><small>'+petCond(k)+'</small></div>';const t=petLv(q.xp),on=k===pet.sel;return '<button type="button" class="pc'+(on?' on':'')+'" data-pet="'+k+'" aria-pressed="'+on+'">'+petImg(k,t)+'<i class="pst s'+t+'">'+PET_S[t][1]+'</i><b>'+CHARS[k]+'</b><small>'+(on?'파트너':'친밀도 '+q.xp.toLocaleString('ko-KR'))+'</small></button>';}).join('')+
+   '</div><p class="pnote" style="margin:8px 0 0">친구를 누르면 파트너가 바뀌어요 · 친밀도는 친구마다 따로 쌓이고 경험치 보너스는 가장 많이 자란 친구 기준 · 잠긴 친구는 아래 계급·업적을 달성하면 합류해요</p></div>';}
+let bdCur=null,bdNext=null,bdGen=0,bdDrawn=-1,bdAr=1,bdN=0,ttl=false; // bdNext: 다음 showCard 카드의 친구 {k:happy|shock|still, id, s:단계(없으면 지금 단계), t:타이틀 화면} · bdGen이 바뀌면 띠를 처음부터
+const bdEl=$('buddy');
+function bdRound(){const id=petSel();petLoad(id);return id;} // 판 시작 때 이번 판 동물 = 지금 파트너 (그림 미리 받음: 카드가 바로 뜨게)
 const sTop=()=>parseFloat(getComputedStyle(document.documentElement).paddingTop)||0; // 노치 높이 (페이지 머리의 :root padding-top이 safe-area)
 const ttlTxt='<span class="up">떡상</span> 계좌 키우기',ttlH=sm=>'<div class="grade ttl'+(sm?' sm':'')+'"><img src="'+ASSET+'brand/title_'+(LANG==='en'?'en':'ko')+'.webp" alt="떡상 계좌 키우기" width="720" height="'+(LANG==='en'?284:343)+'" draggable="false"></div>'; // 카드 안 제목 그림 (크기를 미리 잡아 받는 동안 카드가 안 출렁임)
 function ttlFix(){card.querySelectorAll('.ttl img').forEach(im=>{const f=()=>{const d=im.parentNode;if(d){d.className='grade';d.innerHTML=ttlTxt;}};im.onerror=f;if(im.complete&&!im.naturalWidth)f();});} // 제목 그림을 못 받으면 글자 제목으로
-function bdSet(nb){if(!(nb&&bdCur&&nb.k===bdCur.k&&nb.id===bdCur.id&&!card.hidden))bdGen++;bdCur=nb;ttl=!!(nb&&nb.t);card.classList.toggle('tt',ttl);} // 떠 있는 카드를 같은 친구로 다시 그리면(바닥 화면 갱신) 띠를 다시 틀지 않음
+function bdSet(nb){if(nb&&nb.s==null)nb.s=nb.t?1:petSt(nb.id);if(!(nb&&bdCur&&nb.k===bdCur.k&&nb.id===bdCur.id&&nb.s===bdCur.s&&!card.hidden))bdGen++;bdCur=nb;ttl=!!(nb&&nb.t);card.classList.toggle('tt',ttl);} // 떠 있는 카드를 같은 친구로 다시 그리면(바닥 화면 갱신) 띠를 다시 틀지 않음
 function bdSync(){ptSync();const vis=!card.hidden&&!app.classList.contains('pgopen')&&$('page').hidden,tb=$('tbg');if(vis)fitCard();
   let tbOn=false;if(vis&&ttl){const u=ASSET+'brand/intro_'+(innerHeight>innerWidth?'portrait':'landscape')+'.webp';if(imgGet(u,bdSync)===1){tbOn=true;if(tb.dataset.u!==u){tb.dataset.u=u;tb.style.backgroundImage='linear-gradient(rgba(7,9,13,.5),rgba(7,9,13,.16) 36%,rgba(7,9,13,.1) 62%,rgba(7,9,13,.42)),url("'+u+'")';}}}tb.hidden=!tbOn; // 세로 화면은 세로 그림, 아니면 가로 그림 (다 받은 뒤에만)
   const on=vis&&!!bdCur&&SET.chars&&$('modal').hidden&&$('sheet').hidden;
   if(!on){if(bdDrawn>=0){bdDrawn=-1;bdEl.hidden=true;bdEl.textContent='';}return;} // 카드가 닫히거나 창·페이지가 열리면 숨김 (다시 보이면 처음부터)
-  if(bdDrawn!==bdGen){const c=bdCur,st=c.k==='still'||RM.matches,u=chU(c.id,c.k),m=st?0:BDM[c.k],d=m?(m[0]-1)*m[1]:0;if(imgGet(u,bdSync)<1){bdEl.hidden=true;return;} // 받는 중이면 다 받은 뒤 다시 불림, 실패면 조용히 안 보임
-    bdDrawn=bdGen;bdEl.innerHTML='<i role="img" aria-label="'+CHARS[c.id]+'"></i>';bdAr=st?1:BDW[c.id][c.k==='happy'?0:1]/200;bdN=m?m[0]:0;const i=bdEl.firstChild;i.style.backgroundImage='url("'+u+'")';
-    i.style.animation=RM.matches?'none':m?'bdIn .2s ease-out,bdPlay '+d+'ms steps('+(m[0]-1)+') forwards,bdBr 3.4s ease-in-out '+(d+300)+'ms infinite':'bdIn .35s ease-out both,bdBr 3.4s ease-in-out .35s infinite';bdEl.hidden=false;} // 새 요소라 애니메이션이 늘 처음부터: 띠를 한 번 재생(마지막 장 유지) → 숨쉬기
+  if(bdDrawn!==bdGen){const c=bdCur,ad=c.s===1,st=c.k==='still'||RM.matches||!ad,u=ad?chU(c.id,c.k):chS(c.id,c.s),m=st?0:BDM[c.k],d=m?(m[0]-1)*m[1]:0,rx=!ad&&c.k!=='still'?(c.k==='happy'?'ptJmp .9s ease-out .2s,':'ptShk .8s ease-in-out .2s,'):'';if(imgGet(u,bdSync)<1){bdEl.hidden=true;return;} // 받는 중이면 다 받은 뒤 다시 불림, 실패면 조용히 안 보임
+    bdDrawn=bdGen;bdEl.innerHTML='<i role="img" aria-label="'+CHARS[c.id]+'"></i>'+(rx?'<b class="bdx">'+icH(c.k==='happy'?'✨':'😱')+'</b>':'');bdEl.className='s'+c.s;bdAr=st?1:BDW[c.id][c.k==='happy'?0:1]/200;bdN=m?m[0]:0;const i=bdEl.firstChild;i.style.backgroundImage='url("'+u+'")';
+    i.style.animation=RM.matches?'none':m?'bdIn .2s ease-out,bdPlay '+d+'ms steps('+(m[0]-1)+') forwards,bdBr 3.4s ease-in-out '+(d+300)+'ms infinite':rx?'bdIn .2s ease-out,'+rx+'bdBr 3.4s ease-in-out 1.2s infinite':'bdIn .35s ease-out both,bdBr 3.4s ease-in-out .35s infinite';bdEl.hidden=false;} // 띠 그림이 없는 아기·전설은 기쁨·놀람을 작은 스티커(✨·😱)로, 아기는 조금 작게(CSS s0) · 새 요소라 애니메이션이 늘 처음부터: 띠를 한 번 재생(마지막 장 유지) → 숨쉬기
   bdPlace();}
 function bdPlace(){if(bdDrawn<0||bdEl.hidden)return;const i=bdEl.firstChild,c=card.getBoundingClientRect();if(!i||!c.height)return;
   const dk=DESK.matches,cr=chart.getBoundingClientRect(),g=$('regime').getBoundingClientRect(),co=$('coach'),ar=bdAr,mx=Math.round(Math.min(dk?170:ttl?140:128,innerHeight*(ttl?.2:dk?.24:.15)));
@@ -1124,29 +1208,28 @@ function bdPlace(){if(bdDrawn<0||bdEl.hidden)return;const i=bdEl.firstChild,c=ca
   if(!(h>=64)){bdEl.style.visibility='hidden';return;} // 자리가 모자라면 숨김 (카드는 그대로, 너무 작은 친구는 안 보임)
   const w=Math.round(h*ar);Object.assign(bdEl.style,{visibility:'',left:Math.round(x)+'px',top:Math.round(y)+'px',width:w+'px',height:h+'px'});if(bdN)i.style.backgroundSize=bdN*w+'px '+h+'px';}
 function showCard(){bdSet(bdNext);bdNext=null;{const h=card.innerHTML,c=icH(h);if(c!==h)card.innerHTML=c;}card.hidden=false;if(card.querySelector('.ttl img'))ttlFix();bdSync();const ti=card.querySelector('.ttl img');say((ti?ti.alt+' · ':'')+card.innerText.replace(/^✕\s*/,''));} // 닫기 ✕ 글자는 빼고 읽음 · 제목 그림은 innerText에 없어 alt를 앞에 붙임 · 친구는 카드를 그린 쪽이 bdNext로 정함 (안 정하면 없음)
-/* ---------- 거래 파트너: 거래 화면 차트 오른쪽 아래에 늘 서 있는 이번 판 동물 (꾸밈 전용: 돈·확률·저장과 무관, 설정의 동물 친구 스위치를 따름) ---------- */
+/* ---------- 거래 파트너: 거래 화면 차트 오른쪽 아래에 늘 서 있는 내 파트너 (지금 단계 그림 · 꾸밈 전용: 돈·확률과 무관, 설정의 동물 친구 스위치를 따름) ---------- */
 const PTM={lion:[198,0,55,21],fox:[216,0,38,29],squirrel:[240,1,56,17],turtle:[223,38,60,36],hamster:[221,1,45,24],corgi:[225,0,48,3],dragon:[270,1,48,41],cat:[264,0,60,13],penguin:[226,0,50,20],panda:[251,0,51,6],bull:[200,1,46,19],bear:[222,0,40,16]}; // [정지 그림 너비(높이 288), 정지 그림 위 빈칸, happy·shock 마지막 장 위 빈칸(높이 200)] → 띠 그림도 정지 그림과 같은 키로 보이게
 const PT_OFF=/selftest/.test(location.search)&&/fast/.test(location.search),PTT=[0,.1,.3,1],PTR=[.035,.05,.09,.13,.18]; // 그리기를 끈 자동 테스트에선 아무 일도 안 함 · 수익률 구간 경계 0·10·30·100% · PTR: 숨쉬기·구간 흔들기로 키보다 더 솟는 비율
-const ptEl=$('pt');let ptNext=null,ptId='',ptK='still',ptB=0,ptOn=0,ptH=0,ptW=0,ptCutX=1e9,ptTm=0,ptUp=[0,0],ptEnd=0,ptNar=0,ptSA=[0,0,0]; // ptUp·ptEnd: 띠·깡충이 솟는 상자 [너비,높이]와 끝나는 때 · ptSA: 띠 [시작, 길이, 왼쪽으로 비키는 거리] · ptNar: 좁은 차트라 영어 손익 배지를 짧게 (파트너 다리를 안 가리게) · ptNext: 미리 고른 다음 판 동물 · ptK: still|cheer|happy|shock · ptB: 수익률 구간(0 손해·1 0~10%·2 ~30%·3 ~100%·4 그 위) · ptCutX: 파트너 자리라 거래량 막대를 안 그리는 x (캔버스 좌표)
-const ptLoad=id=>{if(SET.chars&&!PT_OFF)(RM.matches?['still']:['still','happy','shock']).forEach(k=>imgGet(chU(id,k)));};
-function ptPick(){const ex=run&&run.bd,a=CH_IDS.filter(k=>k!==bdLast&&k!==ex);bdLast=a[Math.floor(Math.random()*a.length)];ptLoad(bdLast);return bdLast;} // 다음 판 동물: 방금 판·직전에 고른 동물은 빼고 무작위 (그림도 미리 받음)
-const ptWho=()=>run&&(state==='holding'||state==='ghost')?run.bd:!profile?'':!tutDone?profile:ptNext||(ptNext=ptPick()); // 판 중엔 이번 판 동물(결과 카드 친구와 같음), 판 사이엔 미리 고른 다음 판 동물, 튜토리얼은 내 성향 동물
-function ptSync(){try{const id=ptWho(),live=state==='holding'||state==='ghost';
-  const on=!!id&&SET.chars&&!PT_OFF&&curTab==='trade'&&$('page').hidden&&!app.classList.contains('pgopen')&&card.hidden&&$('modal').hidden&&$('sheet').hidden&&imgGet(chU(id),ptSync)===1; // 거래 화면에 카드·창·종목 창·다른 탭이 없을 때만 (결과 카드가 뜨면 같은 동물이 카드 위 친구로 이어받음) · 받는 중이면 다 받은 뒤 다시 불림, 못 받으면 조용히 숨김
+const ptEl=$('pt');let ptId='',ptS=1,ptK='still',ptB=0,ptOn=0,ptH=0,ptW=0,ptCutX=1e9,ptTm=0,ptUp=[0,0],ptEnd=0,ptNar=0,ptSA=[0,0,0]; // ptUp·ptEnd: 띠·깡충이 솟는 상자 [너비,높이]와 끝나는 때 · ptSA: 띠 [시작, 길이, 왼쪽으로 비키는 거리] · ptNar: 좁은 차트라 영어 손익 배지를 짧게 (파트너 다리를 안 가리게) · ptS: 그리는 단계 (0 아기·1 어른·2 전설, 어른만 띠 그림) · ptK: still|cheer|happy|shock · ptB: 수익률 구간(0 손해·1 0~10%·2 ~30%·3 ~100%·4 그 위) · ptCutX: 파트너 자리라 거래량 막대를 안 그리는 x (캔버스 좌표)
+const ptWho=()=>run&&(state==='holding'||state==='ghost')?run.bd:!profile?'':petSel(); // 판 중엔 이번 판 동물(결과 카드 친구와 같음), 판 사이엔 지금 파트너 (튜토리얼도 첫 파트너 = 성향 동물)
+const ptWd=()=>ptS===1?PTM[ptId][0]:PTW[ptId][ptS?1:0]; // 지금 그림의 정지 그림 너비 (높이 288)
+function ptSync(){try{const id=ptWho(),sg=petSt(id),live=state==='holding'||state==='ghost';
+  const on=!!id&&SET.chars&&!PT_OFF&&curTab==='trade'&&$('page').hidden&&!app.classList.contains('pgopen')&&card.hidden&&$('modal').hidden&&$('sheet').hidden&&imgGet(chS(id,sg),ptSync)===1; // 거래 화면에 카드·창·종목 창·다른 탭이 없을 때만 (결과 카드가 뜨면 같은 동물이 카드 위 친구로 이어받음) · 받는 중이면 다 받은 뒤 다시 불림, 못 받으면 조용히 숨김
   if(!on){if(ptOn){ptOn=0;ptEl.hidden=true;ptCutX=1e9;ptNar=0;}return;}
-  let re=!ptOn;if(id!==ptId){ptId=id;ptK='still';ptB=0;re=1;}if(!live&&(ptK!=='still'||ptB)){ptK='still';ptB=0;re=1;} // 판 사이엔 쉬는 자세(숨쉬기)
+  let re=!ptOn;if(id!==ptId||sg!==ptS){ptId=id;ptS=sg;ptK='still';ptB=0;ptH=0;re=1;}if(!live&&(ptK!=='still'||ptB)){ptK='still';ptB=0;re=1;} // 판 사이엔 쉬는 자세(숨쉬기)
   if(!ptOn){ptOn=1;ptEl.hidden=false;}ptPlace();if(re)ptPaint();}catch(e){}}
 function ptPlace(){if(!ptOn)return;const dk=DESK.matches,vH=Math.min(Math.max(24,H*.15),H*.22),pB=H-vH-14,f=(vH+14+Math.max(0,.1*(pB-Math.min(24,Math.round(H*.18)))-8))*CK; // 차트 그림과 같은 계산: 거래량 칸 + 맨 아래 가격 눈금 밑까지가 빈 자리
-  const h=Math.round(Math.min(dk?136:96,Math.max(dk?84:64,f))),w=Math.round(h*PTM[ptId][0]/288),fit=h<=H*CK*.5; // 폰 64~96px, 데스크톱 84~136px · 차트가 너무 낮으면 숨김
+  const h=Math.round(Math.min(dk?136:96,Math.max(dk?84:64,f))*(ptS?1:.8)),w=Math.round(h*ptWd()/288),fit=h<=H*CK*.5; // 폰 64~96px, 데스크톱 84~136px · 차트가 너무 낮으면 숨김
   ptEl.style.visibility=fit?'':'hidden';ptCutX=fit?W-(3+w)/CK:1e9;ptNar=fit&&LANG==='en'&&W*CK<330;if(h!==ptH||w!==ptW){ptH=h;ptW=w;ptEl.style.width=w+'px';ptEl.style.height=h+'px';ptSize();}}
 function ptBox(){const k=ptK==='cheer'?'happy':ptK,m=PTM[ptId];if(k==='still'||RM.matches)return [ptW,ptH,0];const h=ptH*(288-m[1])/288*200/(200-m[k==='happy'?2:3]);return [h*BDW[ptId][k==='happy'?0:1]/200,h,BDM[k][0]];} // 띠 그림 한 장 상자: 동물 키를 정지 그림과 맞춤 (위 빈칸만큼 상자가 커짐)
 function ptSize(){const b=ptEl.firstChild,i=b&&b.firstChild;if(!i)return;const [w,h,n]=ptBox();Object.assign(i.style,{width:w+'px',height:h+'px',marginLeft:-w/2+'px',backgroundSize:n?n*w+'px '+h+'px':''});ptSA[2]=Math.max(0,w/2-ptW/2-3);i.style.setProperty('--sx',-ptSA[2]+'px');} // 크기만 바꿈 (돌던 애니메이션은 그대로) · --sx: 띠 한 장이 상자보다 넓으면 차트 안쪽 끝까지만 오게 비킬 거리
-function ptPaint(kick){const b=ptEl.firstChild,k=ptK==='cheer'?'happy':ptK,m=k==='still'||RM.matches?0:BDM[k],d=m?(m[0]-1)*m[1]:0;b.innerHTML='<i></i>';const i=b.firstChild;i.style.backgroundImage='url("'+chU(ptId,m?k:'still')+'")';ptSize(); // 새 요소라 애니메이션이 늘 처음부터
+function ptPaint(kick){const b=ptEl.firstChild,k=ptK==='cheer'?'happy':ptK,m=k==='still'||RM.matches?0:BDM[k],d=m?(m[0]-1)*m[1]:0;b.innerHTML='<i></i>';const i=b.firstChild;i.style.backgroundImage='url("'+(m?chU(ptId,k):chS(ptId,ptS))+'")';ptSize(); // 새 요소라 애니메이션이 늘 처음부터
   const a=[];if(m)a.push('bdPlay '+d+'ms steps('+(m[0]-1)+') forwards,ptSx '+d+'ms linear'+(ptK==='cheer'?'':',bdBr 3.4s ease-in-out '+(d+300)+'ms infinite'));if(kick)a.push(kick);i.style.animation=a.join(',');ptEl.className='b'+ptB+(m?' cx':'');
   ptSA[0]=performance.now();ptSA[1]=m?d:0;ptUp=m?ptBox():[ptW,ptH*(1.3+PTR[ptB])];ptEnd=performance.now()+60+(m?d:!RM.matches&&/ptHop|ptJmp/.test(kick||'')?parseFloat(kick.split(' ')[1])*1e3:-1e9);} // 띠는 한 번 재생(마지막 장 유지) → 숨쉬기, 띠가 도는 동안엔 구간 흔들기를 멈춤
 function ptKick(a){if(!ptOn||RM.matches)return;if(ptK==='cheer'){clearTimeout(ptTm);ptK='still';}ptPaint(a);} // 한 번 반응: 깡충(매수·재진입·호재), 떨기(악재·개미털기 뉴스)
-function ptReact(k){clearTimeout(ptTm);ptB=0;if(!ptOn){ptK='still';return;}const ok=!RM.matches&&imgGet(chU(ptId,k))===1;ptK=ok?k:'still';ptPaint(ok?'':k==='happy'?'ptJmp .9s ease-out':'ptShk .8s ease-in-out');} // 매도·폭락: 기쁨·놀람 띠 (못 받았으면 정지 그림으로 점프·떨기)
-function ptCheer(){if(!ptOn||ptK!=='still'||RM.matches)return;if(imgGet(chU(ptId,'happy'))<1){ptPaint('ptJmp .9s ease-out');return;}const g=ptId;ptK='cheer';ptPaint();clearTimeout(ptTm);ptTm=setTimeout(()=>{if(ptK==='cheer'&&ptId===g){ptK='still';if(ptOn)ptPaint();}},BDM.happy[0]*BDM.happy[1]+60);} // 게임이 띄우는 돌파 도장(+30%·따블…) 때 기쁨 띠 한 번 → 다시 구간 흔들기
+function ptReact(k){clearTimeout(ptTm);ptB=0;if(!ptOn){ptK='still';return;}const ok=ptS===1&&!RM.matches&&imgGet(chU(ptId,k))===1;ptK=ok?k:'still';ptPaint(ok?'':k==='happy'?'ptJmp .9s ease-out':'ptShk .8s ease-in-out');} // 매도·폭락: 기쁨·놀람 띠 (아기·전설이거나 못 받았으면 정지 그림으로 점프·떨기)
+function ptCheer(){if(!ptOn||ptK!=='still'||RM.matches)return;if(ptS!==1||imgGet(chU(ptId,'happy'))<1){ptPaint('ptJmp .9s ease-out');return;}const g=ptId;ptK='cheer';ptPaint();clearTimeout(ptTm);ptTm=setTimeout(()=>{if(ptK==='cheer'&&ptId===g){ptK='still';if(ptOn)ptPaint();}},BDM.happy[0]*BDM.happy[1]+60);} // 게임이 띄우는 돌파 도장(+30%·따블…) 때 기쁨 띠 한 번 → 다시 구간 흔들기
 function ptWinK(){if(run.tut)return 'happy';if(run.chal)return chal.pend>=0?'happy':'shock';const s=sell,re=run.re,net=s.gain+s.bonus-(s.tax||0)+(s.bossReward||0)+(re?(re.gain||0)-(re.loss||0)-re.fee:0),c=net-(run.cost||0)>=0;return (re?net>0&&(s.bossReward||s.m<1||c):s.bossReward||s.m>=1&&c)?'happy':'shock';} // 매도 때 반응 = 곧 뜰 결과 카드 친구 기분 (showWin 등급과 같은 기준: 손절·수수료에 털림·재진입 손해면 놀람 · 챌린지는 이번 판 점수 · 연습은 판 것만으로 기쁨)
 const ptShift=()=>{const t=(performance.now()-ptSA[0])/ptSA[1];return t>0&&t<1?ptSA[2]*Math.min(1,t/.2,(1-t)/.15):0;}; // 지금 띠가 왼쪽으로 비킨 거리 (CSS ptSx와 같은 모양) → 거래량 막대도 그만큼 더 비움
 function ptZone(){const u=performance.now()<ptEnd?ptUp:[0,0];return [W-(3+Math.max(ptW,u[0]))/CK,H-(1+Math.max(ptH*(1+PTR[ptB]),u[1]))/CK];} // 지금 파트너가 닿는 왼쪽·위 끝 (캔버스 좌표, 숨쉬기·구간 흔들기·깡충·띠 그림이 솟는 높이까지) → 여기 걸린 가격 눈금 글자엔 바탕을 깔아 읽히게
@@ -1174,7 +1257,7 @@ function starHtml(id){const a=achStars(id);return `<em class="stars" style="colo
 function achSP(){return ACH.reduce((n,a)=>{const x=achStars(a[0]);return n+(x.st>=1?1:0)+(x.st>=5?1:0);},0);}
 function unlock(id){
   const b=achStars(id);achC[id]=(achC[id]||0)+1;store.set('shg_achc',achC);
-  if(!ach.includes(id)){ach.push(id);store.set('shg_ach',ach);}
+  if(!ach.includes(id)){ach.push(id);store.set('shg_ach',ach);if(PET_ORD.some(k=>PET_UN[k]===id))petCheck();} // 업적으로 여는 친구 (불장·첫 보스·보스 헌터)
   const n=achStars(id),a=ACH.find(a=>a[0]===id);
   if(a&&(n.st>b.st||n.col>b.col)){setTimeout(()=>{toast('🏆 '+a[1]+' '+a[2]+' '+'★'.repeat(n.st)+(n.col>=0?' '+STAR_T[n.col][0]:'')+(n.st===5&&b.st<5?' · SP +1':n.st===1?' · SP +1':''));sfx.up();},350);paintTop();}
 }
@@ -1233,7 +1316,7 @@ const itemCost=(k,bet)=>{const c=ITEMS[k].cost;return (bet*c+Math.min(balance*c*
 // 자산 리스크: 예수금 10억부터 폭락이 빨라지고 즉사 확률 증가 (최대 30%)
 const wealthRisk=b=>b<1e9?0:Math.min(.3,.035*Math.log10(b/1e9));
 const taxRate=b=>b<1e10?0:Math.min(.65,.05+.1*Math.log10(b/1e10));
-const xpMul=()=>1+.05*skl('xp')+(gear.office?.05:0); // 복기 습관·오피스텔 XP 배수 (표시도 같은 값)
+const xpMul=()=>1+.05*skl('xp')+(gear.office?.05:0)+(pet?PET_XP[petBest()]/100:0); // 복기 습관·오피스텔·가장 많이 자란 친구 단계(어른 +3%·전설 +6%) XP 배수 (표시도 같은 값)
 function gainXp(n){
   n=Math.round(n*xpMul());
   const before=rankOf(xp),lb=lvlOf(xp).L;xp+=n;store.set('shg_xp',xp);const after=rankOf(xp),la=lvlOf(xp).L;
@@ -1243,7 +1326,7 @@ function gainXp(n){
     else if(L>P.l)toast('⬆️ 레벨 업! Lv.'+L+(spG>0?' · SP +'+spG:'')+' · 한도 '+capT);
     sfx.up();if(R>P.r)cgHappy();if(L>P.l)burst(innerWidth/2,90,30);},900);}
   if(after>before&&run){const u=run.promo?run.promo.u:[];for(let i=before+1;i<=after;i++)u.push(...unlOf(i));run.promo={r:after,u};} // 이번 판 결과 카드에 승급 한 줄 (판마다 run을 새로 만들어 지난 판·판 사이 승급은 안 남음)
-  if(after===RANKS.length-1&&after>before)unlock('legend');
+  if(after===RANKS.length-1&&after>before)unlock('legend');if(after>before)petCheck(); // 승급으로 열린 친구 합류
   return n;
 }
 
@@ -1262,7 +1345,7 @@ function paintTop(){try{checkHome()}catch(e){}
   $('rankBar').style.width=(lv.cur/lv.need*100).toFixed(0)+'%';
   {const R=regime();let left=5,cR=false;try{left=5-stats.rounds%5}catch(e){}try{cR=!!(tutDone&&chal&&chal.i<5)}catch(e){}htm($('regime'),icT(cR?'🏆 챌린지 판 '+(chal.i+1)+'/5':R.e+' '+(LANG==='en'&&R.s&&R.s!=='기본'?R.s:R.n)+' · '+left+'판 남음'));$('regime').title=cR?'':R.d;}
   {let ok=false;try{ok=!usedToday('shg_spin')}catch(e){}$('giftBtn').classList.toggle('ready',ok);}
-  htm($('spBtn'),icT('🌳 SP '+spFree()));$('dotS').hidden=spFree()<=0;ensureDaily();{let m=false;try{m=seasonN()>0||tutDone&&chalLeft()}catch(e){}$('dotM').hidden=!m;} // 미션 점은 '받을 게 있음'일 때만 (시즌 보상·오늘의 챌린지)
+  htm($('spBtn'),icT('🌳 SP '+spFree()));$('dotS').hidden=spFree()<=0;ensureDaily();{let m=false;try{m=seasonN()>0||tutDone&&chalLeft()}catch(e){}$('dotM').hidden=!m;}petDot(); // 미션 점은 '받을 게 있음'일 때만 (시즌 보상·오늘의 챌린지)
   {const g=card.querySelector('.goal');if(g&&!card.hidden)g.innerHTML=icH(goalIn());} // 결과 카드의 다음 목표 줄: 미션 보상·광고 보너스까지 반영
   unOver();
 }
@@ -1361,6 +1444,7 @@ function start(){
   if(adPause||curTab!=='trade'||!profile||!$('modal').hidden||!$('sheet').hidden||state==='ghost'||(state==='over'&&!unOver()&&!chRound)||state==='holding')return;
   if(state==='result'&&performance.now()<readyAt)return;
   if(!card.hidden&&card.querySelector('.opts'))return; // 성향 테스트 문항이 떠 있으면 (다시 하기 포함) 판을 시작하지 않음
+  if(!card.hidden&&card.querySelector('#petGo')&&performance.now()-petAt<450||petCue(1))return; // 파트너 성장·새 친구 카드: 결과 카드에서 매수를 누르면 판 대신 한 번 (그 카드가 떠 있으면 바로 이어 누른 탭에도 0.45초는 보이게)
   au();
   const low=()=>{if(balance+invNet()>=100000){toast('💼 예수금이 부족해요. 투자 탭에서 출금하세요');}else{state='over';showOver(0);paintPickers();setBtn();}};
   if(tutDone&&!chRound&&balance<100000){low();return;}
@@ -1472,7 +1556,7 @@ function lossFactor(){ // 폭락 손실 비율 (본 포지션·재진입분 공�
 const holdRate=()=>.6*(run.it.slow?.6:1)*(SET.slow?.8:1)*(1-.02*skl('mind'))*(gear.chair?.97:1); // 보유 중 차트 시간 t가 실제 1초에 흐르는 양
 const gapS=()=>(crashT-sell.t)/holdRate(); // 판 시점부터 폭락까지, 계속 들고 있었다면 걸렸을 실제 초
 function crash(){
-  crashed=true;crashT=t;newsIdle();if(state==='holding')ptReact('shock');if(!run.tut)ptNext=ptPick();if(run.entryTag){const q=toastQ.indexOf(run.entryTag);if(q>=0)toastQ.splice(q,1);const te=$('toast');if(te._t===run.entryTag){te.hidden=true;te.textContent='';te._t='';}} // 파트너: 물리면 놀람(결과 카드가 뜨면 카드 위 같은 동물이 이어받음) · 다음 판 동물을 지금 골라 그림을 미리 받음
+  crashed=true;crashT=t;newsIdle();if(state==='holding')ptReact('shock');if(run.entryTag){const q=toastQ.indexOf(run.entryTag);if(q>=0)toastQ.splice(q,1);const te=$('toast');if(te._t===run.entryTag){te.hidden=true;te.textContent='';te._t='';}} // 파트너: 물리면 놀람(결과 카드가 뜨면 카드 위 같은 동물이 이어받음) · 다음 판 동물을 지금 골라 그림을 미리 받음
   const last=candles[candles.length-1],bot=run.liq?cur*.8:run.crashAt*.62;
   candles.push({o:last?last.c:run.crashAt,h:last?last.c:run.crashAt,l:bot,c:bot,v:(last?last.v:1)*4+6,crash:true,ghost:!!sell});
   if(SET.fx){chart.classList.remove('shake');void chart.offsetWidth;chart.classList.add('shake');}
@@ -1516,6 +1600,7 @@ function crash(){
   if(!pendBust&&state==='result'&&run.promo&&!card.hidden){const o=card.querySelector('.promo');if(o)o.outerHTML=icH(promoLine());else{const b=card.querySelector('.big');if(b)b.insertAdjacentHTML('afterend',icH(promoLine()));}} // 익절 카드는 미션·주간·업적 XP보다 먼저 그려짐 → 그 XP로 승급했으면 여기서 한 줄 추가
   if(pendBust){const P=pendBust;pendBust=null;if(balance+invNet()<100000){state='over';showOver(P.loss);}else{state='result';showBust(P.loss,P.L,P.xg,P.rw,P.sh,P.ps);if(balance<100000)setTimeout(()=>toast('💼 예수금이 바닥! 투자 탭에서 출금하세요'),900);}}
   else if(state==='result'&&balance+invNet()<100000&&!$('adWin')){state='over';showOver(run.re&&run.re.caught?Math.max(0,Math.min(run.re.loss,-lastAmt)):0);} // 팔고 끝난 판(재진입 물림·손절)도 바닥이면 바로 바닥 화면 (익절 광고 보너스로 살아날 수 있으면 결과 카드 유지, 재진입 물림 손실은 복구 광고로)
+  petRound(res); // 파트너 친밀도는 결과·물림·바닥 카드를 다 그린 뒤 (카드는 이전 단계 그림, 성장 카드는 그다음)
   offers=makeOffers();
   readyAt=performance.now()+800;
   paintTop();paintPickers();setBtn();setTimeout(setBtn,820);scheduleSwitch();
@@ -1569,7 +1654,7 @@ function showWin(pct,xg){
    (run.boss&&!sell.bossReward?'<div class="sub dn">👹 보스가 살아남았다 (목표 +'+Math.round((run.boss.target-1)*100)+'%)</div>':'')+
    '<div class="row"><span>'+(sell.m>1?'고점 +'+pp(peak)+' · 근접도 '+pct.toFixed(0)+'%':'손절 '+pp(sell.m)+' · 고점 +'+pp(peak))+'</span><span class="gd xpv">+'+xg+' XP</span></div>'+hintLine()+goalLine()+ // 매도가·고점·근접도 막대 대신 작은 한 줄
    shareBtn(wb>0&&adOk('win')&&adWinBig(wb)?'<button id="adWin" type="button">📺 광고 보고 수익 +50% ('+swS(wb)+') · '+(AD_LIM.win-adCnt('win'))+'/'+AD_LIM.win+'</button>':lb>0&&adOk('loss')&&adBig(Math.max(0,Math.min(run.re.loss||0,-lastAmt)))?'<button id="adLoss" type="button">📺 광고 보고 손실 30% 복구 ('+swS(lb)+') · '+(AD_LIM.loss-adCnt('loss'))+'/'+AD_LIM.loss+'</button>':'',!onCG||sell.m>=2||!!sell.bossReward); // 크레이지게임즈판은 링크 없이 글만 공유됨 → 2배 이상·보스 처치 판에만 공유 버튼
-  bdNext={k:g[1]==='dn'?'shock':'happy',id:run.bd||bdRand()};showCard();bindShare(); // 익절·보스 처치는 기뻐하고, 손해로 끝난 판(손절·재진입 물림·수수료)은 놀람
+  bdNext={k:g[1]==='dn'?'shock':'happy',id:run.bd||petSel()};showCard();bindShare(); // 익절·보스 처치는 기뻐하고, 손해로 끝난 판(손절·재진입 물림·수수료)은 놀람
   if($('adWin'))$('adWin').onclick=()=>{const b=$('adWin'),p0=pres;if(adFull('win'))return b.remove();b.disabled=true;rewardAd('winx',()=>{if(pres!==p0||b.dataset.paid)return;if(adFull('win'))return b.remove();b.dataset.paid=1;adUse('win');balance+=wb;stats.net+=wb;store.set('shg_stats',stats);b.remove();paintTop();paintPickers();setBtn();stamp('📺 +50%');toast('📺 보너스 '+swS(wb)+' 지급!');});setTimeout(()=>{if(b.isConnected)b.disabled=false;},3000);};
   if($('adLoss'))$('adLoss').onclick=()=>{const b=$('adLoss'),p0=pres;if(adFull('loss'))return b.remove();b.disabled=true;rewardAd('lossback',()=>{if(pres!==p0||b.dataset.paid)return;if(adFull('loss'))return b.remove();b.dataset.paid=1;adUse('loss');balance+=lb;stats.net+=lb;store.set('shg_stats',stats);b.remove();paintTop();paintPickers();setBtn();stamp('📺 복구');toast('📺 '+swS(lb)+' 돌려받았어요');});setTimeout(()=>{if(b.isConnected)b.disabled=false;},3000);};
 }
@@ -1592,7 +1677,7 @@ function showBust(loss,L,xg,rw,sh,ps){
    '<div class="row"><span>'+(ps>1?ps+'연속 익절 끊김':'위로 경험치')+'</span><span class="gd xpv">+'+xg+' XP</span></div>'+hintLine()+
    (run.boss?'<div class="sub dn">👹 보스가 살아남았다 (목표 +'+Math.round((run.boss.target-1)*100)+'%)</div>':'')+
    shareBtn(lb>0&&adOk('loss')&&adBig(loss)?'<button id="adLoss" type="button">📺 광고 보고 손실 30% 복구 ('+swS(lb)+') · '+(AD_LIM.loss-adCnt('loss'))+'/'+AD_LIM.loss+'</button>':'',!onCG); // 크레이지게임즈판은 물린 판 공유 버튼 없음 (링크 없는 글만 공유됨)
-  bdNext={k:'shock',id:run.bd||bdRand()};showCard();bindShare();
+  bdNext={k:'shock',id:run.bd||petSel()};showCard();bindShare();
   if($('adLoss'))$('adLoss').onclick=()=>{const b=$('adLoss'),p0=pres;if(adFull('loss'))return b.remove();b.disabled=true;rewardAd('lossback',()=>{if(pres!==p0||b.dataset.paid)return;if(adFull('loss'))return b.remove();b.dataset.paid=1;adUse('loss');balance+=lb;stats.net+=lb;store.set('shg_stats',stats);b.remove();paintTop();paintPickers();setBtn();stamp('📺 복구');toast('📺 '+swS(lb)+' 돌려받았어요');});setTimeout(()=>{if(b.isConnected)b.disabled=false;},3000);};
 }
 const TIPS=['💡 투자 비율을 25%로 낮추면 폭락을 맞아도 다시 해 볼 돈이 남아요','💡 5연속 익절하면 FEVER로 보너스가 2배예요','💡 작은 수익이라도 꾸준히 챙기면 연속 익절 보너스가 쌓여요','💡 매일 선물과 미션 보상으로 현금을 다시 모을 수 있어요','💡 수익 중에 악재 뉴스가 뜨면 팔고 다음 판을 노리는 것도 방법이에요'];
@@ -1628,14 +1713,14 @@ function showDefault(quiet){ // 빚이 한도를 넘으면 강제 신용불량
    '<div class="row"><span>압류 대상</span><span class="dn">장비 전부 ('+Object.keys(gear).length+'개) · 소모품 전부</span></div>'+
    '<div class="row"><span>잃는 돈</span><span class="dn">예수금 '+wonS(balance)+(invTotal()>0?' · 투자금 '+wonS(invTotal()):'')+'</span></div>'+
    '<div class="sub">레벨, 스킬, 업적은 남습니다.</div><div class="btns"><button class="pri" id="again" type="button">🥫 받아들이고 처음부터</button></div>';overSig=overNow();
-  bdNext={k:'shock',id:run&&run.bd||bdCur&&bdCur.id||bdRand()};showCard();$('again').onclick=()=>{const k=overSig;if(unOver()||overSig!==k)return;declareBankrupt(debt>debtLimit());};paintPickers();setBtn(); // 그사이 은행에서 한도 밑으로 갚았으면 그냥 이어서
+  bdNext={k:'shock',id:run&&run.bd||bdCur&&bdCur.id||petSel()};showCard();$('again').onclick=()=>{const k=overSig;if(unOver()||overSig!==k)return;declareBankrupt(debt>debtLimit());};paintPickers();setBtn(); // 그사이 은행에서 한도 밑으로 갚았으면 그냥 이어서
 }
 
 /* ---------- 수익화: 보상형 광고 · 후원 (설정값 넣으면 켜짐) ---------- */
 const CFG={adClient:'ca-pub-2213068202184499',adTest:false,donateUrl:'',iap:false,iapDev:false}; // adClient: 'ca-pub-…' (구글 애드센스 H5 게임 광고), donateUrl: 후원 링크, iap: 프리미엄 꾸미기 상점 켜기 (끄면 화면·플레이 중 저장이 지금 그대로, localhost 주소에 ?iap를 붙이면 개발 미리보기), iapDev: localhost가 아닌 곳에서도 ?iap 미리보기와 ?iap&devbuy 개발용 즉시 지급 허용 (배포본에서는 꼭 false)
 // 크레이지게임즈 포털에서 실행되면 그쪽 SDK 광고 사용
 const CG={on:false,S:null,last:0,noAds:0,done:0},onCG=/crazygames/.test(location.hostname)||(window.top!==window&&/crazygames/.test(document.referrer))||/[?&]cg\b/.test(location.search); // noAds: 이번 접속에서 광고 요청이 한 번이라도 실패·시간 초과 → 광고가 꺼진 것으로 보고 📺 버튼을 숨김 (Basic Launch·애드블록에서 효과 없는 버튼 금지), done: SDK 준비가 끝났거나 실패함
-const BUILD='v2.5 · b261029 · '+LANG+'-'+(onCG?'cg':/(^|\.)itch\.(io|zone)$|hwcdn\.net$/.test(location.hostname)||/itch\.io/.test(document.referrer)?'itch':'web'); // 설정 맨 아래 버전 줄: 버그 신고에 정확한 빌드가 찍히게 (배포할 때 날짜 bYYMMDD를 갱신, 언어·포털은 실행 환경에서)
+const BUILD='v2.6 · b261031 · '+LANG+'-'+(onCG?'cg':/(^|\.)itch\.(io|zone)$|hwcdn\.net$/.test(location.hostname)||/itch\.io/.test(document.referrer)?'itch':'web'); // 설정 맨 아래 버전 줄: 버그 신고에 정확한 빌드가 찍히게 (배포할 때 날짜 bYYMMDD를 갱신, 언어·포털은 실행 환경에서)
 if(onCG){const sc=document.createElement('script');sc.src='https://sdk.crazygames.com/crazygames-sdk-v3.js';
   sc.onload=async()=>{try{const S=window.CrazyGames.SDK;await S.init();if(S.environment!=='disabled'){CG.S=S;CG.on=true;cgLoad();try{const ms=v=>{v=v&&typeof v==='object'?v:S.game.settings;cgMute=!!(v&&v.muteAudio);document.body.classList.toggle('noChat',!!(v&&v.disableChat));if(touched||cgMute)bgm.sync();};ms();S.game.addSettingsChangeListener(ms);}catch(e){}if(state==='holding'||state==='ghost')cgPlay(true);}}catch(e){}CG.done=1;};sc.onerror=()=>{CG.done=1;};document.head.appendChild(sc);}
 let cgG=false; // 마지막으로 보낸 gameplay 상태 (짝 안 맞는 stop·중복 호출 막기)
@@ -1681,7 +1766,7 @@ function showOver(loss,quiet){if(loss>0)overLoss=loss;else loss=overLoss; // 챌
    (!usedToday('shg_adRevive')&&!revOk()&&(adsOn()||!adsWait())?'<div class="sub dn">'+(adsOn()?'빚이 한도에 닿아 광고 지원금으로는 다음 판을 못 버텨요':'빚이 한도에 닿아 복귀 지원금으로는 다음 판을 못 버텨요')+'</div>':'')+
    (ok?'<div class="sub">💳 대출 '+won(la)+' · 판당 이자 '+(LOAN_R[Math.min(10,credit+1)]*100).toFixed(1)+'% → 신용 '+crS(Math.min(10,credit+1))+(credit+1>=8?' (사채)':'')+'</div>':'<div class="sub dn">더 이상 대출이 안 됩니다</div>')+
    '<div class="btns" id="overBtns" style="flex-wrap:wrap">'+(!usedToday('shg_adRevive')&&revOk()?adsOn()?revHtml:adsWait()?'':freeHtml:'')+(debt>0?'':'<button class="pri" type="button" id="again">🔄 새로 시작 · '+won(START*(1+.2*skl('seed')))+(stats.bankrupts<5?' · SP +1':'')+'</button><div class="sub" style="width:100%;margin:-2px 0 4px">빚이 없으니 새로 시작해도 레벨·스킬·장비·소모품은 그대로예요</div>')+lossHtml+(ok?'<button class="pri" id="loanBtn" type="button">💳 대출 받고 계속</button>':'')+(debt>0?'<button type="button" id="again">🥫 파산 신청 (압류)</button><div class="sub" style="width:100%;margin:-2px 0 0">빚 탕감 · 장비·소모품·투자금 압류 · 신용 10등급</div>':'')+'</div>';overSig=overNow(); // 빚이 없으면 공짜 새로 시작을 광고 복구 바로 다음에, 설명은 그 버튼 바로 아래에 (작은 화면에서도 스크롤 없이 보이게)
-  bdNext={k:'shock',id:run&&run.bd||bdCur&&bdCur.id||bdRand()};showCard();
+  bdNext={k:'shock',id:run&&run.bd||bdCur&&bdCur.id||petSel()};showCard();
   const revPay=e=>{if(usedToday('shg_adRevive'))return;store.set('shg_adRevive',dayKey());lowFlag=false;stats.low=0;store.set('shg_stats',stats);balance+=START*3;if(state==='over')resetView();paintTop();paintPickers();setBtn();stamp(e+' 복구 완료');toast(e+' '+won(START*3)+' 지급! 다시 가보자');},rev=()=>rewardAd('revive',()=>revPay('📺'));
   const freeGo=()=>{const k=overSig;if(store.off){tabNow();return;}if(unOver()||overSig!==k)return;if(usedToday('shg_adRevive')||!revOk()){const b=$('freeRev');if(b)b.remove();return;}revPay('🎁');}; // 광고 지원금과 같은 날짜 기록(shg_adRevive)이라 둘을 합쳐 하루 1번 · 다른 탭과도 공유 (저장 못 하는 탭에서는 새로고침부터)
   const revGo=()=>{const bs=['adRevive','adLoss','loanBtn','again'].map(id=>$(id)).filter(Boolean);bs.forEach(b=>b.disabled=true);const re=()=>{if(adPause||adReq)return setTimeout(re,500);bs.forEach(b=>{if(b.isConnected)b.disabled=false;});};setTimeout(re,3000);rev();}; // 광고 기다리는 동안 대출·파산과 겹치지 않게
@@ -1698,8 +1783,8 @@ function showIntro(){
   const ms=daily.ids.filter(id=>!daily.done.includes(id)).map(id=>MISSIONS.find(m=>m.id===id)).filter(Boolean).map(m=>m.t); // 이미 깬 미션은 빼고
   if((stats.rounds||0)>=3){seasonFix();let gf=false;try{gf=!usedToday('shg_spin')}catch(e){}const n=spFree(),sn=seasonN(),ch=chalLeft(),dn=daily.done.length,dl=daily.ids.length,dm=dn<dl?'☀️ 오늘의 미션 '+dn+'/'+dl:''; // 3판 넘게 한 사람에겐 규칙 대신 받을 것·할 일만 (받을 게 없으면 막는 카드 대신 알림 한 줄)
     const li=(gf?'<li>🎁 오늘의 선물을 받을 수 있어요 · 위쪽 🎁 버튼</li>':'')+(n>0?'<li>🌳 쓰지 않은 SP <b class="gd">'+n+'</b> · 스킬 탭</li>':'')+(sn>0?'<li>🎫 시즌 패스 보상 <b class="gd">'+sn+'</b>개 대기 · 미션 탭</li>':'')+(ch?'<li>🏆 오늘의 챌린지 아직 안 했어요 · 미션 탭</li>':'');
-    if(!li){toast('👋 다시 왔군요!'+(dm?' · '+dm:''));return;}
-    card.innerHTML=tw(ttlH(1)+'<div class="grade">👋 다시 왔군요!</div><ul>'+li+(dm?'<li>'+dm+' · 미션 탭</li>':'')+'</ul><div class="btns"><button class="pri" type="button" data-close>▶ 시작하기</button></div>');bdNext={k:'still',id:ptWho()||bdRand()};showCard();return;} // 환영 카드는 타이틀 화면으로 안 함: 배경 그림이 안내하는 🎁 버튼·탭을 덮어 못 누름 (작은 제목 그림 + 무작위 친구만)
+    if(!li){toast('👋 다시 왔군요!'+(dm?' · '+dm:'')+(pet&&!pet.q.includes('m')?' · '+petLine(1):''));return;}
+    card.innerHTML=tw(ttlH(1)+'<div class="grade">👋 다시 왔군요!</div><ul>'+li+(dm?'<li>'+dm+' · 미션 탭</li>':'')+(pet&&!pet.q.includes('m')?'<li>'+petLine(0,LANG==='en')+'</li>':'')+'</ul><div class="btns"><button class="pri" type="button" data-close>▶ 시작하기</button></div>');bdNext={k:'still',id:petSel()};showCard();return;} // 환영 카드는 타이틀 화면으로 안 함: 배경 그림이 안내하는 🎁 버튼·탭을 덮어 못 누름 (작은 제목 그림 + 내 파트너 · 다음 단계까지 남은 판 수)
   let wb='';
   card.innerHTML=tw(ttlH()+(wb||
    '<ul><li>버튼을 <b>한 번 누르면 매수</b>, <b>다시 누르면 매도</b>합니다.</li>'+(MOUSE.matches?'<li>⌨️ 키보드 스페이스바로도 사고팔 수 있어요.</li>':'')+'<li>언젠가 반드시 폭락합니다. 그 전에 파세요.</li><li>악재 뉴스는 진짜 신호일 수도, 개미털기일 수도 있습니다.</li><li>한 판에 거는 돈은 <b>투자 한도</b>까지예요. 한도는 레벨이 오를수록 커집니다.</li><li>5연속 익절하면 <b class="gd">FEVER</b>로 보너스가 2배입니다.</li><li>아이템은 계급이 오를 때마다 하나씩 열립니다.</li></ul>')+
@@ -1739,7 +1824,7 @@ function fitCard(){if(card.hidden)return;
 new MutationObserver(()=>{card.scrollTop=0;fitCard();ovlCls();}).observe(card,{childList:true,attributes:true,attributeFilter:['hidden']});ovlCls();addEventListener('resize',fitCard);addEventListener('resize',placeToast);app.addEventListener('scroll',fitCard,{passive:true}); // 짧은 화면에서 게임 칸을 스크롤하면 매수 버튼 위치에 맞춰 카드도 다시 배치
 new MutationObserver(()=>{if(card.hidden||card.querySelector('.cx')||card.querySelector('#again,.opts,#qStart,#qGo'))return;
   card.insertAdjacentHTML('afterbegin','<button class="cx" type="button" data-close aria-label="닫기">✕</button>');}).observe(card,{childList:true,attributes:true,attributeFilter:['hidden']});
-card.addEventListener('click',e=>{const cb=e.target.closest('button');if(cb&&e.detail>0)cb.blur();if(e.target.closest('[data-close]')){card.hidden=true;hideCoach();if(!tutDone&&(state==='ready'||state==='result'))coachReady();}});
+card.addEventListener('click',e=>{const cb=e.target.closest('button');if(cb&&e.detail>0)cb.blur();if(e.target.closest('[data-close]')){card.hidden=true;hideCoach();if(!tutDone&&(state==='ready'||state==='result'))coachReady();else setTimeout(()=>petCue(),0);}});
 [card,$('modal'),$('sheet'),$('page')].forEach(el=>new MutationObserver(bdSync).observe(el,{attributes:true,attributeFilter:['hidden']}));new MutationObserver(bdSync).observe(app,{attributes:true,attributeFilter:['class']}); // 동물 친구·타이틀 배경: 카드가 닫히거나 창·종목 창·페이지(탭)가 열리면 숨김
 new MutationObserver(bdPlace).observe($('coach'),{attributes:true,attributeFilter:['hidden','style','class']});addEventListener('resize',bdSync);app.addEventListener('scroll',bdPlace,{passive:true});if(window.ResizeObserver)new ResizeObserver(()=>{if(ttl)fitCard();bdPlace();}).observe(card); // 카드 높이가 바뀌면(글꼴·추가된 줄) 다시 맞춤
 /* ---------- modals ---------- */
@@ -1759,7 +1844,7 @@ function showLevel(){if(state==='holding'||state==='ghost')return;
 }
 $('regime').onclick=()=>{if(tutDone&&chal&&chal.i<5){toast('💵 내 돈은 안 걸려요 · 점수만 걸려요');return;}const R=regime();toast(R.e+' '+R.n+' · '+R.d);};$('rankBtn').onclick=showLevel;$('rankBtn').onkeydown=e=>{if((e.key==='Enter'||e.key===' '&&kbNav)&&!e.repeat&&state!=='holding'&&state!=='ghost'){e.preventDefault();e.stopPropagation();showLevel();}};
 let mdShut=-1e9;
-$('modalClose').onclick=()=>{mdShut=performance.now();$('modal').hidden=true;};
+$('modalClose').onclick=()=>{mdShut=performance.now();$('modal').hidden=true;setTimeout(()=>petCue(),0);}; // 선물 경험치로 승급해 친구가 합류했으면 창을 닫은 뒤
 card.addEventListener('click',e=>{if(e.isTrusted&&performance.now()-mdShut<400){e.stopPropagation();e.preventDefault();}},true); // 모달을 닫은 두 번째 탭이 아래 카드 버튼(파산·대출 등)을 누르지 않게
 $('modal').addEventListener(PD,e=>{mdBg=e.target===$('modal');});
 $('modal').addEventListener('click',e=>{if(e.target===$('modal')&&mdBg&&performance.now()-mdAt>400&&!adPause)$('modalClose').click();}); // 바깥(어두운 곳)을 눌러도 닫기 (Esc와 같음). 창을 연 연타의 두 번째 탭·안에서 끌어 나온 클릭은 무시
@@ -1790,8 +1875,8 @@ addEventListener('resize',()=>{if(state==='holding'&&getComputedStyle($('rotate'
 // 같은 기기의 다른 탭(한국어·영어 페이지는 저장소를 같이 씀)이 저장하면 이 탭 기록은 낡은 것 → 덮어쓰지 않고 새로고침
 let tabStale=0,tabRp=0;const adOffer=()=>!card.hidden&&!!card.querySelector('#adWin,#adLoss'); // adOffer: 결과·바닥 카드에 아직 안 받은 광고 보상 버튼이 있음 (받거나 닫을 때까지 새로고침 미룸)
 // tabStale 2: 보고 있던 판은 마저 끝냄 (돈·빚·신용·XP는 차액만, 나머지는 저쪽 새 값을 이어받아 그 위에 저장), 1: 저장 멈춤
-const TAB_TAKE={shg_streak:v=>{streak=Math.max(0,Math.floor(+v||0));app.classList.toggle('fever',streak>=5);$('fever').hidden=streak<5;},shg_season:v=>season=v,shg_daily:v=>{daily=v;ensureDaily();},shg_weekly:v=>{weekly=v;ensureDaily();},shg_inv:v=>inv=v,shg_armed:v=>armed=v,shg_inv2:v=>invest=v,shg_gear:v=>gear=v,shg_col:v=>col=Array.isArray(v)?v.filter((id,i)=>COL.some(c=>c.id===id)&&v.indexOf(id)===i):[],shg_ach:v=>ach=v,shg_achc:v=>achC=v,shg_sk:v=>{sk=cntMap(v);fixSk();},shg_league:v=>league=v,shg_nick:v=>nick=v,shg_profile:v=>profile=Object.prototype.hasOwnProperty.call(TYPES,v)?v:null,shg_home:v=>lastHome=v,shg_intPaid:v=>intPaid=!!v,shg_best:v=>best=Math.max(best,+v||0),shg_stats:v=>{Object.assign(stats,v);fixStats();lowFlag=!!stats.low;},shg_decor:v=>Object.assign(decor,v)},
-  TAB_KEEP=['shg_bal','shg_debt','shg_credit','shg_xp','shg_spin','shg_adSpin','shg_adRevive','shg_adc','shg_chalDay','shg_chalMax','shg_chalRun','shg_chalPaid','shg_tutPaid','shg_tutBonus','shg_tut','shg_set','shg_pct','shg_ipct','shg_tier','shg_levTip','shg_itemTip','shg_tips']; // 차액 반영 키, 쓸 때마다 저장소에서 다시 읽는 키·설정. 이 밖의 키(환생·불러오기·초기화 등)가 바뀌면 이 판은 저장하지 않음 (shg_prem·shg_premEq는 이 목록 대신 위 storage 처리 맨 앞에서 합집합으로 따로 받음)
+const TAB_TAKE={shg_streak:v=>{streak=Math.max(0,Math.floor(+v||0));app.classList.toggle('fever',streak>=5);$('fever').hidden=streak<5;},shg_season:v=>season=v,shg_daily:v=>{daily=v;ensureDaily();},shg_weekly:v=>{weekly=v;ensureDaily();},shg_inv:v=>inv=v,shg_armed:v=>armed=v,shg_inv2:v=>invest=v,shg_gear:v=>gear=v,shg_col:v=>col=Array.isArray(v)?v.filter((id,i)=>COL.some(c=>c.id===id)&&v.indexOf(id)===i):[],shg_ach:v=>ach=v,shg_achc:v=>achC=v,shg_sk:v=>{sk=cntMap(v);fixSk();},shg_league:v=>league=v,shg_nick:v=>nick=v,shg_profile:v=>profile=Object.prototype.hasOwnProperty.call(TYPES,v)?v:null,shg_home:v=>lastHome=v,shg_intPaid:v=>intPaid=!!v,shg_best:v=>best=Math.max(best,+v||0),shg_stats:v=>{Object.assign(stats,v);fixStats();lowFlag=!!stats.low;},shg_decor:v=>Object.assign(decor,v),shg_pet:v=>{const p=petFix(v);if(p)pet=p;petDot();}},
+  TAB_KEEP=['shg_bal','shg_debt','shg_credit','shg_xp','shg_spin','shg_adSpin','shg_adRevive','shg_adc','shg_chalDay','shg_chalMax','shg_chalRun','shg_chalPaid','shg_tutPaid','shg_tutBonus','shg_tut','shg_set','shg_pct','shg_ipct','shg_tier','shg_levTip','shg_itemTip','shg_tips','shg_pet']; // 차액 반영 키, 쓸 때마다 저장소에서 다시 읽는 키·설정. 이 밖의 키(환생·불러오기·초기화 등)가 바뀌면 이 판은 저장하지 않음 (shg_prem·shg_premEq는 이 목록 대신 위 storage 처리 맨 앞에서 합집합으로 따로 받음)
 addEventListener('storage',e=>{const k=e.key;if(e.storageArea&&e.storageArea!==localStorage)return;if(k!==null&&(k.slice(0,4)!=='shg_'||k==='shg_errlog'))return;
   if(k==='shg_prem'||k==='shg_premEq'){if(PREM_ON)premTake(k);return;}if(k==='shg_premReset'){if(PREM_ON&&e.newValue)premReset();return;} // 프리미엄 보유·장착: 새로고침 없이 바로 합침 (구매 목록은 합집합이라 어느 탭도 덮어써서 잃지 않음, 꺼져 있으면 무시)
   if(tabStale!==1&&k!==null&&e.newValue!==null&&(adPause||adReq||adOffer()||!document.hidden&&(tabStale===2||state==='holding'||state==='ghost'))&&(TAB_TAKE[k]||TAB_KEEP.includes(k))){store.seen[k]=e.newValue;const d=(+e.newValue||0)-(+e.oldValue||0);
@@ -2008,13 +2093,14 @@ function quizStep(i,sc){
   showCard();const shownAt=performance.now(); // 같은 자리에 다음 문제가 뜨니 두 번 탭이 다음 문제까지 답하지 않게
   card.querySelectorAll('.opts button').forEach(b=>b.onclick=()=>{if(performance.now()-shownAt<300)return;au();beep(660,.05,'sine',.04);sc[opts[+b.dataset.j][1]]++;quizStep(i+1,sc);});
 }
-function setProfile(k){profile=k;store.set('shg_profile',k);const T=TYPES[k];tierSel=k==='lion'&&rankOf(xp)<2?'theme':T.tier;store.set('shg_tier',tierSel);offers=makeOffers();paintTop();paintPickers();paintQuote();renderBook();buildChartIdle();setBtn();return T;}
+function setProfile(k){profile=k;store.set('shg_profile',k);petStart(k);const T=TYPES[k];tierSel=k==='lion'&&rankOf(xp)<2?'theme':T.tier;store.set('shg_tier',tierSel);offers=makeOffers();paintTop();paintPickers();paintQuote();renderBook();buildChartIdle();setBtn();return T;}
 function quizResult(sc){
   const k=Object.keys(sc).reduce((a,b)=>sc[b]>sc[a]?b:a);
-  const T=setProfile(k);tipSet('quiz'); // 테스트를 한 사람에겐 나중에 다시 권하지 않음
+  const f=!tipGot('quiz'),T=setProfile(k);tipSet('quiz'); // 테스트를 한 사람에겐 나중에 다시 권하지 않음
+  const pj=f&&!!pet&&!pet.own[k];if(pj){petMod(p=>{if(!p.own[k])p.own[k]={xp:0};p.nw=1;});if(SET.chars)imgGet(chS(k,0));} // 바로 시작한 뒤 처음 한 테스트면 성향 동물이 아기 친구로 합류 (꾸밈 전용 · 다시 하기로는 안 늘어남, 파트너는 그대로)
   card.innerHTML='<div class="sub">당신의 투자 성향은</div><div class="emo">'+T.e+'</div><div class="grade gd">'+T.n+'</div><div class="sub">'+T.d+'</div><div class="perk">특전 · '+T.perk+'</div>'+
-    '<div class="sub">추천 종목: '+TIERS[tierSel].label+'</div><div class="btns"><button class="pri" id="qGo" type="button">'+(tutDone?'게임으로':'튜토리얼 시작')+'</button></div>';
-  bdNext={k:'happy',id:k};showCard();sfx.up();burst(innerWidth/2,innerHeight*.45,40);const shownAt=performance.now(); // 마지막 답을 두 번 탭해도 결과를 못 보고 넘어가지 않게
+    '<div class="sub">추천 종목: '+TIERS[tierSel].label+'</div>'+(pet&&pet.sel!==k?'<div class="sub">🐾 '+(pj?'<b>'+CHARS[k]+'</b> 아기가 친구로 합류! ':'')+'파트너는 <b>'+CHARS[pet.sel]+'</b> 그대로'+(pet.own[k]?' · 기록 탭에서 바꿀 수 있어요':' · '+CHARS[k]+' 합류 조건 '+petCond(k))+'</div>':'')+'<div class="btns"><button class="pri" id="qGo" type="button">'+(tutDone?'게임으로':'튜토리얼 시작')+'</button></div>';
+  bdNext={k:'happy',id:k,s:1};showCard();sfx.up();burst(innerWidth/2,innerHeight*.45,40);const shownAt=performance.now(); // 마지막 답을 두 번 탭해도 결과를 못 보고 넘어가지 않게
   $('qGo').onclick=()=>{if(performance.now()-shownAt<300)return;card.hidden=true;if(!tutDone)coachReady();};
 }
 let coachAt=null; // 화면 크기·글꼴이 바뀌면 말풍선 위치를 다시 잡음
@@ -2039,7 +2125,7 @@ function nudge(){ // 판이 끝난 뒤: 첫 세션에 한해 다음 할 일을 �
   if(!tutDone||state!=='result'||card.hidden||(stats.rounds||0)>=50)return;
   if(profile==='squirrel'&&stats.rounds>=6&&!tipGot('quiz')&&!tipGot('quizAsk')&&!card.querySelector('#again,.opts')){let qb=card.querySelector('.btns');if(!qb){card.insertAdjacentHTML('beforeend','<div class="btns" style="flex-wrap:wrap"></div>');qb=card.lastElementChild;} // 크레이지게임즈판 작은 익절 카드는 공유 버튼 줄이 없음 → 줄을 만들어서 넣기
     tipSet('quizAsk');qb.insertAdjacentHTML('afterbegin',icH('<button type="button" id="qOffer">🧪 내 투자 성향 찾고 특전 받기</button>'));$('qOffer').onclick=()=>{if(state==='result'&&curTab==='trade')startQuiz();};return;} // 바로 시작한 사람(기본 다람쥐)에게만
-  const rr=run;setTimeout(()=>{if(run!==rr||state!=='result'||curTab!=='trade'||card.hidden||!$('modal').hidden||!$('sheet').hidden||!$('coach').hidden)return;
+  const rr=run;setTimeout(()=>{if(run!==rr||state!=='result'||curTab!=='trade'||card.hidden||!$('modal').hidden||!$('sheet').hidden||!$('coach').hidden||card.querySelector('#petGo'))return; // 파트너 카드로 바뀌었으면 안내는 다음 결과 카드로
     const ri=rankOf(xp),it=Object.entries(ITEMS).find(([k,v])=>ri>=v.lv&&!tipGot('it_'+k)),tb=n=>document.querySelector('#tabs [data-tab="'+n+'"]');let t=null;
     if(it)t=['it_'+it[0],'🆕 새 아이템 <b>'+it[1].name+'</b> · '+it[1].desc+'<br>아래 칩을 탭해서 켜고 매수해 보세요',$('items')];
     else if(spFree()>=2&&!tipGot('sp'))t=['sp','🌳 쓰지 않은 SP <b>'+spFree()+'</b> · 이 버튼을 탭해서 스킬을 골라 보세요',$('spBtn'),'below'];
@@ -2058,7 +2144,7 @@ function tutEnd(won){
   if(won){
     tutDone=true;tutFail=0;store.set('shg_tut',1);offers=makeOffers();const firstTut=!!store.get('shg_tutBonus',0);if(firstTut){balance+=500000;store.set('shg_tutBonus',0);}
     card.innerHTML=tw('<div class="grade gd">튜토리얼 완료 🎉</div>'+(firstTut?'<div class="big up">+500,000원 보너스</div>':'<div class="sub">연습 모드라 보너스는 처음 한 번만 받아요.</div>')+
-      '<ul><li>폭락 시점은 매판 랜덤이에요.</li><li>⚠️ 악재 뉴스와 빨라지는 심장 소리를 보고 판단하세요. 악재 중엔 개미털기도 있어요.</li><li>계급이 오르면 아이템이 하나씩 열려요.</li><li>📋 일일 미션을 깨면 큰 보상이 있어요.</li></ul>'+
+      '<ul><li>폭락 시점은 매판 랜덤이에요.</li><li>⚠️ 악재 뉴스와 빨라지는 심장 소리를 보고 판단하세요. 악재 중엔 개미털기도 있어요.</li><li>계급이 오르면 아이템이 하나씩 열려요.</li><li>📋 일일 미션을 깨면 큰 보상이 있어요.</li>'+(pet?'<li>🐾 내 파트너 <b>'+CHARS[pet.sel]+'</b> · 판마다 친밀도가 쌓여 아기 → 어른 → 전설로 자라요 (기록 탭)</li>':'')+'</ul>'+
       '<div class="sub">이제 진짜 시작! 버튼을 눌러 매수해 보세요.</div>');
     burst(innerWidth/2,innerHeight*.4,60);sfx.up();
   }else{
@@ -2132,7 +2218,7 @@ function tab(name,keep){if(!keep&&tabNow())return;
   curTab=name;if(name==='trade')unOver();document.querySelectorAll('#tabs button').forEach(b=>b.setAttribute('aria-current',b.dataset.tab===name?'page':'false'));
   app.classList.toggle('pgopen',name!=='trade'); // 페이지에선 탭바를 화면 아래 고정, 거래 카드는 숨김
   if(name!=='trade')$('sheet').hidden=true;syncInert(); // 종목 창은 거래 화면 전용
-  const pg=$('page');
+  const pg=$('page');if(name==='record'&&pet&&pet.nw)petMod(p=>p.nw=0); // 기록 탭을 열면 새 소식 점을 끔
   if(name==='trade'){pg.hidden=true;paintPickers();fitCard();placeToast();if(!tutDone&&profile&&card.hidden&&$('modal').hidden&&(state==='ready'||state==='result'))coachReady();return;}
   if(!card.hidden&&card.querySelector('[data-close]')&&!card.querySelector('#adWin,#adLoss'))card.hidden=true;hideCoach(); // 닫을 수 있는 결과 카드는 닫고 (광고 보상 버튼이 남은 카드는 숨기기만), 바닥·퀴즈 카드는 거래 탭에 돌아오면 다시 보임
   pg.innerHTML=icH('<div>'+(name==='skill'?pageSkill():name==='shop'?pageShop():name==='invest'?pageInvest():name==='mission'?pageMission():name==='record'?pageRecord():pageSet())+'</div>',1);
@@ -2368,7 +2454,7 @@ function chalStart(){if(!tutDone){toast('튜토리얼을 먼저 끝내세요');r
   chal={day:dayNum(),pts:chalPoints(),i:0,score:0,res:[],id:Date.now()+'-'+Math.floor(Math.random()*1e6)};store.set('shg_chalRun',chal);store.set('shg_chalMax',Math.max(+store.get('shg_chalMax',0)||0,chal.day));if(state==='over'&&debt<=debtLimit())resetView();if(state!=='holding'&&state!=='ghost'){offers=makeOffers();if(!run){buildChartIdle();paintQuote();renderBook();}}if(!card.querySelector('#adWin,#adLoss'))card.hidden=true;tab('trade');paintTop();paintPickers();setBtn();toast('🏆 오늘의 챌린지 시작! 5판 동안 폭락 전에 파세요');}
 function chalRound(sold){
   state='result';delete chal.pend;const pt=sold?Math.round((sell.m-1)*100):-30;chal.score+=pt;chal.res.push(pt);chal.i++;
-  if(chal.i<5){store.set('shg_chalRun',chal);card.innerHTML='<div class="grade '+(pt>=0?'up':'dn')+'">'+(pt>=0?'+':'')+ptsL(pt)+'</div><div class="sub">챌린지 '+chal.i+'/5 · 누적 '+ptsL(chal.score)+'</div><div class="sub">'+(sold?'폭락 전 최고: +'+Math.round((chal.pts[chal.i-1]-1)*100).toLocaleString('ko-KR')+'%':'물렸어요 (-30점)')+'</div>';bdNext={k:pt>=0?'happy':'shock',id:run&&run.bd||bdRand()};showCard();return;}
+  if(chal.i<5){store.set('shg_chalRun',chal);card.innerHTML='<div class="grade '+(pt>=0?'up':'dn')+'">'+(pt>=0?'+':'')+ptsL(pt)+'</div><div class="sub">챌린지 '+chal.i+'/5 · 누적 '+ptsL(chal.score)+'</div><div class="sub">'+(sold?'폭락 전 최고: +'+Math.round((chal.pts[chal.i-1]-1)*100).toLocaleString('ko-KR')+'%':'물렸어요 (-30점)')+'</div>';bdNext={k:pt>=0?'happy':'shock',id:run&&run.bd||petSel()};showCard();return;}
   chalFinish();
 }
 function chalFinish(quiet){
@@ -2377,7 +2463,7 @@ function chalFinish(quiet){
   const full=sc<=0?0:Math.round(betCap(1)*Math.min(3,sc/100)/1e4)*1e4,rw=!dup?full:same?Math.max(0,full-(+pd.rw||0)):0,tot=same?(+pd.rw||0)+rw:rw;balance+=rw;const cx=!dup?gainXp(40):same?Math.round(40*xpMul()):0;if(!dup||same)store.set('shg_chalPaid',{d,id,rw:tot,q:quiet?1:0});
   if(quiet){setTimeout(()=>toast('🏆 챌린지 완료 · '+ptsL(sc)+(tot?' · '+won(tot):'')),1500);return;}
   shareText='🏆 떡상 계좌 키우기 오늘의 챌린지 '+String(d).slice(4,6)+'/'+String(d).slice(6)+' · '+ptsL(sc)+'! 이 코드 넣고 겨뤄봐 👉 SHG-'+d+'-'+sc+'-'+nick;
-  card.innerHTML='<div class="grade gd">🏆 챌린지 완료</div><div class="big '+(sc>=0?'up':'dn')+'">'+ptsL(sc)+'</div><div class="sub">'+'판별: '+chalLast(sc)+'</div>'+(tot?'<div class="sub up">보상 '+won(tot)+(cx?' · XP +'+cx:'')+'</div>':cx?'<div class="sub">XP +'+cx+'</div>':'')+'<div class="sub">결과 공유로 친구에게 코드를 보내면 친구 리그에서 겨룰 수 있어요.</div>'+shareBtn();bdNext={k:sc>=0?'happy':'shock',id:run&&run.bd||bdRand()};showCard();bindShare();
+  card.innerHTML='<div class="grade gd">🏆 챌린지 완료</div><div class="big '+(sc>=0?'up':'dn')+'">'+ptsL(sc)+'</div><div class="sub">'+'판별: '+chalLast(sc)+'</div>'+(tot?'<div class="sub up">보상 '+won(tot)+(cx?' · XP +'+cx:'')+'</div>':cx?'<div class="sub">XP +'+cx+'</div>':'')+'<div class="sub">결과 공유로 친구에게 코드를 보내면 친구 리그에서 겨룰 수 있어요.</div>'+shareBtn();bdNext={k:sc>=0?'happy':'shock',id:run&&run.bd||petSel()};showCard();bindShare();
 }
 const chalLast=sc=>sc>=300?'전설의 단타':sc>=150?'고수':sc>=50?'선방':sc>=0?'본전치기':'물림 파티';
 function chalHtml(){lgFix();const today=dayNum(),played=store.get('shg_chalDay',0)>=today,myT=league.me[today];
@@ -2405,7 +2491,7 @@ function pageMission(){ensureDaily();
 const histName=h=>{if(h.ni==null||h.ni<0)return h.n;if(h.k==='boss'){const bi=bossInfo(h.ni);return bi.B.e+' '+bi.B.n+' Lv.'+(bi.lv+1);}const n=TIERS[h.k]&&TIERS[h.k].names[h.ni];return n?(Array.isArray(n)?n[0]:n):h.n;}; // 저장은 번호로, 표시는 지금 언어로
 function pageRecord(){
   const wr=stats.rounds?Math.round(stats.wins/stats.rounds*100):0,T=profile&&TYPES[profile];
-  return '<h2>📊 기록</h2>'+roomHtml()+(T?'<div class="pan" style="padding:12px 14px"><div class="typecard"><i>'+T.e+'</i><div><b>'+T.n+'</b><br><small class="mu">'+T.perk+' · '+RANKS[rankOf(xp)][1]+' · '+xp.toLocaleString('ko-KR')+' XP</small></div></div>'+(tipGot('quiz')?'':'<button class="setbtn ghost" type="button" id="retake" style="width:100%;margin-top:10px">🧪 투자 성향 테스트 (5문항)</button>')+'</div>':'')+ // 테스트를 안 한 사람은 기록 탭에서 바로 (설정의 다시 하기와 같은 동작)
+  return '<h2>📊 기록</h2>'+petPanel()+roomHtml()+(T?'<div class="pan" style="padding:12px 14px"><div class="typecard"><i>'+T.e+'</i><div><b>'+T.n+'</b><br><small class="mu">'+T.perk+' · '+RANKS[rankOf(xp)][1]+' · '+xp.toLocaleString('ko-KR')+' XP</small></div></div>'+(tipGot('quiz')?'':'<button class="setbtn ghost" type="button" id="retake" style="width:100%;margin-top:10px">🧪 투자 성향 테스트 (5문항)</button>')+'</div>':'')+ // 테스트를 안 한 사람은 기록 탭에서 바로 (설정의 다시 하기와 같은 동작)
    '<h3>내 자산</h3><div class="tiles">'+[['현재 자산',wonS(balance)],['투자 평가금',wonS(invTotal())],['빚',debt?'-'+wonS(debt):'없음'],['순자산',swS(balance+invTotal()-debt)],['컬렉션',col.length+' / '+COL.length],['신용등급',crS(credit)+(credit>=8?' 😱':credit<=3?' 😎':'')],['다음 대출',canLoan()?wonS(loanAmt()):'불가'],['빚 한도',wonS(debtLimit())]].map(([k,v])=>`<div class="tile"><small>${k}</small><b>${v}</b></div>`).join('')+'</div>'+
    (()=>{const nw=balance+invTotal()-debt,need=PRES_NEED();return '<h3>🔁 은퇴 · 환생 '+(pres?'⭐'+pres:'')+'</h3><div class="pan" style="padding:12px 14px"><p class="lead" style="margin:0 0 8px">순자산 <b>'+wonS(need)+'</b>을 넘기면 은퇴할 수 있어요. 돈·투자·장비·소모품·빚은 사라지고, <b>레벨·스킬·업적·컬렉션은 유지</b>돼요. 환생할 때마다 <b>익절 수익 +10%, SP +2</b> 영구 보너스.</p><div class="xpbar"><u style="width:'+Math.max(0,Math.min(100,nw/need*100))+'%"></u></div><p class="mu" style="font-size:12px;margin:4px 0 8px">현재 순자산 '+swS(nw)+' · 현재 보너스 익절 +'+pres*10+'%</p><button class="setbtn" type="button" id="prestige" style="width:100%"'+(nw>=need?'':' disabled')+'>🔁 은퇴하고 '+(pres+2)+'회차 시작</button></div>';})()+
    '<h3>통산 성적</h3><div class="tiles">'+
@@ -2621,6 +2707,7 @@ function pageSet(){
 function bindPage(name){
   const pg=$('page');
   chalBind(pg);seasonBind(pg);decorBind(pg);premBind(pg);
+  pg.querySelectorAll('[data-pet]').forEach(b=>b.onclick=()=>{const id=b.dataset.pet;if(!pet||!pet.own[id]||pet.sel===id)return;petMod(p=>{if(p.own[id])p.sel=id;});petLoad(id);toast('🐾 새 파트너 · '+CHARS[id]+(state==='holding'||state==='ghost'?' · 다음 판부터':''));rerender('record');}); // 파트너 바꾸기 (친밀도는 동물마다 따로 남음)
   pg.querySelectorAll('[data-up]').forEach(b=>b.onclick=()=>{const id=b.dataset.up;if(spFree()>=costOf(skl(id))&&skOnce()){sk[id]=skl(id)+1;store.set('shg_sk',sk);sfx.up();toast('🌳 '+SKILLS.find(x=>x.id===id).n+' Lv.'+sk[id]);paintTop();rerender('skill');}});
   pg.querySelectorAll('[data-buy]').forEach(b=>b.onclick=()=>{const c=CONSUM.find(x=>x.id===b.dataset.buy),pr=cPrice(c);if(balance<pr||!once())return;balance-=pr;inv[c.id]=(inv[c.id]||0)+1;store.set('shg_inv',inv);sfx.sell();toast(c.e+' '+c.n+' 구매 완료');paintTop();rerender('shop');});
   {const ai=pg.querySelector('#adItem');if(ai)ai.onclick=()=>{if(adFull('item'))return ai.remove();ai.disabled=true;rewardAd('freeitem',()=>{if(ai.dataset.paid)return;if(adFull('item'))return ai.remove();ai.dataset.paid=1;adUse('item');const c=pick(CONSUM);inv[c.id]=(inv[c.id]||0)+1;store.set('shg_inv',inv);toast('📺 '+c.e+' '+c.n+' 1개 받았어요');sfx.up();if(curTab==='shop')rerender('shop');else paintTop();});setTimeout(()=>{if(ai.isConnected)ai.disabled=false;},3000);};}
@@ -2653,7 +2740,7 @@ function bindPage(name){
     try{if(!code.startsWith('SHG1:'))throw 0;const d=JSON.parse(decodeURIComponent(escape(atob(code.slice(5)))));if(!d||!d.shg_bal)throw 0;
       const A=['shg_ach','shg_col'],O=['shg_inv','shg_armed','shg_gear','shg_inv2','shg_sk','shg_achc','shg_decor','shg_adc','shg_set','shg_stats','shg_league','shg_season'],N=['shg_bal','shg_xp','shg_debt','shg_credit','shg_pres','shg_best','shg_streak','shg_pct','shg_ipct'],isO=v=>!!v&&typeof v==='object'&&!Array.isArray(v),K=k=>/^shg_\w+$/.test(k); // 지우기 전에 값 모양부터 검사 (하나라도 이상하면 지금 기록은 그대로 두고 거부)
       for(const k in d){if(!K(k)||k.startsWith('shg_prem'))continue;if(typeof d[k]!=='string')throw 0;const v=JSON.parse(d[k]);
-        if(A.includes(k)&&!Array.isArray(v)||O.includes(k)&&!isO(v)||N.includes(k)&&v!==null&&(typeof v==='object'||!isFinite(v))||k==='shg_season'&&!Array.isArray(v.got)||(k==='shg_daily'||k==='shg_weekly')&&v!==null&&!(isO(v)&&Array.isArray(v.ids))||k==='shg_profile'&&v!==null&&!Object.prototype.hasOwnProperty.call(TYPES,v)||k==='shg_league'&&v.me!=null&&!isO(v.me))throw 0;}
+        if(A.includes(k)&&!Array.isArray(v)||O.includes(k)&&!isO(v)||N.includes(k)&&v!==null&&(typeof v==='object'||!isFinite(v))||k==='shg_season'&&!Array.isArray(v.got)||(k==='shg_daily'||k==='shg_weekly')&&v!==null&&!(isO(v)&&Array.isArray(v.ids))||k==='shg_profile'&&v!==null&&!Object.prototype.hasOwnProperty.call(TYPES,v)||k==='shg_league'&&v.me!=null&&!isO(v.me)||k==='shg_pet'&&v!==null&&!petFix(v))throw 0;}
       const sp=x=>{try{return typeof x==='string'?JSON.parse(x):null}catch(e){return null}},pm=premRead(),eb=premEqFix(sp(d.shg_premEq)),eq=eb.th||eb.ttl?JSON.stringify(eb):localStorage.getItem('shg_premEq'); // 프리미엄 키는 검사로 거부하지 않음: 구매 영수증은 백업에서 가져오지 않고 이 기기 것 유지 (복사·위조 방지), 장착은 백업 값 (가진 것만 적용)
       store.off=1;Object.keys(localStorage).filter(k=>k.startsWith('shg_')).forEach(k=>localStorage.removeItem(k));for(const k in d)if(K(k)&&!k.startsWith('shg_prem'))localStorage.setItem(k,d[k]);if(pm.length)localStorage.setItem('shg_prem',JSON.stringify(pm));if(eq!==null)localStorage.setItem('shg_premEq',eq);toast('📥 불러오는 중…');setTimeout(()=>location.reload(),500);}
     catch(e){toast('백업 코드가 올바르지 않아요');}},'');
@@ -2713,13 +2800,14 @@ function frame(ts){
 if(chal&&chal.pend!=null){const pt=chal.pend;delete chal.pend;chal.score+=pt;chal.res.push(pt);chal.i++;if(chal.i<5)store.set('shg_chalRun',chal);else chalFinish(1);} // 하다 만 챌린지 판은 판 기록(팔았으면 그 점수, 아니면 -30)으로 확정
 if(streak>=5){app.classList.add('fever');$('fever').hidden=false;} // 새로고침해도 연속 익절·FEVER 이어감
 {const tk=$('talk'),u=ASSET+'ui/robot.webp',f=()=>{tk.style.setProperty('--tkic','url("'+u+'")');tk.dataset.l=tk.dataset.l.replace(/^🤖\uFE0F?\s*/,'');tk.classList.add('tkic');};if(imgGet(u,f)===1)f();} // 가상 채팅 표시(::before 글)의 🤖 → 그림 (못 받으면 이모지 그대로)
-if(PREM_ON)premApply(1);offers=makeOffers();buildChartIdle();paintTop();paintPickers();paintQuote();renderBook();setBtn();if(spFree()<0){sk={};store.set('shg_sk',sk);setTimeout(()=>toast('스킬 트리가 개편되어 SP를 전액 돌려드렸어요'),1500);}paintTop();boot();talk('idle');talk('idle');
+if(PREM_ON)premApply(1);offers=makeOffers();buildChartIdle();paintTop();paintPickers();paintQuote();renderBook();setBtn();if(spFree()<0){sk={};store.set('shg_sk',sk);setTimeout(()=>toast('스킬 트리가 개편되어 SP를 전액 돌려드렸어요'),1500);}paintTop();if(!pet&&profile)petStart(profile);petCheck();petDot();boot();setTimeout(()=>petCue(),600);talk('idle');talk('idle');
 try{navigator.clearAppBadge&&navigator.clearAppBadge()}catch(e){}
 if(/selftest/.test(location.search)){ // 자동 테스트 전용 (일반 플레이엔 영향 없음)
   window.__t={start,release,reenter,declareBankrupt,takeLoan,repay,tab,news,
     get s(){return {state,balance,debt,credit,cur,crashed,re:!!(run&&run.re),inv:invTotal(),xp,pres,tut:tutDone,streak,ready:performance.now()>=readyAt&&!(adHold&&state==='result'&&!card.querySelector('#adWin,#adLoss,#adRevive')),curTab,modal:!$('modal').hidden,card:!card.hidden,col:col.length,net:stats.net,rounds:stats.rounds,hist:stats.hist.length}},
-    ptCheer,set ptNext(v){ptNext=v;},get ptZone(){return ptCutX<1e9?ptZone().map(v=>Math.round(v*CK)):null;}, // 파트너 확인용: 응원 띠 한 번·다음 판 동물 지정·지금 닿는 자리(차트 CSS 좌표)
-    get pt(){const e=$('pt'),i=e.querySelector('i'),r=e.getBoundingClientRect();return {on:ptOn,id:ptId,k:ptK,b:ptB,next:ptNext,bd:run&&run.bd,hidden:e.hidden,vis:getComputedStyle(e).visibility,cls:e.className,box:[r.left,r.top,r.width,r.height].map(Math.round),bg:i?i.style.backgroundImage:'',anim:i?i.style.animation:'',cut:ptCutX};},
+    ptCheer,get pet(){return pet?JSON.parse(JSON.stringify(pet)):null;},petAdd(n,id){id=id||petSel();petGain(id,n);petCheck();return petSt(id);},petCue,startQuiz,get adDue(){return adDue},get xpMul(){return xpMul()},get petBonus(){return pet?PET_XP[petBest()]:0}, // 캐릭터 키우기 확인용: 읽기 전용 사본 · 친밀도 더하기(성장 카드 대기열까지) · 밀린 카드 띄우기
+    get ptZone(){return ptCutX<1e9?ptZone().map(v=>Math.round(v*CK)):null;}, // 파트너 확인용: 응원 띠 한 번·다음 판 동물 지정·지금 닿는 자리(차트 CSS 좌표)
+    get pt(){const e=$('pt'),i=e.querySelector('i'),r=e.getBoundingClientRect();return {on:ptOn,id:ptId,s:ptS,k:ptK,b:ptB,sel:petSel(),bd:run&&run.bd,hidden:e.hidden,vis:getComputedStyle(e).visibility,cls:e.className,box:[r.left,r.top,r.width,r.height].map(Math.round),bg:i?i.style.backgroundImage:'',anim:i?i.style.animation:'',cut:ptCutX};},
     set allin(v){allin=v},set lev(v){levSel=v},set pct(v){betPct=v},set sel(v){Object.assign(sel,v)},closeCard(){card.hidden=true;$('modal').hidden=true;},
     prem:{on:PREM_ON,pay:PAY.id,grant:grantPremium,equip:premEquip,get own(){return prem.slice()},get eq(){return Object.assign({},premEq)},get theme(){return CP===C?null:premEq.th}},
     ads:{get on(){return adsOn()},get cg(){return {on:CG.on,noAds:CG.noAds,done:CG.done}},off:adsOff}};

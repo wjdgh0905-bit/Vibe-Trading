@@ -37,6 +37,7 @@
       askFlash: "See the flash sheet",
       askIdea: function (name, id) { return "I'd like something in the style of the \u201c" + name + "\u201d piece in your gallery (" + id + "): "; },
       required: "Please fill this in.",
+      adult: "Melange only tattoos adults. Photo ID is checked on the day.",
       emailBad: "That email doesn't look right.",
       contact: "Add an email or Instagram handle so we can reply.",
       sending: "Sending…",
@@ -53,6 +54,7 @@
       askFlash: "플래시 도안 보기",
       askIdea: function (name, id) { return "갤러리의 \u300c" + name + "\u300d(" + id + ") 같은 스타일로 받고 싶어요: "; },
       required: "이 항목을 입력해주세요.",
+      adult: "성인만 작업해요. 작업 당일 신분증을 확인해요.",
       emailBad: "이메일 주소를 다시 확인해주세요.",
       contact: "답장을 받을 이메일이나 인스타그램 아이디를 적어주세요.",
       sending: "보내는 중…",
@@ -370,7 +372,8 @@
       e.preventDefault();
       var v = function (n) { return form.elements[n].value.trim(); };
       var ok = true;
-      ["name", "city", "idea"].forEach(function (n) { ok = setErr(n, v(n) ? "" : TXT.required) && ok; });
+      ["name", "idea"].forEach(function (n) { ok = setErr(n, v(n) ? "" : TXT.required) && ok; });
+      if (form.elements.adult) ok = setErr("adult", form.elements.adult.checked ? "" : TXT.adult) && ok;
       var email = v("email"), ig = v("instagram");
       if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) ok = setErr("email", TXT.emailBad) && ok;
       else if (!email && !ig) { setErr("email", TXT.contact); ok = false; }
@@ -648,7 +651,7 @@
       pop.hidden = false;
       document.body.style.overflow = "hidden";
       requestAnimationFrame(function () { pop.classList.add("open"); });
-      $(".pop-go", pop).focus({ preventScroll: true });
+      var popH = $("#pop-h", pop); popH.tabIndex = -1; popH.focus({ preventScroll: true });
       document.addEventListener("keydown", onKey);
     }, 300);
   })();

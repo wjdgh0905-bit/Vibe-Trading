@@ -12,7 +12,7 @@ styles.css        # shared styles — cobalt "blue ink on paper"
 gallery.js        # gallery data (subject, placement and alt text per photo)
 script.js         # behaviour: gallery filters/lightbox, booking form, guest spots, motion
 assets/work/      # gallery photos as WebP: <id>-480.webp, <id>-720.webp and <id>-1080.webp
-assets/gallery/   # original JPGs (source files, not loaded by the pages)
+assets/gallery/   # original JPGs (source files only; netlify.toml answers 404 for them, so the site never serves them)
 assets/og/        # share images (1200×630) shown when a page link is posted; one per page and language
 sitemap.xml       # every page (hreflang pairs where a Korean version exists), plus all gallery images
 ```
@@ -90,6 +90,14 @@ typing before it opens (scrolling doesn't count).
 Melbourne entry in `script.js` to the same date.
 The `/melbourne/` page then shows a "this call has closed" note instead of the form.
 
+## Privacy policy
+
+`privacy/index.html` and `ko/privacy/index.html` list, section by section, what's collected and why,
+how long it's kept, the services it goes to (all in the US) and the cookies/tracking tools, as Korea's
+privacy law (개인정보 보호법 Art. 30) asks. When you add a new service or tracker, or change how long
+you keep inquiries, update both pages (and the booking form line if the 1-year rule changes) and
+the effective date at the top.
+
 ## Share images
 
 Each page names its own share image (`og:image`, with its size and alt text) in `assets/og/`:
@@ -106,6 +114,8 @@ and the Meta Pixel (`957190954111173`). A sent booking or model form also record
 ## Booking form
 
 The inquiry form posts to Formspree (`FORMSPREE_ENDPOINT` in `script.js`, currently
-`https://formspree.io/f/mwlkpjyw`). Name, city and idea are required, plus an email or
-Instagram handle to reply to. Submissions arrive by email from Formspree, with the reply-to
+`https://formspree.io/f/mwlkpjyw`). Name and idea are required, plus an email or
+Instagram handle to reply to, and the adults-only box (19+ in Korea, 18+ at guest spots abroad).
+City is optional. The line under the fields repeats the privacy policy's retention rule
+(inquiries that don't book are deleted a year after the last message). Submissions arrive by email from Formspree, with the reply-to
 set to the visitor's email when they give one.

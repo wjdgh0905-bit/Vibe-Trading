@@ -1,5 +1,5 @@
-// 오프라인 지원: 게임 파일은 설치 시 캐시, 글꼴은 처음 받을 때 캐시
-const CACHE = 'sanghanga-v54';
+// 오프라인 지원: 게임 파일은 설치 시 캐시, 그림·글꼴(같은 사이트 fonts/)은 처음 받을 때 캐시
+const CACHE = 'sanghanga-v55';
 const CORE = ['./', 'index.html', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png'];
 
 self.addEventListener('install', e => {
@@ -20,10 +20,10 @@ self.addEventListener('fetch', e => {
       .catch(() => caches.match(e.request.url.split('?')[0]).then(h => h || caches.match('./'))));
     return;
   }
-  // 나머지(아이콘, 글꼴): 캐시 우선
+  // 나머지(그림, 글꼴): 캐시 우선
   e.respondWith(caches.match(e.request).then(hit => hit || fetch(e.request).then(r => {
     if (r.ok || r.type === 'opaque') {
-      if (url.origin === location.origin || url.hostname.endsWith('googleapis.com') || url.hostname.endsWith('gstatic.com')) {
+      if (url.origin === location.origin) {
         const copy = r.clone(); caches.open(CACHE).then(c => c.put(e.request, copy));
       }
     }

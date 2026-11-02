@@ -47,9 +47,9 @@ if cg:
   s,n=re.subn(r"onCG=/crazygames/\.test\(location\.hostname\)\|\|[^;]*;","onCG=true;",s); assert n==1,n
   s=re.sub(r'<meta property="og:[^>]*>\n?','',s); s=re.sub(r'<meta name="twitter:card"[^>]*>\n?','',s)
 # 5) 설정의 개인정보·백업 안내를 포털 빌드에 맞게 (애드센스 없음 · 서비스워커/홈 화면 추가 없음 · PC 플레이어도 많음)
-R("Fonts load from Google Fonts and ads from Google AdSense (the CrazyGames SDK on CrazyGames), and the ad provider may use cookies.",
-  "Fonts load from Google Fonts. Ads are provided by CrazyGames, and the ad provider may use cookies." if kind=='crazygames' else
-  "Fonts load from Google Fonts. This version shows no ads in the game. CrazyGames may use cookies on its own site." if kind=='crazygames-basic' else "Fonts load from Google Fonts. This version has no ads.")
+R("Ads load from Google AdSense (the CrazyGames SDK on CrazyGames), and the ad provider may use cookies.",
+  "Ads are provided by CrazyGames, and the ad provider may use cookies." if kind=='crazygames' else
+  "This version shows no ads in the game. CrazyGames may use cookies on its own site." if kind=='crazygames-basic' else "This version has no ads.") # 글꼴은 빌드 폴더 fonts/에서 (외부 글꼴 서버 없음)
 R("Your progress is saved only in this browser. Browsers can clear site data (e.g. Safari after long inactivity), so copy your backup code now and then and keep it somewhere safe. Also use it to move to another device.",
   "Your progress is saved in this browser. If you are logged in to CrazyGames, it may also be backed up to your CrazyGames account. Clearing site data can erase it, so save your backup code somewhere safe now and then. Also use it to move to another device." if cg else
   "Your progress is saved only in this browser. Clearing site data erases it, and it won’t carry over to another device, so save your backup code somewhere safe now and then.")
@@ -67,9 +67,10 @@ assert "Copy it in Settings to keep playing on another device" in s and "on a ne
 assert 'AdSense' not in s and 'Home Screen' not in s,'stale portal privacy/backup text'
 R("(LANG==='en'?'':' · NASDAQ')","''") # 영어판에서 안 쓰는 한글판 분기 정리 (실제 거래소 이름 안 남게, 영어판 종목 코드는 티커만)
 assert 'NASDAQ' not in s
-# 6) 구글 폰트 CSS가 게임 스크립트(와 SDK 요청)를 막지 않게: print로 받아 두었다가 다 오면 적용 (폰트 서버가 느리거나 막혀도 첫 화면이 바로 뜸, 글꼴은 그대로)
-GF='href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@400;500;700;900&family=JetBrains+Mono:wght@500;700;800&display=swap"'
-R('<link rel="stylesheet" '+GF+'>','<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" media="print" onload="this.media=\'all\'" '+GF+'><noscript><link rel="stylesheet" '+GF+'></noscript>')
+# 6) 글꼴: 직접 호스팅 (영어판의 ../fonts/를 빌드 폴더 안 fonts/로 · 이 페이지에 나오는 글자의 조각만 아래에서 복사) · 외부 글꼴 서버 요청 없음
+R('<link rel="stylesheet" href="../fonts/fonts.css">','<link rel="stylesheet" href="fonts/fonts.css">')
+for o in ('portrait','landscape'):R('href="../brand/intro_'+o+'_v3.webp"','href="brand/intro_'+o+'_v3.webp"') # 첫 화면 그림 미리 받기도 빌드 폴더 안 brand/로
+assert 'fonts.googleapis' not in s and 'fonts.gstatic' not in s and 'Google Fonts' not in s,'Google Fonts left in a portal build'
 # 7) 크레이지게임즈 SDK를 HTML과 같이 미리 받기 (스크립트가 나중에 같은 주소로 붙일 때 그대로 씀. crossorigin 없이 = 동적 script와 같은 요청)
 if cg:
   R('<html lang="en"><head><meta charset="utf-8">','<html lang="en"><head><meta charset="utf-8">\n<link rel="preload" as="script" href="https://sdk.crazygames.com/crazygames-sdk-v3.js">')
@@ -86,20 +87,40 @@ shutil.rmtree(out,ignore_errors=True);os.makedirs(out)
 open(out+'/index.html','w',encoding='utf-8').write(s)
 IC=S+'/assets/icons/icon-192.png';shutil.copy(IC if os.path.exists(IC) else '/home/user/Vibe-Trading/game/icon-192.png',out+'/icon-192.png') # 새 아이콘(배포 전엔 game/에 아직 옛 아이콘)이 있으면 그것으로
 for sub in ('chars','brand'): # 동물 친구 그림·타이틀 그림 (ASSET=''가 가리키는 곳)
-  src=f'{S}/assets/{sub}';fs=sorted(f for f in os.listdir(src) if f.endswith('.webp') and f!='title_ko.webp');assert fs,'no assets in '+src # 포털 빌드는 늘 영어판이라 한글 제목 그림은 안 넣음
+  src=f'{S}/assets/{sub}';fs=sorted(f for f in os.listdir(src) if f.endswith('.webp') and not f.endswith('_ko.webp'));assert fs,'no assets in '+src # 포털 빌드는 늘 영어판이라 한국판 그림(제목·빨간 봉 타이틀 그림 *_ko.webp)은 안 넣음
   os.makedirs(f'{out}/{sub}');[shutil.copy(f'{src}/{f}',f'{out}/{sub}/{f}') for f in fs]
+# 글꼴 조각: fonts.css의 unicode-range 중 이 페이지(HTML+스크립트 글)에 나오는 글자가 있는 조각만 (한글 조각은 영어판이라 빠짐) + 라이선스
+FD=S+'/assets/fonts';fcss=open(FD+'/fonts.css').read();chars={ord(c) for c in s}
+def _rng(u):
+  for part in u.split(','):
+    a,_,b=part.strip()[2:].partition('-');yield int(a,16),int(b or a,16)
+FF=[(m.group(0),re.search(r"font-family:'([^']+)'",m.group(0)).group(1),m.group(1),list(_rng(m.group(2)))) for m in re.finditer(r'@font-face\{[^}]*?src:url\(([^)]+)\)[^}]*?unicode-range:([^}]+)\}',fcss)]
+pick=set() # 브라우저처럼: 글자마다 같은 글꼴 이름의 규칙 중 뒤에 적힌 것부터 맞는 조각 하나만 받음
+for fam in {f[1] for f in FF}:
+  rules=[f for f in FF if f[1]==fam]
+  for c in chars:
+    for r in reversed(rules):
+      if any(a<=c<=b for a,b in r[3]):pick.add(r[2]);break
+keep=[f[0] for f in FF if f[2] in pick];fuse=[f[2] for f in FF if f[2] in pick]
+need_f={'inter.latin.woff2','noto.latin.woff2','gasoek.latin.woff2'}
+assert need_f<=set(fuse),('latin font slices missing',need_f-set(fuse))
+os.makedirs(out+'/fonts');fh=fcss.split('\n',1)[0]
+open(out+'/fonts/fonts.css','w').write(fh+'\n'+'\n'.join(keep)+'\n')
+for f in sorted(set(fuse)):shutil.copy(FD+'/'+f,out+'/fonts/'+f)
+shutil.copy(FD+'/OFL.txt',out+'/fonts/OFL.txt')
+assert not HG.search(open(out+'/fonts/fonts.css').read()),'Hangul in portal fonts.css'
 UI=S+'/assets/ui';ui=sorted(f for f in os.listdir(UI) if f.endswith('.webp'));assert len(ui)>=200,'ui icons missing: run design/build_ui.py' # UI 아이콘 그림 (ASSET+'ui/<id>.webp')
 os.makedirs(out+'/ui');[shutil.copy(f'{UI}/{f}',f'{out}/ui/{f}') for f in ui]
 m=re.search(r"const ICM=\{([^}]*)\}",s);assert m,'icon map ICM missing in the page';need={i for i in re.findall(r":'([a-z0-9_]+)'",m.group(1))}|set(re.findall(r"'([a-z0-9_]+)'\]",s[s.index('const ICX='):s.index('\n',s.index('const ICX='))])) # 페이지가 쓰는 그림 id (기본 표 + 뜻에 따라 고르는 표)
 assert need and need<={f[:-5] for f in ui},'icons used by the page but missing in ui/: %s'%sorted(need-{f[:-5] for f in ui})
-assert os.path.exists(out+'/chars/hamster_happy.webp') and os.path.exists(out+'/brand/title_en.webp') and os.path.exists(out+'/ui/chart_up.webp') and len(os.listdir(out+'/ui'))==len(ui),'asset copy failed'
+assert not any(f.endswith('_ko.webp') for f in os.listdir(out+'/brand')),'KO-only art in portal build';assert os.path.exists(out+'/brand/intro_landscape_v3.webp') and os.path.exists(out+'/brand/intro_portrait_v3.webp'),'title art missing';assert os.path.exists(out+'/chars/hamster_happy.webp') and os.path.exists(out+'/brand/title_en.webp') and os.path.exists(out+'/ui/chart_up.webp') and len(os.listdir(out+'/ui'))==len(ui),'asset copy failed'
 z=f'{S}/cg/stonks-tycoon-{kind}.zip'
 with zipfile.ZipFile(z,'w',zipfile.ZIP_DEFLATED) as f:
   for root,dirs,files in os.walk(out): # 하위 폴더(chars/·brand/·ui/)까지
     dirs.sort()
-    for fn in sorted(files):p=os.path.join(root,fn);f.write(p,os.path.relpath(p,out),compress_type=zipfile.ZIP_STORED if fn.endswith(('.webp','.png')) else zipfile.ZIP_DEFLATED)
-with zipfile.ZipFile(z) as f:assert 'index.html' in f.namelist() and 'ui/chart_up.webp' in f.namelist() and sum(n.startswith('ui/') for n in f.namelist())==len(ui) and 'chars/lion_shock.webp' in f.namelist() and 'brand/intro_portrait.webp' in f.namelist() and 'brand/title_ko.webp' not in f.namelist(),'zip is missing files (or has the Korean title art)'
-print(kind,'ok',os.path.getsize(out+'/index.html'),'bytes ->',z,os.path.getsize(z))
+    for fn in sorted(files):p=os.path.join(root,fn);f.write(p,os.path.relpath(p,out),compress_type=zipfile.ZIP_STORED if fn.endswith(('.webp','.png','.woff2')) else zipfile.ZIP_DEFLATED)
+with zipfile.ZipFile(z) as f:assert 'index.html' in f.namelist() and 'fonts/fonts.css' in f.namelist() and 'fonts/inter.latin.woff2' in f.namelist() and 'fonts/OFL.txt' in f.namelist() and 'ui/chart_up.webp' in f.namelist() and sum(n.startswith('ui/') for n in f.namelist())==len(ui) and 'chars/lion_shock.webp' in f.namelist() and 'brand/intro_portrait_v3.webp' in f.namelist() and 'brand/title_ko.webp' not in f.namelist(),'zip is missing files (or has the Korean title art)'
+print(kind,'ok',os.path.getsize(out+'/index.html'),'bytes ->',z,os.path.getsize(z),'· fonts',len(set(fuse)),'slices',sum(os.path.getsize(out+'/fonts/'+f) for f in set(fuse)),'bytes')
 # 9) 출시 키트(launch-kit 폴더 + stonks-tycoon-launch-kit.zip)도 방금 만든 빌드 zip·listing.md로 갱신 (예전엔 손으로 묶어서 낡은 빌드가 남았음)
 K=f'{S}/cg/launch-kit'
 if os.path.isdir(K):
@@ -112,6 +133,8 @@ if os.path.isdir(K):
     for fn in os.listdir(f'{S}/cg/cover'):
       if fn.endswith('.png'):shutil.copy(f'{S}/cg/cover/{fn}',K+'/covers/'+fn)
   if os.path.exists(f'{S}/cg/listing.md'):shutil.copy(f'{S}/cg/listing.md',K+'/listing.md')
+  for nm in ('stonks-tycoon-preview-landscape.mp4','stonks-tycoon-preview-portrait.mp4'): # 미리보기 영상도 최신 cg/video로 (표지 0.5초가 바뀌면 같이)
+    if os.path.exists(f'{S}/cg/video/{nm}'):os.makedirs(K+'/video',exist_ok=True);shutil.copy(f'{S}/cg/video/{nm}',K+'/video/'+nm)
   kz=f'{S}/cg/stonks-tycoon-launch-kit.zip';tmp=kz+'.tmp'
   with zipfile.ZipFile(tmp,'w',zipfile.ZIP_DEFLATED) as f:
     for root,dirs,files in os.walk(K):

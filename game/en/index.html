@@ -17,7 +17,7 @@
 <meta property="og:url" content="https://melange-lab.github.io/en/">
 <meta name="twitter:card" content="summary_large_image">
 <style>*,*::before,*::after{box-sizing:border-box}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);height:100%}body{margin:0;font-size:14px;overscroll-behavior:none}[hidden]{display:none!important}</style>
-<script async data-ad-frequency-hint="120s" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2213068202184499" crossorigin="anonymous"></script>
+<meta name="google-adsense-account" content="ca-pub-2213068202184499">
 </head><body>
 <title>Stonks Tycoon</title>
 <meta name="claude:viewport-fit-sides" content="cover">
@@ -514,6 +514,7 @@ html[lang] #hold.boss:not(.wait){background:linear-gradient(90deg,#5a0a18,#a3122
 .room.s0 .deco,.room.s1 .deco{filter:saturate(.7)}
 .rprog{position:absolute;left:0;right:0;bottom:0;height:3px;background:rgba(255,255,255,.15)}.rprog u{display:block;height:100%;background:var(--gold)}
 .rlabel{bottom:3px!important}.rlabel b{color:var(--gold);font-weight:800}
+.rnote{margin:8px 0 0;padding:8px 10px;border-radius:var(--r-sm);background:var(--panel2);border:1px solid var(--hair);font:500 var(--t-meta)/1.45 var(--mix);color:var(--fg2)} 
 .room.iso{aspect-ratio:4/3;background:#141822;border:1px solid var(--hair2)}
 @supports not (aspect-ratio:1){.room,.room.iso{height:0;padding-top:75%}} 
 .roomcv{position:absolute;top:0;right:0;bottom:0;left:0;width:100%;height:100%} 
@@ -1047,6 +1048,18 @@ header h1{display:none}
 .card button.opt:disabled{opacity:.5}
 .card .owarn{font:500 var(--t-meta)/1.4 var(--ui);color:var(--danger-t);margin-top:6px}
 
+.card .szb{margin-top:10px;padding:10px 12px;border-radius:var(--r-md);background:var(--panel2);border:1px solid var(--hair)}
+.card .szt{margin:0;font:700 var(--t-chip)/1.35 var(--ui);color:var(--fg)}.card .szt.wn{color:var(--danger-t)}
+.card .szl{gap:5px;margin-top:6px;max-height:min(157px,22vh);overflow:auto;overscroll-behavior:contain} 
+.card.obs #overBtns{position:sticky;bottom:-12px;z-index:1;margin-top:6px;padding:14px 0 2px;background:linear-gradient(transparent,var(--cbg,#141b29) 14px)} 
+.items .ihn{grid-column:1/-1;margin:-3px 0 -4px;font:500 var(--t-meta)/1.15 var(--ui);color:var(--muted);text-align:center} 
+@media (max-height:700px) and (max-width:759px){.items .ihn{display:none}} 
+.card .szl .rc{height:24px;background:var(--panel);max-width:100%;overflow:hidden;text-overflow:ellipsis}
+.card .szk,.card .szn{margin:4px 0 0;font:500 var(--t-meta)/1.45 var(--mix);color:var(--fg2)}
+.card .szl+.szt,.card .szn+.szt{margin-top:10px}
+.card .onote{margin:-2px 0 0;padding:0 4px;font:500 var(--t-meta)/1.4 var(--mix);color:var(--muted)}.card .onote .wn{color:var(--danger-t);font-weight:700}
+.card .szb+.tip{margin-top:8px}
+
 .card .todo{display:grid;grid-template-columns:repeat(var(--tn,3),minmax(0,1fr));gap:8px;margin-top:12px}
 .card .todo button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:84px;padding:8px 4px;border-radius:var(--r-md);background:var(--sheen),var(--panel2);border:1px solid var(--hair2);text-align:center;font:inherit}
 .card .todo button>i{font-style:normal;font-size:26px;line-height:32px}.card .todo button>i .ico{width:32px;height:32px;margin:0;vertical-align:0}
@@ -1203,6 +1216,7 @@ header h1{display:none}
 .dst .ico{width:16px;height:16px;margin:0;vertical-align:0}
 .pan.bank{padding:6px 14px 12px}.bank .brow{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--hair);font-size:var(--t-body)}.bank .brow b{font-family:var(--mix)}
 .bank .bbtn{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:10px}.page .bnote{margin:8px 0 0;font-size:var(--t-meta)}
+.bank .bbtn.rdb{grid-template-columns:repeat(2,minmax(0,1fr));margin-top:6px}.page .bank .rdn{margin:8px 0 0;font-size:var(--t-meta)}.page .bank .bwarn{font-size:var(--t-meta)}.page .bank .bwarn .wn{white-space:nowrap}  
 
 .pan.mis{padding:2px 14px}
 .mrow{display:grid;grid-template-columns:28px minmax(0,1fr) auto;align-items:center;column-gap:12px;min-height:52px;padding:6px 0;border-top:1px solid var(--hair)}
@@ -1493,9 +1507,10 @@ const TIERS={
 };
 const BOSSES=[{e:'👹',n:'Short Sellers'},{e:'🌑',n:'Black Monday'},{e:'🏦',n:'Rate Hike'},{e:'🎭',n:'Pump Kingpin'},{e:'⛔',n:'Circuit Breaker'},{e:'🦢',n:'Black Swan'},{e:'🐻',n:'Giant Bear'},{e:'🌪️',n:'Financial Crisis'}];
 const bossInfo=lv=>({lv,B:BOSSES[lv%BOSSES.length],target:+(1.5+.2*lv).toFixed(2)});
+const IHINT='Items & Max reset every round';
 const ITEMS={
   shield:{short:'Shield',name:'🛡️ Stop-Loss Shield',cost:.08,desc:'Crash loss −75% (min 10%)',lv:1},
-  insider:{short:'Tip',name:'🔍 Hot Tip',cost:.05,desc:'Crash warning (70%)',lv:2},
+  insider:{short:'Tip',name:'🔍 Hot Tip',cost:.05,desc:'Crash warning (70%) · 1s if real',lv:2},
   slow:{short:'Slow',name:'⏱️ Slow-Mo',cost:.06,desc:'Chart speed 0.6×',lv:3}
 };
 const RANKS=[[0,'Newbie'],[150,'Rookie'],[400,'Day Trader'],[800,'Swing Pro'],[1300,'Pro Trader'],[2000,'Full-time Trader'],[3000,'Chart Master'],[4300,'Big Shot'],[6000,'Fund Manager'],[8200,'Whale'],[11000,'Hedge Fund'],[14500,'Wall St. Wolf'],[19000,'Market God'],[25000,'Street Legend'],[33000,'The Market Itself']];
@@ -1650,6 +1665,8 @@ addEventListener('error',e=>{try{const l=JSON.parse(localStorage.getItem('shg_er
 let pres=store.get('shg_pres',0),debt=store.get('shg_debt',0),credit=store.get('shg_credit',5),betPct=store.get('shg_pct',store.get('shg_tut',0)?1:.25),levSel=1,allin=false,inv=store.get('shg_inv',{}),gear=store.get('shg_gear',{}),armed=store.get('shg_armed',{});
 const cntMap=o=>{const r={};if(o&&typeof o==='object'&&!Array.isArray(o))for(const k in o){const n=Math.floor(fin(o[k]));if(/^\w+$/.test(k)&&n>0)r[k]=Math.min(n,1e9);}return r;};
 pres=Math.max(0,Math.floor(fin(pres)));debt=Math.max(0,fin(debt));credit=Math.min(10,Math.max(1,Math.round(fin(credit))||5));if(![.1,.25,.5,1].includes(betPct))betPct=.25;if(store.get('shg_pct',null)===null)store.set('shg_pct',betPct);inv=cntMap(inv);gear=cntMap(gear);armed=cntMap(armed);
+let rdebt=Math.max(0,fin(store.get('shg_rdebt',0)));
+function netW(){return balance+invTotal()-debt-rdebt;}
 const LEVS=[[1,0],[2,1],[3,3],[5,5],[10,7],[20,9]];
 const unlOf=i=>{const u=Object.values(ITEMS).filter(it=>it.lv===i).map(it=>it.name);if(i===2)u.push('💯 Max Buy','📊 Pro View');Object.values(TIERS).filter(T=>!T.hidden&&T.lv===i).forEach(T=>u.push(T.e+' '+T.label));LEVS.filter(l=>l[1]===i&&l[0]>1).forEach(l=>u.push('⚡ Leverage '+l[0]+'×'));return u;};
 let selId='o0',state='ready',balance=store.get('shg_bal',START),streak=Math.max(0,Math.floor(+store.get('shg_streak',0)||0)),round=1,tierSel=store.get('shg_tier','theme'),sel={shield:false,insider:false,slow:false};balance=fin(balance);
@@ -2052,12 +2069,12 @@ let avaK='',avaW=0;function avaPaint(){try{const i=$('avaI'),id=petSel(),st=petS
   if(ic){i.style.backgroundPosition='';return;}const m=PTM[id],tb=st===1&&m?m[1]/288:st===0?.1:.02;i.style.backgroundPosition='50% '+(-tb*w*2.1+1).toFixed(1)+'px,0 0';}catch(e){}}
 if(window.ResizeObserver)new ResizeObserver(()=>{const w=$('avaI').clientWidth;if(w&&w!==avaW){avaW=w;avaPaint();}}).observe($('avaI'));else addEventListener('resize',()=>{avaW=0;avaPaint();});
 function paintTop(){try{checkHome()}catch(e){}
-  store.set('shg_debt',Math.ceil(debt));store.set('shg_credit',credit);
+  store.set('shg_debt',Math.ceil(debt));store.set('shg_credit',credit);store.set('shg_rdebt',Math.ceil(rdebt));
   {const d=$('debtTag');d.hidden=debt<=0;if(debt>0)d.textContent='Debt '+wonS(debt)+' · Credit '+crS(credit);}
   if(!(balance>=0))balance=0;
   store.set('shg_bal',Math.floor(balance));store.set('shg_streak',streak);
   if(balance>best){best=balance;store.set('shg_best',Math.floor(best));}
-  if(lowFlag&&balance+invTotal()-debt>=START&&state!=='holding'){lowFlag=false;stats.low=0;store.set('shg_stats',stats);unlock('comeback');}
+  if(lowFlag&&netW()>=START&&state!=='holding'){lowFlag=false;stats.low=0;store.set('shg_stats',stats);unlock('comeback');}
   animBal();
   htm($('streak'),icH(streak?(streak>=5?'<span class="gd">'+streak+(LANG==='en'?' 🔥':'× 🔥')+'</span>':streak+(LANG==='en'?'':'×')):'0'));
   $('best').textContent=wonS(Math.min(balance,stakeCap()));
@@ -2093,7 +2110,7 @@ function paintPickers(){
     (pro?'':icH(`<button class="itb${hot?' hot':''}" type="button" id="itemBtn" aria-haspopup="dialog" aria-pressed="${nOn>0}" ${lock?'disabled':''}><i>🧰</i>${levSel>1&&ri>=LEVS[1][1]?'⚡'+levSel+'×':'Items'+(nU?' '+nU:'')}${nOn?'<em>'+nOn+'</em>':''}</button>`));
   $('items').innerHTML=icH(Object.entries(ITEMS).map(([k,it])=>{const lk=ri<it.lv;if(lk)sel[k]=false;return `<button class="chip ic${lk?' lk':''}" type="button" data-i="${k}"${lk?' aria-label="'+it.short+' · locked, opens at '+RANKS[it.lv][1]+' rank"':''} aria-pressed="${sel[k]}" ${lock||lk?'disabled':''} title="${it.desc}"><i>${it.name.split(' ')[0]}</i><b>${it.short}</b><small>${lk?RANKS[it.lv][1]:(it.cost?wonX(itemCost(k,(allin&&ri>=2)?maxStake(1):Math.min(balance,maxStake(0))*betPct)):'Free')}</small></button>`}).join('')+
     `<button class="chip ic ${levSel>=5?'hot':''}${ri<LEVS[1][1]?' lk':''}" type="button" id="levBtn" ${ri<LEVS[1][1]?'aria-label="'+LEVS[1][0]+'× Leverage · locked, opens at '+RANKS[LEVS[1][1]][1]+' rank"':''} ${lock||ri<LEVS[1][1]?'disabled':''}><i>⚡</i><b>${ri<LEVS[1][1]?LEVS[1][0]:levSel}×</b><small>${ri<LEVS[1][1]?RANKS[LEVS[1][1]][1]:levSel>1?'Liq −'+Math.round(85/levSel*(gear.jet?95/85:1))+'%':'Leverage'}</small></button>`+
-    `<button class="chip ic ${allin?'hot':''}${ri<2?' lk':''}" type="button" id="allinBtn" ${ri<2?'aria-label="Max · locked, opens at '+RANKS[2][1]+' rank"':''} aria-pressed="${allin}" ${lock||ri<2?'disabled':''}><i>💯</i><b>Max</b><small>${ri<2?RANKS[2][1]:allin?wonX(maxStake(1)):'All cash'}</small></button>`);
+    `<button class="chip ic ${allin?'hot':''}${ri<2?' lk':''}" type="button" id="allinBtn" ${ri<2?'aria-label="Max · locked, opens at '+RANKS[2][1]+' rank"':''} aria-pressed="${allin}" ${lock||ri<2?'disabled':''}><i>💯</i><b>Max</b><small>${ri<2?RANKS[2][1]:allin?wonX(maxStake(1)):'All cash'}</small></button>`+(pro?'<p class="ihn">'+IHINT+'</p>':''));
   chipFit();if(fk){const n=document.querySelector(fk);if(n&&!n.disabled)n.focus({preventScroll:true});}
 }
 const volFmt=v=>LANG==='en'?(v<1e4?v.toLocaleString('en-US'):v<1e5?Math.floor(v/100)/10+'K':v<1e6?Math.floor(v/1e3)+'K':Math.floor(v/1e5)/10+'M'):(v<1e4?v.toLocaleString('en-US'):v<1e6?Math.floor(v/1e3)/10+'0':v<1e8?Math.floor(v/1e4).toLocaleString('en-US')+'0':Math.floor(v/1e7)/10+'00K');
@@ -2137,6 +2154,7 @@ function pushTrade(m){
   trades.unshift({p:priceOf(m),q:Math.max(1,Math.round(Math.exp(rnd(0,3))*unit/8)),up:m>=tradeM});tradeM=m;
   if(trades.length>32)trades.length=32;
 }
+const cashLbl=()=>{try{return tutDone&&!(chal&&chal.i<5)&&(state==='ready'||state==='result')&&balance<1e5&&balance+invNet()>=1e5?'💼 Cash '+wonS(balance)+' · Withdraw':'';}catch(e){return '';}};
 function bossBtn(){if(!tutDone||!(state==='result'||state==='ready')||curOffer().k!=='boss')return '';return '⚔️ Fight Boss · Goal +'+Math.round((bossInfo(stats.bossLv||0).target-1)*100)+'%';}
 function sellLbl(){if(run.boss&&!run.re){const v=Math.floor((cur-1)*1000+1e-6)/10,ok=cur>=run.boss.target||run.boss.down&&performance.now()<run.boss.downAt+1050;return 'Tap to SELL!'+' · ⚔️ '+(v>=0?'+':'−')+(Math.abs(v)>=100?Math.floor(Math.abs(v)):Math.abs(v).toFixed(1))+'%'+(ok?' ✅':'/'+Math.round((run.boss.target-1)*100)+'%');}
   const v=Math.round((cur/(run.re?run.re.entry:1)-1)*(run.lev||1)*1000)/10;return 'Tap to SELL!'+' · '+(run.re?'🔁 ':'')+(v>=0?'+':'−')+Math.abs(v).toFixed(1)+'%';}
@@ -2145,8 +2163,8 @@ function setBtn(){proSync();app.classList.toggle('st-over',state==='over');{cons
   const busy=state==='holding'||state==='ghost';document.querySelectorAll('#tabs button').forEach(b=>b.disabled=busy&&b.dataset.tab!=='trade');
   const cool=state==='result'&&performance.now()<readyAt;
   const canRe=state==='ghost'&&sell&&!crashed&&run&&!run.tut&&!run.chal&&!run.re&&Math.min(balance,run.bet)>=1e4&&performance.now()-sellAt>=700;
-  btn.className=state==='holding'?'on':canRe?'re':(state==='ghost'||cool||state==='over'||!profile&&!$('qSkip'))?'wait':'';if(bossBtn()&&profile&&!(chal&&chal.i<5))btn.classList.add('boss');
-  btnTxt(state==='holding'?sellLbl():canRe?'🔁 Re-enter (one more)':state==='ghost'?'Watching chart…':state==='over'?'Choose how to continue':state==='result'?(cool?'⏳ One sec…':chal&&tutDone&&chal.i<5?'🏆 '+(chal.i+1)+'/5 Buy':bossBtn()||(tutDone?'Buy next stock':'Tap to Buy')):profile?bossBtn()||'Tap to Buy':$('qSkip')?'▶ Just play':'🧪 Take the quiz first!');
+  btn.className=state==='holding'?'on':canRe?'re':(state==='ghost'||cool||state==='over'||!profile&&!$('qSkip'))?'wait':'';if(bossBtn()&&profile&&!(chal&&chal.i<5)&&!cashLbl())btn.classList.add('boss');
+  btnTxt(state==='holding'?sellLbl():canRe?'🔁 Re-enter (one more)':state==='ghost'?'Watching chart…':state==='over'?'Choose how to continue':state==='result'?(cool?'⏳ One sec…':chal&&tutDone&&chal.i<5?'🏆 '+(chal.i+1)+'/5 Buy':cashLbl()||bossBtn()||(tutDone?'Buy next stock':'Tap to Buy')):profile?cashLbl()||bossBtn()||'Tap to Buy':$('qSkip')?'▶ Just play':'🧪 Take the quiz first!');
 }
 
 function selectOffer(id){if(state==='holding'||state==='ghost'||state==='over')return;const o=offers.find(x=>x.id===id);if(!o||o.k==='boss')return;selId=id;tierSel=o.k;store.set('shg_tier',tierSel);
@@ -2178,9 +2196,12 @@ const inDip=x=>events.some(e=>e.amp<0&&x>=e.t0&&x<=e.t0+1.4);
 
 function bossFit(){const b=$('bossName');if(!b||$('bossbar').hidden)return;b.classList.remove('short');if(b.scrollWidth>b.clientWidth+1)b.classList.add('short');}
 addEventListener('resize',bossFit);if(document.fonts&&document.fonts.addEventListener)document.fonts.addEventListener('loadingdone',bossFit);
+let iNow=0,exK='',exAt=0;
+function exWarn(ex){const k=Math.ceil(debt)+'|'+ex,n=performance.now(),again=k===exK&&n-exAt<15000;exK=k;exAt=n;if(again){tab('bank');return;}toast('🚨 With interest, debt goes over the limit by '+wonS(ex)+' · withdraw investments and repay at Shop › Bank');}
 function start(){
   if(presPend||tabNow()||cardTm)return;
   const chRound=tutDone&&chal&&chal.i<5&&debt<=debtLimit();
+  if(adHold&&adDue&&!onCG&&state==='result'&&!card.querySelector('#adWin,#adLoss,#adRevive'))adDecide();
   if(adReq||adHold&&state==='result'&&!card.querySelector('#adWin,#adLoss,#adRevive')){toast('📺 Loading ad…');return;}
   if(!profile&&$('qSkip')&&curTab==='trade'&&$('modal').hidden&&$('sheet').hidden){$('qSkip').click();return;}
   if(curTab==='trade'&&$('modal').hidden&&$('sheet').hidden&&(!profile||(!card.hidden&&card.querySelector('.opts')))){toast('🧪 Finish the Investor Type Quiz first');return;}
@@ -2189,12 +2210,13 @@ function start(){
   if(!card.hidden&&card.querySelector('.opts'))return;
   if(!card.hidden&&card.querySelector('#petGo')&&performance.now()-petAt<450||petCue(1))return;
   au();
-  const low=()=>{if(balance+invNet()>=100000){toast('💼 Not enough cash. Withdraw from the Account tab');}else{state='over';showOver(0);paintPickers();setBtn();}};
+  const low=()=>{if(balance+invNet()>=100000){toast('💼 Not enough cash. Withdraw from the Account tab');tab('invest');}else{state='over';showOver(0);paintPickers();setBtn();}};
   if(tutDone&&!chRound&&balance<100000){low();return;}
   const intr=tutDone&&!chRound&&debt>0&&!intPaid?Math.ceil(debt*loanRate()):0,ex=Math.ceil(debt+intr-debtLimit());
-  if(intr&&ex>0&&balance<ex&&balance+invNet()>=ex){toast('🚨 Next interest would push debt over the limit! Withdraw investments and repay at Shop › Bank');return;}
+  if(intr&&ex>0&&balance<ex&&balance+invNet()>=ex){exWarn(ex);return;}
   if(state==='result')round++;
   ensureDaily();
+  iNow=tutDone&&!chRound?intr||(intPaid?iNow:0):0;
   if(!tutDone||chRound){}else if(debt>0){if(intr){debt+=intr;talkLines.push('<b class="dn">[Interest]</b> Debt interest '+won(intr)+' added');renderTalk();}
     if(ex>0&&balance>=ex){repay(ex);toast('🏦 Debt over the limit: '+won(ex)+' auto-repaid from cash');}
     if(debt>debtLimit()){intPaid=true;store.set('shg_intPaid',true);showDefault();paintTop();return;}
@@ -2218,6 +2240,7 @@ function start(){
   const hard=1-Math.min(.35,Math.max(0,lvlOf(xp).L-20)*.008);
   let crashAt=tut?1.85:ch?ch.pts[ch.i]:1+(Math.max(1.01,1+(raw-1)*T.scale*hard*(1-wr))-1)*(rg.crash||1)*(1+.015*skl('jackpot'));
   if(!tut&&!ch&&lv>1)crashAt=1+(crashAt-1)/Math.sqrt(lv);
+  const u0={inv:{...inv},armed:{...armed}};
   if(!tut&&!ch&&armed.luck>0){armed.luck--;crashAt=1+(crashAt-1)*1.12;store.set('shg_armed',armed);}
   let entryTag='';
   if(!tut&&!ch){const d=liveM-1;if(d<=-.04){crashAt=1+(crashAt-1)*1.08;entryTag='📉 Dip buy · crash a bit later';}else if(d>=.05){crashAt=1+(crashAt-1)*.93;entryTag='🔥 FOMO buy · crash a bit sooner';}}
@@ -2225,12 +2248,12 @@ function start(){
   if(!tut&&!ch)crashAt=Math.max(1.002,crashAt);
   if(!tut&&!ch){const nr=stats.rounds||0;if(nr<5||nr<10&&Math.random()<(10-nr)/6)crashAt=Math.max(crashAt,1.2+Math.random()*.3);}
   const it={...useSel};if(cry)it.insider=false;let hint=null;
-  if(!tut&&!ch){const had=allin||Object.values(sel).some(Boolean);for(const k in sel)sel[k]=false;allin=false;if(had&&!store.get('shg_itemTip',0)){store.set('shg_itemTip',1);setTimeout(()=>toast('🧪 Items and Max Buy last one round only · switch them on again next round'),900);}}
-  if(it.insider){const real=Math.random()<.7+.03*skl('radar');hint={real,v:real?Math.max(Math.min(1.02,crashAt*.99),crashAt*rnd(.88,.98)):crashAt*rnd(1.4,3)};}
+  if(!tut&&!ch){for(const k in sel)sel[k]=false;allin=false;}
+  if(it.insider){const real=Math.random()<.7+.03*skl('radar'),A=T.rate*(rg.rate||1),tc=(Math.sqrt(.0121+.012*Math.log(crashAt)/A)-.11)/.006,lnAt=q=>{const u=tc-(1+(.98-q)*20)*holdRate(it);return Math.max(1.002,Math.min(Math.max(Math.min(1.02,crashAt*.99),crashAt*q),u>0?Math.exp(A*(.11*u+.003*u*u)):1));};hint={real,v:real?lnAt(rnd(.88,.98)):crashAt*rnd(1.4,3)};}
   if(cry){armed.crystal--;store.set('shg_armed',armed);crashAt=Math.max(crashAt,Math.exp(T.rate*(rg.rate||1)*.14));hint={real:true,v:Math.max(Math.min(1.02,crashAt*.99),crashAt*rnd(.94,.99)),crystal:1};}
   cgPlay(true);
   run={offer:o,T,key:o.k,crashAt,entryTag,it,hint,sawDip:false,tut,chal:!!ch,cost:cost+fee,bet,lev:lv,allin:ai,liqLine:lv>1?1-(gear.jet?.95:.85)/lv:0};run.tMin=.3*holdRate();
-  if(tut&&tutFail)run.retry=1;run.bd=bdRound(tut);
+  if(tut&&tutFail)run.retry=1;run.bd=bdRound(tut);run.u0=u0;
   if(ch){ch.pend=-30;store.set('shg_chalRun',ch);}
   if(!tut&&!ch&&o.k==='boss'&&armed.bossT>0&&(stats.rounds+1)%10!==0){armed.bossT--;store.set('shg_armed',armed);}
   if(ai)setTimeout(()=>stamp('💯 Max Buy '+won(bet),'wn'),60);else if(lv>=5)setTimeout(()=>stamp('⚡ '+lv+'×','wn'),60);
@@ -2256,7 +2279,7 @@ function profitMul(){return (1+.1*pres)*(profile==='lion'?1.05:1)*(1+.02*skl('pr
 function release(){
   if(state!=='holding')return;
   if(run.re&&!run.re.done){const r=run.re,r0=r.bet*(cur/r.entry-1)*run.lev,raw=r0>0?r0*profitMul():Math.max(r0,-balance),tr=raw>0?taxRate(balance):0,g=raw-(raw>0?raw*tr:0);
-    balance+=g;if(debt>0&&raw>0){const rp=Math.min(debt,raw*.3,balance);r.repaid=rp;repay(rp);}r.gain=g;r.done=1;state='ghost';ptReact(ptWinK());if(g<0&&balance+invTotal()-debt<300000){lowFlag=true;stats.low=1;store.set('shg_stats',stats);}sfx.sell();freezeT=.1;sellJuice(g,(cur/r.entry-1)*run.lev*100);pbSet('🔁 Re-entry sold',g,pctS((cur/r.entry-1)*run.lev*100),g>=0?'up':'dn');
+    balance+=g;if(debt>0&&raw>0){const rp=Math.min(debt,raw*.3,balance);r.repaid=rp;repay(rp);}if(rdebt>0&&raw>0)r.rdPaid=rdRepay(raw*.3-(r.repaid||0));r.gain=g;r.done=1;state='ghost';ptReact(ptWinK());if(g<0&&netW()<300000){lowFlag=true;stats.low=1;store.set('shg_stats',stats);}sfx.sell();freezeT=.1;sellJuice(g,(cur/r.entry-1)*run.lev*100);pbSet('🔁 Re-entry sold',g,pctS((cur/r.entry-1)*run.lev*100),g>=0?'up':'dn');
     pnlH('<span class="dn">Re-entry sold</span> <span class="'+(g>=0?'up':'dn')+'">'+sw(g)+'</span>');
     if(balance>best){best=balance;store.set('shg_best',Math.floor(best));}
     paintTop();setBtn();return;}
@@ -2272,6 +2295,7 @@ function release(){
   const tr=taxRate(balance),tax=gain+bonus>0?(gain+bonus)*tr:0;sell.tax=tax;sell.taxR=tr;
   balance+=gain+bonus-tax;
   if(debt>0&&gain+bonus>0){const r=Math.min(debt,(gain+bonus)*.3,balance);sell.repaid=r;repay(r);}
+  if(rdebt>0&&gain+bonus>0&&!run.tut)sell.rdPaid=rdRepay((gain+bonus)*.3-(sell.repaid||0));
   if(balance>best){best=balance;store.set('shg_best',Math.floor(best));}
   state='ghost';sellAt=performance.now();setTimeout(setBtn,720);sfx.sell();talk('sold');freezeT=.14;sell.amt=gain+bonus-tax;sellJuice(gain+bonus-tax,(cur-1)*lev*100);
   if(!run.tut){app.classList.toggle('fever',fever);$('fever').hidden=!fever;}
@@ -2288,15 +2312,15 @@ function release(){
   if((run.hold||0)>=15&&gain>0)unlock('diamond');
   if(cur<1.05&&run.bet>0)unlock('paper');
   if(run.hint&&run.hint.real&&!run.hint.crystal&&cur>=3)unlock('insider');
-  if(!run.tut&&gain<0&&balance+invTotal()-debt<300000){lowFlag=true;stats.low=1;store.set('shg_stats',stats);}
-  if(lowFlag&&balance+invTotal()-debt>=START){lowFlag=false;stats.low=0;store.set('shg_stats',stats);unlock('comeback');}
+  if(!run.tut&&gain<0&&netW()<300000){lowFlag=true;stats.low=1;store.set('shg_stats',stats);}
+  if(lowFlag&&netW()>=START){lowFlag=false;stats.low=0;store.set('shg_stats',stats);unlock('comeback');}
   if(!run.tut&&(sell.bossReward||(gain>0&&Math.random()<.07))){const pz=rollPrize(true),txt=pz.f();store.set('shg_bal',Math.floor(balance));setTimeout(()=>{stamp('💎 Treasure!');toast('💎 Treasure · '+(pz.e==='🧪'?'':pz.e+' ')+txt);paintTop();paintPickers();},1300);}
 }
 let pendBust=null;
 function lossFactor(){
   let L=run.T.loss;if(run.lev>1)L=L*run.lev*.6;if(run.it.shield)L=Math.min(L,Math.max(.1,L*.25));if(profile==='turtle'&&!run.it.shield)L*=.8;L*=1-.03*skl('risk');if(!run.liq&&Math.random()<.03*skl('insure')){L*=.5;setTimeout(()=>toast('🪂 Auto stop-loss! Loss halved'),600);}
   if(run.liq)L=1;return L;}
-const holdRate=()=>.6*(run.it.slow?.6:1)*(SET.slow?.8:1)*(1-.02*skl('mind'))*(gear.chair?.97:1);
+const holdRate=(i=run.it)=>.6*(i.slow?.6:1)*(SET.slow?.8:1)*(1-.02*skl('mind'))*(gear.chair?.97:1);
 const gapS=()=>(crashT-sell.t)/holdRate();
 function crash(){
   const hold=state==='holding',cn=CINE(),t0=performance.now(),ed=cn&&!hold&&sell&&cineEnd>t0+20?Math.ceil(cineEnd-t0):0;
@@ -2317,17 +2341,17 @@ function crash(){
   if(run.tut){if(!sell)tutFail++;tutEnd(!!sell);const rd=sell?800:2000;readyAt=Math.max(performance.now(),cardAt)+rd;paintTop();paintPickers();setBtn();setTimeout(setBtn,readyAt-performance.now()+20);scheduleSwitch();if(!cardTm)cardAt=0;return;}
   let res;
   if(state==='holding'&&run.re&&!run.re.done){
-    let loss=run.re.bet*lossFactor();if(inv.rewind>0&&loss>=balance*.3){inv.rewind--;store.set('shg_inv',inv);loss=0;run.re.rw=1;stats.c.items++;setTimeout(()=>toast('⏪ Loss Rewind used! Loss: $0'),700);}
-    loss=Math.max(0,Math.min(loss,balance));balance-=loss;run.re.loss=loss;run.re.done=1;run.re.caught=1;state='ghost';if(run.liq)unlock('liq');if(balance+invTotal()-debt<300000){lowFlag=true;stats.low=1;}
+    let loss=run.re.bet*lossFactor();if(inv.rewind>0&&loss>=balance*.3){inv.rewind--;store.set('shg_inv',inv);loss=0;run.re.rw=1;stats.c.items++;const nl=inv.rewind;setTimeout(()=>toast('⏪ Loss Rewind used! Loss $0 · '+nl+' left'),700);}
+    loss=Math.max(0,Math.min(loss,balance));balance-=loss;run.re.loss=loss;run.re.done=1;run.re.caught=1;state='ghost';if(run.liq)unlock('liq');if(netW()<300000){lowFlag=true;stats.low=1;}
     pbSet((run.liq?'💀 Liquidated':'💥 Re-entry caught'),-loss,pctS(-lossPct()),'dn');pnlH(run.re.rw?'<span class="gd">⏪ Loss Rewind · '+won(0)+'</span>':'<span class="dn">'+(run.liq?'💀 Liquidated ':'💥 Re-entry caught ')+sw(-loss)+'</span>');
   }
   if(state==='holding'){
     const L=lossFactor();
-    let loss=run.bet*L,rw=0;if(inv.rewind>0&&loss>=balance*.3){inv.rewind--;store.set('shg_inv',inv);loss=0;rw=1;stats.c.items++;setTimeout(()=>toast('⏪ Loss Rewind used! Loss: $0'),700);}
+    let loss=run.bet*L,rw=0;if(inv.rewind>0&&loss>=balance*.3){inv.rewind--;store.set('shg_inv',inv);loss=0;rw=1;stats.c.items++;const nl=inv.rewind;setTimeout(()=>toast('⏪ Loss Rewind used! Loss $0 · '+nl+' left'),700);}
     const sh=!!run.it.shield&&!run.liq&&!rw;
     loss=Math.max(0,Math.min(loss,balance));balance-=loss;lastAmt=-loss;if(run.liq)unlock('liq');const ps=streak;streak=0;app.classList.remove('fever');$('fever').hidden=true;
     if(run.hint&&!run.hint.real)unlock('fake');
-    if(balance+invTotal()-debt<300000){lowFlag=true;stats.low=1;}
+    if(netW()<300000){lowFlag=true;stats.low=1;}
     res={win:false,key:run.key,m:0,pct:0,streak:0,insider:run.it.insider,sawDip:run.sawDip,boss:!!run.boss,lev:run.lev,allin:run.allin,liq:!!run.liq,shield:sh};
     const xg=gainXp(3);
     pnlH(rw?'<span class="gd">⏪ Loss Rewind · '+won(0)+'</span>':'<span class="dn">'+(run.liq?'💀 Liquidated':'Crash loss')+' '+sw(-loss)+'</span>');pbSet(rw?'⏪ Loss Rewind':run.liq?'💀 Liquidated':'Crash loss',-loss,rw?'0%':pctS(-Math.round(L*100)),rw?'gd':'dn');
@@ -2345,6 +2369,7 @@ function crash(){
     lastAmt=net;showWin(pct,xg);if(rl){streak=0;app.classList.remove('fever');$('fever').hidden=true;}
   }
   missionsUpdate(res);recordRound(res);
+  {const u=run.u0;if(u)CONSUM.forEach(c=>{if(c.arm>1&&(u.armed[c.id]||0)>0&&!(armed[c.id]>0))setTimeout(()=>toast(c.e+' '+c.n+' has run out'),1200);});}
   if(!pendBust&&state==='result'&&run.promo&&cardUp()){const o=card.querySelector('.promo');if(o)o.outerHTML=icH(promoLine());else{const b=card.querySelector('.rcs')||card.querySelector('.big');if(b)b.insertAdjacentHTML('afterend',icH(promoLine()));}}
   if(pendBust){const P=pendBust;pendBust=null;if(balance+invNet()<100000){state='over';showOver(P.loss);}else{state='result';showBust(P.loss,P.L,P.xg,P.rw,P.sh,P.ps);if(balance<100000)setTimeout(()=>toast('💼 Out of cash! Withdraw from the Account tab'),900);}}
   else if(state==='result'&&balance+invNet()<100000&&!$('adWin')){state='over';showOver(run.re&&run.re.caught?Math.max(0,Math.min(run.re.loss,-lastAmt)):0);}
@@ -2392,8 +2417,16 @@ function progH(xg){const L0=lvlOf(Math.max(0,xp-xg)),L1=lvlOf(xp),up=L1.L>L0.L,a
   return '<div class="prog"><div class="pr xp"><div class="prh"><i>⬆️</i><b><span class="lvn">Lv.'+L0.L+'</span><em class="xpv">+'+xg+' XP</em></b><span class="p">'+b+'%</span></div>'+pbH(a,b)+'</div>'+(gi?'<div class="pr goal">'+gi+'</div>':'')+'</div>';}
 const shB='<button type="button" id="share" class="ish" aria-label="Share result">📤</button>';
 function actsH(ad,sh){return ad?'<div class="acts">'+ad+(sh?shB:'')+'</div>'+ctaH():ctaH(sh);}
-function nextLbl(){return state!=='result'||performance.now()<readyAt?'⏳ One sec…':chal&&tutDone&&chal.i<5?'🏆 '+(chal.i+1)+'/5 Buy':bossBtn()||(tutDone?'Buy next stock':'Buy again');}
+function nextLbl(){return state!=='result'||performance.now()<readyAt?'⏳ One sec…':chal&&tutDone&&chal.i<5?'🏆 '+(chal.i+1)+'/5 Buy':cashLbl()||bossBtn()||(tutDone?'Buy next stock':'Buy again');}
 const ctaH=sh=>'<div class="ctaw'+(sh?' wsh':'')+'"><button type="button" class="mk wait" id="cNext">'+nextLbl()+'</button>'+(sh?shB:'')+'</div>';
+const intrH=()=>iNow>0?'<div class="sub dn">🏦 Interest this round '+won(iNow)+' was added to your debt</div>':'';
+function rpH(){const d=(sell.repaid||0)+((run.re&&run.re.repaid)||0),r=(sell.rdPaid||0)+((run.re&&run.re.rdPaid)||0);if(!d&&!r)return '';
+  return '<div class="sub dn">'+(d?'💸 Auto debt repay '+sw(-d)+(debt>0?' · Debt left '+won(debt):' · Debt cleared!'):'')+(d&&r?'<br>':'')+(r?'💸 Restart Fund auto-repay '+sw(-r)+(rdebt>0?' · remaining '+wonS(rdebt):' · fully repaid!'):'')+'</div>';}
+function useH(no){const u=run&&run.u0;if(!u||run.tut||run.chal)return '';const L=[];
+  CONSUM.forEach(c=>{if(no===c.id)return;const n=(u.inv[c.id]||0)-(inv[c.id]||0),a0=u.armed[c.id]||0,a=armed[c.id]||0;
+    if(n>0)L.push(c.e+' '+c.n+' '+n+' used · '+(inv[c.id]||0)+' left');
+    if(a0>a)L.push(c.e+' '+c.n+(c.arm>1?(a>0?' · '+a+' left':' · last round'):' · used this round'));});
+  return L.length?'<div class="sub use">'+L.join('<br>')+'</div>':'';}
 function showWin(pct,xg){
   const soldT='Sold at +'+nf(1).format((sell.m-1)*100)+'%',plain=!run.re&&run.lev<=1&&!sell.tax&&!sell.bossReward&&!Object.values(run.it||{}).some(Boolean);
   const rc=!!(run.re&&run.re.caught),s1=sell.gain+sell.bonus-(sell.tax||0),rl=!!run.re&&(rc||lastAmt<=0),wb=Math.floor(Math.max(0,run.re?s1+(run.re.gain||0)-(run.re.loss||0)-run.re.fee:s1)*.5),lb=wb>0||!rc?0:Math.floor(Math.max(0,Math.min(run.re.loss||0,-lastAmt))*.3);
@@ -2403,7 +2436,7 @@ function showWin(pct,xg){
   const o=run.offer,pp=x=>nf(1).format((x-1)*100)+'%',win=run.re?lastAmt>0:sell.m>1;
   shareText=`[Stonks Tycoon] ${o.name} ${sell.m>=1?'+':''}${pp(sell.m)} sold · peak accuracy ${pct.toFixed(0)}% · ${g[0]}${!rl&&streak>=5?' 🔥'+streak+(LANG==='en'?'-win streak':'×'):''}\nBalance ${won(balance)} (virtual)`;
   const tot=sell.gain+sell.bonus-(sell.tax||0)+(run.re?(run.re.gain||0)-(run.re.loss||0):0)-(plain?run.cost||0:0);
-  gPrev={nw:balance+invTotal()-debt-lastAmt,xp:xp-xg};
+  gPrev={nw:netW()-lastAmt,xp:xp-xg};
   card.innerHTML=heroH(pkLine(1+(win&&!rl?1:0)+(sell.bossReward?2:0))+'<div class="grade br '+g[1]+'">'+g[0]+'</div>'+(g[2]!==soldT?'<div class="sub">'+g[2]+'</div>':''))+
    bigH(tot,tot>=0?'up':'dn')+'<div class="rcs">'+(sell.m>1?rcH(LANG==='en'?'Sold':'SELL','+'+pp(sell.m),'up')+rcH('Peak','+'+pp(peak))+rcH('Accuracy',pct.toFixed(0)+'%'):rcH('Stop loss',mnS(pp(sell.m)),'dn')+rcH('Peak','+'+pp(peak)))+'</div>'+
    (run.re?'<div class="sub">1st sale '+sw(sell.gain+sell.bonus-(sell.tax||0))+'</div>':'')+close+shook+promoLine()+
@@ -2411,7 +2444,7 @@ function showWin(pct,xg){
    (sell.tax?'<div class="sub dn">🏛️ Rich Tax '+Math.round(sell.taxR*100)+'% '+sw(-sell.tax)+' (already deducted)</div>':'')+
    (run.boss&&sell.bossReward?'<div class="sub gd">⚔️ '+run.boss.B.n+' defeated! '+sw(sell.bossReward)+' · SP +2 · XP +'+Math.round(60*xpMul())+'</div>':'')+
    (()=>{const c=(run.cost||0)+(run.re?run.re.fee||0:0);return c>0&&!plain?'<div class="sub dn">🧾 Fees & items '+sw(-c)+' · Net '+sw(lastAmt-(run.cost||0))+'</div>':'';})()+
-   ((sell.repaid||0)+((run.re&&run.re.repaid)||0)?'<div class="sub dn">💸 Auto debt repay '+sw(-((sell.repaid||0)+((run.re&&run.re.repaid)||0)))+(debt>0?' · Debt left '+won(debt):' · Debt cleared!')+'</div>':'')+
+   intrH()+rpH()+useH()+
    (run.lev>1||run.allin?'<div class="sub wn">'+(run.lev>1?'⚡ Leverage '+run.lev+'× ':'')+(run.allin?'💯 Max Buy':'')+'</div>':'')+
    (sell.bonus?'<div class="sub gd">'+(sell.fever?'🔥 FEVER ':'')+streak+'-streak bonus '+sw(sell.bonus)+'</div>':'')+
    (run.boss&&!sell.bossReward?'<div class="sub dn">👹 Boss survived (goal +'+Math.round((run.boss.target-1)*100)+'%)</div>':'')+hintLine()+progH(xg)+
@@ -2420,7 +2453,7 @@ function showWin(pct,xg){
   if($('adWin'))$('adWin').onclick=()=>{const b=$('adWin'),p0=pres;if(adFull('win'))return b.remove();b.disabled=true;rewardAd('winx',()=>{if(pres!==p0||b.dataset.paid)return;if(adFull('win'))return b.remove();b.dataset.paid=1;adUse('win');balance+=wb;stats.net+=wb;store.set('shg_stats',stats);b.remove();paintTop();paintPickers();setBtn();stamp('📺 +50%');toast('📺 Bonus '+swS(wb)+' added!');});setTimeout(()=>{if(b.isConnected)b.disabled=false;},3000);};
   if($('adLoss'))$('adLoss').onclick=()=>{const b=$('adLoss'),p0=pres;if(adFull('loss'))return b.remove();b.disabled=true;rewardAd('lossback',()=>{if(pres!==p0||b.dataset.paid)return;if(adFull('loss'))return b.remove();b.dataset.paid=1;adUse('loss');balance+=lb;stats.net+=lb;store.set('shg_stats',stats);b.remove();paintTop();paintPickers();setBtn();stamp('📺 Recovered');toast('📺 '+swS(lb)+' recovered');});setTimeout(()=>{if(b.isConnected)b.disabled=false;},3000);};
 }
-function goalIn(){const nw=balance+invTotal()-debt,hi=homeIdx(),nh=HOMES[hi+1],ri=rankOf(xp),nr=RANKS[ri+1],u=nr?unlOf(ri+1):[],hp=nh?nw/nh.min:-1,rp=nr?(xp-RANKS[ri][0])/(nr[0]-RANKS[ri][0]):-1,rk=!!nr&&(u.length>0||!nh)&&rp>hp;
+function goalIn(){const nw=netW(),hi=homeIdx(),nh=HOMES[hi+1],ri=rankOf(xp),nr=RANKS[ri+1],u=nr?unlOf(ri+1):[],hp=nh?nw/nh.min:-1,rp=nr?(xp-RANKS[ri][0])/(nr[0]-RANKS[ri][0]):-1,rk=!!nr&&(u.length>0||!nh)&&rp>hp;
   if(!nh&&!nr)return '';const p=Math.max(0,Math.min(99,Math.floor((rk?rp:hp)*100))),g=gPrev,a=g?Math.floor((rk?(g.xp-RANKS[ri][0])/(nr[0]-RANKS[ri][0]):Math.max(0,g.nw)/nh.min)*100):p;
   return '<div class="prh"><i>'+(rk?(u.length?(u[0].match(ICR)||['🎖️'])[0]:'🎖️'):'🏠')+'</i><b'+(rk?'':' class="hm"')+'>'+(rk?(u.length?'<b>'+nr[1]+'</b> unlocks '+u[0].replace(ICR,'').trim()+(u.length>1?' and&nbsp;N&nbsp;more'.replace('N',u.length-1):''):'Next rank <b>'+nr[1]+'</b>'):'Next home <b>'+nh.n+'</b><span>'+wonS(nh.min)+'</span>')+'</b><span class="p">'+p+'%</span></div>'+pbH(Math.min(a,p),p);}
 const goalLine=()=>'<div class="goal">'+goalIn()+'</div>';
@@ -2434,9 +2467,9 @@ function showBust(loss,L,xg,rw,sh,ps){
   gPrev=null;
   card.innerHTML=heroH(pkLine(1)+'<div class="grade br dn">'+(run.liq?'💀 Liquidated':cry?'🔮 As foretold':early?'Instant crash':'Caught!')+'</div>'+
    '<div class="sub">'+(run.liq?run.lev+'× leverage · hit liquidation':cry?'Crashed just past the crystal line':early?'Crashed right after you bought':Math.round(pk*10)>=500?'Held on too long':'Crashed early this time')+'</div>')+
-   (rw?'<div class="sub gd">⏪ Loss Rewind used! Loss: $0</div>':bigH(-loss-(plain?run.cost||0:0),'dn')+'<div class="rcs">'+rcH('Loss','\u2212'+Math.round(L*100)+'%','dn')+rcH('Peak','+'+nf(1).format(pk)+'%')+'</div>')+promoLine()+
+   (rw?'<div class="sub gd">⏪ Loss Rewind used! Loss $0 · '+(inv.rewind||0)+' left</div>':bigH(-loss-(plain?run.cost||0:0),'dn')+'<div class="rcs">'+rcH('Loss','\u2212'+Math.round(L*100)+'%','dn')+rcH('Peak','+'+nf(1).format(pk)+'%')+'</div>')+promoLine()+
    (!rw&&!run.liq&&!cry&&!early&&sg?'<div class="tip">💡 <span>+'+nf(1).format(pk)+'% peak · <span class="nw">next time try selling at <b>+'+sg+'%</b></span></span></div>':'')+
-   (sh?'<div class="sub gd">🛡️ Stop-Loss Shield cut your loss.</div>':'')+
+   (sh?'<div class="sub gd">🛡️ Stop-Loss Shield cut your loss.</div>':'')+intrH()+useH(rw?'rewind':'')+
    (run.cost&&!plain?'<div class="sub dn">🧾 Fees & items '+sw(-run.cost)+'</div>':'')+
    (ps>1?'<div class="sub">🔥 '+ps+'-win streak broken</div>':'')+hintLine()+
    (run.boss?'<div class="sub dn">👹 Boss survived (goal +'+Math.round((run.boss.target-1)*100)+'%)</div>':'')+progH(xg)+
@@ -2448,13 +2481,14 @@ const TIPS=['💡 Set % of limit to 25% so one crash still leaves cash to try ag
 const overTip=()=>{const r=rankOf(xp),u=r+1<RANKS.length?unlOf(r+1):[],D=[];if(u.length)D.push('🔓 '+RANKS[r+1][1]+' rank unlocks: '+u.join(', '));if(spFree()>0&&skl('risk')<15)D.push('🌳 Spend your SP on 🛡️ Risk Control to shrink crash losses');return D.length&&Math.random()<.5?pick(D):pick(TIPS);};
 
 const LOAN_X=[0,5,4,3.5,3,2.5,2,1.6,1.3,1,.8],LOAN_R=[0,.003,.004,.005,.007,.01,.013,.017,.022,.028,.035];
-const loanAmt=()=>Math.max(START,Math.round(betCap(1)*LOAN_X[credit]/1e4)*1e4);
+const loanAmt=(c=credit)=>Math.max(START,Math.round(betCap(1)*LOAN_X[c]/1e4)*1e4);
 const loanRate=()=>LOAN_R[credit];
 const debtLimit=()=>Math.max(START*30,betCap(1)*25);
-const canLoan=()=>{if(credit>=10)return false;const d=debt+loanAmt();return d+Math.ceil(d*LOAN_R[Math.min(10,credit+1)])<=debtLimit();};
+const canLoan=(D=debt,c=credit)=>{if(c>=10)return false;const d=D+loanAmt(c);return d+Math.ceil(d*LOAN_R[Math.min(10,c+1)])<=debtLimit();};
 function takeLoan(){if(!canLoan())return false;const a=loanAmt();debt+=a;balance+=a;credit=Math.min(10,credit+1);stats.loans=(stats.loans||0)+1;const nl=stats.loanAt!==stats.rounds;stats.loanAt=stats.rounds;store.set('shg_stats',stats);if(nl)unlock('debt1');
   vib(HAP.warn);toast('💳 Loan '+won(a)+' · Credit '+crS(credit)+(credit>=8?' (subprime)':''));return true;}
 function repay(a){a=Math.min(a,debt,balance);if(a<=0)return;balance-=a;debt-=a;if(debt<1){debt=0;intPaid=false;store.set('shg_intPaid',false);credit=Math.max(1,credit-1);if(state==='holding'||!(stats.loanAt>=stats.rounds))unlock('payoff');toast('🙌 Debt paid off! Credit '+crS(credit));sfx.up();}}
+function rdRepay(a){a=Math.min(a,rdebt,balance);if(!(a>0))return 0;balance-=a;rdebt-=a;if(rdebt<1){rdebt=0;setTimeout(()=>toast('🌱 Restart Fund fully repaid!'),300);}store.set('shg_rdebt',Math.ceil(rdebt));return a;}
 function resetView(){cardCancel();pbShow(false);streak=0;app.classList.remove('fever');$('fever').hidden=true;round=1;state='ready';card.hidden=true;candles=[];sell=null;crashed=false;run=null;eM=1;
   $('pnl').hidden=true;$('bossbar').hidden=true;buildChartIdle();newsIdle();paintTop();paintPickers();paintQuote();setBtn();}
 function unOver(){
@@ -2463,79 +2497,118 @@ function unOver(){
   if(!(balance>=100000)||debt>debtLimit())return staleOver();
   resetView();if(!tutDone&&$('modal').hidden)coachReady();toast(ex?'🏦 Debt over the limit: '+won(ex)+' auto-repaid from cash':'🟡 Got '+wonS(balance)+' in cash! You can trade again');return true;}
 function declareBankrupt(forced){
+  const seized=debt>0,taken=seized?seizeList():null;
   stats.bankrupts++;stats.curRun=0;unlock('hangang');if(stats.bankrupts>=5)unlock('bk5');if(stats.bankrupts>=10)unlock('bk10');
-  const seized=debt>0,gotSP=stats.bankrupts<=5;if(gotSP)stats.bonusSP=(stats.bonusSP||0)+1;
+  const gotSP=stats.bankrupts<=5;if(gotSP)stats.bonusSP=(stats.bonusSP||0)+1;
   if(seized){gear={};inv={};armed={};invest={};store.set('shg_inv2',invest);store.set('shg_gear',gear);store.set('shg_inv',inv);store.set('shg_armed',armed);credit=10;stats.cleanRounds=0;if(forced)unlock('default');offers=makeOffers();}
-  debt=0;intPaid=false;overLoss=0;store.set('shg_intPaid',false);balance=START*(1+.2*skl('seed'));lowFlag=false;stats.low=0;store.set('shg_stats',stats);resetView();sfx.up();
-  stamp(seized?'🚨 Seized':'🌱 New start!');setTimeout(()=>toast((seized?'🚨 Gear, items & investments seized · Credit D · ':'')+(gotSP?'😤 Grit SP +1':'Start over')),400);
+  const g=START*(1+.2*skl('seed')),lv=levSel>1;levSel=1;allin=false;
+  debt=0;intPaid=false;overLoss=0;store.set('shg_intPaid',false);balance=g;rdebt+=g;store.set('shg_rdebt',Math.ceil(rdebt));lowFlag=false;stats.low=0;store.set('shg_stats',stats);resetView();sfx.up();
+  stamp(seized?'🚨 Seized':'🌱 New start!');if(seized)showReceipt(taken,gotSP,lv);else setTimeout(()=>toast((gotSP?'😤 Grit SP +1':'Start over')+' · 🌱 Restart Fund '+wonS(g)+(lv?' · ⚡ Leverage 1x':'')),400);
 }
+
+const seizeList=()=>{const T=[];
+  GEAR.forEach(g=>{if(gear[g.id])T.push(g.e+' '+g.n);});
+  CONSUM.forEach(c=>{const n=inv[c.id]||0,a=armed[c.id]||0;if(n>0)T.push(c.e+' '+c.n+' <b>×'+n+'</b>');if(a>0)T.push(c.e+' '+c.n+' · Active'+(c.arm>1?' '+a+' left':''));});
+  PROD.forEach(P=>{const a=invest[P.id]&&invest[P.id].a||0;if(a>=1)T.push(P.e+' '+P.n+' <b>'+wonS(a)+'</b>');});
+  if(balance>=1)T.push('🟡 '+'Cash <b>'+wonS(balance)+'</b>');return T;};
+const KEEP_L='Level · skills · achievements · collection · partners · decor (wallpaper, floors, props)';
+const rdNote=d=>{const g=START*(1+.2*skl('seed'));return d?'🌱 New funds '+wonS(g)+' went in as a Restart Fund (interest-free debt)'+(rdebt>=g+1?' · total '+wonS(rdebt):''):'🌱 This money is a Restart Fund (interest-free debt)'+(rdebt>=1?' · total '+wonS(rdebt):'');};
+const rdLine=d=>{const t=rdNote(d);return t?'<p class="onote rdl">'+t+'</p>':'';};
+const szH=(L,done)=>'<div class="szb"><p class="szt wn">'+(done?'🚨 Taken':'🚨 Will be seized')+'</p>'+(L.length?'<div class="rcs szl">'+L.map(t=>'<span class="rc">'+t+'</span>').join('')+'</div>':'<p class="szn">'+(done?'Nothing was taken · you had no gear, consumables or investments':'Nothing to seize · no gear, consumables or investments')+'</p>')+
+  '<p class="szt ok">✅ You keep</p><p class="szk">'+KEEP_L+'</p></div>';
+const overRe=()=>{if(state!=='over')return;if(debt>debtLimit())showDefault(true);else showOver(overLoss,true);paintPickers();setBtn();};
+function showSeize(){
+  const L=seizeList(),k0=overSig;
+  card.innerHTML=heroH('<div class="grade gx wn">'+(debt>debtLimit()?'🚨 Confirm Seizure':'🥫 '+'Go bankrupt?')+'</div>')+'<div class="sub">Debt '+wonS(debt)+' wiped; restart with '+wonS(START*(1+.2*skl('seed')))+' · Credit D</div>'+szH(L)+
+   '<div id="overBtns">'+optH('szGo','','🥫','Accept seizure and restart',L.length?'Debt wiped · seizes '+L.length+' · restart':'Debt wiped · nothing to seize')+rdLine()+optH('szBack','','💡','Go back','See the other options')+'</div>';
+  bdNext={k:'shock',id:run&&run.bd||bdCur&&bdCur.id||petSel()};showCard();
+  $('szGo').onclick=()=>{if(state!=='over'||overSig!==k0)return overRe();const k=overSig;if(unOver()||overSig!==k)return;declareBankrupt(debt>debtLimit());};
+  $('szBack').onclick=overRe;}
+function showReceipt(L,sp,lv){
+  card.innerHTML=heroH('<div class="grade gx">🧾 Receipt</div>')+'<div class="sub">Debt wiped · your credit is now D'+(sp?' · 😤 Grit SP +1':'')+'</div>'+szH(L,1)+
+   '<div class="tip">🏠 Your home follows your net worth · it comes back as your money grows · decor items stay yours</div>'+rdLine(1)+(lv?'<p class="onote">⚡ Leverage reset to 1x</p>':'')+
+   '<div class="btns"><button class="pri" type="button" data-close>OK</button></div>';
+  bdNext={k:'still',id:petSel()};showCard();}
 let overSig='',overLoss=0;const overNow=()=>(debt>debtLimit()?'D':'O')+'|'+Math.ceil(debt)+'|'+credit+'|'+canLoan()+'|'+Math.floor(balance);
 function staleOver(){if(state==='over'&&overSig&&!adPause&&!adReq&&overNow()!==overSig){if(debt>debtLimit())showDefault(true);else showOver(overLoss,true);paintPickers();setBtn();}return false;}
 function showDefault(quiet){
-  state='over';overLoss=0;if(!quiet)vib(HAP.broke);
-  card.innerHTML=heroH('<div class="grade gx wn">🚨 Credit Default</div>')+'<div class="sub">Your debt is over the limit. The creditors are here</div>'+
+  state='over';overLoss=0;if(!quiet)vib(HAP.broke);const sh=Math.ceil(debt-debtLimit()),rv=revRow();
+  card.innerHTML=heroH('<div class="grade gx wn">🚨 Credit Default</div>')+'<div class="sub">'+(iNow>0&&intPaid?'Interest this round '+wonS(iNow)+' pushed your debt over the limit':'Your debt is over the limit. The creditors are here')+'</div>'+
    '<div class="nums"><div><small>Debt</small><b class="wn">'+wonS(debt)+'</b></div><div><small>Debt limit</small><b>'+wonS(debtLimit())+'</b></div><div><small>Credit</small><b>'+crS(credit)+'</b></div></div>'+
-   '<div class="sub">Seized <b class="wn">All gear ('+Object.keys(gear).length+') · all consumables</b><br>You lose: <b class="wn">Cash '+wonS(balance)+(invTotal()>0?' · Invested '+wonS(invTotal()):'')+'</b></div>'+
-   '<div id="overBtns">'+optH('again','pri','🥫','Accept and start over','Your level, skills and achievements stay')+'</div>';overSig=overNow();
-  bdNext={k:'shock',id:run&&run.bd||bdCur&&bdCur.id||petSel()};showCard();$('again').onclick=()=>{const k=overSig;if(unOver()||overSig!==k)return;declareBankrupt(debt>debtLimit());};paintPickers();setBtn();
+   '<div class="owarn">Over the limit by '+wonS(sh)+' · with '+wonS(sh+1e5)+' or more in cash, it’s repaid and you play on</div>'+szH(seizeList())+
+   '<div id="overBtns">'+rv+optH('again',rv?'':'pri','🥫','Accept and start over','Review what’s seized first')+'</div>';overSig=overNow();
+  bdNext={k:'shock',id:run&&run.bd||bdCur&&bdCur.id||petSel()};showCard();revBind();$('again').onclick=()=>{const k=overSig;if(unOver()||overSig!==k)return;showSeize();};paintPickers();setBtn();
 }
 
 
-const CFG={adClient:'ca-pub-2213068202184499',adTest:false,donateUrl:'',iap:false,iapDev:false};
+const CFG={adClient:'',adTest:false,donateUrl:'',iap:false,iapDev:false};
+if(/^(localhost|127\.0\.0\.1)$/.test(location.hostname)&&/[?&]adsense\b/.test(location.search))CFG.adClient='ca-pub-2213068202184499';
 const CG={on:false,S:null,last:0,noAds:0,done:0},onCG=/crazygames/.test(location.hostname)||(window.top!==window&&/crazygames/.test(document.referrer))||/^(localhost|127\.0\.0\.1)$/.test(location.hostname)&&/[?&]cg\b/.test(location.search);
-const BUILD='v3.0 · b261102 · '+LANG+'-'+(onCG?'cg':/(^|\.)itch\.(io|zone)$|hwcdn\.net$/.test(location.hostname)||/itch\.io/.test(document.referrer)?'itch':'web');
+const BUILD='v3.0.1 · b261103 · '+LANG+'-'+(onCG?'cg':/(^|\.)itch\.(io|zone)$|hwcdn\.net$/.test(location.hostname)||/itch\.io/.test(document.referrer)?'itch':'web');
 if(onCG){const sc=document.createElement('script');sc.src='https://sdk.crazygames.com/crazygames-sdk-v3.js';
   sc.onload=async()=>{try{const S=window.CrazyGames.SDK;await S.init();if(S.environment!=='disabled'){CG.S=S;CG.on=true;cgLoad();try{const ms=v=>{v=v&&typeof v==='object'?v:S.game.settings;cgMute=!!(v&&v.muteAudio);document.body.classList.toggle('noChat',!!(v&&v.disableChat));if(touched||cgMute)bgm.sync();};ms();S.game.addSettingsChangeListener(ms);}catch(e){}if(state==='holding'||state==='ghost')cgPlay(true);}}catch(e){}CG.done=1;};sc.onerror=()=>{CG.done=1;};document.head.appendChild(sc);}
 let cgG=false;
 const cgPlay=on=>{on=!!on;if(!CG.on||cgG===on)return;cgG=on;try{on?CG.S.game.gameplayStart():CG.S.game.gameplayStop();}catch(e){}};
 function cgLoad(){try{CG.S.game.loadingStart();}catch(e){}let done=0;const end=()=>{if(done)return;done=1;try{CG.S.game.loadingStop();}catch(e){}};try{document.fonts.ready.then(()=>requestAnimationFrame(end),end);}catch(e){end();}setTimeout(end,4000);}
 function cgHappy(){try{const n=performance.now();if(!CG.on||n-(cgHappy.t||-1e9)<180000)return;cgHappy.t=n;CG.S.game.happytime();}catch(e){}}
-let adTok=0;const adStart=tk=>{adTok=tk;adPause=true;muted=true;bgm.sync();if(state==='holding'||state==='ghost')cgPlay(false);},adEnd=tk=>{if(tk!==adTok)return;adTok=0;adPause=false;muted=!SET.sound;bgm.sync();if(state==='holding'||state==='ghost')cgPlay(true);};
+let adTok=0,adWd=0,AD_WD=90000;const adStart=tk=>{adTok=tk;adPause=true;muted=true;bgm.sync();if(state==='holding'||state==='ghost')cgPlay(false);if(!onCG){clearTimeout(adWd);adWd=setTimeout(()=>{if(adPause&&adTok===tk){adEnd(tk);adsOff(1);}},AD_WD);}},adEnd=tk=>{if(tk!==adTok)return;clearTimeout(adWd);adTok=0;adPause=false;muted=!SET.sound;bgm.sync();if(state==='holding'||state==='ghost')cgPlay(true);};
 let adHold=0,adDue=0,adPend=0,adReq=0,adReqT=0,presPend=0;
 const reqEnd=()=>{adReq=0;clearTimeout(adReqT);};
 function adDecide(){adDue=0;adHold=0;if(state==='holding'||state==='ghost'||document.hidden||(state==='result'||state==='over')&&card.querySelector('#adWin,#adLoss,#adRevive'))adPend=1;else midAd();}
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&adDue)adDecide();});
-function midAd(){if(premOwn('noads'))return;if(!adsOn())return;if(adPause||adReq){adPend=1;return;}adReq=1;adReqT=setTimeout(()=>{reqEnd();adsOff();},CG.on?45000:10000);const tk=adReqT,on=()=>{if(adReqT===tk)reqEnd();adStart(tk);},off=()=>{if(adReqT===tk)reqEnd();adEnd(tk);};
+function midAd(){if(premOwn('noads'))return;if(!adsOn())return;if(adPause||adReq){adPend=1;return;}adReq=1;adReqT=setTimeout(()=>{reqEnd();if(CG.on)adsOff();},CG.on?45000:1500);const tk=adReqT;let got=0;const on=()=>{got=1;if(adReqT===tk)reqEnd();adStart(tk);},off=i=>{got=1;if(adReqT===tk)reqEnd();adEnd(tk);if(!CG.on&&i&&/^(notReady|error|timeout|invalid|other)$/.test(i.breakStatus))adsOff();};if(!CG.on)setTimeout(()=>{if(!got)adsOff();},10000);
   try{if(CG.on)CG.S.ad.requestAd('midgame',{adStarted:on,adFinished:off,adError:()=>{off();adsOff();}});else window.adBreak({type:'next',name:'round30',beforeAd:on,afterAd:off,adBreakDone:off});}catch(e){off();adsOff();}}
 const AD_LIM={win:5,loss:3,item:3};
 const adCnt=k=>{const a=store.get('shg_adc',{});return dayOrd(a.d)>=dayN()?(a[k]||0):0;};
 const adUse=k=>{let a=store.get('shg_adc',{});if(dayOrd(a.d)<dayN())a={d:dayKey()};a[k]=(a[k]||0)+1;store.set('shg_adc',a);};
 const adOk=k=>adsOn()&&adCnt(k)<AD_LIM[k];
 const adFull=k=>{if(adCnt(k)<AD_LIM[k])return false;toast('You’ve used all of today’s ad rewards');return true;};
-const adsOn=()=>onCG?CG.on&&!CG.noAds:(!!CFG.adClient&&typeof window.adBreak==='function'&&!!(window.adsbygoogle&&window.adsbygoogle.loaded));
-const adsWait=()=>(onCG?!CG.done:!!CFG.adClient&&!adsOn())&&performance.now()<10000;
-const adsOff=say=>{if(!onCG||CG.noAds)return;CG.noAds=1;let n=0;if($('adSpin'))$('modal').hidden=true;['adWin','adLoss','adRevive','adItem','adSpin'].forEach(id=>{const b=$(id);if(b){b.remove();n++;}});if(say||n)toast('Ad bonuses aren’t available right now');if(overRev)overRev();};
+let webNoAds=0;
+const adsOn=()=>onCG?CG.on&&!CG.noAds:(!webNoAds&&!!CFG.adClient&&typeof window.adBreak==='function'&&!!(window.adsbygoogle&&window.adsbygoogle.loaded));
+const adsWait=()=>(onCG?!CG.done:!!CFG.adClient&&!webNoAds&&!adsOn())&&performance.now()<10000;
+const adsOff=say=>{if(onCG?CG.noAds:webNoAds||!CFG.adClient)return;if(onCG)CG.noAds=1;else webNoAds=1;let n=0;if($('adSpin'))$('modal').hidden=true;['adWin','adLoss','adRevive','adItem','adSpin'].forEach(id=>{const b=$(id);if(b){b.remove();n++;}});if(say||n)toast('Ad bonuses aren’t available right now');if(overRev)overRev();};
 const adBig=l=>l>0&&l>=.3*(balance+l),adWinBig=w=>w>=stakeCap()*.25||!!sell&&(sell.m>=2||!!sell.fever||!!sell.bossReward);
-if(CFG.adClient&&!onCG){if(!document.querySelector('script[src*=adsbygoogle]')){const sc=document.createElement('script');sc.async=true;sc.src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client='+CFG.adClient;sc.crossOrigin='anonymous';
-  if(CFG.adTest)sc.dataset.adbreakTest='on';sc.dataset.adFrequencyHint='120s';document.head.appendChild(sc);}
+if(CFG.adClient&&!onCG){const adFail=()=>adsOff(),old=document.querySelector('script[src*=adsbygoogle]');if(old)old.addEventListener('error',adFail);else{const sc=document.createElement('script');sc.async=true;sc.src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client='+CFG.adClient;sc.crossOrigin='anonymous';sc.onerror=adFail;
+  if(CFG.adTest)sc.dataset.adbreakTest='on';sc.dataset.adFrequencyHint='120s';document.head.appendChild(sc);}setTimeout(()=>{if(!adsOn())adFail();},6000);
   window.adsbygoogle=window.adsbygoogle||[];window.adBreak=window.adConfig=function(o){window.adsbygoogle.push(o);};window.adConfig({preloadAdBreaks:'on',sound:SET.sound||SET.bgm?'on':'off'});}
-function rewardAd(name,onReward){if(store.off&&tabNow())return;if(!adsOn()){toast('Couldn’t load the ad');return;}if(adReq||adPause){toast('📺 Loading ad…');return;}adReq=1;adReqT=setTimeout(()=>{reqEnd();if(CG.on)adsOff(1);else toast('Couldn’t load the ad');},CG.on?45000:10000);const tk=adReqT,end=()=>{if(adReqT===tk)reqEnd();};let ok=false;
+function rewardAd(name,onReward){if(store.off&&tabNow())return;if(!adsOn()){toast('Couldn’t load the ad');return;}if(adReq||adPause){toast('📺 Loading ad…');return;}adReq=1;adReqT=setTimeout(()=>{reqEnd();adsOff(1);},CG.on?45000:6000);const tk=adReqT,end=()=>{if(adReqT===tk)reqEnd();};let ok=false,dis=false,skip=false;
   if(CG.on){CG.last=performance.now();try{CG.S.ad.requestAd('rewarded',{adStarted:()=>{end();adStart(tk);},adFinished:()=>{end();adEnd(tk);onReward();},adError:()=>{end();adEnd(tk);adsOff(!adPause);}});}catch(e){reqEnd();adEnd(tk);adsOff(1);}return;}
-  try{window.adBreak({type:'reward',name,beforeAd:()=>{end();adStart(tk);},afterAd:()=>adEnd(tk),beforeReward:show=>{if(state==='holding'||state==='ghost'){end();return;}show();},adViewed:()=>{ok=true;onReward();},adDismissed:()=>toast('Watch to the end to get the reward'),adBreakDone:i=>{end();adEnd(tk);if(!adPause&&!ok&&i&&i.breakStatus!=='viewed'&&i.breakStatus!=='dismissed')toast('No ads available right now');}});}catch(e){reqEnd();adEnd(tk);toast('Couldn’t load the ad');}}
+  try{window.adBreak({type:'reward',name,beforeAd:()=>{end();adStart(tk);},afterAd:()=>adEnd(tk),beforeReward:show=>{if(state==='holding'||state==='ghost'){skip=true;end();return;}show();},adViewed:()=>{ok=true;onReward();},adDismissed:()=>{dis=true;toast('Watch to the end to get the reward');},adBreakDone:i=>{end();adEnd(tk);const st=i&&i.breakStatus;if(!ok&&!dis&&!skip&&st!=='viewed'&&st!=='dismissed')adsOff(1);}});}catch(e){reqEnd();adEnd(tk);adsOff(1);}}
 const badge=()=>{try{if(!navigator.setAppBadge)return;if(!usedToday('shg_spin'))navigator.setAppBadge(1);else navigator.clearAppBadge();}catch(e){}};
 document.addEventListener('visibilitychange',()=>{if(document.hidden)badge();});
 const optH=(id,cls,ic,t,sm)=>'<button type="button" id="'+id+'" class="opt'+(cls?' '+cls:'')+'"><i>'+ic+'</i><b>'+t+(/\brec\b/.test(cls)?'<em>Top pick</em>':'')+'</b><small>'+sm+'</small></button>';
 let overRev=null;
+const revOk=()=>{const b=balance+START*3,i=tutDone&&debt>0&&!intPaid?Math.ceil(debt*loanRate()):0,ex=Math.ceil(debt+i-debtLimit());return !(ex>0&&b<ex)&&b-Math.max(0,ex)>=100000;};
+const revAvail=()=>!usedToday('shg_adRevive')&&revOk();
+const REV_AD=()=>optH('adRevive','pri rw rec','📺','Watch an ad: get '+won(START*3),'Once a day · trade again right away'),REV_FREE=()=>optH('freeRev','pri rw rec','🎁','Comeback bonus '+won(START*3),'Once a day · no ad'),REV_WAIT=()=>optH('revWait','rw','🎁','Checking the daily comeback…','Waiting a moment for ads').replace('<button ','<button disabled ');
+const revRow=()=>!revAvail()?'':adsOn()?REV_AD():adsWait()?REV_WAIT():REV_FREE();
+const DEBT_NOTE='Broke in debt = <b class="wn">bankruptcy + seizure</b> <span style="white-space:nowrap"></span>';
+const loanWhy=()=>{if(credit>=10)return debt>0?'No loans at Credit D · pay off all debt to raise it':'No loans at Credit D · play '+Math.max(1,(credit>3?15:30)-(stats.cleanRounds||0))+' rounds debt-free to raise it';
+  const la=loanAmt(),L=debtLimit();return debt+la>L?'Debt limit full (debt '+wonS(debt)+' / limit '+wonS(L)+')':'Loan '+wonS(la)+' + next-round interest would top the limit '+wonS(L)+'';};
+function revBind(){
+  const revPay=e=>{if(usedToday('shg_adRevive'))return;store.set('shg_adRevive',dayKey());lowFlag=false;stats.low=0;store.set('shg_stats',stats);balance+=START*3;if(state==='over'){if(debt>debtLimit())unOver();else resetView();}paintTop();paintPickers();setBtn();stamp(e+' Recovered');toast(e+' '+won(START*3)+' added! Let’s go again');};
+  const freeGo=()=>{const k=overSig;if(store.off){tabNow();return;}if(unOver()||overSig!==k)return;if(!revAvail()){const b=$('freeRev');if(b)b.remove();return;}revPay('🎁');};
+  const revGo=()=>{const bs=['adRevive','adLoss','loanBtn','again'].map(id=>$(id)).filter(Boolean);bs.forEach(b=>b.disabled=true);const re=()=>{if(adPause||adReq)return setTimeout(re,300);bs.forEach(b=>{if(b.isConnected)b.disabled=false;});};setTimeout(re,300);rewardAd('revive',()=>revPay('📺'));};
+  if($('adRevive'))$('adRevive').onclick=revGo;if($('freeRev'))$('freeRev').onclick=freeGo;
+  const ob=$('overBtns'),recOff=()=>{const a=$('again');if(a){a.classList.remove('pri','rec');const m=a.querySelector('em');if(m)m.remove();}},
+   addRev=()=>{if(!ob.isConnected||state!=='over')return;if($('revWait')){if(!revAvail()||(adsOn()?!(adHold||adDue||adReq||adPause):!adsWait()))overRe();return;}
+    if($('adRevive')||$('freeRev')||!revAvail())return;if(!adsOn()){if(!adsWait()){ob.insertAdjacentHTML('afterbegin',icH(REV_FREE()));$('freeRev').onclick=freeGo;recOff();fitCard();}return;}if(adHold||adDue||adReq||adPause)return;ob.insertAdjacentHTML('afterbegin',icH(REV_AD()));$('adRevive').onclick=revGo;recOff();fitCard();};overRev=addRev;
+  let n=0;const iv=setInterval(()=>{if(!ob.isConnected||state!=='over'){if(overRev===addRev)overRev=null;return clearInterval(iv);}if(++n<=60||n%10===0)addRev();},500);
+}
 function showOver(loss,quiet){if(loss>0)overLoss=loss;else loss=overLoss;
-  const la=loanAmt(),ok=canLoan(),nc=Math.min(10,credit+1),revHtml=optH('adRevive','pri rw rec','📺','Watch an ad: get '+won(START*3),'Once a day · trade again right away'),freeHtml=optH('freeRev','pri rw rec','🎁','Comeback bonus '+won(START*3),'Once a day · no ad');
+  const la=loanAmt(),ok=canLoan(),nc=Math.min(10,credit+1);
   const lb=Math.floor((loss||0)*.3),lossHtml=lb>0&&adOk('loss')?optH('adLoss','','📺','Watch an ad: recover 30% of the loss',swS(lb)+' · '+(AD_LIM.loss-adCnt('loss'))+'/'+AD_LIM.loss):'';
-  const revOk=()=>{const b=balance+START*3,i=tutDone&&debt>0&&!intPaid?Math.ceil(debt*loanRate()):0,ex=Math.ceil(debt+i-debtLimit());return !(ex>0&&b<ex)&&b-Math.max(0,ex)>=100000;};
   if(!quiet)vib(HAP.broke);
-  const rv=!usedToday('shg_adRevive')&&revOk()?adsOn()?revHtml:adsWait()?'':freeHtml:'';
+  const rv=revRow(),sl=debt>0?seizeList().length:0;
   card.innerHTML=heroH('<div class="grade gx wn">You’re broke</div>')+'<div class="sub">'+(run&&run.liq?'A margin call wiped out your account':'Your account is empty')+' · choose how to keep going</div>'+
    '<div class="nums"><div><small>Debt</small><b class="'+(debt?'wn':'')+'">'+(debt?wonS(debt):'None')+'</b></div><div><small>Credit</small><b>'+crS(credit)+'</b></div><div><small>Rounds</small><b>'+(stats.curRun||0)+'</b></div></div>'+
-   (!usedToday('shg_adRevive')&&!revOk()&&(adsOn()||!adsWait())?'<div class="owarn">'+(adsOn()?'Your debt is at the limit, so the ad bonus can’t carry you through the next round':'Your debt is at the limit, so the daily comeback can’t carry you through the next round')+'</div>':'')+(ok?'':'<div class="owarn">No more loans available</div>')+
-   '<div id="overBtns">'+rv+(debt>0?optH('again',rv?'':'pri rec','🥫','Declare bankruptcy','Debt wiped · assets seized · Credit D'):optH('again',rv?'':'pri rec','🔄','Start fresh','New funds '+wonS(START*(1+.2*skl('seed')))+(stats.bankrupts<5?' · SP +1':'')+' · progress kept'))+lossHtml+(ok?optH('loanBtn','','💳','Take a loan and keep going',wonS(la)+' · interest '+(LOAN_R[nc]*100).toFixed(1)+'% → <span class="wn">Credit '+crS(nc)+(nc>=8?' (subprime)':'')+'</span>'):'')+'</div>'+
+   (!usedToday('shg_adRevive')&&!revOk()&&(adsOn()||!adsWait())?'<div class="owarn">'+(adsOn()?'Your debt is at the limit, so the ad bonus can’t carry you through the next round':'Your debt is at the limit, so the daily comeback can’t carry you through the next round')+'</div>':'')+(ok?'':'<div class="owarn">'+loanWhy()+'</div>')+
+   '<div id="overBtns">'+rv+(debt>0?optH('again',rv?'':'pri rec','🥫','Declare bankruptcy',(sl?'Debt wiped · seizes '+sl+' · Credit D':'Debt wiped · nothing to seize · Credit D')):optH('again',rv?'':'pri rec','🔄','Start fresh','New funds '+wonS(START*(1+.2*skl('seed')))+(stats.bankrupts<5?' · SP +1':'')+' · progress kept')+rdLine())+lossHtml+(ok?optH('loanBtn','','💳','Take a loan and keep going',wonS(la)+' · interest '+(LOAN_R[nc]*100).toFixed(1)+'% → <span class="wn">Credit '+crS(nc)+(nc>=8?' (subprime)':'')+'</span>')+'<p class="onote">'+DEBT_NOTE+'</p>':'')+'</div>'+
    '<div class="sub rage">'+overTip()+'</div>';overSig=overNow();
   bdNext={k:'shock',id:run&&run.bd||bdCur&&bdCur.id||petSel()};showCard();
-  const revPay=e=>{if(usedToday('shg_adRevive'))return;store.set('shg_adRevive',dayKey());lowFlag=false;stats.low=0;store.set('shg_stats',stats);balance+=START*3;if(state==='over')resetView();paintTop();paintPickers();setBtn();stamp(e+' Recovered');toast(e+' '+won(START*3)+' added! Let’s go again');},rev=()=>rewardAd('revive',()=>revPay('📺'));
-  const freeGo=()=>{const k=overSig;if(store.off){tabNow();return;}if(unOver()||overSig!==k)return;if(usedToday('shg_adRevive')||!revOk()){const b=$('freeRev');if(b)b.remove();return;}revPay('🎁');};
-  const revGo=()=>{const bs=['adRevive','adLoss','loanBtn','again'].map(id=>$(id)).filter(Boolean);bs.forEach(b=>b.disabled=true);const re=()=>{if(adPause||adReq)return setTimeout(re,500);bs.forEach(b=>{if(b.isConnected)b.disabled=false;});};setTimeout(re,3000);rev();};
-  if($('adRevive'))$('adRevive').onclick=revGo;if($('freeRev'))$('freeRev').onclick=freeGo;
-  const ob=$('overBtns'),addRev=()=>{if(!ob.isConnected||state!=='over'||$('adRevive')||$('freeRev')||usedToday('shg_adRevive')||!revOk())return;if(!adsOn()){if(!adsWait()){ob.insertAdjacentHTML('afterbegin',icH(freeHtml));$('freeRev').onclick=freeGo;recOff();}return;}if(adHold||adDue||adReq||adPause)return;ob.insertAdjacentHTML('afterbegin',icH(revHtml));$('adRevive').onclick=revGo;recOff();};overRev=addRev;const recOff=()=>{const a=$('again');if(a){a.classList.remove('pri','rec');const m=a.querySelector('em');if(m)m.remove();}};
-  let n=0;const iv=setInterval(()=>{if(!ob.isConnected||state!=='over'){if(overRev===addRev)overRev=null;return clearInterval(iv);}if(++n<=60||n%10===0)addRev();},500);
+  revBind();
   if($('loanBtn'))$('loanBtn').onclick=()=>{const k=overSig;if(unOver()||overSig!==k)return;if(!takeLoan())return showOver(0);resetView();stamp('💳 Loan taken: trade carefully');};
-  $('again').onclick=()=>{const k=overSig;if(unOver()||overSig!==k)return;declareBankrupt(false);};
+  $('again').onclick=()=>{const k=overSig;if(unOver()||overSig!==k)return;if(debt>0)showSeize();else declareBankrupt(false);};
   if($('adLoss'))$('adLoss').onclick=()=>{if(adFull('loss'))return $('adLoss').remove();const bs=['adRevive','adLoss','loanBtn','again'].map(id=>$(id)).filter(Boolean),p0=pres;bs.forEach(b=>b.disabled=true);
     rewardAd('lossback',()=>{const b=$('adLoss');if(pres!==p0||!b||b.dataset.paid)return;if(adFull('loss'))return b.remove();b.dataset.paid=1;overLoss=0;adUse('loss');balance+=lb;stats.net+=lb;store.set('shg_stats',stats);b.remove();stamp('📺 Recovered');if(!unOver()){paintTop();paintPickers();setBtn();toast('📺 '+swS(lb)+' recovered');}});
     const re=()=>{if(adPause||adReq)return setTimeout(re,500);bs.forEach(b=>{if(b.isConnected)b.disabled=false;});};setTimeout(re,3000);};
@@ -2579,10 +2652,12 @@ $('giftBtn').onclick=()=>{
 /* ---------- card close ---------- */
 function scrimSync(){const m=$('scrim');if(m)m.hidden=!(!card.hidden&&(card.classList.contains('rs')||card.classList.contains('rvm'))&&$('page').hidden&&!app.classList.contains('pgopen'));}
 function ovlCls(){document.body.classList.toggle('ovl',!card.hidden||!$('modal').hidden);scrimSync();try{proSync()}catch(e){}placeToast();}
+const szFit=(mh,dk)=>{card.classList.remove('obs');const l=card.querySelector('.szl');if(!l)return;l.style.removeProperty('max-height');const o=()=>card.scrollHeight+2-mh;
+  if(o()>0)l.style.setProperty('max-height',29*Math.max(2,Math.floor((l.clientHeight-o()-12)/29))+12+'px');if(dk&&o()>0&&$('overBtns')){card.classList.add('cmp');if(o()>0)card.classList.add('obs');}};
 function fitCard(){if(card.hidden)return;
   if(card.classList.contains('rs')&&!ttl){const sc=$('scrim'),bd=card.classList.contains('bd');card.classList.remove('cmp');card.style.removeProperty('left');
-    if(!DESK.matches){const tb=$('tabs').getBoundingClientRect(),sb=Math.max(0,Math.round(innerHeight-(tb.height&&tb.top<innerHeight?tb.top:innerHeight)));card.style.removeProperty('top');card.style.setProperty('--sb',sb+'px');card.style.setProperty('max-height',Math.max(220,innerHeight-sb-sTop()-(bd?70:12))+'px','important');sc.style.setProperty('--scb',sb+'px');return;}
-    const r=chart.getBoundingClientRect(),g=$('regime').getBoundingClientRect(),tk=$('talk').getBoundingClientRect(),top=Math.max(r.top,g.bottom||r.top)+6+(bd?40:0),bot=Math.min(innerHeight-20,Math.max(r.bottom,tk.height&&tk.left<r.right?tk.bottom:0))-6,mh=Math.max(160,bot-top);card.classList.toggle('cmp',innerHeight<500&&!!card.querySelector('#overBtns'));card.style.setProperty('max-height',mh+'px','important');const h=Math.min(card.offsetHeight,mh);card.style.setProperty('top',(bot-h/2)+'px','important');sc.style.setProperty('--scb','0px');return;}
+    if(!DESK.matches){const tb=$('tabs').getBoundingClientRect(),sb=Math.max(0,Math.round(innerHeight-(tb.height&&tb.top<innerHeight?tb.top:innerHeight)));card.style.removeProperty('top');card.style.setProperty('--sb',sb+'px');{const mh=Math.max(220,innerHeight-sb-sTop()-(bd?70:12));card.style.setProperty('max-height',mh+'px','important');szFit(mh);}sc.style.setProperty('--scb',sb+'px');return;}
+    const r=chart.getBoundingClientRect(),g=$('regime').getBoundingClientRect(),tk=$('talk').getBoundingClientRect(),top=Math.max(r.top,g.bottom||r.top)+6+(bd?40:0),bot=Math.min(innerHeight-20,Math.max(r.bottom,tk.height&&tk.left<r.right?tk.bottom:0))-6,mh=Math.max(160,bot-top);card.classList.toggle('cmp',innerHeight<500&&!!card.querySelector('#overBtns'));card.style.setProperty('max-height',mh+'px','important');szFit(mh,1);const h=Math.min(card.offsetHeight,mh);card.style.setProperty('top',(bot-h/2)+'px','important');sc.style.setProperty('--scb','0px');return;}
   if(card.classList.contains('rvm')&&!DESK.matches){const t0=sTop()+8,tb=$('tabs').getBoundingClientRect(),lim=Math.min(innerHeight,tb.height&&tb.top<innerHeight?tb.top:innerHeight)-8;card.style.removeProperty('left');card.style.setProperty('max-height',(lim-t0)+'px','important');card.style.setProperty('top',Math.round((t0+lim)/2)+'px','important');$('scrim').style.setProperty('--scb',Math.max(0,Math.round(innerHeight-lim-8))+'px');return;}
   $('scrim').style.setProperty('--scb','0px');
   if(ttl){card.classList.remove('cmp');['top','left','max-height'].forEach(p=>card.style.removeProperty(p));return;}
@@ -2592,12 +2667,12 @@ function fitCard(){if(card.hidden)return;
   {const want=Math.round(app.querySelector('.quote').getBoundingClientRect().bottom+76),ch=card.scrollHeight,t0=lim>=350?sTop()+50:8;if(SET.chars&&ch<=lim-t0){const top=lim-want>=ch?want+Math.min(16,(lim-want-ch)/2):lim-ch;card.style.setProperty('top',(top+ch/2)+'px','important');card.style.setProperty('max-height',(lim-top)+'px','important');return;}}
   const tp=lim>=350?'(env(safe-area-inset-top,0px) + 50px)':'8px';card.style.setProperty('top','calc(('+tp+' + '+lim+'px) / 2)','important');card.style.setProperty('max-height','calc('+lim+'px - '+tp+')','important');}
 new MutationObserver(()=>{card.scrollTop=0;fitCard();ovlCls();}).observe(card,{childList:true,attributes:true,attributeFilter:['hidden']});ovlCls();addEventListener('resize',fitCard);addEventListener('resize',placeToast);app.addEventListener('scroll',fitCard,{passive:true});
-new MutationObserver(()=>{if(card.hidden||card.querySelector('.cx')||card.querySelector('#again,.opts,#qStart,#qGo'))return;
+new MutationObserver(()=>{if(card.hidden||card.querySelector('.cx')||card.querySelector('#again,#szGo,.opts,#qStart,#qGo'))return;
   card.insertAdjacentHTML('afterbegin','<button class="cx" type="button" data-close aria-label="Close">✕</button>');}).observe(card,{childList:true,attributes:true,attributeFilter:['hidden']});
 card.addEventListener('click',e=>{const cb=e.target.closest('button');if(cb&&e.detail>0)cb.blur();
   if(e.target.closest('#cNext')){const n=performance.now();if(n-tapAt<300||tutTapNo())return;tapAt=n;start();return;}
   {const td=e.target.closest('[data-go]');if(td){const g=td.dataset.go;card.hidden=true;hideCoach();if(g==='gift')setTimeout(()=>$('giftBtn').click(),0);else tab(g);return;}}
-  if(e.target.closest('[data-close]')){card.hidden=true;hideCoach();if(!tutDone&&(state==='ready'||state==='result'))coachReady();else setTimeout(()=>{if(!petCue()&&Math.random()<.5)setTimeout(()=>ptSay(pick(PT_SAY.idle),1800),350);},0);}});
+  if(e.target.closest('[data-close]')){card.hidden=true;hideCoach();if(state==='over'&&!adPause){overRe();return;}if(!tutDone&&(state==='ready'||state==='result'))coachReady();else setTimeout(()=>{if(!petCue()&&Math.random()<.5)setTimeout(()=>ptSay(pick(PT_SAY.idle),1800),350);},0);}});
 [card,$('modal'),$('sheet'),$('page')].forEach(el=>new MutationObserver(bdSync).observe(el,{attributes:true,attributeFilter:['hidden']}));new MutationObserver(bdSync).observe(app,{attributes:true,attributeFilter:['class']});
 new MutationObserver(bdPlace).observe($('coach'),{attributes:true,attributeFilter:['hidden','style','class']});card.addEventListener('scroll',bdPlace,{passive:true});if(document.fonts&&document.fonts.addEventListener)document.fonts.addEventListener('loadingdone',()=>{fitTitle();bdPlace();});
 /* ---------- modals ---------- */
@@ -2621,7 +2696,7 @@ function showLevel(){if(state==='holding'||state==='ghost')return;
 function roadHtml(){const ri=rankOf(xp),id=petSel(),st=petSt(id);
   return '<ol class="road">'+RANKS.map((r,i)=>{const u=unlOf(i),e=i===RANKS.length-1?'👑':u.length?(u[0].match(ICR)||['🎖️'])[0]:'🎖️',on=i===ri,ok=i<ri,me=on&&SET.chars&&!!profile;
     return '<li class="rd'+(on?' on':ok?' ok':'')+'"><div class="rnc"><span class="rn'+(me?' me s'+st:'')+'">'+(me?petImg(id,st):icI(e,u[0]||r[1]))+'</span><small>'+r[0].toLocaleString('en-US')+' XP</small></div><div class="rt"><b>'+(on?'▶ ':'')+r[1]+'</b>'+(u.length?'<small>🔓 '+u.join(' · ')+'</small>':'')+'</div></li>';}).join('')+'</ol>';}
-function goalNext(){const ri=rankOf(xp),nx=RANKS[ri+1],nw=balance+invTotal()-debt,hi=homeIdx(),nh=HOMES[hi+1],G=[];
+function goalNext(){const ri=rankOf(xp),nx=RANKS[ri+1],nw=netW(),hi=homeIdx(),nh=HOMES[hi+1],G=[];
   if(nx){const u=unlOf(ri+1)[0];G.push({k:'rank',e:u?(u.match(ICR)||['⬆️'])[0]:'⬆️',r:u?nx[1]:'',t:u?u.replace(ICR,'').trim():nx[1],p:(xp-RANKS[ri][0])/(nx[0]-RANKS[ri][0])});}
   if(nh)G.push({k:'home',e:'🏠',t:nh.n,p:Math.max(0,nw)/nh.min});
   if(!G.length){const lv=lvlOf(xp);G.push({k:'lv',e:'⭐',t:'Lv.'+(lv.L+1),p:lv.cur/lv.need});}
@@ -2652,7 +2727,7 @@ const tapHold=e=>{if(e.button>0)return;e.preventDefault();const n=performance.no
 if(window.PointerEvent)btn.addEventListener('pointerdown',tapHold);else{btn.addEventListener('touchstart',tapHold,{passive:false});btn.addEventListener('mousedown',tapHold);}
 const forceSell=()=>{if(state==='holding'&&run&&t<run.tMin){
     while(t<run.tMin&&base(t)<run.crashAt){t+=.01;cur=Math.max(run.lev>1?.3:.85,base(t)*(1+(wig(t)-1)*Math.min(1,t/.3)*(run.T.wig||1)*(run.rg.wig||1))*newsF(t));peak=Math.max(peak,cur);
-      if(run.liqLine&&cur<=run.liqLine){if(inv.noliq>0){inv.noliq--;store.set('shg_inv',inv);stats.c.items++;store.set('shg_stats',stats);run.liqLine=0;toast('🧯 Liquidation Guard used! Saved!');}else{run.liq=1;crash();return;}}
+      if(run.liqLine&&cur<=run.liqLine&&!(run.hint&&t<run.hint.x)){if(inv.noliq>0){inv.noliq--;store.set('shg_inv',inv);stats.c.items++;store.set('shg_stats',stats);run.liqLine=0;toast('🧯 Liquidation Guard used! Saved!');}else{run.liq=1;crash();return;}}
       const idx=runBase+Math.floor(t/CD);while(candles.length<=idx){const pc=candles.length?candles[candles.length-1].c:1;candles.push({o:pc,h:pc,l:pc,c:pc,v:0,r:1});}const c=candles[candles.length-1];c.h=Math.max(c.h,cur);c.l=Math.min(c.l,cur);c.c=cur;}
     if(base(t)>=run.crashAt){crash();return;}}
   release();};
@@ -2666,12 +2741,12 @@ addEventListener('pagehide',()=>{if(memSave)try{window.name='shgMem:'+JSON.strin
 addEventListener('resize',()=>{if(state==='holding'&&getComputedStyle($('rotate')).display!=='none')forceSell();});
 let tabStale=0,tabRp=0;const adOffer=()=>!card.hidden&&!!card.querySelector('#adWin,#adLoss');
 const TAB_TAKE={shg_streak:v=>{streak=Math.max(0,Math.floor(+v||0));app.classList.toggle('fever',streak>=5);$('fever').hidden=streak<5;},shg_season:v=>season=v,shg_daily:v=>{daily=v;ensureDaily();},shg_weekly:v=>{weekly=v;ensureDaily();},shg_inv:v=>inv=v,shg_armed:v=>armed=v,shg_inv2:v=>invest=v,shg_gear:v=>gear=v,shg_col:v=>col=Array.isArray(v)?v.filter((id,i)=>COL.some(c=>c.id===id)&&v.indexOf(id)===i):[],shg_ach:v=>ach=v,shg_achc:v=>achC=v,shg_sk:v=>{sk=cntMap(v);fixSk();},shg_league:v=>league=v,shg_nick:v=>nick=v,shg_profile:v=>profile=Object.prototype.hasOwnProperty.call(TYPES,v)?v:null,shg_home:v=>lastHome=v,shg_intPaid:v=>intPaid=!!v,shg_best:v=>best=Math.max(best,+v||0),shg_stats:v=>{Object.assign(stats,v);fixStats();lowFlag=!!stats.low;},shg_decor:v=>Object.assign(decor,v),shg_pet:v=>{const p=petFix(v);if(p)pet=p;petDot();}},
-  TAB_KEEP=['shg_bal','shg_debt','shg_credit','shg_xp','shg_spin','shg_adSpin','shg_adRevive','shg_adc','shg_chalDay','shg_chalMax','shg_chalRun','shg_chalPaid','shg_tutPaid','shg_tutBonus','shg_tut','shg_set','shg_pct','shg_ipct','shg_tier','shg_levTip','shg_itemTip','shg_tips','shg_pet'];
+  TAB_KEEP=['shg_bal','shg_debt','shg_rdebt','shg_credit','shg_xp','shg_spin','shg_adSpin','shg_adRevive','shg_adc','shg_chalDay','shg_chalMax','shg_chalRun','shg_chalPaid','shg_tutPaid','shg_tutBonus','shg_tut','shg_set','shg_pct','shg_ipct','shg_tier','shg_levTip','shg_itemTip','shg_tips','shg_pet'];
 addEventListener('storage',e=>{const k=e.key;if(e.storageArea&&e.storageArea!==localStorage)return;if(k!==null&&(k.slice(0,4)!=='shg_'||k==='shg_errlog'))return;
   if(k==='shg_prem'||k==='shg_premEq'){if(PREM_ON)premTake(k);return;}if(k==='shg_premReset'){if(PREM_ON&&e.newValue)premReset();return;}
   if(tabStale!==1&&k!==null&&e.newValue!==null&&(adPause||adReq||adOffer()||!document.hidden&&(tabStale===2||state==='holding'||state==='ghost'))&&(TAB_TAKE[k]||TAB_KEEP.includes(k))){store.seen[k]=e.newValue;const d=(+e.newValue||0)-(+e.oldValue||0);
     if(k==='shg_bal'){const f=d<0&&state==='holding'&&run&&balance+d<(run.re&&!run.re.done?run.re.bet:run.bet)*(run.lev>1?Math.max(1,run.T.loss*run.lev*.6):1);if(f)forceSell();balance+=d;if(f){if(balance<0){if(!debt)credit=Math.min(10,credit+1);debt+=-balance;balance=0;}paintTop();}}
-    else if(k==='shg_debt')debt=Math.max(0,debt+d);else if(k==='shg_credit')credit=Math.min(10,Math.max(1,credit+d));else if(k==='shg_xp')xp+=d;
+    else if(k==='shg_debt')debt=Math.max(0,debt+d);else if(k==='shg_rdebt')rdebt=Math.max(0,rdebt+d);else if(k==='shg_credit')credit=Math.min(10,Math.max(1,credit+d));else if(k==='shg_xp')xp+=d;
     else if(TAB_TAKE[k])try{const v=JSON.parse(e.newValue);if(v!=null)TAB_TAKE[k](v);}catch(_){}
     if(!document.hidden&&state!=='holding'&&state!=='ghost'){clearTimeout(tabRp);tabRp=setTimeout(()=>{if(!document.hidden&&state!=='holding'&&state!=='ghost'){paintTop();paintPickers();setBtn();}},100);}
     tabStale=2;return;}
@@ -2712,7 +2787,7 @@ function liveTick(dt,paint){
   liveV+=rnd(-1,1)*.00045*w-liveV*.025+(1-liveM)*.0006;
   if(Math.random()<dt*.18){liveV=(Math.random()<.55?1:-1)*rnd(.0025,.006)*w;if(liveV>0&&Math.random()<.5)talk('hype');}
   liveM*=1+liveV*.6+rnd(-1,1)*.0012*w;liveM=Math.max(.8,Math.min(1.25,liveM));
-  if(paint&&profile&&(state==='ready'||(state==='result'&&performance.now()>=readyAt))){const d=(liveM-1)*100,bb=chal&&tutDone?'':bossBtn();btn.classList.toggle('boss',!!bb);btnTxt(bb||(chal&&tutDone?'🏆 '+(chal.i+1)+'/5 Buy':state==='result'&&tutDone?'Buy next stock':'Tap to Buy')+(Math.abs(d)>=.5?(d>0?' · ▲':' · ▼')+Math.abs(d).toFixed(1)+'%':''));}
+  if(paint&&profile&&(state==='ready'||(state==='result'&&performance.now()>=readyAt))){const d=(liveM-1)*100,cl=cashLbl(),bb=cl||chal&&tutDone?'':bossBtn();btn.classList.toggle('boss',!!bb);btnTxt(cl||bb||(chal&&tutDone?'🏆 '+(chal.i+1)+'/5 Buy':state==='result'&&tutDone?'Buy next stock':'Tap to Buy')+(Math.abs(d)>=.5?(d>0?' · ▲':' · ▼')+Math.abs(d).toFixed(1)+'%':''));}
   let c=candles[candles.length-1];
   if(!c||liveT>=CD){liveT=0;c={o:prev,h:prev,l:prev,c:prev,v:0};candles.push(c);if(candles.length>240)candles.splice(0,candles.length-240);}
   c.h=Math.max(c.h,liveM);c.l=Math.min(c.l,liveM);c.c=liveM;c.v+=dt*rnd(.4,1.4);cur=liveM;
@@ -3053,7 +3128,7 @@ function tab(name,keep){if(!keep&&tabNow())return;
   app.classList.toggle('pgopen',name!=='trade');
   if(name!=='trade')$('sheet').hidden=true;syncInert();
   const pg=$('page');if(name==='grow'&&pet&&pet.nw)petMod(p=>p.nw=0);
-  if(name==='trade'){pg.hidden=true;paintPickers();fitCard();placeToast();if(!tutDone&&profile&&card.hidden&&$('modal').hidden&&(state==='ready'||state==='result'))coachReady();return;}
+  if(name==='trade'){pg.hidden=true;if(state==='over'&&card.hidden&&!adPause)overRe();paintPickers();fitCard();placeToast();if(!tutDone&&profile&&card.hidden&&$('modal').hidden&&(state==='ready'||state==='result'))coachReady();return;}
   if(!card.hidden&&card.querySelector('[data-close]')&&!card.querySelector('#adWin,#adLoss'))card.hidden=true;hideCoach();
   pg.innerHTML=icH('<div>'+(name==='grow'?pageGrow():name==='shop'?pageShop():name==='account'?pageAccount():name==='mission'?pageMission():pageSet())+'</div>',1);
   pg.dataset.tab=name;if(!keep){pg.classList.remove('pgin');void pg.offsetWidth;pg.classList.add('pgin');clearTimeout(tab.pt);tab.pt=setTimeout(()=>pg.classList.remove('pgin'),260);}
@@ -3071,7 +3146,7 @@ const HL=(i,t,d)=>'<div class="li"><i>'+icI(i,t)+'</i><div><b>'+t+'</b><small>'+
 const HELP={
   mission:()=>'<h2>📋 Missions</h2><p class="note">Daily missions reset at midnight, weekly missions every Monday.</p>'+HL('🏆','Daily Challenge','Once a day, 5 rounds with the same crashes for everyone. Sell return = score, a crash = −30')+HL('👥','Friend League','Enter a friend’s shared SHG- code to rank by this week’s score')+HL('🎫','Season Pass','XP each round fills 30 reward tiers. New season every Monday')+HL('📋','Missions','8 daily · 10 weekly · 20 career'),
   grow:()=>'<h2>🌱 Grow</h2>'+HL('🐾','Partner','Bond +1 per round · +1 for a profit · +2 for a boss (practice and challenge rounds don’t count)')+HL('🔁','Switching partners','Tap a friend to make them your partner · each friend keeps their own Bond, and the XP bonus follows your most grown friend · locked friends join at the rank or achievement shown')+HL('🌳','SP · Skill points','SP comes slowly: 1 per 2 levels, 1 per achievement, 1 per 2 career mission tiers, 2 per boss defeat, 1 per weekly mission. Each skill’s upgrade cost rises by 1 for every 5 levels in that skill, and each branch’s top skills unlock at 10 points in that branch.')+HL('🎖️','Ranks','Earn XP to rank up and unlock items, leverage and new stock types'),
-  shop:()=>'<h2>🛒 Shop</h2><p class="note">Spend your money here. Consumables are used up once their effect is spent; gear gives permanent bonuses.</p>'+HL('🧪','Consumable','Consumables scale with cash · each one you own makes the next 1.6× pricier')+HL('🏦','Bank','Taking a loan drops your credit 1 grade; paying it all off raises it 1 grade. Debt over the limit is auto-repaid from cash; if you can’t cover it = credit default · gear and investments seized. 30% of take-profit gains auto-repay debt.')+HL('🛋️','Decorate Mini-Room','Buy wallpaper, floors and decor in the Shop'),
+  shop:()=>'<h2>🛒 Shop</h2><p class="note">Spend your money here. Consumables are used up once their effect is spent; gear gives permanent bonuses (seized in a debt bankruptcy).</p>'+HL('🧪','Consumable','Consumables scale with cash · each one you own makes the next 1.6× pricier')+HL('🏦','Bank','Taking a loan drops your credit 1 grade; paying it all off raises it 1 grade. Debt over the limit is auto-repaid from cash; if you can’t cover it = credit default · gear, consumables and investments seized. 30% of take-profit gains auto-repay debt.')+HL('🥫','Declare bankruptcy','Go broke while in debt and it’s bankruptcy instead of a fresh start: debt wiped · gear, consumables and investments seized · Credit D. You see the exact list and confirm first. Level, skills, achievements, collection, partners and decor stay.')+HL('🌱','Restart Fund','Money from Start fresh or bankruptcy is a Restart Fund (interest-free debt). It has no interest, doesn’t count toward the debt limit and is never seized. 30% of take-profit gains repay it after any debt. You can also repay it at the Bank. It counts against your net worth.')+HL('🛋️','Decorate Mini-Room','Buy wallpaper, floors and decor in the Shop'),
   account:()=>'<h2>💼 Account</h2>'+HL('💼','Invest','Park cash here and it earns (or loses) a little every round. Each product has a cap on how much earns returns, and withdrawals may cost a fee.')+HL('🏆','Collection','8 categories, 50 items. SP per buy, bonus SP +3 per full category')+HL('🏠','Mini-room','Grow your net worth to move into a better home')+HL('💾','Backup Code','Copy it in Settings to keep playing on another device')};
 function help(k){const f=HELP[k];if(f)openModal(f(),'hs');}
 function skBub(){const n=spFree();if(n>0){const sg=SKILLS.filter(x=>!(x.req&&brPts(x.br)<x.req)&&skl(x.id)<x.max&&costOf(skl(x.id))<=n).sort((a,b)=>skl(a.id)-skl(b.id))[0];return LANG==='en'?n+' SP! '+(sg?'Try '+sg.n+'?':''):'SP '+n+'! '+(sg?sg.n+'?':'');}
@@ -3281,7 +3356,7 @@ const SEG_OF={secItem:'item',secDecor:'decor',secBank:'bank'};
 function pageShop(){const wc=CONSUM[wkOrd(weekKey())%CONSUM.length];
   const pb=(c,pr,pri)=>{const no=balance<pr;return '<button class="setbtn'+(pri&&!no?'':' tone')+(no?' no':'')+'" type="button" data-buy="'+c.id+'" aria-label="'+(pri?buyV(pr)+' · '+c.n:buyL(c.n,pr))+'"'+(no?' disabled':'')+'>'+(no?'🔒 ':'')+(pri?buyV(pr):wonS(pr))+'</button>';},
     ub=c=>{const own=inv[c.id]||0,arm=armed[c.id]||0;return c.arm?'<button class="setbtn ghost" type="button" data-use="'+c.id+'" aria-label="'+c.n+' · '+(arm>0?'In use':'Use')+'" '+(own<1||arm>0?'disabled':'')+'>'+(arm>0?'In use':'Use')+'</button>':'';},
-    own=c=>'<span class="ownc">Owned <b>'+(inv[c.id]||0)+'</b>'+(armed[c.id]>0?' · Active':'')+'</span>';
+    own=c=>'<span class="ownc">Owned <b>'+(inv[c.id]||0)+'</b>'+(armed[c.id]>0?c.arm>1?' · '+armed[c.id]+' left':' · Active':'')+'</span>';
   const fp=cPrice(wc);
   return phead('shop','🛒 Shop',debt>0?'Pay off your debt first!':'This week’s pick: '+wc.n+'!',debt>0?'':wc.d,'<span class="phx"><small>Cash</small><b>'+wonS(balance)+'</b></span>')+
    '<div class="seg sseg" role="group" aria-label="Shop">'+[['item','Items'],['decor','Decor'],['bank','Bank']].map(([k,t])=>'<button type="button" data-sseg="'+k+'" aria-pressed="'+(shopSeg===k)+'">'+t+'</button>').join('')+'</div>'+
@@ -3291,13 +3366,13 @@ function pageShop(){const wc=CONSUM[wkOrd(weekKey())%CONSUM.length];
    '<h3>✨ Consumables <span class="mu">· 1.6× price per one owned</span></h3>'+
    '<div class="feat pan" style="--g:'+CGL[wc.id]+'"><div class="fart">'+icI(wc.e,wc.n)+'</div><div class="ftx"><h4>'+wc.n+' <span class="rtag">Top pick</span></h4><p>'+wc.d+'</p>'+own(wc)+'</div><div class="frow">'+ub(wc)+pb(wc,fp,1)+'</div></div>'+
    '<div class="scards">'+CONSUM.filter(c=>c!==wc).map(c=>'<div class="scard" style="--g:'+CGL[c.id]+'">'+own(c)+'<div class="sart">'+icI(c.e,c.n)+'</div><b>'+c.n+'</b><p>'+c.d+'</p><div class="pair">'+ub(c)+pb(c,cPrice(c))+'</div></div>').join('')+'</div>'+
-   '<h3>💎 Gear <span class="mu">· permanent bonus</span></h3><div class="scards">'+GEAR.map(g=>{const ow=gear[g.id],lk=rankOf(xp)<g.lv,no=balance<g.p;
+   '<h3>💎 Gear <span class="mu">· permanent (seized in bankruptcy)</span></h3><div class="scards">'+GEAR.map(g=>{const ow=gear[g.id],lk=rankOf(xp)<g.lv,no=balance<g.p;
      return '<div class="scard gear'+(ow?' done':lk?' lock':'')+'" data-g="'+g.id+'"><div class="sart">'+icI(g.e,g.n)+'</div><b>'+g.n+'</b><p>'+g.d+'</p><div class="pair">'+(ow?'<span class="ownb">Owned ✓</span>':lk?'<span class="lkb"><span aria-hidden="true">🔒 '+RANKS[g.lv][1]+'</span><span class="sr">'+g.n+' · locked, opens at '+RANKS[g.lv][1]+' rank</span></span>':'<button class="setbtn tone'+(no?' no':'')+'" type="button" data-gear="'+g.id+'" aria-label="'+buyL(g.n,g.p)+'"'+(no?' disabled':'')+'>'+(no?'🔒 ':'')+wonS(g.p)+'</button>')+'</div></div>';}).join('')+'</div>'+
    '</section>'+
    '<section class="sec full" id="secDecor">'+decorHtml()+(PREM_ON?premHtml():'')+'</section>'+
    '<section class="sec full" id="secBank">'+
-   '<h3>🏦 Bank</h3><div class="pan bank">'+[['Debt',debt?won(debt):'None'],['Credit Grade',crS(credit)+(credit>=8?' · subprime':'')],['Interest/round',(loanRate()*100).toFixed(1)+'%'],['Debt limit',won(debtLimit())]].map(([k,v])=>`<div class="brow"><span class="mu">${k}</span><b>${v}</b></div>`).join('')+
-   '<div class="bbtn"><button class="setbtn ghost" type="button" id="bLoan" '+(canLoan()?'':'disabled')+'>💳 Loan<br>'+wonS(loanAmt())+'</button><button class="setbtn ghost" type="button" id="bHalf" '+(debt&&balance>0?'':'disabled')+'>Repay half</button><button class="setbtn ghost" type="button" id="bAll" '+(debt&&balance>0?'':'disabled')+'>Repay all</button></div>'+(canLoan()?'':'<p class="lead" style="margin:8px 0 0">'+(credit>=10?(debt>0?'No loans at Credit D · pay off all debt to raise your credit':'No loans at Credit D · play 15 rounds debt-free to raise your credit'):'Debt limit reached · repay some first to borrow again')+'</p>')+
+   '<h3>🏦 Bank</h3><div class="pan bank">'+[['Debt',debt?won(debt):'None'],['Credit Grade',crS(credit)+(credit>=8?' · subprime':'')],['Interest/round',(loanRate()*100).toFixed(1)+'%'+(debt>0?' · '+wonS(Math.ceil(debt*loanRate())):'')],['Debt limit',won(debtLimit())]].concat(rdebt>=1?[['🌱 Restart Fund',won(rdebt)+' · interest-free']]:[]).map(([k,v])=>`<div class="brow"><span class="mu">${k}</span><b>${v}</b></div>`).join('')+
+   '<div class="bbtn"><button class="setbtn ghost" type="button" id="bLoan" '+(canLoan()?'':'disabled')+'>💳 Loan<br>'+wonS(loanAmt())+'</button><button class="setbtn ghost" type="button" id="bHalf" '+(debt&&balance>0?'':'disabled')+'>Repay half</button><button class="setbtn ghost" type="button" id="bAll" '+(debt&&balance>0?'':'disabled')+'>Repay all</button></div>'+(canLoan()?'':'<p class="lead" style="margin:8px 0 0">'+loanWhy()+'</p>')+(rdebt>=1?'<div class="bbtn rdb"><button class="setbtn ghost" type="button" id="rHalf" '+(balance>0?'':'disabled')+'>Restart Fund<br>Repay half</button><button class="setbtn ghost" type="button" id="rAll" '+(balance>0?'':'disabled')+'>Restart Fund<br>Repay all</button></div><p class="lead rdn">🌱 Restart Fund: no interest, no limit, never seized · profits repay it after any debt</p>':'')+'<p class="lead bwarn">'+DEBT_NOTE+'</p>'+
    '</div><p class="lead bnote">A loan drops your credit one grade; paying it all back raises it one grade · see (?) for details</p></section></div>';
 }
 
@@ -3430,15 +3505,17 @@ const HOMES=[
   {n:'Space Station Suite',min:1e16,wl:'#9aa6b8',wr:'#b4bfce',f1:'#7d8796',f2:'#6f7988',win:'space',size:1,deco:[['👨‍🚀',.78,.25,17],['🧪',.88,.62,11],['🛰️',.6,.82,11]]},
   {n:'Moon Base',min:1e18,wl:'#2a2d40',wr:'#353950',f1:'#bdbdbd',f2:'#a8a8a8',win:'moon',size:1,deco:[['🚀',.8,.22,22],['🏳️',.88,.62,13],['🌑',.6,.85,10]]}
 ];
-const homeIdx=()=>{const w=balance+invTotal()-debt;let i=0;HOMES.forEach((h,j)=>{if(w>=h.min)i=j;});return i;};
+const homeIdx=()=>{const w=netW();let i=0;HOMES.forEach((h,j)=>{if(w>=h.min)i=j;});return i;};
 let lastHome=store.get('shg_home',-1);
 function checkHome(){const h=homeIdx();if(lastHome<0){lastHome=h;store.set('shg_home',h);return;}if(h>lastHome){lastHome=h;store.set('shg_home',h);setTimeout(()=>{stamp('🏠 Moving day!');toast('🏠 '+HOMES[h].n+': moved in!');cgHappy();},400);}}
+let homeDrop=-1;
+function homeNote(){const h=homeIdx(),sv=+store.get('shg_homeSeen',-1);if(sv>=0&&h<sv)homeDrop=h;else if(h>sv)homeDrop=-1;if(sv!==h)store.set('shg_homeSeen',h);return homeDrop===h?'<p class="rnote">🏠 Your home follows your net worth · it comes back as your money grows · decor items stay yours</p>':'';}
 function roomHtml(){
   const hi=homeIdx(),H=HOMES[hi],nx=HOMES[hi+1],ri=rankOf(xp),pid=petSel(),ps=petSt(pid),joy=performance.now()-roomJoyAt<1800,ar=ps===1&&BDW[pid]&&!RM.matches?BDW[pid][0]/200:0;
   const pt=SET.chars?'<span class="rpt s'+ps+(joy?' joy':'')+'" aria-hidden="true">'+(joy&&ar?'<span class="rvf" style="--ar:'+ar.toFixed(4)+'"><img src="'+chU(pid,'happy')+'" alt="" draggable="false" onerror="this.parentNode.remove()"></span>':petImg(pid,ps))+'</span>':'';
   return '<div class="room iso"><canvas class="roomcv" width="200" height="150"></canvas>'+pt+(SET.chars?'<div class="ava2"><b>'+(hi===0?'Ramen again…':hi<3?RANKS[ri][1]:'Made it: '+RANKS[ri][1])+'</b></div>':'')+
-    '<div class="rlabel">🏠 '+H.n+' · Lv.'+(hi+1)+'/'+HOMES.length+(nx?(LANG==='en'?' · Next <b>'+nx.n+'</b> · '+wonS(Math.max(0,nx.min-(balance+invTotal()-debt)))+' to go':' · Next <b>'+nx.n+'</b> in '+wonS(Math.max(0,nx.min-(balance+invTotal()-debt)))):' · Final home!')+'</div>'+
-    (nx?'<div class="rprog"><u style="width:'+Math.max(0,Math.min(100,(balance+invTotal()-debt)/nx.min*100))+'%"></u></div>':'')+'</div>';
+    '<div class="rlabel">🏠 '+H.n+' · Lv.'+(hi+1)+'/'+HOMES.length+(nx?(LANG==='en'?' · Next <b>'+nx.n+'</b> · '+wonS(Math.max(0,nx.min-(netW())))+' to go':' · Next <b>'+nx.n+'</b> in '+wonS(Math.max(0,nx.min-(netW())))):' · Final home!')+'</div>'+
+    (nx?'<div class="rprog"><u style="width:'+Math.max(0,Math.min(100,(netW())/nx.min*100))+'%"></u></div>':'')+'</div>'+homeNote();
 }
 function shelfItems(){const own=COL.filter(c=>col.includes(c.id)).sort((a,b)=>b.p-a.p).slice(0,10);const rest=COL.filter(c=>!col.includes(c.id)).sort((a,b)=>a.p-b.p);return own.concat(rest).slice(0,10);}
 let roomOff=null,roomT=0;const roomSoon=()=>{clearTimeout(roomT);roomT=setTimeout(()=>{try{drawRooms()}catch(e){}},40);};
@@ -3524,11 +3601,11 @@ function setDone(K){const R=DECOR.find(d=>d.set===K.id);if(R&&!decor.own.include
   openModal('<div class="rv"><div class="rv-st">'+rvPtH()+'<div class="rv-art">'+(R?'<span class="rwi swr" style="background:linear-gradient(160deg,'+R.c[1]+','+R.c[0]+')">'+icT(R.e)+'</span>':'<span class="rwi">'+icT(K.e)+'</span>')+(SET.fx&&!RM.matches?spkH(14):'')+'</div></div><h2 class="rv-t">'+K.n+' set complete!</h2><div class="rv-amt">Bonus SP +3'+(R?' · '+R.n.replace(/ \([^)]*\)$/,''):'')+'</div>'+(R?'<p class="note">Applied to your mini-room · change it in Shop › Decor</p>':'')+'</div>','rv done');$('modalClose').textContent='Claim';sfx.up();}
 function pageAccount(){
   const wr=stats.rounds?Math.round(stats.wins/stats.rounds*100):0,T=profile&&TYPES[profile],ri=rankOf(xp),tot=invTotal(),last=Object.values(invest).reduce((n,h)=>n+(h.d||0),0),dep=Math.floor(balance*invPct);
-  return phead('account','💼 Account','Net worth: '+(balance+tot-debt<0?swS(balance+tot-debt):wonS(balance+tot-debt))+'!',debt>0?'Debt '+wonS(debt)+' · Credit '+crS(credit):'','<button class="ib phs" type="button" id="setGo" aria-label="Settings">⚙️</button>')+
+  return phead('account','💼 Account','Net worth: '+(netW()<0?swS(netW()):wonS(netW()))+'!',debt>0?'Debt '+wonS(debt)+' · Credit '+crS(credit):'','<button class="ib phs" type="button" id="setGo" aria-label="Settings">⚙️</button>')+
    pjump([['secAst','Assets'],['secInv','Invest'],['secCol','Collection'],['secRec','Stats'],['secAch','Achievements']])+'<div class="secs">'+
    '<section class="sec" id="secAst"><h3>🏠 My Assets</h3>'+roomHtml()+(T?'<div class="pan" style="padding:12px 14px"><div class="typecard"><i>'+T.e+'</i><div><b>'+T.n+'</b><br><small class="mu">'+T.perk+' · '+RANKS[rankOf(xp)][1]+' · '+xp.toLocaleString('en-US')+' XP</small></div></div>'+(tipGot('quiz')?'':'<button class="setbtn ghost" type="button" id="retake" style="width:100%;margin-top:10px">🧪 Investor Type Quiz (5 Qs)</button>')+'</div>':'')+
-   '<div class="tiles">'+[['Balance',wonS(balance)],['Invested',wonS(invTotal())],['Debt',debt?mnS('-')+wonS(debt):'None'],['Net Worth',swS(balance+invTotal()-debt)],['Collection',col.length+' / '+COL.length],['Credit Grade',crS(credit)+(credit>=8?' 😱':credit<=3?' 😎':'')],['Next Loan',canLoan()?wonS(loanAmt()):'N/A'],['Debt limit',wonS(debtLimit())]].map(([k,v])=>`<div class="tile"><small>${k}</small><b>${v}</b></div>`).join('')+'</div>'+
-   (()=>{const nw=balance+invTotal()-debt,need=PRES_NEED();return '<h3>🔁 Retire · Rebirth '+(pres?'<span class="mu">⭐'+pres+'</span>':'')+'</h3><div class="pan" style="padding:12px 14px"><p class="lead" style="margin:0 0 8px">Net Worth <b>'+wonS(need)+'</b> or more lets you retire. Cash, investments, gear, consumables and debt reset, but <b>level, skills, achievements & collection stay</b>. Each rebirth gives <b>+10% take-profit gains and +2 SP</b> forever.</p><div class="xpbar"><u style="width:'+Math.max(0,Math.min(100,nw/need*100))+'%"></u></div><p class="mu" style="font-size:12px;margin:4px 0 8px">Net worth now '+swS(nw)+' · Current bonus: take profit +'+pres*10+'%</p><button class="setbtn" type="button" id="prestige" style="width:100%"'+(nw>=need?'':' disabled')+'>🔁 Retire & start Run '+(pres+2)+'</button></div>';})()+'</section>'+
+   '<div class="tiles">'+[['Balance',wonS(balance)],['Invested',wonS(invTotal())],['Debt',debt?mnS('-')+wonS(debt):'None']].concat(rdebt>=1?[['Restart Fund',mnS('-')+wonS(rdebt)]]:[],[['Net Worth',swS(netW())],['Collection',col.length+' / '+COL.length],['Credit Grade',crS(credit)+(credit>=8?' 😱':credit<=3?' 😎':'')],['Next Loan',canLoan()?wonS(loanAmt()):'N/A'],['Debt limit',wonS(debtLimit())]]).map(([k,v])=>`<div class="tile"><small>${k}</small><b>${v}</b></div>`).join('')+'</div>'+
+   (()=>{const nw=netW(),need=PRES_NEED();return '<h3>🔁 Retire · Rebirth '+(pres?'<span class="mu">⭐'+pres+'</span>':'')+'</h3><div class="pan" style="padding:12px 14px"><p class="lead" style="margin:0 0 8px">Net Worth <b>'+wonS(need)+'</b> or more lets you retire. Cash, investments, gear, consumables and debt reset, but <b>level, skills, achievements & collection stay</b>. Each rebirth gives <b>+10% take-profit gains and +2 SP</b> forever.</p><div class="xpbar"><u style="width:'+Math.max(0,Math.min(100,nw/need*100))+'%"></u></div><p class="mu" style="font-size:12px;margin:4px 0 8px">Net worth now '+swS(nw)+' · Current bonus: take profit +'+pres*10+'%</p><button class="setbtn" type="button" id="prestige" style="width:100%"'+(nw>=need?'':' disabled')+'>🔁 Retire & start Run '+(pres+2)+'</button></div>';})()+'</section>'+
    '<section class="sec" id="secInv"><h3>💼 Invest</h3>'+'<div class="tiles"><div class="tile"><small>Invested</small><b>'+wonS(tot)+'</b></div><div class="tile"><small>Last Round P/L</small><b class="'+(last>0?'up':last<0?'dn':'mu')+'">'+swS(last)+'</b></div><div class="tile"><small>Cash</small><b>'+wonS(balance)+'</b></div></div>'+
    '<div class="ivtop"><div class="betrow ipct" role="group" aria-label="Transfer %">'+[.05,.1,.25,.5,1].map(r=>'<button type="button" data-ipct="'+r+'" aria-pressed="'+(invPct===r)+'">'+(r*100)+'%</button>').join('')+'</div><p class="ivn">Deposit '+wonS(dep)+' · '+(invPct*100)+'% of cash · withdraw '+(invPct*100)+'%</p></div>'+
    '<div class="pan iv">'+PROD.map(P=>{const h=invest[P.id]||{a:0},lk=ri<P.lv,ivB=LANG==='en'?['Add','Take out']:['Deposit','Withdraw'];
@@ -3561,7 +3638,7 @@ function glossary(){
   G('🏆 Challenge · League · Season',L('🏆','Daily Challenge','Once a day, 5 rounds with the same crashes for everyone. Sell return = score, a crash = −30')+L('👥','Friend League','Enter a friend’s shared SHG- code to rank by this week’s score')+L('🎫','Season Pass','XP each round fills 30 reward tiers. New season every Monday')+L('🛋️','Decorate Mini-Room','Buy wallpaper, floors and decor in the Shop')+L('💾','Backup Code','Copy it in Settings to keep playing on another device'))+
   G('🔣 Other Icons',L('🔥','Fever','5 take profits in a row. 2× bonus')+L('💎','Treasure Chest','Sometimes appears on take profit')+L('⚔️','Boss Defeat','Sell above the boss target gain')+L('🕵️','Real Tip','The tip was real')+L('🤡','Fake Tip','The tip was a lie')+L('🏛️','Rich Tax','Tax on big profits')+L('💸','Auto Debt Repay','30% of profit pays debt'))+
   G('💳 Debt · Credit',
-    L('💳','Loan','Broke? Borrow and keep going. Interest every round')+L('🏦','Credit Grade','AAA is best, D is worst. Drops when you borrow, rises when you repay')+L('↩️','Auto Repay','30% of profit auto-pays your debt')+L('🚨','Default','Debt over the limit you can’t repay = gear, consumables and investments seized, then restart'))+
+    L('💳','Loan','Broke? Borrow and keep going. Interest every round')+L('🏦','Credit Grade','AAA is best, D is worst. Drops when you borrow, rises when you repay')+L('↩️','Auto Repay','30% of profit auto-pays your debt')+L('🚨','Default','Debt over the limit you can’t repay = gear, consumables and investments seized, then restart')+L('🥫','Declare bankruptcy','Broke while in debt = bankruptcy: debt wiped · gear, consumables and investments seized · Credit D (no debt = fresh start, gear kept)'))+
   G('📜 Credits & Licenses',HL('🎨','Art','Characters, icons and backgrounds: created by the developer with Higgsfield (Nano Banana Pro, Seedance)')+HL('🔣','Fonts','Noto Sans KR, Inter, Gasoek One (SIL Open Font License 1.1, bundled with the game · fonts/OFL.txt)')+HL('🎹','Sound','Sound effects and music: synthesized in-game (no third-party audio)')+HL('🎭','Fiction','All companies, tickers, news and chat in the game are fictional.'))+
   '</div>';
 }
@@ -3600,15 +3677,23 @@ function bindPage(name){
   pg.querySelectorAll('[data-cpk]').forEach(b=>b.onclick=()=>{const c=COL.find(x=>x.id===b.dataset.cpk);if(!c||col.includes(c.id))return;colPk[c.cat]=c.id;rerender('account');});
   pg.querySelectorAll('[data-mgo]').forEach(b=>b.onclick=()=>misGo(b.dataset.mgo));
   const iv=$('invite');if(iv)iv.onclick=()=>shareOut('📈 Stonks Tycoon — sell before the crash to win! My account: '+won(balance)+' (virtual)'+'. Can you beat me?');
-  const pz=$('prestige');if(pz)pz.onclick=()=>{if(balance+invTotal()-debt<PRES_NEED())return;ask('Retire and start a new run? Cash, investments, gear, consumables and debt will reset.','🔁 Retire',()=>{presPend=1;setTimeout(()=>{presPend=0;if(state==='holding'||state==='ghost'){toast('Finish this round, then retire again');return;}if(tabCheck()||balance+invTotal()-debt<PRES_NEED())return;
-    pres++;store.set('shg_pres',pres);lowFlag=false;stats.low=0;stats.curRun=0;store.set('shg_stats',stats);streak=0;app.classList.remove('fever');$('fever').hidden=true;balance=START;debt=0;credit=5;gear={};inv={};armed={};invest={};lastHome=0;overLoss=0;
+  const pz=$('prestige');if(pz)pz.onclick=()=>{if(netW()<PRES_NEED())return;ask('Retire and start a new run? Cash, investments, gear, consumables and debt will reset.','🔁 Retire',()=>{presPend=1;setTimeout(()=>{presPend=0;if(state==='holding'||state==='ghost'){toast('Finish this round, then retire again');return;}if(tabCheck()||netW()<PRES_NEED())return;
+    pres++;store.set('shg_pres',pres);lowFlag=false;stats.low=0;stats.curRun=0;store.set('shg_stats',stats);streak=0;app.classList.remove('fever');$('fever').hidden=true;balance=START;debt=0;rdebt=0;credit=5;gear={};inv={};armed={};invest={};lastHome=0;overLoss=0;
     ['shg_gear','shg_inv','shg_armed','shg_inv2'].forEach(k=>store.set(k,{}));store.set('shg_home',0);store.set('shg_bal',balance);if(rankOf(xp)===RANKS.length-1)unlock('legend');
     if(card.querySelector('#adWin,#adLoss')){card.hidden=true;card.innerHTML='';}
     if(state!=='holding'&&state!=='ghost'){offers=makeOffers();if(!run){buildChartIdle();paintQuote();renderBook();}}
     sfx.up();burst(innerWidth/2,innerHeight*.4,90);stamp('🔁 Reborn! Run '+(pres+1)+'');toast('⭐ Rebirth '+pres+' · Take profit +'+pres*10+'% · SP +2');paintTop();paintPickers();if(curTab==='account')rerender('account');},300);});};
   const bl=$('bLoan');if(bl)bl.onclick=()=>{const n=performance.now();if(n-loanTapAt<500)return;loanTapAt=n;if(takeLoan()){paintTop();paintPickers();rerender('shop');}};
-  const bh=$('bHalf');if(bh)bh.onclick=()=>{if(!once())return;repay(Math.ceil(debt/2));paintTop();paintPickers();rerender('shop');};
-  const ba=$('bAll');if(ba)ba.onclick=()=>{repay(debt);paintTop();paintPickers();rerender('shop');};
+  const payBank=(rd,want)=>{if(!once())return;const a=Math.min(want,rd?rdebt:debt,balance);if(!(a>0))return;
+    const nb=balance-a,nd=rd?debt:debt-a,cr=!rd&&nd<1?Math.max(1,credit-1):credit,stuck=tutDone&&nb<1e5&&nb+invNet()<1e5&&!canLoan(nd<1?0:nd,cr);
+    const go=()=>{const b=Math.min(a,rd?rdebt:debt,balance);if(!(b>0))return;if(rd)rdRepay(b);else repay(b);const left=rd?rdebt:debt;
+      if(left>=1)toast((rd?'🌱 Restart Fund ':'💳 Debt ')+won(b)+' repaid · remaining '+wonS(left)+(!rd&&state==='over'&&debt>debtLimit()?' · need '+wonS(Math.ceil(debt-debtLimit()))+' more to get under the limit':''));
+      paintTop();paintPickers();rerender('shop');};
+    if(stuck)ask(['After repaying, your cash will be '+won(nb)+'','You need '+wonS(1e5)+' or more to trade, and loans are blocked',nd>=1?'Broke while in debt leaves only bankruptcy (seizure)':'If you run out, you’ll have to start fresh'].join('\n'),'Repay anyway',go);else go();};
+  const bh=$('bHalf');if(bh)bh.onclick=()=>payBank(0,Math.ceil(debt/2));
+  const ba=$('bAll');if(ba)ba.onclick=()=>payBank(0,debt);
+  const rh=$('rHalf');if(rh)rh.onclick=()=>payBank(1,Math.ceil(rdebt/2));
+  const ra=$('rAll');if(ra)ra.onclick=()=>payBank(1,rdebt);
   const rs=$('skReset');if(rs)rs.onclick=()=>{sk={};store.set('shg_sk',sk);paintTop();rerender('skill');toast('Skills reset');};
   {const sp=$('setPro');if(sp)sp.onclick=()=>{$('proBtn').click();sp.setAttribute('aria-checked',String(isPro()));};}
   pg.querySelectorAll('[data-set]').forEach(b=>b.onclick=()=>{const k=b.dataset.set;SET[k]=!SET[k];store.set('shg_set',SET);b.setAttribute('aria-checked',SET[k]);if(k==='sound'){muted=!SET.sound;if(!muted){au();beep(660,.06,'sine',.04);}}if(k==='vib')vib(HAP.buy);if(k==='fx')document.documentElement.classList.toggle('nofx',!SET.fx);if(k==='chars')bdSync();if(k==='bgm'||k==='sound'){if(typeof window.adConfig==='function')try{window.adConfig({sound:SET.sound||SET.bgm?'on':'off'});}catch(e){}bgm.sync();}});
@@ -3620,7 +3705,7 @@ function bindPage(name){
     delete d.shg_errlog;const code='SHG1:'+btoa(unescape(encodeURIComponent(JSON.stringify(d))));(navigator.clipboard?navigator.clipboard.writeText(code):Promise.reject()).then(()=>toast('💾 Backup code copied. Paste it in Notes to keep it safe'),()=>ask('Copy the code below (long-press, or Ctrl/Cmd+C)',0,0,code));};
   const bi=$('bkIn');if(bi)bi.onclick=()=>ask('Paste your backup code (current progress will be overwritten)','OK',v=>{const code=(v||'').trim();if(!code)return;
     try{if(!code.startsWith('SHG1:'))throw 0;const d=JSON.parse(decodeURIComponent(escape(atob(code.slice(5)))));if(!d||!d.shg_bal)throw 0;
-      const A=['shg_ach','shg_col'],O=['shg_inv','shg_armed','shg_gear','shg_inv2','shg_sk','shg_achc','shg_decor','shg_adc','shg_set','shg_stats','shg_league','shg_season'],N=['shg_bal','shg_xp','shg_debt','shg_credit','shg_pres','shg_best','shg_streak','shg_pct','shg_ipct'],isO=v=>!!v&&typeof v==='object'&&!Array.isArray(v),K=k=>/^shg_\w+$/.test(k);
+      const A=['shg_ach','shg_col'],O=['shg_inv','shg_armed','shg_gear','shg_inv2','shg_sk','shg_achc','shg_decor','shg_adc','shg_set','shg_stats','shg_league','shg_season'],N=['shg_bal','shg_xp','shg_debt','shg_rdebt','shg_credit','shg_pres','shg_best','shg_streak','shg_pct','shg_ipct'],isO=v=>!!v&&typeof v==='object'&&!Array.isArray(v),K=k=>/^shg_\w+$/.test(k);
       for(const k in d){if(!K(k)||k.startsWith('shg_prem'))continue;if(typeof d[k]!=='string')throw 0;const v=JSON.parse(d[k]);
         if(A.includes(k)&&!Array.isArray(v)||O.includes(k)&&!isO(v)||N.includes(k)&&v!==null&&(typeof v==='object'||!isFinite(v))||k==='shg_season'&&!Array.isArray(v.got)||(k==='shg_daily'||k==='shg_weekly')&&v!==null&&!(isO(v)&&Array.isArray(v.ids))||k==='shg_profile'&&v!==null&&!Object.prototype.hasOwnProperty.call(TYPES,v)||k==='shg_league'&&v.me!=null&&!isO(v.me)||k==='shg_pet'&&v!==null&&!petFix(v))throw 0;}
       const sp=x=>{try{return typeof x==='string'?JSON.parse(x):null}catch(e){return null}},pm=premRead(),eb=premEqFix(sp(d.shg_premEq)),eq=eb.th||eb.ttl?JSON.stringify(eb):localStorage.getItem('shg_premEq');
@@ -3654,10 +3739,12 @@ function frame(ts){
       }
       talkT+=dt;if(talkT>.4+Math.random()*.5){talkT=0;talk(inDip(t)?'fear':cur>1.15?'hype':pick(['hype','idle']));}
     }
-    if(b>=run.crashAt)crash();
+    const xh=run.hint&&run.hint.real&&!run.hint.crystal?run.hint:null;if(xh&&xh.x==null)run.crashAt=Math.max(run.crashAt,base(t+holdRate()));
+    if(b>=run.crashAt){if(xh&&xh.x&&state==='holding'&&run.liqLine&&cur<=run.liqLine)run.liq=1;crash();}
     else{
       cur=Math.max(run.lev>1?.3:.85,b*(1+(wig(t)-1)*Math.min(1,t/.3)*(run.T.wig||1)*(run.rg.wig||1))*newsF(t));peak=Math.max(peak,cur);
-      if(state==='holding'&&run.liqLine&&cur<=run.liqLine){if(inv.noliq>0){inv.noliq--;store.set('shg_inv',inv);stats.c.items++;store.set('shg_stats',stats);run.liqLine=0;toast('🧯 Liquidation Guard used! Saved!');}else{run.liq=1;crash();draw();requestAnimationFrame(frame);return;}}
+      if(xh&&xh.x==null&&cur>=xh.v)xh.x=t+holdRate();
+      if(state==='holding'&&run.liqLine&&cur<=run.liqLine&&!(xh&&t<xh.x)){if(inv.noliq>0){inv.noliq--;store.set('shg_inv',inv);stats.c.items++;store.set('shg_stats',stats);run.liqLine=0;toast('🧯 Liquidation Guard used! Saved!');}else{run.liq=1;crash();draw();requestAnimationFrame(frame);return;}}
       const idx=runBase+Math.floor(t/CD);
       while(candles.length<=idx){const pc=candles.length?candles[candles.length-1].c:1;candles.push({o:pc,h:pc,l:pc,c:pc,v:0,ghost:state==='ghost',r:1});if(state==='holding')sfx.tick(cur);}
       const c=candles[candles.length-1];c.h=Math.max(c.h,cur);c.l=Math.min(c.l,cur);c.c=cur;
@@ -3686,16 +3773,18 @@ if(PREM_ON)premApply(1);offers=makeOffers();buildChartIdle();applyView();paintTo
 try{navigator.clearAppBadge&&navigator.clearAppBadge()}catch(e){}
 if(/selftest/.test(location.search)){
   window.__t={start,release,reenter,declareBankrupt,takeLoan,repay,tab,news,toast,coachT(t,id,pos){coach(t,$(id)||btn,pos||'above');},hideCoach,
-    get s(){return {state,balance,debt,credit,cur,crashed,re:!!(run&&run.re),inv:invTotal(),xp,pres,tut:tutDone,streak,ready:performance.now()>=readyAt&&!(adHold&&state==='result'&&!card.querySelector('#adWin,#adLoss,#adRevive')),curTab,modal:!$('modal').hidden,card:!card.hidden,col:col.length,net:stats.net,rounds:stats.rounds,hist:stats.hist.length}},
+    get s(){return {state,balance,debt,rdebt,nw:netW(),home:homeIdx(),levSel,allin,credit,cur,crashed,re:!!(run&&run.re),inv:invTotal(),xp,pres,tut:tutDone,streak,ready:performance.now()>=readyAt&&!(adHold&&state==='result'&&!card.querySelector('#adWin,#adLoss,#adRevive')),curTab,modal:!$('modal').hidden,card:!card.hidden,col:col.length,net:stats.net,rounds:stats.rounds,hist:stats.hist.length}},
     ptCheer,get pet(){return pet?JSON.parse(JSON.stringify(pet)):null;},petAdd(n,id){id=id||petSel();petGain(id,n);petCheck();return petSt(id);},petCue,startQuiz,get adDue(){return adDue},get xpMul(){return xpMul()},get petBonus(){return pet?PET_XP[petBest()]:0},get dot(){return dotWhy},
     get ptZone(){return ptCutX<1e9?ptZone().map(v=>Math.round(v*CK)):null;},
     get pt(){const e=$('pt'),i=e.querySelector('i'),r=e.getBoundingClientRect();return {on:ptOn,id:ptId,s:ptS,k:ptK,b:ptB,sel:petSel(),bd:run&&run.bd,hidden:e.hidden,vis:getComputedStyle(e).visibility,cls:e.className,box:[r.left,r.top,r.width,r.height].map(Math.round),bg:i?i.style.backgroundImage:'',anim:i?i.style.animation:'',cut:ptCutX};},
     set allin(v){allin=v},set lev(v){levSel=v},set pct(v){betPct=v},set sel(v){Object.assign(sel,v)},get view(){return isPro()?'pro':'simple'},set view(v){viewForce=v==='pro'||v==='simple'?v:null;applyView();},get plotR(){return Math.round(plotRX*CK)},get cine(){return {on:CINE(),cardAt,pend:!!cardTm,coins:coins.length,hold:balHold>performance.now(),end:cineEnd}},get sellBox(){return sellBox&&sellBox.map(v=>Math.round(v*CK+1))},get peakBox(){return peakBox&&peakBox.map(v=>Math.round(v*CK))},pbSet(l,v,p,c){pbShow(true);pbSet(l,v,p,c);},
     get pb(){const b=$('pnlBar');return {on:!b.hidden,txt:b.innerText.replace(/\s+/g,' '),cls:b.className,goal:!$('goal').hidden}},fitTitle,
     closeCard(){cardCancel();card.hidden=true;$('modal').hidden=true;},
+    setDebt(d,r,bl){if(d!=null)debt=d;if(r!=null)rdebt=r;if(bl!=null)balance=bl;paintTop();paintPickers();setBtn();},
+    get h8(){const h=run&&run.hint;return run?{lev:run.lev,real:!!(h&&h.real&&!h.crystal),v:h?h.v:0,x:h&&h.x!=null?h.x:null,liq:!!run.liq,liqLine:run.liqLine,t,cur,crashed,state}:null;},h8dip(a){if(run)events.push({t0:t,amp:a});},
     setXp(v){xp=Math.max(0,Math.floor(+v||0));store.set('shg_xp',xp);paintTop();},lvAt(L){let lo=0,hi=1e9;while(lo<hi){const m=Math.floor((lo+hi)/2);if(lvlOf(m).L>=L)hi=m;else lo=m+1;}return lo;},
     prem:{on:PREM_ON,pay:PAY.id,grant:grantPremium,equip:premEquip,get own(){return prem.slice()},get eq(){return Object.assign({},premEq)},get theme(){return CP===C?null:premEq.th}},
-    ads:{get on(){return adsOn()},get cg(){return {on:CG.on,noAds:CG.noAds,done:CG.done}},off:adsOff}};
+    ads:{get on(){return adsOn()},get cg(){return {on:CG.on,noAds:CG.noAds,done:CG.done}},off:adsOff,get web(){return {noAds:webNoAds,client:!!CFG.adClient,req:adReq,hold:adHold,pause:adPause,wait:adsWait()}},set wd(v){AD_WD=v},midAd,get revOk(){return revAvail()}}};
   setInterval(()=>{if(adsOn())return;const b=['adWin','adLoss','adRevive','adItem','adSpin'].filter(id=>{const e=$(id);return e&&e.offsetParent;});if(b.length)throw new Error('ad button visible while ads are off: '+b.join(','));},500);
   if(/fast/.test(location.search)){draw=()=>{};}
 }

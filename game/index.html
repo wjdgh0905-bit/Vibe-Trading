@@ -1361,6 +1361,116 @@ html[lang=en] .skr{grid-template-columns:32px minmax(0,1fr) 64px;align-items:sta
 
 @media (max-height:700px) and (max-width:759px){.page[data-tab="mission"] .pta{width:44px;height:44px}.page[data-tab="mission"] .pbub{padding:7px 12px}.page[data-tab="mission"] .secs>.sec>h3:first-child{margin-top:6px;margin-bottom:6px}.page[data-tab="mission"] .mrow{min-height:44px;padding:3px 0}.page[data-tab="mission"] .mrow .pb{margin-top:4px}.page[data-tab="mission"] .orow{min-height:56px;padding:7px 14px!important}.page[data-tab="mission"] .spbar{margin-top:0}} 
 @media (orientation:landscape) and (min-width:1600px) and (min-height:700px){#goal{max-width:560px}#goal .gb{flex-basis:96px}} 
+/* TOURS begin: css */
+:root{--tour-dim:rgba(5,7,12,.66);--tour-bub:#f6f8fc;--tour-ink:#262d3b;--tour-mu:#4a5468;--tour-line:#d3dbe8;--tour-pan:#e9eef7;--tour-cost:#c4162a;--tour-ok:#0f7a4a;--tour-ring:#fff;--tour-focus:#2f7bff;--tour-pill:#1d2433} 
+:root[data-theme="light"]{--tour-dim:rgba(20,27,41,.5)} 
+#tour{position:fixed;inset:0;z-index:19;pointer-events:none} 
+#tour[hidden]{display:none}
+#tour .tdim{position:absolute;left:0;top:0;width:100%;height:100%;display:block}
+#tour .tdim .tdf{fill:var(--tour-dim)}
+#tour.nodim .tdim{display:none}
+#tour .tring{position:absolute;border-radius:14px;box-shadow:0 0 0 3px var(--tour-ring),0 0 0 7px rgba(255,255,255,.18);animation:tRing 1.6s ease-in-out infinite;pointer-events:none}
+#tour .tring.nudge{animation:tNudge .3s ease-in-out 2}
+@keyframes tRing{50%{box-shadow:0 0 0 3px var(--tour-ring),0 0 0 11px rgba(255,255,255,.06)}}
+@keyframes tNudge{50%{box-shadow:0 0 0 6px var(--tour-ring),0 0 0 14px rgba(255,255,255,.25)}}
+#tour .tptr{position:absolute;width:40px;height:40px;display:flex;align-items:flex-end;justify-content:center;pointer-events:none;filter:drop-shadow(0 3px 4px rgba(0,0,0,.55));font-size:34px;line-height:1}
+#tour .tptr>span{display:block;animation:tBob 1.1s ease-in-out infinite}
+#tour .tptr .ico{width:40px;height:40px}
+#tour .tptr.up{transform:rotate(180deg)}
+@keyframes tBob{50%{transform:translateY(-6px)}}
+#tour .tpx{position:absolute;pointer-events:auto;background:transparent;border:0;border-radius:12px;margin:0;padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+#tour .tpx:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+#tour .tghost{position:absolute;pointer-events:none;background:var(--tour-pill);color:#fff;font:700 12px/1 var(--ui);padding:5px 8px;border-radius:var(--r-pill);box-shadow:0 0 0 2px var(--tour-ring);white-space:nowrap}
+#tour .tlook{position:absolute;border:2px dashed rgba(255,255,255,.55);border-radius:12px;pointer-events:none}
+.tbub{position:fixed;left:12px;top:0;box-sizing:border-box;width:min(344px,calc(100vw - 24px));background:var(--tour-bub);color:var(--tour-ink);border-radius:16px;padding:12px 14px 12px;box-shadow:0 12px 34px -8px rgba(0,0,0,.85);pointer-events:auto;font:500 var(--t-body)/1.55 var(--ui);text-align:left;z-index:1;animation:slide var(--m-base) var(--e-out)}
+.tbub::after{content:"";position:absolute;left:var(--ax,50%);margin-left:-9px;border:9px solid transparent}
+.tbub.above::after{bottom:-9px;border-bottom:0;border-top-color:var(--tour-bub)}
+.tbub.below::after{top:-9px;border-top:0;border-bottom-color:var(--tour-bub)}
+.tbub.side::after{left:-9px;top:var(--ay,50%);margin:-9px 0 0;border-left:0;border-right-color:var(--tour-bub)}
+.tbub.noar::after{display:none}
+.tbub .thd{display:flex;align-items:center;gap:8px;min-height:40px;margin:-2px 0 6px}
+.tbub .tav{flex:none;width:40px;height:40px;border-radius:50%;background:#dfe6f2;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.tbub .tav img.pim{width:100%;height:100%;object-fit:cover;object-position:50% 20%}
+.tbub .tav .ico{width:26px;height:26px}
+.tbub .tmeta{flex:1;min-width:0;display:flex;flex-wrap:wrap;align-items:center;gap:2px 8px;font:700 var(--t-tag)/1.3 var(--ui);color:var(--tour-mu)}
+.tbub .tmeta>b{color:var(--tour-ink);font-weight:800;white-space:nowrap}
+.tbub .tdots{display:inline-flex;align-items:center;gap:4px}
+.tbub .tdots i{display:block;width:6px;height:6px;border-radius:3px;background:rgba(11,15,23,.16)}
+.tbub .tdots i.dn{background:rgba(11,15,23,.45)}
+.tbub .tdots i.on{width:16px;background:var(--ink)}
+.tbub .tnum{font-variant-numeric:tabular-nums;color:var(--tour-ink)}
+:is(.tbub,.tlc) .tsbg{display:inline-block;padding:2px 7px;border-radius:var(--r-pill);border:1px solid var(--tour-ink);color:var(--tour-ink);font:800 12px/1.2 var(--ui);white-space:nowrap}
+.tbub button{font-family:var(--ui);cursor:pointer;-webkit-tap-highlight-color:transparent}
+.tbub .tsk{flex:none;min-height:44px;min-width:64px;padding:0 8px;margin:-2px -6px -2px 0;background:none;border:0;color:var(--tour-mu);font:700 var(--t-meta)/1 var(--ui);text-decoration:underline;text-underline-offset:3px}
+.tbub h2{margin:0 0 2px;font:800 var(--t-value)/1.35 var(--ui);color:var(--ink);text-wrap:balance;outline:0}
+.tbub .tbody{margin:0;color:var(--tour-ink)}
+.tbub .tbody b,.tbub h2 b{font-weight:800}
+:is(.tbub,.tlc) .tsb{margin:8px 0 0;padding:6px 10px;background:var(--tour-pan);border:1px solid var(--tour-line);border-radius:12px}
+:is(.tbub,.tlc) .tsb>div{display:flex;justify-content:space-between;align-items:baseline;gap:10px;min-height:26px;padding:3px 0;border-top:1px solid var(--tour-line)}
+:is(.tbub,.tlc) .tsb>div:first-child{border-top:0}
+:is(.tbub,.tlc) .tsb dt{margin:0;font:600 var(--t-meta)/1.35 var(--ui);color:var(--tour-mu);flex:none;max-width:48%}
+:is(.tbub,.tlc) .tsb dd{margin:0;font:800 var(--t-meta)/1.35 var(--mix);color:var(--tour-ink);text-align:right;font-variant-numeric:tabular-nums;min-width:0;overflow-wrap:anywhere}
+:is(.tbub,.tlc) .tsb .c dd{color:var(--tour-cost)}
+:is(.tbub,.tlc) .tsb .m dt,:is(.tbub,.tlc) .tsb .m dd{color:var(--tour-mu);font-weight:600}
+:is(.tbub,.tlc) .tsb .w{display:block;color:var(--tour-cost);font:700 var(--t-meta)/1.4 var(--ui)}
+:is(.tbub,.tlc) .twarn{margin:8px 0 0;padding:7px 10px;border-radius:10px;background:#fff1f2;color:var(--tour-cost);font:700 var(--t-meta)/1.45 var(--ui)}
+.tbub .tok{margin:8px 0 0;color:var(--tour-ok);font:700 var(--t-meta)/1.4 var(--ui)}
+.tbub .tft{display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:6px 10px;margin-top:10px;min-height:44px}
+.tbub .thint{flex:1;min-width:0;font:700 var(--t-meta)/1.35 var(--ui);color:var(--tour-mu)}
+.tbub .tesc{min-height:44px;min-width:44px;padding:0 8px;background:none;border:0;color:var(--tour-mu);font:700 var(--t-meta)/1 var(--ui);text-decoration:underline;text-underline-offset:3px}
+.tbub .tnx{min-height:44px;min-width:88px;padding:0 16px;border:0;border-radius:var(--r-btn);background:var(--ink);color:#fff;font:800 var(--t-body)/1 var(--ui)}
+.tbub button:focus-visible{outline:3px solid var(--tour-focus);outline-offset:2px}
+.tbub.cmp .tbody{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.tbub.cmp .tsb>div{min-height:22px;padding:1px 0}
+.tdock{margin:0 0 10px}
+.tlc{margin:10px 0 0;color:var(--tour-ink)}.tlc .tsb{margin:0}
+.tdock .tbub{position:static;width:auto;box-shadow:0 0 0 1px var(--tour-line);animation:none}
+.tdock .tbub::after{display:none}
+.tglow{outline:3px solid var(--fg)!important;outline-offset:2px;border-radius:12px}
+#tour .tchip{position:absolute;display:flex;align-items:stretch;gap:2px;pointer-events:auto;background:var(--tour-bub);color:var(--tour-ink);border-radius:var(--r-pill);box-shadow:0 8px 22px -8px rgba(0,0,0,.8);padding:2px;max-width:calc(100vw - 24px);box-sizing:border-box;font:700 var(--t-meta)/1.3 var(--ui)}
+#tour .tchip button{min-height:44px;border:0;background:none;color:var(--tour-ink);font:inherit;padding:0 12px;border-radius:var(--r-pill);cursor:pointer}
+#tour .tchip .tcx{min-width:44px;padding:0;color:var(--tour-mu)}
+#tour .tchip button:focus-visible{outline:3px solid var(--tour-focus);outline-offset:-3px}
+#tour .tinv{position:absolute;pointer-events:auto;box-sizing:border-box;width:min(344px,calc(100vw - 24px));background:var(--tour-bub);color:var(--tour-ink);border-radius:16px;padding:10px 12px;box-shadow:0 10px 28px -8px rgba(0,0,0,.85);font:500 var(--t-meta)/1.45 var(--ui);display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;animation:slide var(--m-base) var(--e-out)}
+#tour .tinv .tit{flex:1 1 100%;min-width:0}
+#tour .tinv .tit b{display:block;font:800 var(--t-body)/1.4 var(--ui);color:var(--ink)}
+#tour .tinv .tit small{display:block;font:500 var(--t-meta)/1.4 var(--ui);color:var(--tour-mu)}
+#tour .tinv button{flex:1;min-height:44px;border-radius:var(--r-btn);background:none;border:1.5px solid var(--tour-ink);color:var(--tour-ink);font:800 var(--t-body)/1 var(--ui);cursor:pointer} 
+#tour .tinv button:focus-visible{outline:3px solid var(--tour-focus);outline-offset:2px}
+#tour .tmock{position:absolute;left:50%;transform:translateX(-50%);width:min(360px,calc(100vw - 24px));box-sizing:border-box;background:var(--panel);color:var(--fg);border-radius:var(--r-lg);padding:12px 14px;box-shadow:0 0 0 1px var(--hair2),0 16px 40px -10px #000;pointer-events:none;max-height:60vh;overflow:hidden}
+#tour .tmock .tmb{display:block;margin:-2px 0 8px;padding:5px 10px;border-radius:var(--r-pill);background:#fff3c4;color:#3d2c00;font:800 12px/1.3 var(--ui);text-align:center}
+#tour .tmock .grade{font:800 var(--t-head)/1.3 var(--ui);color:var(--danger-t)}
+#tour .tmock .nums{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin-top:8px}
+#tour .tmock .nums div{padding:6px 10px;border-radius:var(--r-sm);background:var(--panel2);border:1px solid var(--hair);min-width:0}
+#tour .tmock .nums small{display:block;font:500 var(--t-meta)/1.3 var(--ui);color:var(--muted)}#tour .tmock .nums b{display:block;font:800 var(--t-item)/1.3 var(--mix);color:var(--fg)}
+#tour .tmock button.opt{display:grid;grid-template-columns:32px minmax(0,1fr);align-items:center;column-gap:10px;width:100%;min-height:56px;padding:6px 12px;margin-top:8px;border-radius:var(--r-md);background:var(--panel3);border:1px solid var(--hair2);color:var(--fg);text-align:left;opacity:1;font:inherit}
+#tour .tmock button.opt>i{grid-row:1/3;font-style:normal;font-size:24px;line-height:32px;text-align:center}#tour .tmock button.opt>i .ico{width:28px;height:28px;vertical-align:middle}
+#tour .tmock button.opt>b{grid-column:2;font:700 var(--t-item)/1.3 var(--ui);color:var(--fg)}#tour .tmock button.opt>small{grid-column:2;font:500 var(--t-meta)/1.35 var(--mix);color:var(--fg2)}
+#tour .tmock .t1{margin-right:8px}#tour .tmock .t1.no{color:var(--danger-t)}
+.ohelp{margin:10px 0 0;border-radius:var(--r-md);background:var(--panel2);box-shadow:inset 0 0 0 1px var(--hair2);font-size:var(--t-meta);line-height:1.5}
+.ohelp summary{min-height:44px;display:flex;align-items:center;padding:0 12px;font-weight:800;cursor:pointer;color:var(--fg)}
+.ohelp ul{margin:0;padding:0 12px 10px 28px;color:var(--fg2)}.ohelp li{margin:4px 0}.ohelp li b{color:var(--fg)}
+.thelp{margin:14px 0 4px;padding:10px 12px;border-radius:var(--r-md);background:var(--panel2);box-shadow:inset 0 0 0 1px var(--hair2)}
+.thelp h3{margin:0 0 6px;font:800 var(--t-body)/1.35 var(--ui)}
+.thelp .tlr{display:flex;align-items:center;gap:10px;min-height:48px;border-top:1px solid var(--hair2);padding:4px 0}.thelp .tlr:first-of-type{border-top:0}
+.thelp .tlr>i{flex:none;width:28px;text-align:center;font-style:normal}.thelp .tlr>i .ico{width:24px;height:24px}
+.thelp .tlr>div{flex:1 1 auto;min-width:0;overflow-wrap:anywhere}.thelp .tlr b{display:block;font-weight:800}.thelp .tlr small{display:block;color:var(--muted);font-size:var(--t-tag);line-height:1.35}
+.thelp .tlr em{display:block;margin-top:2px;font-style:normal;font-size:12px;line-height:1.35;font-weight:700;color:var(--muted)} 
+.thelp .tlr button{flex:none;min-height:44px;min-width:64px;padding:0 10px}
+.thelp .tlall{margin-top:6px;width:100%}
+#modal.tlcM #modalClose{display:none} 
+@media (forced-colors:active){ 
+  #tour .tring{outline:3px solid Highlight;outline-offset:2px}
+  .tbub,#tour .tinv,#tour .tchip,#tour .tmock,#tour .tghost{border:2px solid CanvasText}
+  .tbub .tdots i{forced-color-adjust:none}.tbub .tdots i.on,.tbub .tdots i.dn{background:Highlight}.tbub .tdots i{background:GrayText}
+  .tbub .tnx{border:2px solid ButtonText}
+  .tbub button:focus-visible,#tour .tinv button:focus-visible,#tour .tchip button:focus-visible,#tour .tpx:focus-visible{outline-color:Highlight}
+  #tour .tlook{border-color:CanvasText}
+}
+@media (prefers-reduced-motion:reduce){#tour *,.tbub,#tour .tinv{animation:none!important;transition:none!important}}
+html.nofx #tour *,html.nofx .tbub{animation:none!important;transition:none!important}
+@media (max-width:374px){.tbub{padding:10px 12px}}
+/* TOURS end */
 </style>
 
 <div class="app" id="app">
@@ -1404,7 +1514,7 @@ html[lang=en] .skr{grid-template-columns:32px minmax(0,1fr) 64px;align-items:sta
 <section class="page" id="page" hidden></section>
 <div id="toast" hidden></div>
 <div id="sr" role="status" aria-live="polite" aria-atomic="true" style="position:fixed;top:0;left:0;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap"></div>
-<div id="coach" hidden></div>
+<div id="coach" hidden></div><div id="tour" hidden></div>
 <canvas id="fx"></canvas>
 <div id="sheet" hidden><div class="sh" tabindex="-1" role="dialog" aria-modal="true" aria-labelledby="shTtl"><div class="sh-h"><div><b id="shTtl">종목 고르기</b><small id="shSub">매판 새 종목 8개 · 계급이 오르면 종류가 늘어나요</small></div><button type="button" id="shClose">닫기</button></div><div id="shList"></div><div id="shIt"></div></div></div>
 <div id="rotate"><i><img class="ico" src="ui/smartphone.webp" alt="" draggable="false" data-e="📱" loading="lazy" onerror="this.replaceWith(this.dataset.e)"></i>세로로 돌려서 플레이해 주세요</div>
@@ -1802,7 +1912,7 @@ const PET_AC={streak5:'5연속 익절',boss1:'첫 보스 처치',boss5:'보스 5
 const petCond=(id,lg)=>{const u=PET_UN[id];if(typeof u==='number')return '🎖️ '+RANKS[u][1]+(lg?' 계급 승급':'');const a=ACH.find(a=>a[0]===u);return a?a[1]+' '+(lg?a[2]+' 업적 달성':PET_AC[u]||a[2]):'';};
 const petBg=s=>'<span class="pst s'+s+'">'+PET_S[s][1]+' '+PET_S[s][0]+'</span>',petImg=(id,s,c)=>'<img class="pim'+(c?' '+c:'')+'" src="'+chS(id,s)+'" alt="" draggable="false" data-e="'+(c==='sil'?'🔒':PET_E[id])+'" onerror="this.replaceWith(this.dataset.e)">';
 function petLine(pl,sh){if(!pet)return '';const id=pet.sel,x=pet.own[id].xp,s=petLv(x),n=pl?CHARS[id]:'<b>'+CHARS[id]+'</b>';return '🐾 '+(pl?'':'파트너 ')+n+' · '+PET_S[s][1]+' '+PET_S[s][0]+(s<2&&!sh?' · 다음 단계까지 '+petRn(petLeft(x)):'');}
-function petCue(force){if(cardTm||!pet||!pet.q.length||!tutDone||!profile||presPend||adPause||adReq||adHold||adDue||curTab!=='trade'||!$('modal').hidden||!$('sheet').hidden||!(state==='ready'||state==='result')||tutDone&&state==='ready'&&balance+invNet()<100000)return false;
+function petCue(force){if(tourOn()||cardTm||!pet||!pet.q.length||!tutDone||!profile||presPend||adPause||adReq||adHold||adDue||curTab!=='trade'||!$('modal').hidden||!$('sheet').hidden||!(state==='ready'||state==='result')||tutDone&&state==='ready'&&balance+invNet()<100000)return false;
   if(!card.hidden&&!(force&&card.querySelector('[data-close]')&&!card.querySelector('#again,.opts,#qGo,#qStart,#petGo')))return false;
   const R=Math.floor(fin(stats.rounds)),gp=R-pet.at;if(gp>=0&&gp<5&&!pet.q.some(x=>x==='m'||!x.indexOf('s:')))return false;
   let q=[];petMod(p=>{q=p.q;p.q=[];p.at=R;});if(!pet)return false;
@@ -2209,6 +2319,7 @@ addEventListener('resize',bossFit);if(document.fonts&&document.fonts.addEventLis
 let iNow=0,exK='',exAt=0;
 function exWarn(ex){const k=Math.ceil(debt)+'|'+ex,n=performance.now(),again=k===exK&&n-exAt<15000;exK=k;exAt=n;if(again){tab('bank');return;}toast('🚨 이자가 붙으면 빚이 한도를 '+wonS(ex)+' 넘어요 · 투자금을 출금해 상점 › 은행에서 갚으세요');}
 function start(){
+  if(TR&&!TR.fold&&curTab==='trade'){const st=tStep();if(st&&st.hold&&!TR.g)tourEnd(true,'hold');else tourFold();} // TOURS: any round start folds the tour (item chips restored first)
   if(presPend||tabNow()||cardTm)return;
   const chRound=tutDone&&chal&&chal.i<5&&debt<=debtLimit();
   if(adHold&&adDue&&!onCG&&state==='result'&&!card.querySelector('#adWin,#adLoss,#adRevive'))adDecide();
@@ -2550,7 +2661,7 @@ function showDefault(quiet){
   card.innerHTML=heroH('<div class="grade gx wn">🚨 신용불량자</div>')+'<div class="sub">'+(iNow>0&&intPaid?'이번 판 이자 '+wonS(iNow)+'이 붙어 빚이 한도를 넘었어요':'빚이 한도를 넘었어요. 채권단이 들이닥쳐요')+'</div>'+
    '<div class="nums"><div><small>빚</small><b class="wn">'+wonS(debt)+'</b></div><div><small>빚 한도</small><b>'+wonS(debtLimit())+'</b></div><div><small>신용</small><b>'+crS(credit)+'</b></div></div>'+
    '<div class="owarn">한도보다 '+wonS(sh)+' 많아요 · 예수금이 '+wonS(sh+1e5)+' 이상이면 자동으로 갚고 이어서 해요</div>'+szH(seizeList())+
-   '<div id="overBtns">'+rv+optH('again',rv?'':'pri','🥫','받아들이고 처음부터','다음 화면에서 압류 확인')+'</div>';overSig=overNow();
+   '<div id="overBtns">'+rv+optH('again',rv?'':'pri','🥫','받아들이고 처음부터','다음 화면에서 압류 확인')+'</div>'+tourOverH(1);overSig=overNow();
   bdNext={k:'shock',id:run&&run.bd||bdCur&&bdCur.id||petSel()};showCard();revBind();$('again').onclick=()=>{const k=overSig;if(unOver()||overSig!==k)return;showSeize();};paintPickers();setBtn();
 }
 
@@ -2558,7 +2669,7 @@ function showDefault(quiet){
 const CFG={adClient:'',adTest:false,donateUrl:'',iap:false,iapDev:false};
 if(/^(localhost|127\.0\.0\.1)$/.test(location.hostname)&&/[?&]adsense\b/.test(location.search))CFG.adClient='ca-pub-2213068202184499';
 const CG={on:false,S:null,last:0,noAds:0,done:0},onCG=/crazygames/.test(location.hostname)||(window.top!==window&&/crazygames/.test(document.referrer))||/^(localhost|127\.0\.0\.1)$/.test(location.hostname)&&/[?&]cg\b/.test(location.search);
-const BUILD='v3.0.2 · b261109 · '+LANG+'-'+(onCG?'cg':/(^|\.)itch\.(io|zone)$|hwcdn\.net$/.test(location.hostname)||/itch\.io/.test(document.referrer)?'itch':'web');
+const BUILD='v3.0.3 · b261110 · '+LANG+'-'+(onCG?'cg':/(^|\.)itch\.(io|zone)$|hwcdn\.net$/.test(location.hostname)||/itch\.io/.test(document.referrer)?'itch':'web');
 if(onCG){const sc=document.createElement('script');sc.src='https://sdk.crazygames.com/crazygames-sdk-v3.js';
   sc.onload=async()=>{try{const S=window.CrazyGames.SDK;await S.init();if(S.environment!=='disabled'){CG.S=S;CG.on=true;cgLoad();try{const ms=v=>{v=v&&typeof v==='object'?v:S.game.settings;cgMute=!!(v&&v.muteAudio);document.body.classList.toggle('noChat',!!(v&&v.disableChat));if(touched||cgMute)bgm.sync();};ms();S.game.addSettingsChangeListener(ms);}catch(e){}if(state==='holding'||state==='ghost')cgPlay(true);}}catch(e){}CG.done=1;};sc.onerror=()=>{CG.done=1;};document.head.appendChild(sc);}
 let cgG=false;
@@ -2618,7 +2729,7 @@ function showOver(loss,quiet){if(loss>0)overLoss=loss;else loss=overLoss;
    '<div class="nums"><div><small>빚</small><b class="'+(debt?'wn':'')+'">'+(debt?wonS(debt):'없음')+'</b></div><div><small>신용</small><b>'+crS(credit)+'</b></div><div><small>버틴 판수</small><b>'+(stats.curRun||0)+'판</b></div></div>'+
    (!usedToday('shg_adRevive')&&!revOk()&&(adsOn()||!adsWait())?'<div class="owarn">'+(adsOn()?'빚이 한도에 닿아 광고 지원금으로는 다음 판을 못 버텨요':'빚이 한도에 닿아 복귀 지원금으로는 다음 판을 못 버텨요')+'</div>':'')+(ok?'':'<div class="owarn">'+loanWhy()+'</div>')+
    '<div id="overBtns">'+rv+(debt>0?optH('again',rv?'':'pri rec','🥫','파산 신청',(sl?'빚 탕감 · 압류 '+sl+'건 · 신용 10등급':'빚 탕감 · 압류할 것 없음 · 신용 10등급')):optH('again',rv?'':'pri rec','🔄','새로 시작','새 자금 '+wonS(START*(1+.2*skl('seed')))+(stats.bankrupts<5?' · SP +1':'')+' · 레벨·장비 유지')+rdLine())+lossHtml+(ok?optH('loanBtn','','💳','대출 받고 계속',wonS(la)+(LANG==='en'?' · ':' · 이자 ')+(LOAN_R[nc]*100).toFixed(1)+'%/판 → <span class="wn">'+(LANG==='en'?(nc>=8?'Subprime ':'Credit ')+crS(nc):'신용 '+crS(nc)+(nc>=8?' (사채)':''))+'</span>')+'<p class="onote">'+DEBT_NOTE+'</p>':'')+'</div>'+
-   '<div class="sub rage">'+overTip()+'</div>';overSig=overNow();
+   '<div class="sub rage">'+overTip()+'</div>'+tourOverH(0);overSig=overNow();
   bdNext={k:'shock',id:run&&run.bd||bdCur&&bdCur.id||petSel()};showCard();
   revBind();
   if($('loanBtn'))$('loanBtn').onclick=()=>{const k=overSig;if(unOver()||overSig!==k)return;loanAsk(()=>{if(state!=='over')return;if(!takeLoan())return showOver(0);resetView();stamp('💳 빚투 시작');});};
@@ -3039,9 +3150,9 @@ function nudge(){
     tipSet('quizAsk');qb.insertAdjacentHTML('afterbegin',icH('<button type="button" id="qOffer">🧪 내 투자 성향 찾고 특전 받기</button>'));$('qOffer').onclick=()=>{if(state==='result'&&curTab==='trade')startQuiz();};return;}
   tipPend=1;
 }
-let tipPend=0;function tipTry(){if(!tipPend||!tutDone||!(state==='result'||state==='ready')||curTab!=='trade'||!card.hidden||cardTm||!$('modal').hidden||!$('sheet').hidden||!$('coach').hidden||!$('page').hidden||!$('tbg').hidden||performance.now()<cineEnd)return;if(!$('toast').hidden)return;if(toastQ.length){if(!toastWait())nextToast();return;}tipPend=0;
+let tipPend=0;function tipTry(){if(tourBusy())return;if(!tipPend||!tutDone||!(state==='result'||state==='ready')||curTab!=='trade'||!card.hidden||cardTm||!$('modal').hidden||!$('sheet').hidden||!$('coach').hidden||!$('page').hidden||!$('tbg').hidden||performance.now()<cineEnd)return;if(!$('toast').hidden)return;if(toastQ.length){if(!toastWait())nextToast();return;}tipPend=0;
     const ri=rankOf(xp),it=Object.entries(ITEMS).find(([k,v])=>ri>=v.lv&&!tipGot('it_'+k)),tb=n=>document.querySelector('#tabs [data-tab="'+n+'"]'),ib=$('itemBtn'),itT=ib&&ib.getClientRects().length?ib:$('items');let t=null;
-    if(it)t=['it_'+it[0],'🆕 새 아이템 <b>'+it[1].name+'</b> · '+it[1].desc+'<br>아래 칩을 탭해서 켜고 매수해 보세요',itT];
+    if(it&&tItemTipOk())t=['it_'+it[0],'🆕 새 아이템 <b>'+it[1].name+'</b> · '+it[1].desc+'<br>'+(TOUR_OFF?'아래 칩을 탭해서 켜고 매수해 보세요':tsay('itTip')),itT];
     else if(spFree()>=2&&!tipGot('sp'))t=['sp','🌳 쓰지 않은 SP <b>'+spFree()+'</b> · 이 버튼을 탭해서 스킬을 골라 보세요',$('spBtn'),'below'];
     else if(seasonN()>0&&!tipGot('season'))t=['season','🎫 시즌 패스 보상이 기다려요 · 미션 탭에서 받으세요',tb('mission')];
     if(!t||!t[2]||t[2].hidden||!t[2].getClientRects().length)return;coach(t[1],t[2],t[3]||'above');tipSet(t[0]);}
@@ -3058,8 +3169,8 @@ function tutEnd(won){
   if(won){
     tutDone=true;tutFail=0;store.set('shg_tut',1);offers=makeOffers();const firstTut=!!store.get('shg_tutBonus',0);if(firstTut){balance+=500000;store.set('shg_tutBonus',0);}
     card.innerHTML=tw(heroH('<div class="grade br gd">튜토리얼 완료 🎉</div>')+(firstTut?'<div class="tbn">+500,000원 보너스</div>':'<div class="sub">연습 모드라 보너스는 처음 한 번만 받아요.</div>')+
-      '<ul><li>폭락 시점은 매판 랜덤이에요.</li><li>⚠️ 악재 뉴스와 빨라지는 심장 소리를 보고 판단하세요. 악재 중엔 개미털기도 있어요.</li><li>계급이 오르면 아이템이 하나씩 열려요.</li><li>📋 일일 미션을 깨면 큰 보상이 있어요.</li>'+(pet?'<li>🐾 내 파트너 <b>'+CHARS[pet.sel]+'</b> · 판마다 친밀도가 쌓여 아기 → 어른 → 전설로 자라요 (성장 탭)</li>':'')+'</ul>'+
-      '<div class="sub">이제 진짜 시작! 버튼을 눌러 매수해 보세요.</div>'+ctaH());
+      '<ul><li>폭락 시점은 매판 랜덤이에요.</li><li>⚠️ 악재 뉴스와 빨라지는 심장 소리를 보고 판단하세요. 악재 중엔 개미털기도 있어요.</li><li>계급이 오르면 아이템이 하나씩 열려요.</li>'+(tourFirstOk(firstTut)?'':'<li>📋 일일 미션을 깨면 큰 보상이 있어요.</li>')+(pet?'<li>🐾 내 파트너 <b>'+CHARS[pet.sel]+'</b> · 판마다 친밀도가 쌓여 아기 → 어른 → 전설로 자라요 (성장 탭)</li>':'')+'</ul>'+
+      (tourFirstOk(firstTut)?tourCardH():'<div class="sub">이제 진짜 시작! 버튼을 눌러 매수해 보세요.</div>'+ctaH()));
     burst(innerWidth/2,innerHeight*.4,60);sfx.up();
   }else{
     card.innerHTML=tw(heroH('<div class="grade br dn">💥 이게 폭락이에요</div>')+'<div class="sub">연습이라 돈은 그대로예요.<br><b>노란 +30% 줄을 넘으면</b> 버튼을 눌러 파세요!</div>'+ctaH());
@@ -3067,6 +3178,548 @@ function tutEnd(won){
   }
   bdNext={k:won?'happy':'shock',id:run&&run.bd||profile||'hamster'};showCard();
 }
+/* TOURS begin: strings (KO, one whole sentence per string; EN in en/outT.json) */
+const TS={
+  lbl:'💡 버튼 안내',skip:'건너뛰기',next:'다음 ›',ok:'알겠어요',hint:'👇 직접 눌러 보세요',esc:'그냥 넘기기',
+  dsr:'%n%단계 중 %i%단계',sb:'체험',sbL:'체험 · 빚은 안 생겨요',sbok:'✅ 체험이라 돈은 그대로예요',sbokL:'✅ 체험이라 빚은 안 생겨요 · 돈도 그대로예요',sbokSP:'✅ 체험이라 SP는 그대로예요',
+  rh:'체험 결과예요',rb:'진짜로 하면 이렇게 바뀌어요.',rbBuy:'진짜로 사면 이렇게 바뀌어요.',rbShort:'지금 예수금보다 비싼 물건이에요.',rbSk:'진짜로 배우면 이렇게 바뀌어요. 고르는 건 안내가 끝난 뒤 직접 해요.',
+  sdH:'흐린 버튼은 지금 누를 수 없어요',sdB:'체험으로 결과만 보여 드려요.',whyOff:'지금은 쓸 수 없어서 꺼져 있어요.',whyCash:'예수금이 가격보다 적어서 꺼져 있어요.',whyDebt:'빚이 있으면 살 수 없어서 꺼져 있어요.',
+  whyBal:'넣어 둔 돈이 없어서 꺼져 있어요.',whyBalSim:'진짜로 넣어 둔 돈이 없어서 꺼져 있어요. 방금 체험으로 넣은 돈이라면 이렇게 빠져요.',whyDep:'예수금이 없어서 꺼져 있어요.',
+  nudge:'먼저 밝게 표시된 버튼을 눌러 주세요 · 그만 보려면 건너뛰기',fold:'💡 안내 이어 보기 · %i%/%n%',foldx:'안내 그만 보기',
+  skipT:'💡 버튼 안내는 내 계좌 › ⚙️ 설정에서 언제든 다시 볼 수 있어요',gH:'[[%t%]] 탭을 눌러 주세요',gB:'다음 안내는 %t% 화면에 있어요.',
+  endSay:'버튼 안내를 마쳤어요',px:'%n% · 체험',stopT:'화면이 바뀌어서 안내를 멈췄어요 · 설정에서 다시 볼 수 있어요',
+  waitT:'지금은 안내를 열 수 없어요 · 판이 끝나면 💡 안내 이어 보기 버튼이 떠요',waitOver:'지금은 안내를 열 수 없어요 · 이 화면에서 고르고 나면 💡 안내 이어 보기 버튼이 떠요',
+  waitTut:'지금은 안내를 열 수 없어요 · 연습 판을 마치면 💡 안내 이어 보기 버튼이 떠요',waitGen:'지금은 안내를 열 수 없어요 · 준비되면 💡 안내 이어 보기 버튼이 떠요',
+  itemOff:'🧰 체험으로 켠 아이템은 껐어요',pctOff:'💡 눌러 본 투자 비율은 원래대로 돌려 놨어요 · %p%',vetT:'💡 버튼 안내가 생겼어요 · 내 계좌 › ⚙️ 설정에서 볼 수 있어요',
+  inv:'💡 %e% %n% 안내 · 약 %s%초',invF:'💡 %n% · 약 %s%초',invGo:'같이 보기',invLater:'나중에',invSaved:'📖 내 계좌 › ⚙️ 설정 › 버튼 안내에 넣어 뒀어요',
+  cardSub:'버튼을 하나씩 직접 눌러 보며 화면을 둘러볼까요?',cardGo:'💡 버튼 둘러보기 · 약 %s%초',cardNo:'바로 시작',fEnd:'💡 둘러보기 끝 · 내 계좌 › ⚙️ 설정에서 다시 볼 수 있어요',
+  itTip:'켜면 그 판에만 비용이 들어요 · 아래 칩에서 켜고 꺼요',shopNote:'상점엔 아이템 · 장비 · 꾸미기 · 은행이 있어요.',shopNote2:'소모품은 효과를 다 쓰면 사라지고, 장비는 영구 보너스예요.',
+  menu:'💡 버튼 안내 다시 보기',lsT:'💡 버튼 안내',lsSub:'돈이 드는 버튼은 체험이라 눌러도 돈은 그대로예요.',lsSeen:'✓ 봤어요',lsLock:'🔒 %c%',lsSec:'약 %s%초',lsAll:'전체 안내 목록 ›',hpT:'💡 이 화면 안내',
+  lockBoss:'보스전 차례에 볼 수 있어요',lockRank:'%r% 계급부터',
+  nFirst:'버튼 둘러보기',nItem:'아이템',nBoss:'보스전',nMission:'미션',nGrow:'성장 · 스킬',nGear:'장비',nDecor:'꾸미기',nBank:'은행',nLoan:'대출',nInvest:'투자',nCol:'컬렉션',nBroke:'바닥났을 때 화면',
+  dFirst:'거래 화면과 아래 탭을 직접 눌러 봐요',dItem:'아이템 켜고 끄기 · 드는 비용',dBoss:'보스전 규칙과 목표',dMission:'미션 · 챌린지 · 시즌 패스',dGrow:'파트너 · 스킬 고르기 체험',
+  dGear:'장비 체험 구매 · 압류 규칙',dDecor:'미리 입혀 보기 · 체험 구매',dBank:'빚 · 신용 보기 · 입금 · 출금 체험',dLoan:'이자 · 신용 · 압류 위험 · 체험 (빚 안 생겨요)',dInvest:'상품별 위험 · 입금 · 출금 체험',
+  dCol:'세트 보기 · 체험 구매',dBroke:'바닥났을 때 버튼 미리 보기',
+  iFirst:'화면 버튼을 하나씩 눌러 볼까요?',iItem:'켜고 끄는 법만 같이 눌러 볼까요?',iBoss:'규칙만 같이 볼까요?',iBoss2:'내 돈은 안 걸려요 · 규칙만 같이 볼까요?',iGrow:'스킬 고르는 법 같이 볼까요? · SP는 그대로예요',
+  iMission:'버튼을 같이 눌러 볼까요?',iBank:'빚 · 신용 보는 법과 입금 · 출금을 체험해 볼까요?',iInvest:'넣고 빼는 법을 체험해 볼까요? · 돈은 그대로예요',
+  iGear:'어떤 건지 체험으로 눌러 볼까요? · 돈은 그대로예요',iDecor:'미리 입혀 보는 법 같이 볼까요? · 돈 안 들어요',iCol:'같이 볼까요? · 돈은 그대로예요',
+  f1h:'한 판에 넣을 투자 비율이에요',f1b:'예수금 중 얼마를 한 판에 넣을지 정해요. 작게 넣으면 벌 때도 잃을 때도 조금씩이에요. 눌러 본 비율은 안내가 끝나면 원래대로 돌아가요.',
+  f2h:'아래 탭으로 화면을 옮겨요',f2b:'[[미션]] 탭을 눌러 보세요.',
+  f3h:'📋 매일 바뀌는 미션이에요',f3b:'판을 하다 보면 저절로 깨져요. 옆 [[성장]] 탭에선 파트너와 스킬을 봐요. 이번엔 [[상점]] 탭을 눌러 보세요.',
+  f4h:'🛒 상점이에요',f4b:'아이템 · 꾸미기 · 은행 칸이 있어요. 사지 않아도 게임은 끝까지 할 수 있어요. 이제 [[내 계좌]] 탭을 눌러 보세요.',
+  f6h:'💼 내 계좌',f6b:'미니룸 · 투자 · 컬렉션 · ⚙️ 설정이 여기 있어요. [[거래]] 탭을 누르면 안내가 끝나요.',
+  i1h:'🧰 새 아이템이 열렸어요',i1b:'[[%n%]] · %d%. 눌러서 열어 보세요.',i1bP:'[[%n%]] · %d%. 아래 칸에 있어요.',
+  i2h:'켜면 다음 한 판에만',i2b:'판을 시작할 때 약 [[%c%]]의 비용이 들어요. 판이 끝나면 저절로 꺼져요.',
+  i3h:'눌러서 켜 보세요',i3b:'판을 시작하기 전까지는 돈이 안 나가요.',
+  i4h:'다시 누르면 꺼져요',i4b:'켤지는 판마다 직접 골라요. 안 켜고 해도 괜찮아요. 눌러서 꺼 보세요.',
+  i5h:'아이템 안내 끝',i5b:'아이템은 켠 판에만 적용돼요.',
+  b1h:'👹 10판마다 보스가 와요',b1b:'이번 판은 [[보스전]]이에요. 보스전 판은 종목을 바꿀 수 없어요.',
+  b2h:'목표를 넘기고 팔면 처치',b2b:'목표 [[%g%]] 위에서 팔면 보스를 물리쳐요. 그 전에 폭락하면 보통 판처럼 손실이 나요.',
+  b3h:'준비되면 눌러서 시작해요',b3b:'투자 비율은 평소처럼 직접 골라요. 서두를 필요는 없어요.',
+  bv1b:'보스전은 [[내 돈이 안 걸리는]] 대결이에요. 보스를 눌러 규칙을 보세요.',bv2h:'%n%의 규칙',bv2b:'이 보스의 규칙은 [[%r%]]예요. 진짜 공격 게이지가 차오르는 동안 누르면 처치예요. 게이지가 다 차면 공격을 맞아요.',
+  bv3h:'준비되면 입장해요',bv3b:'너무 일찍 누르면 보스가 도망가요. 진짜 공격 게이지가 차오를 때까지 기다려요.',
+  m1h:'📋 오늘의 미션',m1b:'자정마다 바뀌어요. 판을 하다 보면 저절로 깨지고 보상이 바로 들어와요.',
+  m2h:'도전 버튼',m2b:'그 미션을 할 수 있는 화면으로 바로 데려가요.',
+  m3h:'🏆 오늘의 챌린지',m3b:'하루 한 번, 모두 같은 차트로 %n%판을 해요. [[내 돈은 안 걸려요]] · 점수만 겨뤄요. 시작하면 오늘 기회를 써요.',
+  m4h:'🎫 받을 수 있는 칸이 있어요',m4b:'밝은 칸은 판을 해서 이미 모은 보상이에요. 받는 건 안내가 끝난 뒤 직접 눌러요.',m4h2:'🎫 시즌 패스는 이렇게 채워요',m4b2:'판을 하면 칸이 채워지고, 받을 수 있는 칸은 밝아져요. 월요일마다 새 시즌이에요.',
+  m5h:'👥 친구 리그',m5b:'친구 코드를 넣으면 이번 주 점수로 순위를 매겨요. 미션 안내는 여기까지예요.',
+  g1h:'🐾 내 파트너',g1b:'판마다 친밀도가 쌓여 아기 → 어른 → 전설로 자라요. 다른 친구가 합류하면 눌러서 바꿀 수 있어요.',
+  g2h:'🌳 SP %n%개로 스킬을 골라요',g2b:'금색 버튼은 추천일 뿐이에요. [[체험]]이라 눌러도 SP는 그대로예요.',g2h2:'🌳 스킬',g2b2:'SP가 생기면 여기서 스킬을 골라요.',
+  g3h:'언제든 무료로 초기화',g3b:'마음이 바뀌면 SP를 전부 돌려받을 수 있어요.',
+  g4h:'성장 안내 끝',g4b:'SP는 레벨 · 업적 · 보스로 천천히 모여요.',
+  e1h:'💎 장비와 소모품은 달라요',e1b:'소모품은 켠 판에만 쓰이고, 장비는 산 뒤에도 남아요. 단, [[빚이 있는 채로 파산하면 압류]]돼요.',
+  e2h:'가격 버튼을 눌러 보세요',e2b:'[[체험]]이라 돈은 안 나가요.',
+  e3h:'🔒 계급이 오르면 더 열려요',e3b:'자물쇠에 적힌 계급이 되면 살 수 있어요. 서두를 필요는 없어요.',
+  e4h:'어디에 보이나요?',e4b:'산 장비는 [[내 계좌 › 미니룸]]과 장비 컬렉션에 보여요.',
+  e5h:'장비 안내 끝',e5b:'장비 없이도 게임은 끝까지 할 수 있어요. 이 안내는 상점 도움말에서 다시 볼 수 있어요.',
+  d1h:'눌러서 방에 입혀 보세요',d1b:'미리 보기는 공짜예요. 한 번 더 누르면 원래대로 돌아가요.',
+  d2h:'미니룸에 이렇게 보여요',d2b:'벽지 · 바닥 · 소품은 효과 없이 방 모습만 바꿔요.',
+  d3h:'가격을 누르면 어떻게 될까요?',d3b:'[[체험]]이라 돈은 안 나가요.',
+  d4h:'산 뒤에는 사용 · 해제',d4b:'산 물건은 언제든 무료로 켜고 끌 수 있어요.',
+  d5h:'꾸미기 안내 끝',d5b:'사지 않아도 미리 보기는 언제든 할 수 있어요.',
+  k1h:'🏦 은행 한눈에',k1b:'빚 [[%d%]] · 신용 [[%c%]] · 빚 한도 [[%l%]]. 빚이 없으면 이자도 없어요.',
+  k2h:'절반 상환을 눌러 보세요',k2b:'[[체험]]이라 돈은 그대로예요.',k2h2:'빚이 생기면 여기서 갚아요',k2b2:'익절하면 수익의 30%가 저절로 갚아져요. 다 갚으면 신용이 1등급 올라요.',
+  k3h:'입금을 눌러 보세요',k3b:'예수금을 [[%p%]]에 넣어 두는 버튼이에요. [[체험]]이라 진짜 돈은 안 움직여요.',
+  k4h:'출금도 눌러 보세요',k4b:'넣어 둔 돈을 다시 예수금으로 꺼내요.',k4rb:'뺄 때는 상품마다 수수료가 달라요.',
+  k5h:'얼마나 넣고 뺄지 고르는 버튼',k5b:'입금은 예수금의 몇 퍼센트, 출금은 상품 잔액의 몇 퍼센트인지 정해요.',
+  k6h:'은행 안내 끝',k6b:'대출 비용이 궁금하면 상점 도움말의 💳 대출 안내를 볼 수 있어요.',
+  l1h:'💳 대출은 비상금이에요',l1b:'급할 때만 쓰는 돈이에요. 빌리면 판마다 이자가 붙어요. 먼저 비용을 볼게요.',
+  l2h:'대출 버튼을 눌러 보세요',l2b:'[[체험]]이라 진짜로 빌리지 않아요. 빚은 안 생겨요.',
+  l2rh:'빌리면 이렇게 돼요',l2rb:'대출은 [[급할 때만]] 쓰는 비상금이에요. 빌린 돈에는 이기든 지든 판마다 이자가 붙어요.',
+  l2rbNo:'지금은 빌릴 수 없어서 체험도 막혀 있어요. 빚을 줄이면 다시 열려요.',
+  l3h:'신용등급이 내려가요',l3b:'빌릴 때마다 1등급씩 내려가고, 다 갚아야 1등급 올라요. 등급이 낮으면 이자는 비싸지고 빌릴 수 있는 돈은 줄어요.',
+  l4h:'빚 한도를 넘으면 압류',l4b:'빚이 [[%l%]]%l^을^를% 넘으면 예수금에서 먼저 갚고, 모자라면 [[장비 · 소모품 · 투자금이 압류]]돼요. 꾸미기 · 레벨 · 스킬은 그대로예요.',
+  l5h:'갚는 방법',l5b:'익절하면 수익의 30%가 저절로 갚아져요. 여기서 절반 · 전액을 직접 갚을 수도 있어요.',
+  l6h:'대출 안내 끝',l6b:'대출은 꼭 필요할 때만이에요. 빚이 없으면 이자도 없어요. 대출 없이도 게임은 끝까지 할 수 있어요.',
+  lcH:'💳 빌리기 전에 한 번만 볼게요',lcB:'대출은 급할 때만 쓰는 비상금이에요. 빌리면 이렇게 돼요.',lcNo:'그만두기',lcGo:'알고 빌리기',lcN:'이 안내는 처음 한 번만 떠요.',
+  v1h:'💼 투자 상품',v1b:'넣어 둔 돈은 판을 할 때마다 조금씩 늘거나 줄어요.',
+  v2h:'상품마다 위험이 달라요',v2b:'[[%s%]]%s^은^는% 거의 안전해요. [[%r%]]%r^은^는% 한 판에 크게 잃을 수도 있어요.',v2b0:'[[%s%]]%s^은^는% 거의 안전해요. 계급이 오르면 더 크게 오르내리는 상품도 열려요. 그런 상품은 크게 잃을 수도 있어요.',
+  v3h:'입금을 눌러 보세요',v3b:'[[%p%]]%p^으로^로% 연습해요. [[체험]]이라 진짜 돈은 안 움직여요.',v4h:'출금도 눌러 보세요',v4b:'뺄 때 수수료가 있는 상품도 있어요.',
+  v5h:'한도와 수수료',v5b:'[[%p%]]%p^은^는% 한도 [[%m%]]까지만 이자가 붙고, 뺄 때 수수료는 [[%f%]]예요.',v5b0:'[[%p%]]%p^은^는% 한도 [[%m%]]까지만 이자가 붙고, 뺄 때 수수료는 없어요.',
+  v6h:'투자 안내 끝',v6b:'넣고 빼는 건 직접 골라요. 다 넣지 않아도 괜찮아요.',
+  c1h:'🏆 컬렉션',c1b:'%c%개 분류 %n%종이에요. 빈 칸은 아직 안 모은 물건이에요.',
+  c2h:'빈 칸을 누르면 다음 목표로',c2b:'모을 순서를 직접 고를 수 있어요.',c3h:'구매 버튼을 눌러 보세요',c3b:'[[체험]]이라 돈은 안 나가요.',
+  c4h:'컬렉션 안내 끝',c4b:'빚이 있으면 살 수 없어요. 컬렉션은 꼭 모으지 않아도 돼요.',
+  r1h:'예수금이 바닥나면 이 화면이 떠요',r1b:'판을 시작하려면 %m%%m^이^가% 필요해요. 그보다 적으면 이어갈 방법을 고르게 돼요. 지금은 [[미리 보기]]예요.',
+  r2h:'🎁 복귀 지원금은 무료예요',r2b:'하루 한 번 받을 수 있고, 빚이 아니에요.',
+  r3h:'🔄 새로 시작',r3b:'처음 돈으로 다시 해요. 레벨 · 스킬 · 업적 · 파트너 · 꾸미기 · 장비는 그대로예요.',
+  r4h:'🥫 빚이 있을 때는 파산 신청',r4b:'빚은 없어지지만 장비 · 소모품 · 투자금이 압류되고 신용이 10등급이 돼요.',
+  r5h:'💳 대출 받고 계속하기',r5b:'바로 이어 하지만 빚이 늘고 판마다 이자가 붙어요. 빚이 남은 채 다시 바닥나면 파산 신청(압류)이 돼요.',
+  r6h:'서두르지 않아도 돼요',r6b:'진짜 이 화면이 떠도 시간 제한은 없어요. 카드의 [[💡 버튼 설명]]을 펼쳐 볼 수 있어요.',
+  rdN:'새로 받는 돈은 [[재기 자금]](무이자 빚)이에요. 익절하면 조금씩 저절로 갚아져요.',rdS:'받는 돈은 재기 자금(무이자 빚)',mRd:'재기 자금',
+  mockB:'미리 보기 · 진짜 파산이 아니에요',mockT:'돈이 바닥났습니다',mRev:'복귀 지원금',mNew:'새로 시작',mBk:'파산 신청',mLoan:'대출 받고 계속',
+  ohS:'💡 버튼 설명',ohRev:'[[🎁 복귀 지원금]] · 하루 한 번 무료 · 빚이 아니에요',ohAd:'[[📺 광고 보고 지원금]] · 하루 한 번 · 빚이 아니에요',
+  ohNew:'[[🔄 새로 시작]] · 처음 돈으로 다시 · 레벨 · 스킬 · 업적 · 파트너 · 꾸미기 · 장비는 그대로',
+  ohBk:'[[🥫 파산 신청]] · 빚은 없어지지만 장비 · 소모품 · 투자금 압류 · 신용 10등급',ohDf:'[[🥫 받아들이고 처음부터]] · 빚은 없어지지만 장비 · 소모품 · 투자금 압류 · 신용 10등급',
+  ohLoss:'[[📺 광고 보고 손실 30% 복구]] · 잃은 돈의 30%를 돌려받아요',
+  ohLoan:'[[💳 대출 받고 계속]] · 빚 +%a% · 판마다 이자 %r% · 신용 %c0% → %c1% · 빚이 남은 채 다시 바닥나면 파산 신청(압류)',
+  ohCalm:'💡 이 화면엔 시간 제한이 없어요. 천천히 골라도 돼요.',
+  lPrice:'가격',lCash:'예수금',lEff:'효과',lUse:'사용 · 해제',lBk:'파산하면',lAmt:'넣는 돈',lKind:'상품 설명',lFee:'뺄 때 수수료',lTake:'꺼내는 돈',lFee2:'수수료',
+  lPay:'갚는 돈',lDebt:'빚',lCr:'신용등급',lInt:'판마다 이자',lRate:'판당 이자율',lD10:'안 갚으면 10판 뒤 빚',lSk:'스킬',lSP:'남는 SP',lReset:'초기화',
+  vFree:'언제든 무료',vDay:'하루 1번',vAgain:'바로 다시 거래',vNoSeize:'꾸미기는 압류 안 돼요',vNone:'없음',vAbout:'약 %a%',vRate:'%a% · %r%',vD10:'약 %a% (+%p%%)',
+  vLoanShark:' · 사채',
+  wSeize:'빚이 있는 채로 파산하면 압류돼요',wLoan:'빚이 남은 채 바닥나면 새로 시작이 아니라 파산 신청(압류)이에요.',wColDebt:'빚이 있으면 살 수 없어요',
+  wNoCash:'예수금이 있어야 넣을 수 있어요',wNoBal:'넣어 둔 돈이 없어서 꺼낼 돈도 없어요',
+  lNo10:'신용 10등급은 대출이 막혀요',lNoLim:'빚 한도가 차서 더 빌릴 수 없어요',
+  gRes:'체험 결과'
+};
+/* TOURS end */
+/* TOURS begin: engine (navigator, sandbox, triggers) */
+const TOUR_ST=/selftest/.test(location.search);
+const TOUR_OFF=(()=>{try{if(sessionStorage.getItem('shgTourOff'))return true;}catch(e){}return /[?&]notour\b/.test(location.search)||TOUR_ST&&!/[?&]tours?=1\b/.test(location.search);})();
+const tj=(w,a,b)=>{w=String(w);const c=w.charCodeAt(w.length-1);if(!(c>=0xAC00&&c<=0xD7A3))return a+'('+b+')';const f=(c-0xAC00)%28;return f&&!(a==='\uC73C\uB85C'&&f===8)?a:b;};
+const tsay=(k,v)=>{let s=TS[k];if(s==null)return '';s=s.replace(/%(\w+)(?:\^([^%^]*)\^([^%^]*))?%/g,(m,x,a,b)=>{const y=v&&v[x]!=null?String(v[x]):'';return a!=null?tj(y,a,b):esc(y);});return s.replace(/\[\[(.+?)\]\]/g,'<b>$1</b>');};
+const tTxt=h=>String(h).replace(/<(?:br|\/(?:div|p|li|dt|dd|h\d|small|section|header|footer|button|summary))\b[^>]*>/gi,' ').replace(/<[^>]*>/g,'').replace(/\s+/g,' ').trim();
+const tRowsTxt=r=>(r&&r.rows||[]).filter(Boolean).map(x=>tTxt(x[0])+': '+tTxt(x[1])).join('. ');
+const MONEY_SEL='[data-buy],[data-use],[data-gear],[data-dbuy],[data-deq],[data-dep],[data-wd],[data-col],#bLoan,#bHalf,#bAll,#rHalf,#rAll,#loanBtn,#again,#szGo,#freeRev,#adRevive,#adLoss,#adWin,#adItem,#adSpin,#prestige,#chalGo,#bkIn,#bkOut,#wipe,#retake,#reTut,#levBtn,#allinBtn,#giftBtn,#bsPrac,#qOffer,#lgAdd,#nickSet,#invite,#share,#chalShare';
+const PALLOW='[data-pct],#tabs [data-tab],[data-sseg],[data-dprev],[data-ipct],[data-pet],[data-cpk],[data-i],#itemBtn,.bosschip,[data-jump],[data-help],#setGo,#modalClose';
+const tq=s=>{const p=$('page');return p&&!p.hidden&&p.querySelector(s)||document.querySelector(s);},tqa=s=>{const p=$('page');let a=p&&!p.hidden?[...p.querySelectorAll(s)]:[];if(!a.length)a=[...document.querySelectorAll(s)];return a;};
+const tVis=e=>{if(!e||!e.isConnected)return false;const r=e.getBoundingClientRect();return r.width>0&&r.height>0&&getComputedStyle(e).visibility!=='hidden';};
+const tPf=r=>(r*100).toFixed(1)+'%';
+const tTabName=n=>{const b=$('tabs').querySelector('[data-tab="'+n+'"]');return b?[...b.childNodes].filter(x=>x.nodeType===3).map(x=>x.textContent).join('').trim()||n:n;};
+const tSimple=()=>{const ib=$('itemBtn');return !!ib&&tVis(ib);};
+const tItemK=()=>{const ri=rankOf(xp),a=Object.entries(ITEMS).filter(([k,v])=>ri>=v.lv).sort((x,y)=>y[1].lv-x[1].lv);return a.length?a[0][0]:'shield';};
+const TGLEV=/\uB808\uBC84\uB9AC\uC9C0|\uCCAD\uC0B0|leverage|liquidat/i,tGearOk=g=>!!g&&!['vip','jet'].includes(g.id)&&!g.lev&&!TGLEV.test(String(g.d||'')+' '+String(g.n||''));
+const tGearOf=c=>c&&GEAR.find(g=>g.id===(c.dataset.g||(c.querySelector('[data-gear]')||{dataset:{}}).dataset.gear));
+const tGearCard=()=>{const a=tqa('.scard.gear').filter(c=>!c.classList.contains('lock')&&!c.classList.contains('done')&&tGearOk(tGearOf(c)));return a.find(c=>{const b=c.querySelector('[data-gear]');return b&&!b.disabled;})||a[0]||null;};
+const tOff=e=>!!e&&(e.disabled||e.getAttribute('aria-disabled')==='true');
+const tRd=()=>typeof rdebt!=='undefined';
+const tProd=k=>{const ri=rankOf(xp),o=PROD.filter(P=>ri>=P.lv);if(!o.length)return null;if(k==='safe')return o.slice().sort((a,b)=>(a.v||0)-(b.v||0))[0];const r=o.filter(P=>P.angel||P.v>=.01).sort((a,b)=>(b.angel?9:b.v)-(a.angel?9:a.v))[0];return r||null;};
+const tAB=(a,b)=>{const x=wonS(a),y=wonS(b);return x+' → '+y+(x===y&&a!==b?' ('+(b>a?'+':'\u2212')+wonS(Math.abs(b-a))+')':'');};
+const tRow=P=>{const b=P&&tq('[data-dep="'+P.id+'"]');return b?b.closest('.ivr'):null;};
+const TGT={
+  bet:()=>tqa('#betrow [data-pct]'),hold:()=>[btn],itemBtn:()=>[$('itemBtn')],item:()=>[tq('#items [data-i="'+(TR&&TR.k||'shield')+'"]')],
+  bosschip:()=>[tq('#offers .bosschip')],secDaily:()=>[$('secDaily')],mgo:()=>[tq('[data-mgo]')],secChal:()=>[$('secChal')],season:()=>[tq('#secSeason [data-stier].ok')||tq('#secSeason .spass')],
+  league:()=>[$('secLeague')],petP:()=>[$('petP')],up1:()=>[tq('#secSk .skr.rec [data-up]:not([disabled])')||tq('#secSk [data-up]:not([disabled])')],secSk:()=>[$('secSk')],skReset:()=>[$('skReset')],
+  gearCard:()=>[tGearCard()||tqa('.scard.gear').find(c=>tGearOk(tGearOf(c)))],gearBtn:()=>{const c=tGearCard();return [c&&c.querySelector('[data-gear]')];},gearLock:()=>[tq('.scard.gear.lock')],
+  gearHead:()=>{const c=tq('.scard.gear'),s=c&&c.parentElement;return [s&&s.previousElementSibling&&s.previousElementSibling.tagName==='H3'?s.previousElementSibling:s];},
+  decorCheap:()=>{const d=DECOR.filter(x=>x.p>0&&!x.prem&&!decor.own.includes(x.id)).sort((a,b)=>(a.t==='wall'?0:1)-(b.t==='wall'?0:1)||a.p-b.p)[0];return [d&&tq('[data-dprev="'+d.id+'"]')||tq('[data-dprev]')];},
+  dprev:()=>[tq('.dprev')],dbuy:()=>[tq('.dpt [data-dbuy]')||tq('[data-dbuy]')],deq:()=>[tq('[data-deq]')],
+  bank:()=>[tq('.pan.bank')],brow:k=>[tq('[data-brow="'+k+'"]')||tqa('.pan.bank .brow')[{debt:0,credit:1,rate:2,limit:3}[k]]],
+  repay:()=>tqa('#bHalf,#bAll,#rHalf,#rAll'),bHalf:()=>[tq('#rHalf')&&!tq('#bHalf:not([disabled])')?tq('#rHalf'):$('bHalf')],bLoan:()=>[$('bLoan')],
+  depSafe:()=>{const P=tProd('safe');if(TR&&P)TR.pid=P.id;return [P&&tq('[data-dep="'+P.id+'"]')];},
+  wd:()=>[TR&&tq('[data-wd="'+TR.pid+'"]')],ipct:()=>[tq('.ipct')],invFirst:()=>[tq('.ivr:not(.lock)')],
+  invSafe:()=>[tRow(tProd('safe'))],ivd:()=>{const r=tRow(PROD.find(P=>P.id===(TR&&TR.pid))||tProd('safe'));return [r&&r.querySelector('.ivd')||r];},
+  colSet:()=>[tq('#secCol .set')],colPick:()=>[tq('#secCol [data-cpk]:not([disabled])')],colBuy:()=>[tq('#secCol [data-col]')],
+  mock:id=>[TR&&TR.mock&&TR.mock.querySelector(id)]
+};
+const TSIM={
+  gear(el){const g=GEAR.find(x=>x.id===(el&&el.dataset.gear));if(!g)return null;const ok=balance>=g.p;
+    return {rows:[[tsay('lPrice'),wonS(g.p)],ok?[tsay('lCash'),tAB(balance,balance-g.p)]:[tsay('lCash'),wonS(balance),'m'],[tsay('lEff'),g.d]],warn:tsay('wSeize'),ghost:'gRes',rb:ok?'rbBuy':'rbShort',why:ok?'':'whyCash'};},
+  decor(el){const d=DECOR.find(x=>x.id===(el&&el.dataset.dbuy));if(!d)return null;const ok=balance>=d.p;
+    return {rows:[[tsay('lPrice'),wonS(d.p)],ok?[tsay('lCash'),tAB(balance,balance-d.p)]:[tsay('lCash'),wonS(balance),'m'],[tsay('lUse'),tsay('vFree')],[tsay('lBk'),tsay('vNoSeize')]],ghost:'gRes',rb:ok?'rbBuy':'rbShort',why:ok?'':'whyCash'};},
+  col(el){const c=COL.find(x=>x.id===(el&&el.dataset.col));if(!c)return null;const ok=balance>=c.p&&!(debt>0);
+    const rows=[[tsay('lPrice'),wonS(c.p)],ok?[tsay('lCash'),tAB(balance,balance-c.p)]:[tsay('lCash'),wonS(balance),'m']];
+    return {rows,warn:debt>0?tsay('wColDebt'):'',ghost:'gRes',rb:ok?'rbBuy':debt>0?'rb':'rbShort',why:debt>0?'whyDebt':ok?'':'whyCash'};},
+  dep(el,R){const P=PROD.find(x=>x.id===(el&&el.dataset.dep));if(!P)return null;const v=Math.floor(balance*invPct);if(R)R.dep={id:P.id,v};
+    return {rows:[[tsay('lAmt'),wonS(Math.max(0,v))+' · '+Math.round(invPct*100)+'%'],[tsay('lCash'),tAB(balance,balance-Math.max(0,v))],[tsay('lKind'),esc(P.d)],[tsay('lFee'),P.fee?tPf(P.fee):tsay('vNone')]],warn:v<1?tsay('wNoCash'):'',ghost:'gRes',why:v<1?'whyDep':''};},
+  wd(el,R){const P=PROD.find(x=>x.id===(el&&el.dataset.wd));if(!P)return null;const h=invest[P.id],ch=!(h&&h.a>0)&&R&&R.dep&&R.dep.id===P.id&&R.dep.v>=1,a=h&&h.a>0?h.a:ch?R.dep.v:0,b0=ch?balance-R.dep.v:balance,take=invPct>=1?a:a*invPct,out=take*(1-P.fee);
+    if(!(a>0))return {rows:[[tsay('lTake'),wonS(0)]],warn:tsay('wNoBal'),why:'whyBal'};
+    return {rows:[[tsay('lTake'),wonS(take)],[tsay('lFee2'),P.fee?wonS(take*P.fee)+' · '+tPf(P.fee):tsay('vNone')],[tsay('lCash'),tAB(b0,b0+out)]],ghost:'gRes',rb:'k4rb',why:ch?'whyBalSim':'whyBal',whyFull:ch};},
+  repay(el){const all=!!(el&&/All$/.test(el.id)),a=Math.min(all?debt:Math.ceil(debt/2),debt,balance),r=loanRate(),left=debt-a,off=left<1;
+    const rows=[[tsay('lPay'),wonS(a)],[tsay('lDebt'),off?wonS(debt)+' → '+tsay('vNone'):tAB(debt,left)],[tsay('lInt'),won(Math.ceil(debt*r))+' → '+(off?tsay('vNone'):won(Math.ceil(left*r)))],[tsay('lCash'),tAB(balance,balance-a)]];
+    if(off)rows.splice(2,0,[tsay('lCr'),crS(credit)+' → '+crS(Math.max(1,credit-1))]);return {rows,ghost:'gRes'};},
+  skill(el){const x=SKILLS.find(s=>s.id===(el&&el.dataset.up));if(!x)return null;const l=skl(x.id),c=costOf(l),n=spFree(),sg=x.d.slice(-1)==='-'?'\u2212':'+',v=k=>+(x.per*k).toFixed(1)+x.u;
+    return {rows:[[tsay('lSk'),esc(x.n)+' · Lv '+l+' → '+(l+1)],[tsay('lEff'),esc(x.d.slice(0,-1).trim())+' '+(l?sg+v(l):'0')+' → '+sg+v(l+1)],[tsay('lSP'),n+' → '+(n-c)],[tsay('lReset'),tsay('vFree')]],ghost:'gRes',rb:'rbSk',ok:'sbokSP'};},
+  loan(){const ok=canLoan(),why=typeof loanWhy==='function'?loanWhy():credit>=10?tsay('lNo10'):tsay('lNoLim');if(!ok)return {rows:[],warn:why,rb:'l2rbNo',why:'l2rbNo',ok:'sbokL'};
+    const a=loanAmt(),c1=Math.min(10,credit+1),r0=loanRate(),r1=LOAN_R[c1],d1=debt+a;let d=d1;for(let i=0;i<10;i++)d+=Math.ceil(d*r1);
+    return {rows:[[tsay('lInt'),tsay('vRate',{a:tsay('vAbout',{a:won(Math.ceil(d1*r1))}),r:tPf(r1)}),'c'],[tsay('lRate'),tPf(r0)+' → '+tPf(r1),'c'],[tsay('lD10'),tsay('vD10',{a:wonS(d),p:Math.round((d/d1-1)*100)}),'c'],
+      [tsay('lCr'),crS(credit)+' → '+crS(c1)+(c1>=8?tsay('vLoanShark'):''),'c'],[tsay('lDebt'),debt?tAB(debt,d1):tsay('vNone')+' → '+wonS(d1),'c'],[tsay('lCash'),tAB(balance,balance+a),'m']],
+      warn:typeof DEBT_NOTE!=='undefined'?DEBT_NOTE:tsay('wLoan'),ok:'sbokL',rb:'l2rb'};}
+};
+const tSeen=id=>tipGot('tr_'+id+TOURS[id].v);
+const tLockR=lv=>rankOf(xp)<lv?tsay('lockRank',{r:RANKS[lv][1]}):'';
+const tBoss2=()=>typeof bossSheet==='function'&&typeof bossE_==='function';
+const TOURS={
+  first:{v:1,e:'💡',n:'nFirst',d:'dFirst',g:'trade',inv:()=>curTab==='trade'&&tutDone&&(stats.rounds||0)<20,ii:'iFirst',endT:'fEnd',steps:[
+    {k:'P',at:'trade',t:'bet',look:'#betrow',h:'f1h',b:'f1b',done:R=>R.pv!=null&&betPct===R.pv},
+    {k:'P',at:'trade',t:'tab:mission',look:'#tabs',h:'f2h',b:'f2b',done:()=>curTab==='mission'},
+    {k:'P',at:'mission',t:'tab:shop',look:'#secDaily',h:'f3h',b:'f3b',done:()=>curTab==='shop'},
+    {k:'P',at:'shop',t:'tab:account',look:'[data-sseg]',h:'f4h',b:'f4b',done:()=>curTab==='account'},
+    {k:'P',at:'account',t:'tab:trade',look:'#secAst .room',h:'f6h',b:'f6b',done:()=>curTab==='trade'}]},
+  item:{v:1,e:'🧰',n:'nItem',d:'dItem',g:'trade',lv:()=>ITEMS.shield.lv,lock:()=>tLockR(ITEMS.shield.lv),inv:()=>curTab==='trade'&&rankOf(xp)>=ITEMS.shield.lv,ii:'iItem',
+    used:()=>!!store.get('shg_itemTip',0)||tipGot('it_shield'),init:R=>{R.k=tItemK();},steps:[
+    {k:'P',at:'trade',t:'itemBtn',if:()=>tSimple(),h:'i1h',b:'i1b',v:R=>({n:ITEMS[R.k].name,d:ITEMS[R.k].desc}),done:()=>!$('sheet').hidden&&$('sheet').classList.contains('im')},
+    {k:'I',at:'trade',t:'item',if:()=>!tSimple(),h:'i1h',b:'i1bP',v:R=>({n:ITEMS[R.k].name,d:ITEMS[R.k].desc})},
+    {k:'I',at:'sheet',t:'item',dock:1,h:'i2h',b:'i2b',v:R=>({c:wonS(itemCost(R.k,Math.min(balance,maxStake(0))*betPct))})},
+    {k:'P',at:'sheet',t:'item',dock:1,h:'i3h',b:'i3b',done:R=>!!sel[R.k]},
+    {k:'P',at:'sheet',t:'item',dock:1,h:'i4h',b:'i4b',done:R=>!sel[R.k]},
+    {k:'E',at:'sheet',dock:1,h:'i5h',b:'i5b',end:'ok',fin:()=>{if(!$('sheet').hidden&&$('sheet').classList.contains('im'))$('sheet').hidden=true;}}]},
+  boss:{v:1,e:'👹',n:'nBoss',d:'dBoss',g:'trade',lock:()=>curOffer().k==='boss'?'':tsay('lockBoss'),inv:()=>curTab==='trade'&&curOffer().k==='boss',ii:()=>tBoss2()?'iBoss2':'iBoss',
+    used:()=>(stats.bossLv||0)>0||(stats.rounds||0)>10,init:()=>{try{if(tBoss2()){const e=bossE_(curOffer().ni);bossCo[e.b]=1;}}catch(e){}},steps:[
+    {k:'I',at:'trade',t:'bosschip',look:'#offers',h:'b1h',b:'b1b',if:()=>!tBoss2()},
+    {k:'I',at:'trade',t:'hold',nopt:1,h:'b2h',b:'b2b',if:()=>!tBoss2(),v:()=>({g:'+'+Math.round((bossInfo(stats.bossLv||0).target-1)*100)+'%'})},
+    {k:'E',at:'trade',t:'hold',nopt:1,hold:1,h:'b3h',b:'b3b',if:()=>!tBoss2(),end:'ok'},
+    {k:'P',at:'trade',t:'bosschip',h:'b1h',b:'bv1b',if:()=>tBoss2(),done:()=>!$('modal').hidden},
+    {k:'I',at:'modal',dock:1,h:'bv2h',b:'bv2b',if:()=>tBoss2(),v:()=>{const e=bossE_(curOffer().ni);return {n:e.B.e+' '+e.B.n,r:e.B.rule};},nx:()=>{if(!$('modal').hidden)$('modalClose').click();}},
+    {k:'E',at:'trade',t:'hold',nopt:1,hold:1,h:'bv3h',b:'bv3b',if:()=>tBoss2(),end:'ok'}]},
+  mission:{v:1,e:'📋',n:'nMission',d:'dMission',g:'mission',inv:()=>curTab==='mission',ii:'iMission',used:()=>(stats.rounds||0)>=50,steps:[
+    {k:'I',at:'mission',sec:'secDaily',t:'secDaily',h:'m1h',b:'m1b'},
+    {k:'I',at:'mission',t:'mgo',h:'m2h',b:'m2b',when:()=>!!tq('[data-mgo]')},
+    {k:'I',at:'mission',t:'secChal',h:'m3h',b:'m3b',v:()=>({n:typeof CHAL_N!=='undefined'?CHAL_N:5})},
+    {k:'I',at:'mission',t:'season',h:'m4h',b:'m4b',if:()=>seasonN()>0},
+    {k:'I',at:'mission',t:'season',h:'m4h2',b:'m4b2',if:()=>!(seasonN()>0)},
+    {k:'E',at:'mission',t:'league',h:'m5h',b:'m5b',end:'ok'}]},
+  grow:{v:1,e:'🌳',n:'nGrow',d:'dGrow',g:'grow',inv:()=>curTab==='grow'&&spFree()>=1,ii:'iGrow',used:()=>Object.values(sk).some(v=>v>0),steps:[
+    {k:'I',at:'grow',sec:'petP',t:'petP',h:'g1h',b:'g1b'},
+    {k:'S',at:'grow',sec:'secSk',t:'up1',sim:'skill',h:'g2h',b:'g2b',if:()=>spFree()>=1,v:()=>({n:spFree()})},
+    {k:'I',at:'grow',sec:'secSk',t:'secSk',h:'g2h2',b:'g2b2',if:()=>!(spFree()>=1)},
+    {k:'I',at:'grow',t:'skReset',h:'g3h',b:'g3b'},
+    {k:'E',at:'grow',h:'g4h',b:'g4b',end:'ok'}]},
+  gear:{v:1,e:'💎',n:'nGear',d:'dGear',g:'shop',spend:1,lv:()=>GEAR[0].lv,lock:()=>tLockR(GEAR[0].lv),ii:'iGear',
+    inv:()=>{if(curTab!=='shop'||shopSeg!=='item'||rankOf(xp)<GEAR[0].lv)return false;const c=tq('.scard.gear');if(!c)return false;const r=c.getBoundingClientRect();return r.top<innerHeight*.75&&r.bottom>0;},
+    used:()=>Object.keys(gear).some(k=>gear[k]),steps:[
+    {k:'I',at:'shop.item',t:'gearCard',h:'e1h',b:'e1b'},
+    {k:'S',at:'shop.item',t:'gearBtn',sim:'gear',h:'e2h',b:'e2b',if:()=>GEAR.some(g=>!gear[g.id]&&rankOf(xp)>=g.lv&&tGearOk(g))},
+    {k:'I',at:'shop.item',t:'gearLock',h:'e3h',b:'e3b',if:()=>GEAR.some(g=>!gear[g.id]&&rankOf(xp)<g.lv)},
+    {k:'I',at:'shop.item',t:'gearHead',h:'e4h',b:'e4b'},
+    {k:'E',at:'shop.item',h:'e5h',b:'e5b',end:'ok'}]},
+  decor:{v:1,e:'🎨',n:'nDecor',d:'dDecor',g:'shop',spend:1,inv:()=>curTab==='shop'&&shopSeg==='decor',ii:'iDecor',used:()=>decor.own.some(id=>{const d=DECOR.find(x=>x.id===id);return d&&d.p>0;}),steps:[
+    {k:'P',at:'shop.decor',t:'decorCheap',look:'.dprev',h:'d1h',b:'d1b',done:()=>decorPv!==null},
+    {k:'I',at:'shop.decor',t:'dprev',h:'d2h',b:'d2b'},
+    {k:'S',at:'shop.decor',t:'dbuy',look:'.dprev',sim:'decor',h:'d3h',b:'d3b',if:()=>DECOR.some(d=>d.p>0&&!d.prem&&!decor.own.includes(d.id))},
+    {k:'I',at:'shop.decor',t:'deq',h:'d4h',b:'d4b',if:()=>decor.own.length>0},
+    {k:'E',at:'shop.decor',h:'d5h',b:'d5b',end:'ok'}]},
+  bank:{v:1,e:'🏦',n:'nBank',d:'dBank',g:'shop',inv:()=>curTab==='shop'&&shopSeg==='bank',ii:'iBank',used:()=>(stats.loans||0)>0,steps:[
+    {k:'I',at:'shop.bank',t:'bank',h:'k1h',b:'k1b',v:()=>({d:debt?wonS(debt):tsay('vNone'),c:crS(credit),l:wonS(debtLimit())})},
+    {k:'S',at:'shop.bank',t:'bHalf',look:'.pan.bank',sim:'repay',h:'k2h',b:'k2b',if:()=>debt>0},
+    {k:'I',at:'shop.bank',t:'repay',h:'k2h2',b:'k2b2',if:()=>!(debt>0)},
+    {k:'S',at:'account',sec:'secInv',t:'depSafe',sim:'dep',h:'k3h',b:'k3b',v:()=>{const P=tProd('safe');return {p:P?P.n:''};}},
+    {k:'S',at:'account',t:'wd',sim:'wd',h:'k4h',b:'k4b'},
+    {k:'I',at:'account',t:'ipct',h:'k5h',b:'k5b'},
+    {k:'E',at:'account',h:'k6h',b:'k6b',end:'ok'}]},
+  loan:{v:1,e:'💳',n:'nLoan',d:'dLoan',g:'shop',never:1,steps:[
+    {k:'I',at:'shop.bank',t:'brow:rate',look:'.pan.bank',h:'l1h',b:'l1b'},
+    {k:'S',at:'shop.bank',t:'bLoan',look:'.pan.bank',sim:'loan',sb:'sbL',h:'l2h',b:'l2b',rh:'l2rh'},
+    {k:'I',at:'shop.bank',t:'brow:credit',h:'l3h',b:'l3b'},
+    {k:'I',at:'shop.bank',t:'brow:limit',h:'l4h',b:'l4b',v:()=>({l:wonS(debtLimit())}),warn:()=>typeof DEBT_NOTE!=='undefined'?DEBT_NOTE:tsay('wLoan')},
+    {k:'I',at:'shop.bank',t:'repay',h:'l5h',b:'l5b'},
+    {k:'E',at:'shop.bank',h:'l6h',b:'l6b',end:'ok'}]},
+  invest:{v:1,e:'💼',n:'nInvest',d:'dInvest',g:'account',spend:1,ii:'iInvest',used:()=>Object.values(invest).some(h=>h&&h.a>0),
+    inv:()=>{if(curTab!=='account')return false;const s=$('secInv');if(!s)return false;const r=s.getBoundingClientRect();return r.top<innerHeight*.6&&r.bottom>innerHeight*.3;},steps:[
+    {k:'I',at:'account',sec:'secInv',t:'invFirst',h:'v1h',b:'v1b'},
+    {k:'I',at:'account',t:'invSafe',h:'v2h',b:'v2b',v:()=>{const s=tProd('safe'),r=tProd('risk');return {s:s?s.n:'',r:r?r.n:''};},bk:()=>tProd('risk')?'v2b':'v2b0'},
+    {k:'S',at:'account',t:'depSafe',sim:'dep',h:'v3h',b:'v3b',if:()=>!tSeen('bank'),v:()=>{const P=tProd('safe');return {p:P?P.n:''};}},
+    {k:'S',at:'account',t:'wd',sim:'wd',h:'v4h',b:'v4b',if:()=>!tSeen('bank')},
+    {k:'I',at:'account',t:'ivd',h:'v5h',b:'v5b',v:R=>{const P=PROD.find(x=>x.id===R.pid)||tProd('safe');return {p:P.n,m:wonS(P.max),f:P.fee?tPf(P.fee):''};},bk:()=>{const P=PROD.find(x=>x.id===(TR&&TR.pid))||tProd('safe');return P&&P.fee?'v5b':'v5b0';}},
+    {k:'E',at:'account',h:'v6h',b:'v6b',end:'ok'}]},
+  col:{v:1,e:'🏆',n:'nCol',d:'dCol',g:'account',spend:1,ii:'iCol',used:()=>col.length>0,
+    inv:()=>{if(curTab!=='account')return false;const s=$('secCol');if(!s)return false;const r=s.getBoundingClientRect();return r.top<innerHeight*.6&&r.bottom>innerHeight*.3;},steps:[
+    {k:'I',at:'account',sec:'secCol',t:'colSet',h:'c1h',b:'c1b',v:()=>({c:typeof CATS!=='undefined'?CATS.length:new Set(COL.map(x=>x.cat)).size,n:COL.length})},
+    {k:'I',at:'account',t:'colPick',h:'c2h',b:'c2b',if:()=>col.length<COL.length},
+    {k:'S',at:'account',t:'colBuy',sim:'col',h:'c3h',b:'c3b',if:()=>col.length<COL.length},
+    {k:'E',at:'account',h:'c4h',b:'c4b',end:'ok'}]},
+  broke:{v:1,e:'🥫',n:'nBroke',d:'dBroke',g:'account',never:1,mock:1,steps:[
+    {k:'I',at:'mock',t:'mock:.tmc',h:'r1h',b:'r1b',v:()=>({m:wonS(100000)})},
+    {k:'I',at:'mock',t:'mock:#tmRev',h:'r2h',b:'r2b'},
+    {k:'I',at:'mock',t:'mock:#tmNew',h:'r3h',b:'r3b',tail:()=>tRd()?'rdN':''},
+    {k:'I',at:'mock',t:'mock:#tmBk',h:'r4h',b:'r4b',tail:()=>tRd()?'rdN':''},
+    {k:'I',at:'mock',t:'mock:#tmLoan',h:'r5h',b:'r5b'},
+    {k:'E',at:'mock',h:'r6h',b:'r6b',end:'ok'}]}
+};
+function tSec(id){const T=TOURS[id];let c=0,n=0;for(const st of T.steps){let on=true;try{on=!st.if||!!st.if();}catch(e){}if(!on)continue;n++;let v={},bk=st.b;try{v=st.v?st.v(TR&&TR.id===id?TR:{k:tItemK(),pid:null}):{};}catch(e){}try{if(st.bk)bk=st.bk();}catch(e){}c+=tTxt(tsay(st.h,v)+tsay(bk,v)+(st.tail?tsay(st.tail()):'')).replace(/\s+/g,'').length;}return Math.max(10,Math.ceil((c/(LANG==='en'?16:9)+n*3)/5)*5);}
+const TORD=['first','item','boss','mission','grow','gear','decor','bank','loan','invest','col','broke'],TPRI=['boss','item','first','grow','mission','bank','invest','gear','decor','col'];
+const TGRP={trade:['first','item','boss'],mission:['mission'],grow:['grow'],shop:['gear','decor','bank','loan'],account:['invest','col','broke']};
+let tEndT=0,TR=null,TINV=null,TRES=null,tCool=0,TFC=0,tPlKey='',tInvC=null;const TSESS={n:0,later:0,off:{}},TW={n:0,keys:[],all:[]};
+const tourOn=()=>!!TR&&!TR.fold&&!TR.pause,tourBusy=()=>!!TR&&!TR.fold||!!TINV;
+const tStep=()=>TR&&TR.st[TR.i];
+function tourIdle(id,lite){try{
+  if(!profile||!tutDone||!(state==='ready'||state==='result')||cardTm||performance.now()<cineEnd)return false;
+  if(!$('modal').hidden||!$('sheet').hidden||!$('coach').hidden||!$('tbg').hidden||curTab==='trade'&&!card.hidden)return false;
+  if(adPause||adReq||adHold||adDue||presPend||tabStale||document.hidden||spinning||getComputedStyle($('rotate')).display!=='none')return false;
+  if(chal&&chal.i<5)return false;if((id==='boss')!==(curOffer().k==='boss'))return false;
+  if(balance+invNet()<100000||debt>debtLimit())return false;
+  return lite||$('toast').hidden&&!toastQ.length;}catch(e){return false;}}
+const tIdleMin=()=>!!profile&&tutDone&&(state==='ready'||state==='result')&&!cardTm&&!adPause&&!adReq&&!adHold&&!adDue&&!(chal&&chal.i<5)&&$('tbg').hidden&&!presPend&&!tabStale;
+function tMount(){const t=$('tour');if(t.firstChild)return t;
+  t.innerHTML='<svg class="tdim" aria-hidden="true"><defs><mask id="tdm"><rect width="100%" height="100%" fill="#fff"/><rect class="tlh" rx="12" fill="#4d4d4d" width="0" height="0"/><rect class="tth" rx="14" fill="#000" width="0" height="0"/></mask></defs><rect class="tdf" width="100%" height="100%" mask="url(#tdm)"/></svg>'+
+    '<div class="tlook" hidden></div><div class="tring" hidden></div><div class="tptr" hidden aria-hidden="true"><span>'+icH('👇')+'</span></div><button class="tpx" type="button" data-ta="sim" hidden></button><div class="tghost" hidden aria-hidden="true"></div>'+
+    '<section class="tbub" role="dialog" aria-modal="false" aria-labelledby="tourH" aria-describedby="tourB" hidden></section><div class="tchip" hidden></div><div class="tinv" role="region" hidden></div>';
+  return t;}
+const tEl=s=>$('tour').querySelector(s);
+function tRes(rule){if(!rule)return [];let a;if(typeof rule==='function')a=rule();else if(rule.startsWith('tab:'))a=tqa('#tabs [data-tab="'+rule.slice(4)+'"]').filter(tVis).slice(0,1);
+  else if(rule.includes(':')&&TGT[rule.slice(0,rule.indexOf(':'))]){const i=rule.indexOf(':');a=TGT[rule.slice(0,i)](rule.slice(i+1));}else if(TGT[rule])a=TGT[rule]();else a=tqa(rule);return (Array.isArray(a)?a:[a]).filter(Boolean);}
+const tWhere=at=>!at||at==='mock'?null:at==='sheet'||at==='modal'?'trade':at.split('.')[0];
+const tSeg=at=>at&&at.startsWith('shop.')?at.slice(5):null;
+function tNav(at,sec){if(!TR)return;TR.nav=1;try{const tb=tWhere(at),sg=tSeg(at);if(tb&&curTab!==tb)tab(tb==='shop'&&sg?sg:tb==='account'&&sec==='secInv'?'invest':tb);
+    if(sg&&shopSeg!==sg){const b=tq('[data-sseg="'+sg+'"]');if(b)b.click();}if(sec)pgJump(sec,1);}catch(e){}TR.nav=0;}
+function tourStart(id,o){o=o||{};if(TOUR_OFF)return false;const T=TOURS[id];if(!T||state==='over'||state==='holding'||state==='ghost')return false;
+  if(TR){if(TR.fold)tourEnd(null,'replace');else return false;}tInvHide();
+  const st=T.steps.filter(s=>!s.if||s.if());if(!st.length)return false;
+  TR={id,v:T.v,st,i:Math.min(o.at||0,st.length-1),ph:'ask',fold:0,pause:0,sel0:Object.assign({},sel),bp0:betPct,bpT:0,pv0:decorPv,f0:document.activeElement,op:o.op||null,tab0:curTab,auto:1,rep:!!o.replay,miss:0,jumped:{},pid:null,dep:null,k:null,tapT:performance.now()};
+  if(T.init)try{T.init(TR);}catch(e){}if(T.mock&&!o.fold)tMock();
+  tMount();$('tour').hidden=false;TFC=0;if(o.fold){TR.auto=0;tourFold();return true;}tShow();return true;}
+function tMock(){const m=document.createElement('div');m.className='tmock';m.setAttribute('aria-hidden','true');const nc=Math.min(10,credit+1);
+  m.innerHTML=icH('<b class="tmb">'+tsay('mockB')+'</b><div class="tmc"><div class="grade gx wn">'+tsay('mockT')+'</div><div class="nums"><div><small>'+tsay('lDebt')+'</small><b>'+(debt?wonS(debt):tsay('vNone'))+'</b></div><div><small>'+tsay('lCr')+'</small><b>'+crS(credit)+'</b></div></div></div>'+
+    optH('tmRev','rw','🎁',tsay('mRev')+' '+won(START*3),[[tsay('vDay')],[tsay('vAgain'),'ok']])+optH('tmNew','','🔄',tsay('mNew'),[[wonS(START*(1+.2*skl('seed'))),'ok']].concat(tRd()?[[tsay('mRd')]]:[]))+
+    optH('tmBk','','🥫',tsay('mBk'),[[crS(10),'no']])+optH('tmLoan','','💳',tsay('mLoan'),[[wonS(loanAmt())],[tPf(LOAN_R[nc]),'no']]));
+  m.querySelectorAll('button').forEach(b=>{b.disabled=true;b.tabIndex=-1;});m.style.top=(sTop()+12)+'px';TR.mock=m;tMount().insertBefore(m,tEl('.tring'));}
+function tClear(){const t=$('tour');document.querySelectorAll('.tglow').forEach(e=>e.classList.remove('tglow'));if(TR&&TR.tg)TR.tg.forEach(e=>{if(e&&e.getAttribute&&e.getAttribute('aria-describedby')==='tourB')e.removeAttribute('aria-describedby');});
+  ['.tring','.tptr','.tpx','.tghost','.tlook'].forEach(s=>{const e=t.querySelector(s);if(e)e.hidden=true;});tLift(0);}
+function tLift(on,px){const pg=$('page');if(!on){if(pg.dataset.tlift!=null){pg.style.paddingBottom=pg.dataset.tlift;delete pg.dataset.tlift;}return;}if(pg.dataset.tlift==null)pg.dataset.tlift=pg.style.paddingBottom||'';pg.style.paddingBottom=px+'px';}
+function tShow(){if(!TR)return;tClear();const st=tStep();if(!st){tourEnd(true,'done');return;}
+  TR.ph='ask';TR.lifted=0;TR.hit=0;TR.pv=null;TR.stray=0;TR.esc=0;TR.at0=TR.tapT=performance.now();TR.sim=null;TR.g=null;TR.sb=false;TR.dock=null;TR.dis=false;tPlKey='';
+  const need=tWhere(st.at);
+  if(need&&curTab!==need){if(TR.auto)tNav(st.at,st.sec);else TR.g=need;}
+  TR.auto=0;
+  if(!TR.g){const sg=tSeg(st.at);if(sg&&shopSeg!==sg)tNav(st.at);if(st.sec&&!TR.jumped[TR.i]){TR.jumped[TR.i]=1;TR.nav=1;try{pgJump(st.sec,1);}catch(e){}TR.nav=0;}
+    if(st.at==='sheet'&&tSimple()&&$('sheet').hidden){TR.nav=1;try{ovRet.sheet=$('itemBtn');sheetAt=performance.now();shMode(1);$('sheet').hidden=false;requestAnimationFrame(chipFit);}catch(e){}TR.nav=0;}
+    if(st.dock&&(st.at==='sheet'?!$('sheet').hidden&&tSimple():st.at==='modal'&&!$('modal').hidden))TR.dock=st.at==='sheet'?$('sheet').querySelector('.sh'):$('modal').querySelector('.box');}
+  TR.sb=st.k==='S'&&!TR.g;
+  TR.tg=TR.g?tRes('tab:'+TR.g):tRes(st.t);
+  if(!TR.g&&(st.when&&!st.when()||st.t&&!TR.tg.some(tVis))){if(!st.when&&++TR.miss>3){tourStop();return;}TR.i++;tShow();return;}
+  if(TOUR_ST)tLint(st);
+  if(st.k==='S'&&!TR.g&&tOff(TR.tg[0])){TR.dis=true;let r=null;try{r=TSIM[st.sim](TR.tg[0],TR);}catch(e){if(TOUR_ST)throw e;}TR.sim=r||{rows:[]};TR.ph='res';}
+  const el0=TR.tg[0];if(el0&&!TR.dock&&$('page').contains(el0)){const r=el0.getBoundingClientRect(),pb=$('tabs').getBoundingClientRect();if(r.top<sTop()+60||r.bottom>(DESK.matches?innerHeight:pb.top)-16)el0.scrollIntoView({block:'center'});}
+  tRender();tSave();
+  const f=tFocusEl(),hT=tTxt(TR.bub.querySelector('h2').innerHTML),bT=tTxt(TR.bub.querySelector('.tbody').innerHTML),rT=TR.dis?tRowsTxt(TR.sim):'';
+  say(tsay('dsr',{n:tDots(),i:tDotI()})+'. '+(f&&f.id==='tourH'?bT:f&&f.getAttribute('aria-describedby')==='tourB'?hT:hT+'. '+bT)+(rT?'. '+rT:''));
+  requestAnimationFrame(()=>{tPlace();tFocus();});setTimeout(tPlace,120);}
+function tourStop(){toast(tsay('stopT'));tourEnd(null,'stop');}
+const tDots=()=>TR.st.length,tDotI=()=>Math.min(tDots(),TR.i+1);
+function tLint(st){
+  if(st.k==='S'&&(TR.tg.some(e=>e.closest('#modal,#sheet'))||!TSIM[st.sim]))throw new Error('tour lint: sandbox target in dialog or no sim '+TR.id+'#'+TR.i);
+  if((st.k==='P'||TR.g)&&TR.tg.some(e=>!e.matches(PALLOW)||e.closest(MONEY_SEL)))throw new Error('tour lint: press target not allowed '+TR.id+'#'+TR.i);}
+function tRender(){const st=tStep(),T=TOURS[TR.id];let b=TR.bub;
+  if(!b){b=TR.bub=tEl('.tbub');}
+  const res=TR.ph==='res',sim=TR.sim||{},v=st.v?st.v(TR):{};
+  let hk=TR.g?'gH':TR.dis?'sdH':res?(st.rh||'rh'):st.h,bk=TR.g?'gB':res?(sim.rb||'rb'):(st.bk?st.bk():st.b);
+  const tl=TR.g?tTabName(TR.g):'';
+  const vv=TR.g?{t:tl}:v,nd=tDots(),di=tDotI();
+  const av=SET.chars?'<span class="tav">'+petImg(petSel(),petSt(petSel()))+'</span>':'<span class="tav">'+icH('💡')+'</span>';
+  let dots='';for(let i=1;i<=nd;i++)dots+='<i class="'+(i<di?'dn':i===di?'on':'')+'"></i>';
+  const sbB=TR.sb&&!TR.g?'<span class="tsbg">'+tsay(st.sb||'sb')+'</span>':'';
+  const rows=res&&sim.rows&&sim.rows.length?'<dl class="tsb">'+sim.rows.filter(Boolean).map(r=>'<div'+(r[2]?' class="'+r[2]+'"':'')+'><dt>'+r[0]+'</dt><dd>'+r[1]+'</dd></div>').join('')+'</dl>':'';
+  const wn=res?(sim.warn||''):st.warn&&!TR.g?st.warn():'';
+  const isP=TR.g||st.k==='P'||st.k==='S'&&!res;
+  const ft=isP?'<span class="thint">'+tsay('hint')+'</span>'+(TR.esc?'<button type="button" class="tesc" data-ta="esc">'+tsay('esc')+'</button>':''):
+    '<button type="button" class="tnx" data-ta="'+(st.k==='E'?'end':'next')+'">'+tsay(st.k==='E'?(st.end||'ok'):'next')+'</button>';
+  b.innerHTML=tw(icH('<header class="thd">'+av+'<span class="tmeta"><b>'+tsay('lbl')+'</b><span class="tdots" role="img" aria-label="'+tsay('dsr',{n:nd,i:di})+'">'+dots+'</span><span class="tnum" aria-hidden="true">'+di+'/'+nd+'</span>'+sbB+'</span>'+
+    (st.k==='E'&&!TR.g?'':'<button type="button" class="tsk" data-ta="skip">'+tsay('skip')+'</button>')+'</header>'+
+    '<h2 id="tourH" tabindex="-1">'+tsay(hk,vv)+'</h2><p class="tbody" id="tourB">'+(TR.dis?tsay(sim.why||'whyOff')+(sim.rows&&sim.rows.length&&!sim.whyFull?' '+tsay('sdB'):''):tsay(bk,vv)+(!res&&!TR.g&&st.tail&&st.tail()?' '+tsay(st.tail()):''))+'</p>'+rows+(wn?'<p class="twarn">'+wn+'</p>':'')+(res?'<p class="tok">'+tsay(sim.ok||'sbok')+'</p>':'')+'<footer class="tft">'+ft+'</footer>'));
+  b.hidden=false;b.setAttribute('aria-modal',!TR.dock&&!isP?'true':'false');
+  if(TR.dock){if(!TR.dw){TR.dw=document.createElement('div');TR.dw.className='tdock';}if(TR.dw.parentNode!==TR.dock){const h=TR.dock.querySelector('.sh-h');if(h)h.after(TR.dw);else TR.dock.prepend(TR.dw);}TR.dw.appendChild(b);b.classList.remove('above','below','side','noar','cmp');b.style.removeProperty('top');b.style.removeProperty('left');}
+  else if(b.parentNode!==$('tour'))$('tour').insertBefore(b,tEl('.tchip'));
+  if(!TR.dock&&TR.dw&&TR.dw.parentNode)TR.dw.remove();
+  const tp=tEl('.tpx');if(TR.sb&&!res&&!TR.g&&TR.tg[0]){const e=TR.tg[0];tp.setAttribute('aria-label',tsay('px',{n:tTxt(e.getAttribute('aria-label')||e.textContent)}));tp.setAttribute('aria-describedby','tourB');tp.hidden=false;}else tp.hidden=true;
+  if((TR.g||st.k==='P')&&TR.tg[0]&&!TR.tg[0].hasAttribute('aria-describedby'))TR.tg[0].setAttribute('aria-describedby','tourB');}
+function tFocusEl(){if(!TR||TR.fold)return null;const st=tStep(),res=TR.ph==='res';let f=null;
+  if(kbNav){if(TR.sb&&!res&&!TR.g)f=tEl('.tpx');else if((TR.g||st.k==='P')&&TR.tg[0])f=TR.tg[0];else f=TR.bub.querySelector('.tnx');}
+  return f&&(!f.hidden||f===TR.tg[0])?f:TR.bub.querySelector('#tourH');}
+function tFocus(){const f=tFocusEl();if(f)f.focus({preventScroll:true});}
+const tU=a=>{const r=a.map(e=>e.getBoundingClientRect()).filter(r=>r.width>0&&r.height>0);if(!r.length)return null;const x=Math.min(...r.map(q=>q.left)),y=Math.min(...r.map(q=>q.top)),x2=Math.max(...r.map(q=>q.right)),y2=Math.max(...r.map(q=>q.bottom));return {left:x,top:y,right:x2,bottom:y2,width:x2-x,height:y2-y};};
+const tBox=(e,R,p)=>{e.style.left=(R.left-p)+'px';e.style.top=(R.top-p)+'px';e.style.width=(R.width+2*p)+'px';e.style.height=(R.height+2*p)+'px';e.hidden=false;};
+const tHit2=(a,b)=>a.left<b.right&&a.right>b.left&&a.top<b.bottom&&a.bottom>b.top;
+function tPtrBad(P,tg){
+  for(const e of document.querySelectorAll('button:not([disabled]),[role=button]')){if(tg.some(t=>t===e||t.contains(e)||e.contains(t))||e.closest('#tour,[hidden]'))continue;const r=e.getBoundingClientRect();if(r.width&&r.height&&tHit2(P,r)&&getComputedStyle(e).visibility!=='hidden')return true;}
+  const x0=P.left+5,x1=P.right-5,y0=P.top+5,y1=P.bottom-5;for(const [x,y] of [[(x0+x1)/2,(y0+y1)/2],[x0,y0],[x1,y0],[x0,y1],[x1,y1]]){for(const e of document.elementsFromPoint(x,y)){if(e.closest('#tour')||tg.some(t=>t.contains(e)))continue;
+    if(e.tagName==='IMG'||[...e.childNodes].some(n=>n.nodeType===3&&n.textContent.trim()))return true;}}return false;}
+function tLintLev(R,lk,els){for(const id of ['levBtn','allinBtn']){const e=$(id);if(!tVis(e))continue;const q=e.getBoundingClientRect(),cx=q.left+q.width/2,cy=q.top+q.height/2,inB=B=>!!B&&cx>=B.left&&cx<=B.right&&cy>=B.top&&cy<=B.bottom,top=document.elementFromPoint(cx,cy);if(!top||!(top===e||e.contains(top)))continue;
+  if(inB(R)||inB(lk)||els.some(x=>x===e||x.contains(e)))throw new Error('tour lint: '+id+' inside a ring / look / glow '+TR.id+'#'+TR.i);}}
+function tPlace(){if(!TR||TR.fold||TR.pause||TOUR_OFF)return;const st=tStep();if(!st)return;const t=$('tour'),b=TR.bub,vw=innerWidth,vh=innerHeight,res=TR.ph==='res';
+  if(!TR.g)TR.tg=tRes(st.t);else TR.tg=tRes('tab:'+TR.g);
+  const els=TR.tg.filter(tVis),R0=els.length?tU(els):null,clip=R=>R&&{left:Math.max(0,R.left),top:Math.max(0,R.top),right:Math.min(vw,R.right),bottom:Math.min(vh,R.bottom),width:Math.min(vw,R.right)-Math.max(0,R.left),height:Math.min(vh,R.bottom)-Math.max(0,R.top)},Rc=clip(R0),R=Rc&&Rc.width>0&&Rc.height>0?Rc:null;
+  const lk=!TR.g&&st.look?tU(tqa(st.look).filter(tVis)):TR.mock?TR.mock.getBoundingClientRect():null;
+  const tst=$('toast'),tr=!tst.hidden?tst.getBoundingClientRect():null,trOk=!!tr&&tr.height>0;
+  const key=[vw,vh,R&&[R.left,R.top,R.width,R.height].map(Math.round).join(','),b.offsetHeight,TR.ph,TR.esc,lk&&Math.round(lk.top),trOk&&Math.round(tr.top)+','+Math.round(tr.bottom)].join('|');if(key===tPlKey)return;tPlKey=key;
+  const pad=TR.g||st.k==='P'||st.k==='S'?6:4,ring=tEl('.tring'),ptr=tEl('.tptr'),px=tEl('.tpx'),gh=tEl('.tghost'),lkEl=tEl('.tlook');
+  if(TOUR_ST&&!TR.mock)tLintLev(R,TR.dock?null:lk,els);
+  if(TR.dock){t.classList.add('nodim');[ring,ptr,px,gh,lkEl].forEach(e=>e.hidden=true);els.forEach(e=>e.classList.add('tglow'));return;}
+  t.classList.toggle('nodim',false);
+  const th=t.querySelector('.tth'),lh=t.querySelector('.tlh'),setR=(e,Q,p)=>{if(!Q||!(Q.width>0)||!(Q.height>0)){e.setAttribute('width',0);e.setAttribute('height',0);return;}e.setAttribute('x',Q.left-p);e.setAttribute('y',Q.top-p);e.setAttribute('width',Q.width+2*p);e.setAttribute('height',Q.height+2*p);};
+  setR(th,R,pad);setR(lh,lk,TR.mock?0:4);lh.setAttribute('fill',TR.mock?'#000':'#4d4d4d');
+  if(R)tBox(ring,R,pad);else ring.hidden=true;
+  if(lk&&!TR.mock){tBox(lkEl,lk,4);}else lkEl.hidden=true;
+  if(TR.sb&&!res&&!TR.g&&R)tBox(px,R,pad);else px.hidden=true;
+  b.classList.remove('above','below','side','noar','cmp');b.style.setProperty('width','');const w=b.offsetWidth;let h=b.offsetHeight;
+  const tbR=$('tabs').getBoundingClientRect(),onPg=curTab!=='trade';
+  const topR=Math.max(sTop()+8,trOk&&tr.top<vh/2?tr.bottom+8:0),botR=Math.min(onPg&&!DESK.matches?tbR.top-8:vh-8,trOk&&tr.top>=vh/2?tr.top-8:vh),gap=12;
+  let top,left=(vw-w)/2,cls='',ax=null;
+  const tabT=R&&TR.tg.some(e=>e.closest('#tabs'));
+  if(TR.mock){const m=TR.mock.getBoundingClientRect();top=Math.min(botR-h,Math.max(m.bottom+gap,topR));cls='noar';}
+  else if(!R){top=Math.max(topR,(vh-h)/2);cls='noar';}
+  else if(DESK.matches&&tabT){left=Math.min(vw-w-8,R.right+gap+4);top=Math.max(topR,Math.min(vh-h-8,R.top+R.height/2-h/2));cls='side';b.style.setProperty('--ay',(R.top+R.height/2-top)+'px');}
+  else if(tabT&&curTab==='trade'&&!DESK.matches){const hr=btn.getBoundingClientRect();top=Math.max(topR,hr.top-10-h);cls='noar';}
+  else{const cx=R.left+R.width/2;if(DESK.matches)left=Math.max(8,Math.min(vw-w-8,cx-w/2));
+    const below=R.bottom+pad+gap,above=R.top-pad-gap-h,fitB=below+h<=botR,fitA=above>=topR,pref=st.place||(tabT?'above':'auto');
+    if(pref==='above'&&fitA||pref!=='above'&&fitB&&!(pref==='auto'&&fitA&&R.top>vh*.55)){top=pref==='above'?above:below;cls=pref==='above'?'above':'below';}
+    else if(fitA){top=above;cls='above';}else if(fitB){top=below;cls='below';}
+    else if(onPg&&$('page').contains(els[0])&&!TR.lifted){TR.lifted=1;const pg=$('page'),want=topR+56,dy=R.top-pad-want;tLift(1,h+120);pg.scrollTop+=dy;tPlKey='';requestAnimationFrame(tPlace);return;}
+    else{const spaceB=botR-(R.bottom+pad+gap),spaceA=R.top-pad-gap-topR;b.classList.add('cmp');h=b.offsetHeight;if(spaceB>=spaceA){top=Math.min(R.bottom+pad+gap,botR-h);cls='below';}else{top=Math.max(topR,R.top-pad-gap-h);cls='above';}}
+    ax=Math.max(22,Math.min(w-22,cx-left));}
+  if(trOk&&tr.top>=vh/2&&top+h>tr.top-8&&tr.top-8-h>=topR)top=tr.top-8-h;
+  top=Math.max(4,Math.min(vh-h-4,top));b.style.top=top+'px';b.style.left=left+'px';if(cls)b.classList.add(cls);if(ax!=null)b.style.setProperty('--ax',ax+'px');
+  ptr.hidden=true;ptr.classList.remove('up');TR.ptrBad=0;
+  if(R&&!res&&!st.nopt&&!TR.mock&&(TR.g||st.k==='P'||st.k==='S')&&R.width<vw*.6&&!(cls==='side')){const cx=R.left+R.width*.7,bub=b.getBoundingClientRect(),cand=[];
+    if(cls!=='above')cand.push({up:0,r:{left:cx-20,top:R.top-pad-42,right:cx+20,bottom:R.top-pad-2}});if(cls!=='below')cand.push({up:1,r:{left:cx-20,top:R.bottom+pad+2,right:cx+20,bottom:R.bottom+pad+42}});
+    for(const c of cand){const P=c.r;if(P.top<topR||P.bottom>vh-2||P.left<2||P.right>vw-2||tHit2(P,bub))continue;if(tPtrBad(P,els))continue;ptr.style.left=P.left+'px';ptr.style.top=P.top+'px';ptr.classList.toggle('up',!!c.up);ptr.hidden=false;break;}}
+  if(res&&TR.sim&&TR.sim.ghost&&R&&!TR.dis){gh.textContent=tTxt(tsay(TR.sim.ghost));gh.hidden=false;const gw=gh.offsetWidth,g2=gh.offsetHeight,bub=b.getBoundingClientRect(),x0=Math.max(4,Math.min(vw-gw-4,R.right+pad-gw+6));
+    const tc=[x0,R.top-pad-g2/2],bc=[x0,R.bottom+pad-g2/2],cand=[...(cls==='above'?[bc,tc]:[tc,bc]),[R.right+pad+8,R.top+R.height/2-g2/2]];let pos=null;
+    for(const [x,y] of cand){const P={left:x,top:y,right:x+gw,bottom:y+g2};if(P.left<4||P.right>vw-4||P.top<topR||P.bottom>botR||tHit2(P,bub)||tPtrBad(P,els))continue;pos=[x,y];break;}
+    if(!pos)pos=cand[0];gh.style.left=pos[0]+'px';gh.style.top=pos[1]+'px';}else gh.hidden=true;}
+function tSave(){if(!TR)return;try{sessionStorage.setItem('shgTour',JSON.stringify({id:TR.id,v:TR.v,i:TR.i,fold:TR.fold?1:0,t:Date.now(),bp0:TR.bp0,bpT:TR.bpT?1:0}));}catch(e){}}
+function tRestore(){if(!TR)return;tClear();let ch=0,bp=0;for(const k in TR.sel0)if(sel[k]!==TR.sel0[k]){sel[k]=TR.sel0[k];ch=1;}
+  if(TR.bpT&&betPct!==TR.bp0){betPct=TR.bp0;store.set('shg_pct',betPct);bp=1;}TR.bpT=0;
+  if(ch||bp){try{paintPickers();}catch(e){}}if(ch)toast(tsay('itemOff'));if(bp)toast(tsay('pctOff',{p:Math.round(betPct*100)+'%'}));
+  if(TR.pv0!==decorPv&&TOURS[TR.id].spend){decorPv=TR.pv0;if(curTab==='shop'&&!$('page').hidden)try{rerender('shop');}catch(e){}}
+  if(TR.dw&&TR.dw.parentNode)TR.dw.remove();if(TR.bub&&TR.bub.parentNode!==$('tour'))$('tour').insertBefore(TR.bub,tEl('.tchip'));}
+const tFok=e=>!!e&&e.isConnected&&!e.disabled&&tVis(e)&&!e.closest('[inert],[hidden],#tour');
+const tHere=e=>{if(!tFok(e))return false;const tb=e.closest('#tabs [data-tab]');if(e.closest('#tabs'))return !!tb&&tb.dataset.tab===curTab;return curTab==='trade'?!e.closest('#page'):!!e.closest('#page');};
+const tPgF=()=>{if(curTab==='trade')return tFok(btn)?btn:null;return tqa('#page [data-help]').find(tFok)||[$('tabs').querySelector('[data-tab="'+curTab+'"]')].find(tFok)||null;};
+function tourEnd(done,why){if(!TR)return;const id=TR.id,T=TOURS[id],st=tStep(),f=TR.f0,op=TR.op,tab0=TR.tab0;
+  if(done&&st&&st.fin)try{st.fin();}catch(e){}
+  tRestore();if(TR.mock)TR.mock.remove();
+  if(done!==null&&why!=='over'){tSeenSet(id);if(id==='item'&&TR.k&&ITEMS[TR.k])for(const k in ITEMS)if(ITEMS[k].lv<=ITEMS[TR.k].lv&&!tipGot('it_'+k))tipSet('it_'+k);}
+  try{sessionStorage.removeItem('shgTour');}catch(e){}
+  TR=null;tEndT=performance.now();const t=$('tour');t.hidden=true;['.tbub','.tchip'].forEach(s=>{const e=tEl(s);if(e)e.hidden=true;});tCool=performance.now()+60000;
+  if(why==='skip'&&!tipGot('tr_skipT')){tipSet('tr_skipT');setTimeout(()=>toast(tsay('skipT')),200);}else if(why==='done'&&T.endT)setTimeout(()=>toast(tsay(T.endT)),200);
+  if(why!=='hold'&&why!=='over'){const n=[op,tab0===curTab?f:null].find(tHere)||tPgF();if(n)try{n.focus({preventScroll:true});}catch(e){}}
+  if(why!=='replace')say(tsay('endSay'));}
+function tSeenSet(id){if(!tSeen(id))tipSet('tr_'+id+TOURS[id].v);}
+function tourFold(){if(!TR||TR.fold)return;tRestore();if(TR.mock){TR.mock.remove();TR.mock=null;}TR.fold=1;TR.foldR=stats.rounds||0;tEl('.tbub').hidden=true;$('tour').classList.add('nodim');tSave();tChip();}
+function tourResume(){if(!TR||!TR.fold)return;TR.fold=0;TR.auto=0;tEl('.tchip').hidden=true;$('tour').classList.remove('nodim');if(TOURS[TR.id].mock&&!TR.mock)tMock();tShow();}
+function tChip(){const c=tEl('.tchip');if(!TR||!TR.fold){c.hidden=true;return;}
+  const ok=(state==='ready'||state==='result')&&$('modal').hidden&&$('sheet').hidden&&(curTab!=='trade'||card.hidden)&&!adPause&&!adReq&&$('tbg').hidden;
+  $('tour').hidden=!ok;if(!ok)return;
+  if(!c.firstChild||c.dataset.k!==TR.i+'|'+LANG){c.dataset.k=TR.i+'|'+LANG;c.innerHTML=icH('<button type="button" data-ta="resume">'+tsay('fold',{i:Math.min(tDots(),(TR.st[TR.i]&&TR.st[TR.i].d)||TR.i+1),n:tDots()})+'</button><button type="button" class="tcx" data-ta="x" aria-label="'+tsay('foldx')+'">✕</button>');}
+  c.hidden=false;tSpot(c);}
+function tSpot(c){const vw=innerWidth,w=c.offsetWidth;if(curTab==='trade'){const r=chart.getBoundingClientRect(),g=$('regime').getBoundingClientRect();c.style.left=Math.max(8,Math.min(r.left+12,vw-w-12))+'px';c.style.top=(Math.max(r.top,g.bottom||r.top)+8)+'px';}
+  else{const tb=$('tabs').getBoundingClientRect();c.style.left=Math.max(8,(vw-w)/2)+'px';c.style.top=((DESK.matches?innerHeight:tb.top)-c.offsetHeight-10)+'px';}}
+function tSim(){const st=tStep();if(!st||st.k!=='S'||TR.ph!=='ask'||TR.g)return;let r=null;try{r=TSIM[st.sim](TR.tg[0],TR);}catch(e){if(TOUR_ST)throw e;}
+  TR.sim=r||{rows:[]};TR.ph='res';TR.tapT=performance.now();tPlKey='';tRender();tPlace();const nx=TR.bub.querySelector('.tnx');if(nx)nx.focus({preventScroll:true});
+  const rw=tRowsTxt(TR.sim),wn=tTxt(TR.sim.warn||'');say(tTxt(TR.bub.querySelector('h2').innerHTML)+'. '+(rw?rw+'. ':'')+(wn?wn+'. ':'')+tTxt(tsay(TR.sim.ok||'sbok')));}
+function tNext(){if(!TR)return;const st=tStep();if(st&&st.nx)try{st.nx();}catch(e){}TR.i++;TR.lifted=0;tLift(0);if(TR.i>=TR.st.length){tourEnd(true,'done');return;}tShow();}
+function tEsc(){if(!TR)return;const st=tStep();if(TR.g){const g=TR.g;TR.g=null;TR.auto=1;tShow();return;}if(st.k==='P'&&/^tab:/.test(st.t||'')){TR.nav=1;try{tab(st.t.slice(4));}catch(e){}TR.nav=0;}tNext();}
+function tChk(){if(!TR||TR.fold||TR.pause)return;const st=tStep();if(!st)return;
+  if(TR.g){if(curTab===TR.g){TR.g=null;tShow();}return;}
+  if(st.k!=='P')return;if(st.done?st.done(TR):TR.hit)tNext();}
+function tHit(el){TR.hit=1;const p=el.closest('[data-pct]');if(p){TR.pv=+p.dataset.pct;TR.bpT=1;tSave();setTimeout(()=>{if(TR&&TR.bpT)try{store.set('shg_pct',TR.bp0);}catch(e){}},0);}setTimeout(tChk,60);requestAnimationFrame(()=>requestAnimationFrame(tChk));}
+const tTapNo=()=>!!TR&&performance.now()-TR.tapT<350;
+function tNudge(){const r=tEl('.tring');if(r){r.classList.remove('nudge');void r.offsetWidth;r.classList.add('nudge');}say(tsay('nudge'));if(TR.stray>=2&&!TR.esc){const st=tStep();if(TR.g||st.k==='P'||st.k==='S'&&TR.ph==='ask'){TR.esc=1;tRender();tPlKey='';tPlace();}}}
+function tGuard(e){
+  if(!TR&&performance.now()-tEndT<250){e.preventDefault();e.stopImmediatePropagation();return;}
+  if(TOUR_OFF||!TR||TR.fold||TR.pause||TR.nav)return;const el=e.target&&e.target.nodeType===1?e.target:e.target&&e.target.parentElement;if(!el)return;const ty=e.type,st=tStep();
+  if(el.closest('#tour .tbub,#tour .tpx,#tour .tchip,#tour .tinv,.tdock'))return;
+  if(ty==='pointerdown')TR.swT=tTapNo()?1:0;if(tTapNo()||TR.swT){if(ty==='click')TR.swT=0;e.preventDefault();e.stopImmediatePropagation();return;}
+  const hold=el.closest('#hold');if(hold||el.closest('#cNext')){if(hold&&ty==='click')return;if(st&&st.hold&&hold&&!TR.g){tourEnd(true,'hold');return;}if(curTab==='trade'){tourFold();return;}}
+  const money=!!el.closest(MONEY_SEL),inT=!money&&(TR.g||st&&st.k==='P')&&TR.tg.some(t=>t&&t.contains(el));
+  if(inT){if(ty==='click')tHit(el);return;}
+  if(TR.dock&&!money&&(el.closest('#shClose,#modalClose')||el.id==='sheet'||el.id==='modal'))return;
+  if(!money&&el.closest('#tabs [data-tab],#setGo,#setBack')){tourFold();return;}
+  e.preventDefault();e.stopImmediatePropagation();if(ty==='click'){TR.stray=(TR.stray||0)+1;tNudge();}}
+function tKey(e){if(TOUR_OFF)return;if(!TR&&TINV&&!TINV.saved&&e.key==='Escape'&&$('modal').hidden&&$('sheet').hidden){e.preventDefault();e.stopImmediatePropagation();tInvLater();return;}if(!TR||TR.fold||TR.pause)return;
+  if(e.key==='Escape'){const op=!$('modal').hidden||!$('sheet').hidden;tourEnd(true,'skip');if(!op){e.preventDefault();e.stopImmediatePropagation();}return;}
+  const ae=document.activeElement,inTour=!!(ae&&ae.closest&&ae.closest('#tour,.tdock')),inT=!!(ae&&TR.tg&&TR.tg.some(t=>t&&t.contains(ae)));
+  if(e.code==='Space'&&!e.repeat&&curTab==='trade'&&!inTour&&!inT){const st=tStep();if(st&&st.hold&&!TR.g)tourEnd(true,'hold');else tourFold();return;}
+  if(e.key==='Tab'){const L=[];const st=tStep(),res=TR.ph==='res';if(TR.sb&&!res&&!TR.g){const p=tEl('.tpx');if(p&&!p.hidden)L.push(p);}else if((TR.g||st.k==='P')&&TR.tg[0])L.push(TR.tg[0]);L.push(...TR.bub.querySelectorAll('button'));
+    if(L.length){let i=L.indexOf(ae);i=e.shiftKey?(i<=0?L.length-1:i-1):(i<0||i>=L.length-1?0:i+1);e.preventDefault();L[i].focus();}}}
+function tPauseWhy(){if(adPause||adReq||adHold||adDue)return 'ad';if(document.hidden)return 'hid';if(getComputedStyle($('rotate')).display!=='none')return 'rot';if(!$('tbg').hidden)return 'title';
+  const st=tStep(),dk=st&&st.dock?st.at:null;if(!$('modal').hidden&&dk!=='modal')return 'modal';if(!$('sheet').hidden&&dk!=='sheet')return 'sheet';if(curTab==='trade'&&!card.hidden&&!(st&&st.at==='mock'))return 'card';return '';}
+function tTick(){if(TOUR_OFF)return;
+  if(TFC===1&&!card.hidden&&!cardTm&&card.querySelector('#tourGo'))TFC=2;
+  if(TFC===2&&!TR){if(card.hidden||!card.querySelector('#tourGo')){TFC=0;tSeenSet('first');if(!tipGot('tr_skipT')){tipSet('tr_skipT');setTimeout(()=>toast(tsay('skipT')),300);}}}
+  if(!TR){tResTry();tInvTick();return;}
+  if(state==='holding'||state==='ghost'){if(!TR.fold)tourFold();tChip();return;}
+  if(state==='over'){tourEnd(false,'over');return;}
+  if(TR.fold){tChip();if((stats.rounds||0)-TR.foldR>=3)tourEnd(true,'expire');return;}
+  const st=tStep();if(st&&st.dock&&TR.dock&&(st.at==='sheet'?$('sheet').hidden:$('modal').hidden)&&!TR.g){tourEnd(true,'closed');return;}
+  tChk();if(!TR||TR.fold)return;
+  const pz=tPauseWhy();if(pz){if(!TR.pause){TR.pause=1;$('tour').hidden=true;}return;}
+  if(TR.pause){TR.pause=0;$('tour').hidden=false;if(TR.ph==='res'&&TR.sim&&!TR.g&&curTab===tWhere(st.at)&&(!tSeg(st.at)||shopSeg===tSeg(st.at))){tPlKey='';tRender();tPlace();requestAnimationFrame(()=>{if(TR&&!TR.fold){tPlace();if(kbNav){const nx=TR.bub.querySelector('.tnx');if(nx)nx.focus({preventScroll:true});}}});}else tShow();return;}
+  if(!TR.esc&&(TR.g||st.k==='P'||st.k==='S'&&TR.ph==='ask')&&performance.now()-TR.at0>8000){TR.esc=1;tRender();tPlKey='';}
+  tPlace();}
+function tResTry(){if(!TRES)return;if(Date.now()-TRES.t>18e5||!TRES.q&&tSeen(TRES.id)){TRES=null;try{sessionStorage.removeItem('shgTour');}catch(e){}return;}
+  if(!tourIdle(TRES.id==='boss'?'boss':'x',1))return;const r=TRES;TRES=null;if(tourStart(r.id,{at:r.i,fold:r.fold,replay:r.q})&&TR&&r.bpT&&[.1,.25,.5,1].includes(r.bp0)){TR.bp0=r.bp0;TR.bpT=1;}}
+function tLater(id){TSESS.later++;TSESS.off[id]=1;if(tipGot('tl_'+id))tipSet('tx_'+id);else tipSet('tl_'+id);}
+function tVet(id){const b=(store.get('shg_tips',[])||[]).find(x=>/^tr_b\d+$/.test(x));if(!b)return false;const T=TOURS[id];if(T.v>1)return false;return (T.lv?T.lv():0)<=+b.slice(4);}
+function tInvOk(id){const T=TOURS[id];if(!T.inv||T.never||TSESS.off[id])return false;if(tSeen(id)||tipGot('tx_'+id))return false;  if(T.used&&T.used())return false;if(tVet(id))return false;if(id!=='boss'&&!((stats.rounds||0)>=3))return false;if(T.spend&&debt>0)return false;if(T.lock&&T.lock())return false;
+  return T.inv()&&tourIdle(id);}
+function tInvTick(){if(TR||TRES)return;
+  if(TINV){const id=TINV.id,T=TOURS[id],here=curTab===TINV.tab&&(curTab!=='shop'||shopSeg===TINV.seg)&&$('modal').hidden&&$('sheet').hidden&&(curTab!=='trade'||card.hidden&&(state==='ready'||state==='result'));
+    if(TINV.saved){if(performance.now()>TINV.saved)tInvHide();return;}if(!here){if(performance.now()-TINV.t0<1500){TSESS.n=Math.max(0,TSESS.n-1);tCool=Math.max(tCool,performance.now()+1500);}else TSESS.off[id]=1;tInvHide();return;}tSpot(tEl('.tinv'));return;}
+  if(TSESS.n>=3||TSESS.later>=2||performance.now()<tCool){tInvC=null;return;}
+  const id=TPRI.find(tInvOk);if(!id){tInvC=null;return;}const n=performance.now();if(!tInvC||tInvC.id!==id){tInvC={id,t:n};return;}if(n-tInvC.t<1000)return;tInvC=null;tInvShow(id);}
+function tInvShow(id){const T=TOURS[id],c=tMount().querySelector('.tinv');TINV={id,tab:curTab,seg:shopSeg,t0:performance.now()};TSESS.n++;const ii=typeof T.ii==='function'?T.ii():T.ii;
+  const sec=tSec(id),ik=id==='first'?'invF':'inv',tl=tTxt(tsay(ik,{e:'',n:tTxt(tsay(T.n)),s:sec}));c.setAttribute('aria-label',tl);
+  c.innerHTML=icH('<div class="tit"><b>'+tsay(ik,{e:T.e==='💡'?'':T.e,n:tTxt(tsay(T.n)),s:sec})+'</b><small>'+tsay(ii)+'</small></div><button type="button" data-ta="go">'+tsay('invGo')+'</button><button type="button" data-ta="later">'+tsay('invLater')+'</button>');
+  ['.tring','.tptr','.tpx','.tghost','.tlook','.tbub','.tchip'].forEach(s=>{const e=tEl(s);if(e)e.hidden=true;});
+  $('tour').classList.add('nodim');$('tour').hidden=false;c.hidden=false;tSpot(c);say(tl+'. '+tTxt(tsay(ii)));if(kbNav)c.querySelector('button').focus({preventScroll:true});}
+function tInvLater(){if(!TINV)return;const id=TINV.id;tLater(id);const c=tEl('.tinv'),hadF=c.contains(document.activeElement);c.innerHTML=icH('<div class="tit"><small>'+tsay('invSaved')+'</small></div>');say(tsay('invSaved'));TINV.saved=performance.now()+1600;const n=hadF&&tPgF();if(n)try{n.focus({preventScroll:true});}catch(e){}}
+function tInvHide(){const c=$('tour')&&tEl('.tinv');if(c)c.hidden=true;TINV=null;if(!TR&&$('tour'))$('tour').hidden=true;}
+function tourHelpH(k){if(TOUR_OFF)return '';const ids=TGRP[k];if(!ids)return '';return '<div class="thelp"><h3>'+tsay('hpT')+'</h3>'+ids.map(tRowH).join('')+'<button type="button" class="setbtn ghost tlall" data-tlist="1">'+tsay('lsAll')+'</button></div>';}
+function tRowH(id){const T=TOURS[id],lk=T.lock?T.lock():'',seen=tSeen(id),st=lk?tsay('lsLock',{c:lk}):seen?tsay('lsSeen'):'';
+  return '<div class="tlr"><i>'+T.e+'</i><div><b>'+tsay(T.n)+'</b><small>'+tsay(T.d)+'\u00a0· '+tsay('lsSec',{s:tSec(id)})+'</small>'+(st?'<em>'+st+'</em>':'')+'</div><button type="button" class="setbtn ghost" data-tour="'+id+'"'+(lk?' disabled aria-disabled="true"':'')+' aria-label="'+tTxt(tsay(T.n))+(st?' · '+tTxt(st):'')+'">▶</button></div>';}
+function tourList(){return '<h2>'+tsay('lsT')+'</h2><p class="note">'+tsay('lsSub')+'</p><div class="thelp">'+TORD.map(tRowH).join('')+'</div>';}
+const tWaitK=()=>state==='holding'||state==='ghost'?'waitT':state==='over'?'waitOver':!tutDone?'waitTut':'waitGen';
+function tourPick(id){const op=typeof ovRet!=='undefined'&&ovRet.modal||null;$('modal').hidden=true;if(!TOURS[id])return;if(TR){if(TR.fold)tourEnd(null,'replace');else return;}
+  if(!tIdleMin()||state==='over'){toast(tsay(tWaitK()));TRES={id,i:0,t:Date.now(),fold:1,q:1};return;}
+  setTimeout(()=>{if(!tourStart(id,{replay:1,op})){toast(tsay(tWaitK()));TRES={id,i:0,t:Date.now(),fold:1,q:1};}},60);}
+function tourCardH(f){TFC=1;return '<div class="sub">'+tsay('cardSub')+'</div><div class="btns"><button class="pri" type="button" id="tourGo">'+tsay('cardGo',{s:tSec('first')})+'</button><button type="button" id="tourNo">'+tsay('cardNo')+'</button></div>';}
+const tItemTipOk=()=>TOUR_OFF||tSeen('item')||tipGot('tl_item')||tipGot('tx_item')||!!store.get('shg_itemTip',0);
+const tourFirstOk=f=>!TOUR_OFF&&!!f&&!tSeen('first');
+function tourOverH(df){return TOUR_OFF?'':'<details class="ohelp" data-df="'+(df?1:0)+'"><summary>'+tsay('ohS')+'</summary><ul></ul></details>';}
+function tOverFill(d){const u=d.querySelector('ul'),L=[],has=id=>!!card.querySelector('#'+id);
+  if(has('freeRev'))L.push(tsay('ohRev'));if(has('adRevive'))L.push(tsay('ohAd'));
+  if(has('again'))L.push((d.dataset.df==='1'?tsay('ohDf'):debt>0?tsay('ohBk'):tsay('ohNew'))+(tRd()?' · '+tsay('rdS'):''));if(has('adLoss'))L.push(tsay('ohLoss'));
+  if(has('loanBtn')){const nc=Math.min(10,credit+1);L.push(tsay('ohLoan',{a:wonS(loanAmt()),r:tPf(LOAN_R[nc]),c0:crS(credit),c1:crS(nc)}));}
+  L.push(tsay('ohCalm'));u.innerHTML=icH(L.map(x=>'<li>'+x+'</li>').join(''));}
+function tourAfterTab(name){if(TOUR_OFF)return;if(TR&&!TR.fold&&!TR.pause&&!TR.nav){const st=tStep(),ok=[TR.g,tWhere(st&&st.at),st&&/^tab:/.test(st.t||'')?st.t.slice(4):null];if(st&&st.at!=='mock'&&!ok.includes(name))tourFold();}
+  tPlKey='';if(TR&&!TR.fold)requestAnimationFrame(tPlace);if(TINV)requestAnimationFrame(tInvTick);if(TR&&TR.fold)tChip();}
+function tLoanCard(e){
+  if(TOUR_OFF||TR&&!TR.fold||tLoanCard.pass)return;const b=e.target&&e.target.closest&&e.target.closest('#bLoan');if(!b||b.disabled||tipGot('tr_loanc')||(stats.loans||0)>0||!(state==='ready'||state==='result'))return;
+  e.preventDefault();e.stopImmediatePropagation();tipSet('tr_loanc');const r=TSIM.loan();
+  openModal('<h2>'+tsay('lcH')+'</h2><p class="note">'+tsay('lcB')+'</p><div class="tlc"><dl class="tsb">'+r.rows.map(x=>'<div'+(x[2]?' class="'+x[2]+'"':'')+'><dt>'+x[0]+'</dt><dd>'+x[1]+'</dd></div>').join('')+'</dl><p class="twarn">'+r.warn+'</p></div>'+
+    '<p class="note">'+tsay('lcN')+'</p><div style="display:grid;gap:8px;margin-top:10px"><button class="setbtn" type="button" id="tlcNo">'+tsay('lcNo')+'</button><button class="setbtn ghost" type="button" id="tlcGo">'+tsay('lcGo')+'</button></div>','hs tlcM');}
+if(!TOUR_OFF){
+  ['pointerdown','mousedown','click'].forEach(t=>addEventListener(t,tGuard,true));addEventListener('keydown',tKey,true);addEventListener('click',tLoanCard,true);
+  document.addEventListener('click',e=>{const b=e.target&&e.target.closest&&e.target.closest('[data-ta],[data-tour],[data-tlist],#tlcNo,#tlcGo,#tourGo,#tourNo,#tourMenu');if(!b)return;const a=b.dataset.ta;
+    if(b.id==='tourGo'){card.hidden=true;TFC=0;tourStart('first');return;}if(b.id==='tourNo'){const go=()=>{if(card.hidden||!card.querySelector('#tourNo'))return;const n=performance.now();if(state==='result'&&n<readyAt){setTimeout(go,readyAt-n+30);return;}tapAt=n;try{start();}catch(x){}if(!card.hidden&&card.querySelector('#tourNo'))card.hidden=true;};go();return;}
+    if(b.id==='tourMenu'){openModal(tourList(),'hs');return;}if(b.dataset.tlist){openModal(tourList(),'hs');return;}if(b.dataset.tour){tourPick(b.dataset.tour);return;}
+    if(b.id==='tlcNo'){$('modalClose').click();return;}if(b.id==='tlcGo'){$('modalClose').click();setTimeout(()=>{const l=$('bLoan');if(l&&!l.disabled){tLoanCard.pass=1;try{l.click();}finally{tLoanCard.pass=0;}}},60);return;}
+    if(['next','end','sim','esc'].includes(a)&&tTapNo())return;
+    if(a==='skip')tourEnd(true,'skip');else if(a==='next')tNext();else if(a==='end')tourEnd(true,'done');else if(a==='esc')tEsc();else if(a==='sim')tSim();else if(a==='resume')tourResume();else if(a==='x')tourEnd(true,'x');
+    else if(a==='go'&&TINV){const id=TINV.id;tInvHide();tourStart(id);}else if(a==='later'&&TINV)tInvLater();});
+  document.addEventListener('toggle',e=>{const d=e.target;if(!(d&&d.classList&&d.classList.contains('ohelp')))return;if(d.open)tOverFill(d);const fit=()=>{try{if(typeof bdSync==='function')bdSync();else fitCard();}catch(x){}};fit();requestAnimationFrame(fit);},true);
+  addEventListener('resize',()=>{tPlKey='';tPlace();if(TINV)tSpot(tEl('.tinv'));if(TR&&TR.fold)tChip();});addEventListener('orientationchange',()=>setTimeout(()=>{tPlKey='';tPlace();},200));
+  $('page').addEventListener('scroll',()=>{if(TR&&!TR.fold&&!TR.pause){tPlKey='';requestAnimationFrame(tPlace);}},{passive:true});
+  setInterval(tTick,250);
+  setTimeout(()=>{try{
+    const s=JSON.parse(sessionStorage.getItem('shgTour')||'null');if(s&&s.bpT&&[.1,.25,.5,1].includes(s.bp0)&&betPct!==s.bp0){betPct=s.bp0;store.set('shg_pct',betPct);try{paintPickers();}catch(e){}s.bpT=0;try{sessionStorage.setItem('shgTour',JSON.stringify(s));}catch(e){}setTimeout(()=>toast(tsay('pctOff',{p:Math.round(betPct*100)+'%'})),1200);}
+    if(s&&TOURS[s.id]&&Date.now()-s.t<18e5&&!tSeen(s.id))TRES=s;
+    if(profile&&tutDone&&!tSeen('first')&&!(store.get('shg_tips',[])||[]).some(x=>/^tr_b\d+$/.test(x))&&(stats.rounds||0)>=20){tipSet('tr_b'+rankOf(xp));setTimeout(()=>toast(tsay('vetT')),2500);}}catch(e){}},0);
+  if(TOUR_ST&&typeof Storage!=='undefined'){const SP=Storage.prototype,o=SP.setItem,r=SP.removeItem;SP.setItem=function(k){if(this===localStorage&&TR&&/^shg_/.test(k)){TW.all.push(k);if(TR.sb){TW.n++;TW.keys.push(k);}}return o.apply(this,arguments);};
+    SP.removeItem=function(k){if(this===localStorage&&TR&&/^shg_/.test(k)){TW.all.push('-'+k);if(TR.sb){TW.n++;TW.keys.push('-'+k);}}return r.apply(this,arguments);};
+    for(const id in TOURS)TOURS[id].steps.forEach((s,i)=>{if(s.k==='S'&&!TSIM[s.sim])throw new Error('tour lint '+id+'#'+i);if(s.k==='P'&&!s.t)throw new Error('tour lint P without target '+id+'#'+i);});}}
+function tourFP(){const ls={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(/^shg_/.test(k)&&k!=='shg_tips')ls[k]=localStorage.getItem(k);}
+  return JSON.stringify({ls,m:{balance,debt,credit,best,xp,inv,armed,gear,invest,col,colPk,decor,decorPv:TR?null:decorPv,sk,stats,season,daily,weekly,ach,achC,pet,sel,betPct,invPct,levSel,allin,streak,intPaid,pres,lastHome}});}
+function tourT(){return { // window.__t.tour
+  get s(){const st=tStep();return {on:tourOn(),id:TR&&TR.id,i:TR&&TR.i,n:TR&&TR.st.length,k:st&&st.k,ph:TR&&TR.ph,g:TR&&TR.g,fold:!!(TR&&TR.fold),pause:!!(TR&&TR.pause),dock:!!(TR&&TR.dock),esc:!!(TR&&TR.esc),dots:TR?tDots():0,di:TR?tDotI():0,dis:!!(TR&&TR.dis),pid:TR&&TR.pid,inv:TINV&&TINV.id,ptrBad:TR&&TR.ptrBad,off:TOUR_OFF,res:!!TRES,fc:!!TFC};},
+  start:(id,o)=>tourStart(id,o||{replay:1}),next:tNext,skip:()=>tourEnd(true,'skip'),fold:tourFold,resume:tourResume,sim:tSim,esc:tEsc,fp:tourFP,idle:id=>tourIdle(id),
+  get writes(){return {n:TW.n,keys:TW.keys.slice(),all:TW.all.slice()};},resetW(){TW.n=0;TW.keys=[];TW.all=[];},steps:id=>TOURS[id].steps.map(s=>({k:s.k,at:s.at,t:typeof s.t==='string'?s.t:'',sim:s.sim||''})),
+  ids:TORD.slice(),money:MONEY_SEL,allow:PALLOW,pick:tourPick,sec:tSec,safe:()=>{const P=tProd('safe');return P&&P.id;},seen:tSeen,inv:()=>TINV&&TINV.id,invTick:tInvTick,sess:TSESS,list:tourList,sims:Object.keys(TSIM),tsim:(k,sel)=>TSIM[k](document.querySelector(sel),{}),cool(){tCool=0;},
+  tgd(){const e=TR&&!TR.fold&&TR.tg&&TR.tg[0];if(!e)return null;const q=e.querySelector&&e.querySelector('[data-gear],[data-dep]');return {gear:e.dataset.gear||e.dataset.g||q&&q.dataset.gear||'',dep:e.dataset.dep||q&&q.dataset.dep||'',id:e.id||'',i:e.dataset.i||''};},
+  tg(){return TR&&!TR.fold?TR.tg.filter(tVis).map(e=>{const r=e.getBoundingClientRect();return [r.left,r.top,r.width,r.height].map(Math.round);}):[];},get rows(){return TR&&TR.sim?TR.sim.rows.filter(Boolean).map(r=>tTxt(r[0])+'|'+tTxt(r[1])):[];},adSim(v){adPause=!!v;}};}
+/* TOURS end */
 function boot(){
   if(!profile){card.innerHTML=tw(ttHead()+'<div class="ttgl">'+ttSteps()+'<div class="btns"><button class="pri" id="qSkip" type="button">▶ 바로 시작</button></div><button id="qStart" type="button" class="lnk">🧪 <u>투자 성향 테스트</u><small>5문항 · 선택</small></button><p class="vm">모든 돈은 가상 머니예요</p></div>');
     bdNext={k:'still',id:'hamster',t:1};showCard();$('qStart').onclick=startQuiz;$('qSkip').onclick=()=>{if(profile)return;setProfile('squirrel');card.hidden=true;if(!tutDone)coachReady();else showIntro();};setBtn();}
@@ -3143,11 +3796,11 @@ function tab(name,keep){if(!keep&&tabNow())return;
   app.classList.toggle('pgopen',name!=='trade');
   if(name!=='trade')$('sheet').hidden=true;syncInert();
   const pg=$('page');if(name==='grow'&&pet&&pet.nw)petMod(p=>p.nw=0);
-  if(name==='trade'){pg.hidden=true;if(state==='over'&&card.hidden&&!adPause)overRe();paintPickers();fitCard();placeToast();if(!tutDone&&profile&&card.hidden&&$('modal').hidden&&(state==='ready'||state==='result'))coachReady();return;}
+  if(name==='trade'){pg.hidden=true;if(state==='over'&&card.hidden&&!adPause)overRe();paintPickers();fitCard();placeToast();tourAfterTab('trade');if(!tutDone&&profile&&card.hidden&&$('modal').hidden&&(state==='ready'||state==='result'))coachReady();return;}
   if(!card.hidden&&card.querySelector('[data-close]')&&!card.querySelector('#adWin,#adLoss'))card.hidden=true;hideCoach();
   pg.innerHTML=icH('<div>'+(name==='grow'?pageGrow():name==='shop'?pageShop():name==='account'?pageAccount():name==='mission'?pageMission():pageSet())+'</div>',1);
   pg.dataset.tab=name;if(!keep){pg.classList.remove('pgin');void pg.offsetWidth;pg.classList.add('pgin');clearTimeout(tab.pt);tab.pt=setTimeout(()=>pg.classList.remove('pgin'),260);}
-  pg.hidden=false;pg.scrollTop=0;placeToast();bindPage(name);try{drawRooms()}catch(e){}
+  pg.hidden=false;pg.scrollTop=0;placeToast();bindPage(name);try{drawRooms()}catch(e){}tourAfterTab(name);
   if(sec&&name!=='shop')pgJump(sec,1);
 }
 $('tabs').insertAdjacentHTML('afterbegin','<img class="rlogo" src="'+ASSET+'brand/title_'+(LANG==='en'?'en':'ko')+'.webp" alt="" draggable="false" onerror="this.remove()">');
@@ -3161,9 +3814,9 @@ const HL=(i,t,d)=>'<div class="li"><i>'+icI(i,t)+'</i><div><b>'+t+'</b><small>'+
 const HELP={
   mission:()=>'<h2>📋 미션</h2><p class="note">일일 미션은 자정마다, 주간 미션은 월요일마다 바뀝니다.</p>'+HL('🏆','오늘의 챌린지','하루 한 번, 모두 같은 폭락 지점으로 5판. 매도 수익률이 점수, 물리면 −30점')+HL('👥','친구 리그','친구가 공유한 SHG- 코드를 넣으면 이번 주 점수로 순위를 매겨요')+HL('🎫','시즌 패스','판마다 XP가 쌓여 30단계 보상. 월요일마다 새 시즌')+HL('📋','미션','일일 8개 · 주간 10개 · 커리어 20개'),
   grow:()=>'<h2>🌱 성장</h2>'+HL('🐾','파트너','판마다 친밀도 +1 · 익절 +1 · 보스 처치 +2 (연습·챌린지 판 제외)')+HL('🔁','파트너 바꾸기','친구를 누르면 파트너가 바뀌어요 · 친밀도는 친구마다 따로 쌓이고 경험치 보너스는 가장 많이 자란 친구 기준 · 잠긴 친구는 아래 계급·업적을 달성하면 합류해요')+HL('🌳','SP · 스킬','SP는 2레벨마다 1개, 업적마다 1개(대출 업적 제외), 기록 미션 2단계마다 1개, 보스 처치 2개, 주간 미션 1개로 천천히 모입니다. 강화 비용은 같은 스킬을 5레벨 올릴 때마다 1씩 오르고, 각 계열의 상위 스킬은 그 계열에 10포인트를 찍으면 열립니다.')+HL('🎖️','계급표','XP가 쌓이면 계급이 올라 아이템·레버리지·종목이 열려요'),
-  shop:()=>'<h2>🛒 상점</h2><p class="note">모은 돈은 여기서 쓰세요. 소모품은 효과를 다 쓰면 사라지고, 장비는 영구 보너스예요 (빚으로 파산하면 압류).</p>'+HL('🧪','소모품','소모품은 예수금에 비례 · 많이 가질수록 1.6배씩 비싸짐')+HL('🏦','은행','대출받으면 신용이 1등급 떨어지고, 다 갚으면 1등급 오릅니다. 이자는 판마다 붙고 신용이 나쁠수록 비싸요 (1등급 '+(LOAN_R[1]*100).toFixed(1)+'% ~ 10등급 '+(LOAN_R[10]*100).toFixed(1)+'%). 빚이 한도를 넘으면 넘는 만큼 예수금에서 자동 상환, 못 갚으면 신용불량 · 장비·소모품·투자금 압류. 익절하면 수익의 30%가 자동 상환됩니다.')+HL('🥫','파산 신청','빚이 남은 채 바닥나면 새로 시작 대신 파산 신청: 빚 탕감 · 장비·소모품·투자금 압류 · 신용 10등급. 압류 전에 목록을 보여 주고 한 번 더 확인해요. 레벨·스킬·업적·컬렉션·파트너·꾸미기는 남아요.')+HL('🌱','재기 자금','새로 시작·파산 신청으로 받는 돈은 재기 자금(무이자 빚)이에요. 이자·빚 한도·압류와는 상관없고, 익절하면 수익의 30%에서 빚 다음으로 자동 상환돼요. 은행에서 직접 갚을 수도 있어요. 순자산에서는 빠져요.')+HL('🛋️','미니룸 꾸미기','상점에서 벽지·바닥·소품을 사서 방을 꾸며요'),
+  shop:()=>'<h2>🛒 상점</h2><p class="note">'+tsay('shopNote')+' 소모품은 효과를 다 쓰면 사라지고, 장비는 영구 보너스예요 (빚으로 파산하면 압류).</p>'+HL('🧪','소모품','소모품은 예수금에 비례 · 많이 가질수록 1.6배씩 비싸짐')+HL('🏦','은행','대출받으면 신용이 1등급 떨어지고, 다 갚으면 1등급 오릅니다. 이자는 판마다 붙고 신용이 나쁠수록 비싸요 (1등급 '+(LOAN_R[1]*100).toFixed(1)+'% ~ 10등급 '+(LOAN_R[10]*100).toFixed(1)+'%). 빚이 한도를 넘으면 넘는 만큼 예수금에서 자동 상환, 못 갚으면 신용불량 · 장비·소모품·투자금 압류. 익절하면 수익의 30%가 자동 상환됩니다.')+HL('🥫','파산 신청','빚이 남은 채 바닥나면 새로 시작 대신 파산 신청: 빚 탕감 · 장비·소모품·투자금 압류 · 신용 10등급. 압류 전에 목록을 보여 주고 한 번 더 확인해요. 레벨·스킬·업적·컬렉션·파트너·꾸미기는 남아요.')+HL('🌱','재기 자금','새로 시작·파산 신청으로 받는 돈은 재기 자금(무이자 빚)이에요. 이자·빚 한도·압류와는 상관없고, 익절하면 수익의 30%에서 빚 다음으로 자동 상환돼요. 은행에서 직접 갚을 수도 있어요. 순자산에서는 빠져요.')+HL('🛋️','미니룸 꾸미기','상점에서 벽지·바닥·소품을 사서 방을 꾸며요'),
   account:()=>'<h2>💼 내 계좌</h2>'+HL('💼','투자','예수금을 넣어 두면 판을 할 때마다 이자(또는 손실)가 붙어요. 상품마다 이자 붙는 한도가 있고, 한도를 넘는 돈에는 이자가 붙지 않아요(0원). 입금은 한도까지만 들어가요.')+HL('⏳','차곡차곡','넣어 둔 돈이 판을 함께 한 평균 시간이에요(한 판은 최대 '+INV_U+'로 셈). 오래 둘수록 이율과 이자 붙는 한도가 커지고, 다 채운 한도는 레벨 따라 커져요. 판마다 잔액의 '+INV_FREE*100+'%까지 더 넣는 건 그대로지만, 그보다 많이 새로 넣은 돈은 0분부터라 평균이 줄어요. 다 빼면 0분부터 다시.')+HL('⚡','10배 이상·영끌','그런 판을 할 때마다 모든 상품의 차곡차곡이 절반이 돼요. 이자 붙는 한도도 같이 줄고, 넘는 돈은 쉬는 돈이 돼요(이자 0원 · 빼면 수수료는 그대로).')+HL('💸','출금 수수료','이자 붙는 돈을 뺄 때만 나가요. 한도를 넘어 쉬는 돈은 수수료 없이 뺄 수 있어요(10배 이상·영끌 판에 한도가 줄어 넘친 돈은 수수료 그대로). 코인은 한도를 넘은 돈에도 수수료가 붙어요(업데이트 전부터 있던 쉬는 돈은 빼고). 엔젤은 상장 이익에서 수수료를 미리 떼고, 파산하면 쉬는 돈까지 잔액 전부 0원이에요(상장 이익은 수수료 없이 바로 뺄 수 있어요).')+HL('🏦','빚이 있으면','빚만큼의 투자금(이율 높은 상품부터)은 이자도 손실도 없어요.')+HL('⏱️','플레이 시간','이자와 출렁임, 차곡차곡은 판 수가 아니라 플레이 시간으로 세요. 한 판은 걸린 시간만큼, 최대 '+INV_U+'까지예요. 화면의 /'+INV_U+' 숫자는 '+INV_U+' 동안 붙는 몫이에요. '+INV_U+'보다 오래 걸린 판도 '+INV_U+' 몫만, 그 절반 시간에 넘긴 판은 절반만 붙어요. 그래서 판을 빨리 넘겨도 1분에 붙는 이자는 늘지 않아요. ‘판마다 '+INV_U+' 안에 쉬지 않고 하면 1분에 평균 약 +X원’은 지금 이자 붙는 돈에 지금 이율로 '+INV_U+' 몫 평균 이자를 '+INV_PM+'번 더한 값이에요. 판이 '+INV_U+'보다 오래 걸리면 1분에 그만큼 덜 붙어요(판마다 '+INV_RT/750+'초면 3/4, '+INV_RT/500+'초면 절반 · 결과를 읽거나 쉬는 시간도 판 시간에 들어가요). 이율은 장세를 평균 낸 값이라 하락장·블랙스완 주의보엔 덜, 다른 장세엔 더 붙고(예금·적금·금은 장세와 상관없음), 차곡차곡이 차는 동안엔 조금씩 늘어요. 배당주 펀드·월세 주택은 이자를 예수금으로 그대로 받고, 장세 몫(하락장 −, 불장 +)은 잔액에 붙어요.')+HL('📥','한 번에 나눠 넣기','입금 비율만큼의 예수금을 코인·엔젤 빼고 출렁임이 작은 상품부터 이자 붙는 한도까지 나눠 넣어요. 출렁임이 큰 펀드(±'+Math.round(Math.max(...PROD.filter(P=>!P.chance).map(P=>P.v||0))*1000)/10+'%까지)에도 들어가요. 어디에 얼마, 출렁임과 출금 수수료가 얼마인지는 버튼 아래에 먼저 보여요.')+HL('🔓','새 상품','계급과 레벨이 오르면 분류마다 새 상품이 열려요. 상품 이름을 누르면 자세한 숫자가 나와요.')+HL('🏆','컬렉션','8개 분류 50종. 살 때마다 SP, 분류를 다 모으면 보너스 SP +3')+HL('🏠','미니룸','순자산이 늘면 더 좋은 집으로 이사해요')+HL('💾','백업 코드','설정에서 복사해 두면 폰을 바꿔도 이어서 할 수 있어요')};
-function help(k){const f=HELP[k];if(f)openModal(f(),'hs');}
+function help(k){const f=HELP[k];if(f)openModal(f()+tourHelpH(k),'hs');}
 function skBub(){const n=spFree();if(n>0){const sg=SKILLS.filter(x=>!(x.req&&brPts(x.br)<x.req)&&skl(x.id)<x.max&&costOf(skl(x.id))<=n).sort((a,b)=>skl(a.id)-skl(b.id))[0];return LANG==='en'?n+' SP! '+(sg?'Try '+sg.n+'?':''):'SP '+n+'개! '+(sg?sg.n+'부터?':'');}
   if(!pet)return '';const x=pet.own[pet.sel].xp,s=petLv(x);return s>1?'전설이 됐어! 계속 같이 가자':'다음 단계까지 '+petRn(petLeft(x))+'!';}
 function skRec(){const n=spFree();return n>0?SKILLS.filter(x=>!(x.req&&brPts(x.br)<x.req)&&skl(x.id)<x.max&&costOf(skl(x.id))<=n).sort((a,b)=>skl(a.id)-skl(b.id))[0]||null:null;}
@@ -3386,7 +4039,7 @@ function pageShop(){const wc=CONSUM[wkOrd(weekKey())%CONSUM.length];
    '</section>'+
    '<section class="sec full" id="secDecor">'+decorHtml()+(PREM_ON?premHtml():'')+'</section>'+
    '<section class="sec full" id="secBank">'+
-   '<h3>🏦 은행</h3><div class="pan bank">'+[['빚',debt?won(debt):'없음'],['신용등급',crS(credit)+(credit>=8?' · 사채':'')],['판마다 이자',(loanRate()*100).toFixed(1)+'%'+(debt>0?' (이번 판 '+wonS(Math.ceil(debt*loanRate()))+')':'')+' · 10판이면 +'+loanTen(credit)+'%'],['빚 한도',won(debtLimit())]].concat(rdebt>=1?[['🌱 재기 자금',won(rdebt)+' · 무이자']]:[]).map(([k,v])=>`<div class="brow"><span class="mu">${k}</span><b>${v}</b></div>`).join('')+
+   '<h3>🏦 은행</h3><div class="pan bank">'+[['빚',debt?won(debt):'없음'],['신용등급',crS(credit)+(credit>=8?' · 사채':'')],['판마다 이자',(loanRate()*100).toFixed(1)+'%'+(debt>0?' (이번 판 '+wonS(Math.ceil(debt*loanRate()))+')':'')+' · 10판이면 +'+loanTen(credit)+'%'],['빚 한도',won(debtLimit())]].concat(rdebt>=1?[['🌱 재기 자금',won(rdebt)+' · 무이자']]:[]).map(([k,v],i)=>`<div class="brow" data-brow="${['debt','credit','rate','limit','rdebt'][i]||i}"><span class="mu">${k}</span><b>${v}</b></div>`).join('')+
    '<details class="mmore"><summary>신용등급별 판마다 이자</summary><div class="pan">'+LOAN_R.slice(1).map((r,i)=>'<div class="brow"><span class="mu">'+crS(i+1)+(i+1===credit?' (지금)':'')+'</span><b>'+(r*100).toFixed(1)+'% · 10판이면 +'+loanTen(i+1)+'%</b></div>').join('')+'</div></details>'+'<div class="bbtn"><button class="setbtn ghost" type="button" id="bLoan" '+(canLoan()?'':'disabled')+'>💳 대출<br>'+wonS(loanAmt())+'</button><button class="setbtn ghost" type="button" id="bHalf" '+(debt&&balance>0?'':'disabled')+'>절반 상환</button><button class="setbtn ghost" type="button" id="bAll" '+(debt&&balance>0?'':'disabled')+'>전액 상환</button></div>'+(canLoan()?'':'<p class="lead" style="margin:8px 0 0">'+loanWhy()+'</p>')+(rdebt>=1?'<div class="bbtn rdb"><button class="setbtn ghost" type="button" id="rHalf" '+(balance>0?'':'disabled')+'>재기 자금<br>절반 상환</button><button class="setbtn ghost" type="button" id="rAll" '+(balance>0?'':'disabled')+'>재기 자금<br>전액 상환</button></div><p class="lead rdn">🌱 재기 자금은 이자·한도·압류와 상관없어요 · 익절하면 빚 다음으로 자동 상환</p>':'')+'<p class="lead bwarn">'+DEBT_NOTE+'</p>'+
    '</div><p class="lead bnote">대출받으면 신용이 1등급 떨어지고, 다 갚으면 1등급 올라요 · 자세한 규칙은 ?</p></section></div>';
 }
@@ -3748,7 +4401,7 @@ function glossary(){
 function pageSet(){
   const row=(k,t,d)=>`<div class="setrow"><div><b>${t}</b><small>${d}</small></div><button class="sw" type="button" role="switch" data-set="${k}" aria-checked="${SET[k]}" aria-label="${t}"></button></div>`;
   return phead('set','⚙️ 설정',0,0,'<button class="setbtn ghost phb" type="button" id="setBack">‹ 내 계좌</button>')+'<div class="pan">'+row('sound','효과음','버튼, 틱, 매도·폭락 소리')+row('bgm','배경음악','잔잔한 비트 · 매수 중엔 빨라짐')+row('heart','심장 박동','보유 중 긴장감 사운드')+row('vib','진동','지원하는 기기에서만 작동')+row('fx','화려한 효과','파티클, 섬광, 화면 흔들림')+row('slow','느린 차트','차트 속도 20% 감소')+row('chars','캐릭터','결과·환영 카드에 동물 친구 표시')+(proOK()||viewForce?'<div class="setrow"><div><b>📊 프로 HTS</b><small>호가창·아이템 칩을 늘 펼쳐 보기 (끄면 간편 모드)</small></div><button class="sw" type="button" role="switch" id="setPro" aria-checked="'+isPro()+'" aria-label="프로 HTS"></button></div>':'<div class="setrow"><div><b>📊 프로 HTS 🔒</b><small>'+RANKS[2][1]+' 계급에서 열려요 · 호가창·아이템 칩을 늘 펼쳐 보기</small></div></div>')+'</div>'+glossary()+
-   '<h3>다시 하기</h3><div style="display:grid;gap:8px"><button class="setbtn ghost" type="button" id="retake">🧪 투자 성향 테스트 다시 하기</button><button class="setbtn ghost" type="button" id="reTut">🎓 튜토리얼 다시 보기</button></div>'+
+   '<h3>다시 하기</h3><div style="display:grid;gap:8px"><button class="setbtn ghost" type="button" id="retake">🧪 투자 성향 테스트 다시 하기</button>'+(TOUR_OFF?'':'<button class="setbtn ghost" type="button" id="tourMenu">'+tsay('menu')+'</button>')+'<button class="setbtn ghost" type="button" id="reTut">🎓 튜토리얼 다시 보기</button></div>'+
    '<h3>백업</h3><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><button class="setbtn ghost" type="button" id="bkOut">💾 백업 코드 복사</button><button class="setbtn ghost" type="button" id="bkIn">📥 백업 불러오기</button></div><p class="lead" style="margin-top:8px">기록은 이 폰의 브라우저에만 저장돼요. 아이폰은 홈 화면에 추가하지 않으면 오래 안 쓸 때 지워질 수 있으니, 가끔 백업 코드를 메모장에 저장해 두세요. 다른 폰으로 옮길 때도 써요.</p>'+
    (memSave?'<p class="lead" style="margin-top:8px;color:var(--danger-t)">⚠️ 지금 이 브라우저는 저장을 막고 있어서 기록이 이 창에만 남아요. 창을 닫기 전에 백업 코드를 복사해 두고, 다음에 백업 불러오기로 이어서 하세요.</p>':'')+
    '<h3>개인정보</h3><p class="lead">이 게임은 회원가입이 없고, 플레이 기록은 이 기기 브라우저에만 저장되며 서버로 보내지 않습니다. 광고는 Google AdSense(CrazyGames에서는 CrazyGames SDK)에서 불러오며, 광고 업체가 쿠키를 사용할 수 있습니다.</p>'+(onCG?'':'<button class="setbtn ghost" type="button" id="cmpBtn" style="width:100%" hidden>🛡️ 개인정보·쿠키 설정</button>')+
@@ -3878,7 +4531,7 @@ if(streak>=5){app.classList.add('fever');$('fever').hidden=false;}
 if(PREM_ON)premApply(1);offers=makeOffers();buildChartIdle();applyView();paintTop();paintPickers();paintQuote();renderBook();setBtn();if(spFree()<0){sk={};store.set('shg_sk',sk);setTimeout(()=>toast('스킬 트리가 개편되어 SP를 전액 돌려드렸어요'),1500);}paintTop();if(!pet&&profile)petStart(profile);petCheck();petDot();boot();setTimeout(()=>petCue(),600);talk('idle');talk('idle');
 try{navigator.clearAppBadge&&navigator.clearAppBadge()}catch(e){}
 if(/selftest/.test(location.search)){
-  window.__t={start,release,reenter,declareBankrupt,takeLoan,repay,tab,news,toast,coachT(t,id,pos){coach(t,$(id)||btn,pos||'above');},hideCoach,
+  window.__t={start,release,tour:tourT(),reenter,declareBankrupt,takeLoan,repay,tab,news,toast,coachT(t,id,pos){coach(t,$(id)||btn,pos||'above');},hideCoach,
     get s(){return {state,balance,debt,rdebt,nw:netW(),home:homeIdx(),levSel,allin,credit,cur,crashed,re:!!(run&&run.re),inv:invTotal(),xp,pres,tut:tutDone,streak,ready:performance.now()>=readyAt&&!(adHold&&state==='result'&&!card.querySelector('#adWin,#adLoss,#adRevive')),curTab,modal:!$('modal').hidden,card:!card.hidden,col:col.length,net:stats.net,rounds:stats.rounds,hist:stats.hist.length}},
     ptCheer,get pet(){return pet?JSON.parse(JSON.stringify(pet)):null;},petAdd(n,id){id=id||petSel();petGain(id,n);petCheck();return petSt(id);},petCue,startQuiz,get adDue(){return adDue},get xpMul(){return xpMul()},get petBonus(){return pet?PET_XP[petBest()]:0},get dot(){return dotWhy},
     get ptZone(){return ptCutX<1e9?ptZone().map(v=>Math.round(v*CK)):null;},

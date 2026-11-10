@@ -1288,6 +1288,12 @@ html[lang=en] .skr{grid-template-columns:32px minmax(0,1fr) 64px;align-items:sta
 .ivr small b.v{display:inline;font:800 var(--t-meta)/1 var(--num);color:var(--fg)}.ivr .ivd{color:var(--muted2)}
 .ivr .ivs>.ivx{display:inline;margin:0;white-space:nowrap}.ivr .ivs>.ivx::before{content:'·';margin:0 5px;color:var(--muted2)} 
 .ivr.lock>i .ico{filter:brightness(0) invert(.36)}.ivr.lock b{color:var(--muted2)}
+.ivr>button.ivh{all:unset;grid-area:n;min-width:0;font:700 var(--t-item)/1.3 var(--ui);color:var(--fg);cursor:pointer;overflow-wrap:break-word}.ivr>button.ivh .mu{color:var(--muted2);font-weight:600}.ivr>button.ivh:focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:4px}.ivr.lock>button.ivh{color:var(--muted2)} 
+.ivsum{padding:10px 14px;margin-top:var(--sp-2)}.ivsum p{margin:0 0 6px;font:500 var(--t-meta)/1.45 var(--mix);color:var(--muted)}.ivsum p b{font-family:var(--num);color:var(--fg)}.ivsum p b.up{color:var(--up-t)}.ivsum p b.dn{color:var(--down-t)}.ivsum .xpbar{margin:2px 0 6px}.ivsum .setbtn{width:100%;margin-top:2px;justify-content:center}
+.page .ivno{margin:2px 0 4px;font:500 var(--t-meta)/1.45 var(--mix);color:var(--muted)}.ivc .pan.iv{padding-top:0;padding-bottom:0}.ivc>summary .mu{font-family:var(--mix)}
+.ivk>span{flex:none;white-space:nowrap;margin-right:var(--sp-3)}.ivk>b{min-width:0} 
+#secInv .tiles .tile{display:flex;flex-direction:column}#secInv .tiles .tile>b{margin-top:auto} 
+.ivsp{margin:0 0 6px}.ivsp .setbtn{width:100%;justify-content:center}.page .ivsp .ivn{margin:4px 0 0} 
 .ivb2{display:flex;gap:4px}.ivb2>.setbtn.ob{flex:none;justify-content:center;white-space:nowrap} 
 .setbtn.ob{min-height:36px!important;padding:0 10px;min-width:44px;border-radius:10px;background:transparent;color:var(--gold-t);border:1px solid var(--gold-line);font:700 var(--t-chip)/1 var(--ui);box-shadow:none}
 .setbtn.ob.w{color:var(--fg2);border-color:var(--hair2)}
@@ -1445,16 +1451,18 @@ const icSet=(el,s)=>{s=String(s);if(el._t===s)return;el._t=s;const sg=s.split(IC
 ['news','fever'].forEach(id=>{const e=$(id);e.innerHTML=icH(e.innerHTML);});
 addEventListener('load',()=>{const f=()=>{try{if(navigator.connection&&navigator.connection.saveData)return;}catch(e){}'thumbs_up,explosion,hourglass,party_popper,warning,share,money_bag,trophy,house,watch_ad,rocket,money_wings,credit_card,restart,cash,lightbulb,potion,receipt,zzz,rank_insignia,skull,check_badge,point_down,level_up,repeat,new_badge,books,office_building,treasure_chest,theater_masks'.split(',').forEach(id=>imgGet(ASSET+'ui/'+id+'.webp'));};if(window.requestIdleCallback)requestIdleCallback(f,{timeout:4000});else setTimeout(f,1500);});
 const USDU=[[1e45,'Qad'],[1e42,'Td'],[1e39,'Dd'],[1e36,'Ud'],[1e33,'Dc'],[1e30,'No'],[1e27,'Oc'],[1e24,'Sp'],[1e21,'Sx'],[1e18,'Qi'],[1e15,'Qa'],[1e12,'T'],[1e9,'B'],[1e6,'M']];
-const usd=n=>{const a=Math.abs(n)/1000,sg=n<0?'\u2212':'';if(!isFinite(a))return sg+'$∞';for(const [U,nm] of USDU)if(a>=U*(1-1e-9)){const v=Math.max(1,a/U),i=Math.floor(v+1e-6),f1=Math.floor(v*10+1e-6)/10;return sg+'$'+(i>=100?i.toLocaleString('en-US'):f1>=10?f1.toFixed(1):(Math.floor(v*100+1e-6)/100).toFixed(2))+nm;}const r=Math.round(a*100)/100;return sg+'$'+(r>=1000?Math.floor(r).toLocaleString('en-US'):(r%1?r.toFixed(2):String(r)));};
+const bigE=(a,d)=>{let e=Math.floor(Math.log10(a)),k=Math.pow(10,d-1),m=Math.floor(a/Math.pow(10,e-d+1)*(1+1e-14));if(m>=10*k){m=Math.floor(m/10);e++;}else if(m<k){e--;m=Math.floor(a/Math.pow(10,e-d+1)*(1+1e-14));}return (m/k).toFixed(d-1)+'e'+e;};
+const usd=n=>{const a=Math.abs(n)/1000,sg=n<0?'\u2212':'';if(!isFinite(a))return sg+'$∞';if(a*(1+1e-14)>=1e48)return sg+'$'+bigE(a,3);for(const [U,nm] of USDU)if(a>=U*(1-1e-9)){const v=Math.max(1,a/U),i=Math.floor(v+1e-6),f1=Math.floor(v*10+1e-6)/10;return sg+'$'+(i>=100?i.toLocaleString('en-US'):f1>=10?f1.toFixed(1):(Math.floor(v*100+1e-6)/100).toFixed(2))+nm;}const r=Math.round(a*100)/100;return sg+'$'+(r>=1000?Math.floor(r).toLocaleString('en-US'):(r%1?r.toFixed(2):String(r)));};
 const tierLbl=n=>LANG==='en'?'Tier '+n:n+'단계';
 
-const shU=a=>{let U=1e8,nm='억';for(const [u,m] of UNITS)if(a>=u){U=u;nm=m;break;}const v=a/U;return (v>=100?Math.floor(v).toLocaleString('ko-KR'):(Math.floor(v*10+1e-6)/10).toFixed(1))+nm;};
+const shU=a=>{if(a*(1+1e-14)>=1e48)return bigE(a,3);let U=1e8,nm='억';for(const [u,m] of UNITS)if(a>=u){U=u;nm=m;break;}const v=a/U;return (v>=100?Math.floor(v).toLocaleString('ko-KR'):(Math.floor(v*10+1e-6)/10).toFixed(1))+nm;};
 const wonX=n=>{if(LANG==='en'){const d=Math.abs(n)/1000;return d>=1e4&&d<1e6?(n<0?'\u2212':'')+'$'+(d>=1e5?Math.floor(d/1e3):(Math.floor(d/100)/10).toFixed(1))+'K':usd(n);}const a=Math.abs(n),sg=n<0?'\u2212':'';if(!isFinite(a))return sg+'∞';if(a<1e4)return won(n).replace(/\uC6D0$/,'');return sg+(a<1e8?Math.floor(a/1e4).toLocaleString('ko-KR')+'만':shU(a));};
 const wonS=n=>LANG==='en'?usd(n):Math.abs(n)<1e4||!isFinite(n)?won(n):wonX(n)+'원';
 const UNITS=[[1e44,'재'],[1e40,'정'],[1e36,'간'],[1e32,'구'],[1e28,'양'],[1e24,'자'],[1e20,'해'],[1e16,'경'],[1e12,'조']];
 const won=n=>{if(LANG==='en')return usd(n);const a=Math.floor(Math.abs(n)),sg=n<0?'\u2212':'',f=x=>x.toLocaleString('ko-KR');
   if(!isFinite(a))return sg+'∞원';
-  for(let i=0;i<UNITS.length;i++){const [U,nm]=UNITS[i];if(a>=U){const top=Math.floor(a/U),lo=Math.floor(a/(U/1e4))-top*1e4,ln=i+1<UNITS.length?UNITS[i+1][1]:'억';
+  if(a*(1+1e-14)>=1e48)return sg+bigE(a,3)+'원';
+  for(let i=0;i<UNITS.length;i++){const [U,nm]=UNITS[i];if(a*(1+1e-14)>=U){const q=Math.floor(a/(U/1e4)*(1+1e-14)),top=Math.floor(q/1e4),lo=q-top*1e4,ln=i+1<UNITS.length?UNITS[i+1][1]:'억';
     return sg+f(top)+nm+(lo>0&&top<1e4?' '+f(lo)+ln:'')+'원';}}
   if(a>=1e8){const e=Math.floor(a/1e8),m=Math.floor(a%1e8/1e4);return sg+f(e)+'억'+(m?' '+f(m)+'만':'')+'원';}
   if(a>=1e6)return sg+f(Math.floor(a/1e4))+'만원';
@@ -1483,7 +1491,7 @@ const tickOf=p=>p<2000?1:p<5000?5:p<20000?10:p<50000?50:p<200000?100:p<500000?50
 const roundTick=(p,usd)=>{if(usd)return Math.max(.01,Math.round(p*100)/100);const k=tickOf(p);return Math.max(k,Math.round(p/k)*k)};
 const isUsd=()=>{const o=offer();return !!(o&&TIERS[o.k].usd)};
 const NF={},nf=d=>NF[d]||(NF[d]=new Intl.NumberFormat('en-US',{minimumFractionDigits:d,maximumFractionDigits:d}));
-const fmtP=(p,ref=p)=>{if(isUsd())return '$'+nf(2).format(p);if(LANG!=='en')return Math.round(p).toLocaleString('ko-KR');const o=offer(),b=o?Math.min(o.p0,ref):ref;return '$'+nf(ref>=500000?0:b<5000&&ref<100000?3:2).format(p/1000);};
+const fmtP=(p,ref=p)=>{if(isUsd())return '$'+nf(2).format(p);if(LANG!=='en')return Math.round(p).toLocaleString('ko-KR');return '$'+nf(ref>=500000?0:2).format(p/1000);};
 
 const tkOf=s=>{const w=String(s).replace(/\(.*?\)/g,'').match(/[A-Za-z0-9]+/g)||['STK'];return (w.length<2?w[0].slice(0,4):w[0].length<3?(w[0]+w[1]).slice(0,4):w[0].slice(0,3)+w[1][0]).toUpperCase();};
 const crS=c=>LANG==='en'?['AAA','AA','A','BBB','BB','B','CCC','CC','C','D'][Math.min(10,Math.max(1,c|0))-1]:c+'등급';
@@ -1966,12 +1974,13 @@ const STAR_T=[['브론즈','#d08a4f'],['실버','#cfd6e2'],['골드','#ffc63a'],
 function achStars(id){const c=achC[id]||0,t=ACH_T[id]||ACH_DEF;let st=0;while(st<5&&c>=t[st])st++;let col=-1,th=t[4]*2;if(st===5)while(col<STAR_T.length-1&&c>=th){col++;th*=2;}
   return {st,col,c,next:st<5?t[st]:(col<STAR_T.length-1?th:null)};}
 function starHtml(id){const a=achStars(id);return `<em class="stars" style="color:${a.col>=0?STAR_T[a.col][1]:'var(--fg)'}">${'★'.repeat(a.st)}<span>${'☆'.repeat(5-a.st)}</span>${a.col>=0?' '+STAR_T[a.col][0]:''}</em>`;}
-function achSP(){return ACH.reduce((n,a)=>{const x=achStars(a[0]);return n+(x.st>=1?1:0)+(x.st>=5?1:0);},0);}
+function achNoSP(id){return id==='debt1'||id==='payoff';}
+function achSP(){return ACH.reduce((n,a)=>{if(achNoSP(a[0]))return n;const x=achStars(a[0]);return n+(x.st>=1?1:0)+(x.st>=5?1:0);},0);}
 function unlock(id){
   const b=achStars(id);achC[id]=(achC[id]||0)+1;store.set('shg_achc',achC);
   if(!ach.includes(id)){ach.push(id);store.set('shg_ach',ach);if(PET_ORD.some(k=>PET_UN[k]===id))petCheck();}
   const n=achStars(id),a=ACH.find(a=>a[0]===id);
-  if(a&&(n.st>b.st||n.col>b.col)){setTimeout(()=>{toast('🏆 '+a[1]+' '+a[2]+' '+'★'.repeat(n.st)+(n.col>=0?' '+STAR_T[n.col][0]:'')+(n.st===5&&b.st<5?' · SP +1':n.st===1?' · SP +1':''));sfx.up();},350);paintTop();}
+  if(a&&(n.st>b.st||n.col>b.col)){setTimeout(()=>{toast('🏆 '+a[1]+' '+a[2]+' '+'★'.repeat(n.st)+(n.col>=0?' '+STAR_T[n.col][0]:'')+(achNoSP(id)?'':n.st===5&&b.st<5?' · SP +1':n.st===1?' · SP +1':''));sfx.up();},350);paintTop();}
 }
 const SRC=['여의도일보','개미경제','차트뉴스','마켓24','불장타임즈','증시톡','코인데일리'];
 const clock=()=>{const d=new Date();return [d.getHours(),d.getMinutes(),d.getSeconds()].map(n=>String(n).padStart(2,'0')).join(':')};
@@ -2134,7 +2143,7 @@ let bookK='',bookW='';function renderBook(){
     $('book').innerHTML=icH('<div class="bk0"><div class="bk0r" aria-hidden="true">'+'<i></i>'.repeat(8)+'</div><div class="bk0t"><i>📊</i><b>프로 HTS</b><small>호가창·체결 강도를 한눈에</small>'+(lk?'<span class="ownb">🔒 '+RANKS[2][1]+' 계급에서 열려요</span>':'<button type="button" class="setbtn ghost" id="bkPro">📊 프로 HTS 켜기</button>')+'</div></div>');const bp=$('bkPro');if(bp)bp.onclick=()=>$('proBtn').click();return;}
   bookK='';
   const m=!run?liveM:(crashed?(run.liq?cur*.8:Math.min(cur,run.crashAt*.62)):cur);
-  const p=priceOf(m),tk=isUsd()?.01:tickOf(p),o=offer();
+  const p0=priceOf(m),tk=isUsd()?.01:LANG==='en'?Math.max(10,tickOf(p0)):tickOf(p0),p=isUsd()||LANG!=='en'?p0:Math.max(tk,Math.round(p0/tk)*tk),o=offer();
   const rising=state==='holding'&&!events.some(e=>e.amp<0&&t>=e.t0&&t<=e.t0+1.4);
   const bw=rising?1.5:.8,aw=rising?.8:1.4,unit=TIERS[o.k].unit||180;
   const rows=[];for(let k=4;k>=1;k--)rows.push([p+tk*k,1]);for(let k=0;k<4;k++)rows.push([p-tk*k,0]);
@@ -2481,7 +2490,11 @@ function showBust(loss,L,xg,rw,sh,ps){
 const TIPS=['💡 투자 비율을 25%로 낮추면 폭락을 맞아도 다시 해 볼 돈이 남아요','💡 5연속 익절하면 FEVER로 보너스가 2배예요','💡 작은 수익이라도 꾸준히 챙기면 연속 익절 보너스가 쌓여요','💡 매일 선물과 미션 보상으로 현금을 다시 모을 수 있어요','💡 수익 중에 악재 뉴스가 뜨면 팔고 다음 판을 노리는 것도 방법이에요'];
 const overTip=()=>{const r=rankOf(xp),u=r+1<RANKS.length?unlOf(r+1):[],D=[];if(u.length)D.push('🔓 '+RANKS[r+1][1]+' 계급이 되면 열려요: '+u.join(', '));if(spFree()>0&&skl('risk')<15)D.push('🌳 남은 SP로 🛡️ 리스크 관리를 올리면 폭락 손실이 줄어요');return D.length&&Math.random()<.5?pick(D):pick(TIPS);};
 
-const LOAN_X=[0,5,4,3.5,3,2.5,2,1.6,1.3,1,.8],LOAN_R=[0,.003,.004,.005,.007,.01,.013,.017,.022,.028,.035];
+const LOAN_X=[0,5,4,3.5,3,2,2,1.6,1.3,1,.8],LOAN_R=[0,.008,.009,.01,.011,.012,.013,.017,.022,.028,.035],loanTen=g=>(Math.ceil((Math.pow(1+LOAN_R[g],10)-1)*1000-1e-9)/10).toFixed(1),loanAsk=go=>{if(!(debt>0)||!canLoan())return go();
+  if(state==='holding'||state==='ghost'){toast('💳 빚이 있을 땐 이번 판이 끝난 뒤에 더 빌릴 수 있어요');return;}
+  const a=loanAmt(),nc=Math.min(10,credit+1),d2=debt+a,i1=Math.ceil(debt*loanRate()),i2=Math.ceil(d2*LOAN_R[nc]),k=debt+'|'+a+'|'+credit;
+  ask(['💳 지금 빚 '+won(debt)+' · 판마다 이자 '+won(i1),'더 빌리면 빚 '+won(d2)+' · 신용 '+crS(nc)+(nc>=8?' (사채)':''),'그러면 판마다 이자 '+won(i2)+' ('+(LOAN_R[nc]*100).toFixed(1)+'%)'].join('\n'),'빌리기',()=>{if(debt+'|'+loanAmt()+'|'+credit!==k){toast('💳 빚이 바뀌었어요 · 다시 확인해 주세요');return;}go();});
+  const mc=$('modalClose'),ok=$('askOk');if(mc)mc.textContent='취소';if(ok&&ok.style){ok.style.setProperty('background','var(--panel3)');ok.style.setProperty('color','var(--fg)');ok.style.setProperty('box-shadow','inset 0 0 0 1px var(--hair2)');ok.style.setProperty('font-weight','700');}if(ok&&typeof ok.onclick==='function'){const f=ok.onclick;let t=performance.now();ok.onclick=e=>{const n=performance.now();if(n-t<500){t=n;return;}f(e);};}};
 const loanAmt=(c=credit)=>Math.max(START,Math.round(betCap(1)*LOAN_X[c]/1e4)*1e4);
 const loanRate=()=>LOAN_R[credit];
 const debtLimit=()=>Math.max(START*30,betCap(1)*25);
@@ -2511,7 +2524,7 @@ const seizeList=()=>{const T=[];
   GEAR.forEach(g=>{if(gear[g.id])T.push(g.e+' '+g.n);});
   CONSUM.forEach(c=>{const n=inv[c.id]||0,a=armed[c.id]||0;if(n>0)T.push(c.e+' '+c.n+' <b>×'+n+'</b>');if(a>0)T.push(c.e+' '+c.n+' · 사용 중'+(c.arm>1?' '+a+'판 남음':''));});
   PROD.forEach(P=>{const a=invest[P.id]&&invest[P.id].a||0;if(a>=1)T.push(P.e+' '+P.n+' <b>'+wonS(a)+'</b>');});
-  if(balance>=1)T.push('🟡 '+'예수금 <b>'+wonS(balance)+'</b>');return T;};
+  if(balance>=1)T.push('💵 '+'예수금 <b>'+wonS(balance)+'</b>');return T;};
 const KEEP_L='레벨 · 스킬 · 업적 · 컬렉션 · 파트너 · 꾸미기(벽지·바닥·소품)';
 const rdNote=d=>{const g=START*(1+.2*skl('seed'));return d?'🌱 새 자금 '+wonS(g)+'은 재기 자금(무이자 빚)으로 들어갔어요'+(rdebt>=g+1?' · 쌓인 '+wonS(rdebt):''):'🌱 이 돈은 재기 자금(무이자 빚)으로 들어가요'+(rdebt>=1?' · 쌓인 '+wonS(rdebt):'');};
 const rdLine=d=>{const t=rdNote(d);return t?'<p class="onote rdl">'+t+'</p>':'';};
@@ -2545,7 +2558,7 @@ function showDefault(quiet){
 const CFG={adClient:'',adTest:false,donateUrl:'',iap:false,iapDev:false};
 if(/^(localhost|127\.0\.0\.1)$/.test(location.hostname)&&/[?&]adsense\b/.test(location.search))CFG.adClient='ca-pub-2213068202184499';
 const CG={on:false,S:null,last:0,noAds:0,done:0},onCG=/crazygames/.test(location.hostname)||(window.top!==window&&/crazygames/.test(document.referrer))||/^(localhost|127\.0\.0\.1)$/.test(location.hostname)&&/[?&]cg\b/.test(location.search);
-const BUILD='v3.0.1 · b261103 · '+LANG+'-'+(onCG?'cg':/(^|\.)itch\.(io|zone)$|hwcdn\.net$/.test(location.hostname)||/itch\.io/.test(document.referrer)?'itch':'web');
+const BUILD='v3.0.2 · b261109 · '+LANG+'-'+(onCG?'cg':/(^|\.)itch\.(io|zone)$|hwcdn\.net$/.test(location.hostname)||/itch\.io/.test(document.referrer)?'itch':'web');
 if(onCG){const sc=document.createElement('script');sc.src='https://sdk.crazygames.com/crazygames-sdk-v3.js';
   sc.onload=async()=>{try{const S=window.CrazyGames.SDK;await S.init();if(S.environment!=='disabled'){CG.S=S;CG.on=true;cgLoad();try{const ms=v=>{v=v&&typeof v==='object'?v:S.game.settings;cgMute=!!(v&&v.muteAudio);document.body.classList.toggle('noChat',!!(v&&v.disableChat));if(touched||cgMute)bgm.sync();};ms();S.game.addSettingsChangeListener(ms);}catch(e){}if(state==='holding'||state==='ghost')cgPlay(true);}}catch(e){}CG.done=1;};sc.onerror=()=>{CG.done=1;};document.head.appendChild(sc);}
 let cgG=false;
@@ -2604,11 +2617,11 @@ function showOver(loss,quiet){if(loss>0)overLoss=loss;else loss=overLoss;
   card.innerHTML=heroH('<div class="grade gx wn">돈이 바닥났습니다</div>')+'<div class="sub">'+(run&&run.liq?'반대매매로 계좌가 털렸어요':'계좌가 바닥났어요')+' · 이어갈 방법을 골라 주세요</div>'+
    '<div class="nums"><div><small>빚</small><b class="'+(debt?'wn':'')+'">'+(debt?wonS(debt):'없음')+'</b></div><div><small>신용</small><b>'+crS(credit)+'</b></div><div><small>버틴 판수</small><b>'+(stats.curRun||0)+'판</b></div></div>'+
    (!usedToday('shg_adRevive')&&!revOk()&&(adsOn()||!adsWait())?'<div class="owarn">'+(adsOn()?'빚이 한도에 닿아 광고 지원금으로는 다음 판을 못 버텨요':'빚이 한도에 닿아 복귀 지원금으로는 다음 판을 못 버텨요')+'</div>':'')+(ok?'':'<div class="owarn">'+loanWhy()+'</div>')+
-   '<div id="overBtns">'+rv+(debt>0?optH('again',rv?'':'pri rec','🥫','파산 신청',(sl?'빚 탕감 · 압류 '+sl+'건 · 신용 10등급':'빚 탕감 · 압류할 것 없음 · 신용 10등급')):optH('again',rv?'':'pri rec','🔄','새로 시작','새 자금 '+wonS(START*(1+.2*skl('seed')))+(stats.bankrupts<5?' · SP +1':'')+' · 레벨·장비 유지')+rdLine())+lossHtml+(ok?optH('loanBtn','','💳','대출 받고 계속',wonS(la)+' · 이자 '+(LOAN_R[nc]*100).toFixed(1)+'% → <span class="wn">신용 '+crS(nc)+(nc>=8?' (사채)':'')+'</span>')+'<p class="onote">'+DEBT_NOTE+'</p>':'')+'</div>'+
+   '<div id="overBtns">'+rv+(debt>0?optH('again',rv?'':'pri rec','🥫','파산 신청',(sl?'빚 탕감 · 압류 '+sl+'건 · 신용 10등급':'빚 탕감 · 압류할 것 없음 · 신용 10등급')):optH('again',rv?'':'pri rec','🔄','새로 시작','새 자금 '+wonS(START*(1+.2*skl('seed')))+(stats.bankrupts<5?' · SP +1':'')+' · 레벨·장비 유지')+rdLine())+lossHtml+(ok?optH('loanBtn','','💳','대출 받고 계속',wonS(la)+(LANG==='en'?' · ':' · 이자 ')+(LOAN_R[nc]*100).toFixed(1)+'%/판 → <span class="wn">'+(LANG==='en'?(nc>=8?'Subprime ':'Credit ')+crS(nc):'신용 '+crS(nc)+(nc>=8?' (사채)':''))+'</span>')+'<p class="onote">'+DEBT_NOTE+'</p>':'')+'</div>'+
    '<div class="sub rage">'+overTip()+'</div>';overSig=overNow();
   bdNext={k:'shock',id:run&&run.bd||bdCur&&bdCur.id||petSel()};showCard();
   revBind();
-  if($('loanBtn'))$('loanBtn').onclick=()=>{const k=overSig;if(unOver()||overSig!==k)return;if(!takeLoan())return showOver(0);resetView();stamp('💳 빚투 시작');};
+  if($('loanBtn'))$('loanBtn').onclick=()=>{const k=overSig;if(unOver()||overSig!==k)return;loanAsk(()=>{if(state!=='over')return;if(!takeLoan())return showOver(0);resetView();stamp('💳 빚투 시작');});};
   $('again').onclick=()=>{const k=overSig;if(unOver()||overSig!==k)return;if(debt>0)showSeize();else declareBankrupt(false);};
   if($('adLoss'))$('adLoss').onclick=()=>{if(adFull('loss'))return $('adLoss').remove();const bs=['adRevive','adLoss','loanBtn','again'].map(id=>$(id)).filter(Boolean),p0=pres;bs.forEach(b=>b.disabled=true);
     rewardAd('lossback',()=>{const b=$('adLoss');if(pres!==p0||!b||b.dataset.paid)return;if(adFull('loss'))return b.remove();b.dataset.paid=1;overLoss=0;adUse('loss');balance+=lb;stats.net+=lb;store.set('shg_stats',stats);b.remove();stamp('📺 복구');if(!unOver()){paintTop();paintPickers();setBtn();toast('📺 '+swS(lb)+' 돌려받았어요');}});
@@ -3092,6 +3105,7 @@ const fixStats=()=>{const N=fin,obj=o=>o&&typeof o==='object'&&!Array.isArray(o)
   stats.hist=(Array.isArray(stats.hist)?stats.hist:[]).filter(h=>obj(h)&&isFinite(h.m)&&isFinite(h.a)).slice(0,20).map(h=>Object.assign(h,{m:+h.m,a:+h.a,l:+h.l||1,i:Array.isArray(h.i)?h.i:[],k:Object.prototype.hasOwnProperty.call(TIERS,h.k)?h.k:'',ni:Number.isInteger(h.ni)?h.ni:-1}));
   if(!obj(stats.c))stats.c={};for(const k in stats.c)stats.c[k]=Math.max(0,Math.min(k==='profit'?1e300:1e18,N(stats.c[k])));if(!obj(stats.ct))stats.ct={};for(const k in stats.ct)stats.ct[k]=Math.max(0,Math.min(1e3,Math.floor(N(stats.ct[k]))));stats.bossLv=Math.max(0,Math.min(1e6,stats.bossLv));stats.bankrupts=Math.max(0,Math.min(1e6,stats.bankrupts));
   stats.types=(Array.isArray(stats.types)?stats.types:[]).filter(k=>Object.prototype.hasOwnProperty.call(TIERS,k));};fixStats();lowFlag=!!stats.low;
+if(!stats.lsp){const g=['debt1','payoff'].reduce((n,id)=>{const x=achStars(id);return n+(x.st>=1?1:0)+(x.st>=5?1:0);},0);stats.lsp=1;if(g>0)stats.bonusSP=(stats.bonusSP||0)+g;store.set('shg_stats',stats);}
 const cVal=d=>d.id==='boss'?(stats.bossLv||0):d.id==='bk'?(stats.bankrupts||0):(stats.c[d.id]||0);
 const cTarget=(d,tier)=>d.money?Math.round(d.b*Math.pow(d.m,tier)):Math.ceil(d.b*Math.pow(d.m,tier));
 function careerCheck(){
@@ -3146,9 +3160,9 @@ const pjump=a=>'<nav class="pjump" style="overflow-x:auto">'+a.map(([id,t])=>'<b
 const HL=(i,t,d)=>'<div class="li"><i>'+icI(i,t)+'</i><div><b>'+t+'</b><small>'+d+'</small></div></div>';
 const HELP={
   mission:()=>'<h2>📋 미션</h2><p class="note">일일 미션은 자정마다, 주간 미션은 월요일마다 바뀝니다.</p>'+HL('🏆','오늘의 챌린지','하루 한 번, 모두 같은 폭락 지점으로 5판. 매도 수익률이 점수, 물리면 −30점')+HL('👥','친구 리그','친구가 공유한 SHG- 코드를 넣으면 이번 주 점수로 순위를 매겨요')+HL('🎫','시즌 패스','판마다 XP가 쌓여 30단계 보상. 월요일마다 새 시즌')+HL('📋','미션','일일 8개 · 주간 10개 · 커리어 20개'),
-  grow:()=>'<h2>🌱 성장</h2>'+HL('🐾','파트너','판마다 친밀도 +1 · 익절 +1 · 보스 처치 +2 (연습·챌린지 판 제외)')+HL('🔁','파트너 바꾸기','친구를 누르면 파트너가 바뀌어요 · 친밀도는 친구마다 따로 쌓이고 경험치 보너스는 가장 많이 자란 친구 기준 · 잠긴 친구는 아래 계급·업적을 달성하면 합류해요')+HL('🌳','SP · 스킬','SP는 2레벨마다 1개, 업적마다 1개, 기록 미션 2단계마다 1개, 보스 처치 2개, 주간 미션 1개로 천천히 모입니다. 강화 비용은 같은 스킬을 5레벨 올릴 때마다 1씩 오르고, 각 계열의 상위 스킬은 그 계열에 10포인트를 찍으면 열립니다.')+HL('🎖️','계급표','XP가 쌓이면 계급이 올라 아이템·레버리지·종목이 열려요'),
-  shop:()=>'<h2>🛒 상점</h2><p class="note">모은 돈은 여기서 쓰세요. 소모품은 효과를 다 쓰면 사라지고, 장비는 영구 보너스예요 (빚으로 파산하면 압류).</p>'+HL('🧪','소모품','소모품은 예수금에 비례 · 많이 가질수록 1.6배씩 비싸짐')+HL('🏦','은행','대출받으면 신용이 1등급 떨어지고, 다 갚으면 1등급 오릅니다. 빚이 한도를 넘으면 넘는 만큼 예수금에서 자동 상환, 못 갚으면 신용불량 · 장비·소모품·투자금 압류. 익절하면 수익의 30%가 자동 상환됩니다.')+HL('🥫','파산 신청','빚이 남은 채 바닥나면 새로 시작 대신 파산 신청: 빚 탕감 · 장비·소모품·투자금 압류 · 신용 10등급. 압류 전에 목록을 보여 주고 한 번 더 확인해요. 레벨·스킬·업적·컬렉션·파트너·꾸미기는 남아요.')+HL('🌱','재기 자금','새로 시작·파산 신청으로 받는 돈은 재기 자금(무이자 빚)이에요. 이자·빚 한도·압류와는 상관없고, 익절하면 수익의 30%에서 빚 다음으로 자동 상환돼요. 은행에서 직접 갚을 수도 있어요. 순자산에서는 빠져요.')+HL('🛋️','미니룸 꾸미기','상점에서 벽지·바닥·소품을 사서 방을 꾸며요'),
-  account:()=>'<h2>💼 내 계좌</h2>'+HL('💼','투자','예수금을 넣어두면 판을 할 때마다 수익(또는 손실)이 붙어요. 상품마다 수익이 붙는 한도가 있어요. 빼면 수수료가 나가요.')+HL('🏆','컬렉션','8개 분류 50종. 살 때마다 SP, 분류를 다 모으면 보너스 SP +3')+HL('🏠','미니룸','순자산이 늘면 더 좋은 집으로 이사해요')+HL('💾','백업 코드','설정에서 복사해 두면 폰을 바꿔도 이어서 할 수 있어요')};
+  grow:()=>'<h2>🌱 성장</h2>'+HL('🐾','파트너','판마다 친밀도 +1 · 익절 +1 · 보스 처치 +2 (연습·챌린지 판 제외)')+HL('🔁','파트너 바꾸기','친구를 누르면 파트너가 바뀌어요 · 친밀도는 친구마다 따로 쌓이고 경험치 보너스는 가장 많이 자란 친구 기준 · 잠긴 친구는 아래 계급·업적을 달성하면 합류해요')+HL('🌳','SP · 스킬','SP는 2레벨마다 1개, 업적마다 1개(대출 업적 제외), 기록 미션 2단계마다 1개, 보스 처치 2개, 주간 미션 1개로 천천히 모입니다. 강화 비용은 같은 스킬을 5레벨 올릴 때마다 1씩 오르고, 각 계열의 상위 스킬은 그 계열에 10포인트를 찍으면 열립니다.')+HL('🎖️','계급표','XP가 쌓이면 계급이 올라 아이템·레버리지·종목이 열려요'),
+  shop:()=>'<h2>🛒 상점</h2><p class="note">모은 돈은 여기서 쓰세요. 소모품은 효과를 다 쓰면 사라지고, 장비는 영구 보너스예요 (빚으로 파산하면 압류).</p>'+HL('🧪','소모품','소모품은 예수금에 비례 · 많이 가질수록 1.6배씩 비싸짐')+HL('🏦','은행','대출받으면 신용이 1등급 떨어지고, 다 갚으면 1등급 오릅니다. 이자는 판마다 붙고 신용이 나쁠수록 비싸요 (1등급 '+(LOAN_R[1]*100).toFixed(1)+'% ~ 10등급 '+(LOAN_R[10]*100).toFixed(1)+'%). 빚이 한도를 넘으면 넘는 만큼 예수금에서 자동 상환, 못 갚으면 신용불량 · 장비·소모품·투자금 압류. 익절하면 수익의 30%가 자동 상환됩니다.')+HL('🥫','파산 신청','빚이 남은 채 바닥나면 새로 시작 대신 파산 신청: 빚 탕감 · 장비·소모품·투자금 압류 · 신용 10등급. 압류 전에 목록을 보여 주고 한 번 더 확인해요. 레벨·스킬·업적·컬렉션·파트너·꾸미기는 남아요.')+HL('🌱','재기 자금','새로 시작·파산 신청으로 받는 돈은 재기 자금(무이자 빚)이에요. 이자·빚 한도·압류와는 상관없고, 익절하면 수익의 30%에서 빚 다음으로 자동 상환돼요. 은행에서 직접 갚을 수도 있어요. 순자산에서는 빠져요.')+HL('🛋️','미니룸 꾸미기','상점에서 벽지·바닥·소품을 사서 방을 꾸며요'),
+  account:()=>'<h2>💼 내 계좌</h2>'+HL('💼','투자','예수금을 넣어 두면 판을 할 때마다 이자(또는 손실)가 붙어요. 상품마다 이자 붙는 한도가 있고, 한도를 넘는 돈에는 이자가 붙지 않아요(0원). 입금은 한도까지만 들어가요.')+HL('⏳','차곡차곡','넣어 둔 돈이 판을 함께 한 평균 시간이에요(한 판은 최대 '+INV_U+'로 셈). 오래 둘수록 이율과 이자 붙는 한도가 커지고, 다 채운 한도는 레벨 따라 커져요. 판마다 잔액의 '+INV_FREE*100+'%까지 더 넣는 건 그대로지만, 그보다 많이 새로 넣은 돈은 0분부터라 평균이 줄어요. 다 빼면 0분부터 다시.')+HL('⚡','10배 이상·영끌','그런 판을 할 때마다 모든 상품의 차곡차곡이 절반이 돼요. 이자 붙는 한도도 같이 줄고, 넘는 돈은 쉬는 돈이 돼요(이자 0원 · 빼면 수수료는 그대로).')+HL('💸','출금 수수료','이자 붙는 돈을 뺄 때만 나가요. 한도를 넘어 쉬는 돈은 수수료 없이 뺄 수 있어요(10배 이상·영끌 판에 한도가 줄어 넘친 돈은 수수료 그대로). 코인은 한도를 넘은 돈에도 수수료가 붙어요(업데이트 전부터 있던 쉬는 돈은 빼고). 엔젤은 상장 이익에서 수수료를 미리 떼고, 파산하면 쉬는 돈까지 잔액 전부 0원이에요(상장 이익은 수수료 없이 바로 뺄 수 있어요).')+HL('🏦','빚이 있으면','빚만큼의 투자금(이율 높은 상품부터)은 이자도 손실도 없어요.')+HL('⏱️','플레이 시간','이자와 출렁임, 차곡차곡은 판 수가 아니라 플레이 시간으로 세요. 한 판은 걸린 시간만큼, 최대 '+INV_U+'까지예요. 화면의 /'+INV_U+' 숫자는 '+INV_U+' 동안 붙는 몫이에요. '+INV_U+'보다 오래 걸린 판도 '+INV_U+' 몫만, 그 절반 시간에 넘긴 판은 절반만 붙어요. 그래서 판을 빨리 넘겨도 1분에 붙는 이자는 늘지 않아요. ‘판마다 '+INV_U+' 안에 쉬지 않고 하면 1분에 평균 약 +X원’은 지금 이자 붙는 돈에 지금 이율로 '+INV_U+' 몫 평균 이자를 '+INV_PM+'번 더한 값이에요. 판이 '+INV_U+'보다 오래 걸리면 1분에 그만큼 덜 붙어요(판마다 '+INV_RT/750+'초면 3/4, '+INV_RT/500+'초면 절반 · 결과를 읽거나 쉬는 시간도 판 시간에 들어가요). 이율은 장세를 평균 낸 값이라 하락장·블랙스완 주의보엔 덜, 다른 장세엔 더 붙고(예금·적금·금은 장세와 상관없음), 차곡차곡이 차는 동안엔 조금씩 늘어요. 배당주 펀드·월세 주택은 이자를 예수금으로 그대로 받고, 장세 몫(하락장 −, 불장 +)은 잔액에 붙어요.')+HL('📥','한 번에 나눠 넣기','입금 비율만큼의 예수금을 코인·엔젤 빼고 출렁임이 작은 상품부터 이자 붙는 한도까지 나눠 넣어요. 출렁임이 큰 펀드(±'+Math.round(Math.max(...PROD.filter(P=>!P.chance).map(P=>P.v||0))*1000)/10+'%까지)에도 들어가요. 어디에 얼마, 출렁임과 출금 수수료가 얼마인지는 버튼 아래에 먼저 보여요.')+HL('🔓','새 상품','계급과 레벨이 오르면 분류마다 새 상품이 열려요. 상품 이름을 누르면 자세한 숫자가 나와요.')+HL('🏆','컬렉션','8개 분류 50종. 살 때마다 SP, 분류를 다 모으면 보너스 SP +3')+HL('🏠','미니룸','순자산이 늘면 더 좋은 집으로 이사해요')+HL('💾','백업 코드','설정에서 복사해 두면 폰을 바꿔도 이어서 할 수 있어요')};
 function help(k){const f=HELP[k];if(f)openModal(f(),'hs');}
 function skBub(){const n=spFree();if(n>0){const sg=SKILLS.filter(x=>!(x.req&&brPts(x.br)<x.req)&&skl(x.id)<x.max&&costOf(skl(x.id))<=n).sort((a,b)=>skl(a.id)-skl(b.id))[0];return LANG==='en'?n+' SP! '+(sg?'Try '+sg.n+'?':''):'SP '+n+'개! '+(sg?sg.n+'부터?':'');}
   if(!pet)return '';const x=pet.own[pet.sel].xp,s=petLv(x);return s>1?'전설이 됐어! 계속 같이 가자':'다음 단계까지 '+petRn(petLeft(x))+'!';}
@@ -3372,8 +3386,8 @@ function pageShop(){const wc=CONSUM[wkOrd(weekKey())%CONSUM.length];
    '</section>'+
    '<section class="sec full" id="secDecor">'+decorHtml()+(PREM_ON?premHtml():'')+'</section>'+
    '<section class="sec full" id="secBank">'+
-   '<h3>🏦 은행</h3><div class="pan bank">'+[['빚',debt?won(debt):'없음'],['신용등급',crS(credit)+(credit>=8?' · 사채':'')],['판당 이자',(loanRate()*100).toFixed(1)+'%'+(debt>0?' · '+wonS(Math.ceil(debt*loanRate())):'')],['빚 한도',won(debtLimit())]].concat(rdebt>=1?[['🌱 재기 자금',won(rdebt)+' · 무이자']]:[]).map(([k,v])=>`<div class="brow"><span class="mu">${k}</span><b>${v}</b></div>`).join('')+
-   '<div class="bbtn"><button class="setbtn ghost" type="button" id="bLoan" '+(canLoan()?'':'disabled')+'>💳 대출<br>'+wonS(loanAmt())+'</button><button class="setbtn ghost" type="button" id="bHalf" '+(debt&&balance>0?'':'disabled')+'>절반 상환</button><button class="setbtn ghost" type="button" id="bAll" '+(debt&&balance>0?'':'disabled')+'>전액 상환</button></div>'+(canLoan()?'':'<p class="lead" style="margin:8px 0 0">'+loanWhy()+'</p>')+(rdebt>=1?'<div class="bbtn rdb"><button class="setbtn ghost" type="button" id="rHalf" '+(balance>0?'':'disabled')+'>재기 자금<br>절반 상환</button><button class="setbtn ghost" type="button" id="rAll" '+(balance>0?'':'disabled')+'>재기 자금<br>전액 상환</button></div><p class="lead rdn">🌱 재기 자금은 이자·한도·압류와 상관없어요 · 익절하면 빚 다음으로 자동 상환</p>':'')+'<p class="lead bwarn">'+DEBT_NOTE+'</p>'+
+   '<h3>🏦 은행</h3><div class="pan bank">'+[['빚',debt?won(debt):'없음'],['신용등급',crS(credit)+(credit>=8?' · 사채':'')],['판마다 이자',(loanRate()*100).toFixed(1)+'%'+(debt>0?' (이번 판 '+wonS(Math.ceil(debt*loanRate()))+')':'')+' · 10판이면 +'+loanTen(credit)+'%'],['빚 한도',won(debtLimit())]].concat(rdebt>=1?[['🌱 재기 자금',won(rdebt)+' · 무이자']]:[]).map(([k,v])=>`<div class="brow"><span class="mu">${k}</span><b>${v}</b></div>`).join('')+
+   '<details class="mmore"><summary>신용등급별 판마다 이자</summary><div class="pan">'+LOAN_R.slice(1).map((r,i)=>'<div class="brow"><span class="mu">'+crS(i+1)+(i+1===credit?' (지금)':'')+'</span><b>'+(r*100).toFixed(1)+'% · 10판이면 +'+loanTen(i+1)+'%</b></div>').join('')+'</div></details>'+'<div class="bbtn"><button class="setbtn ghost" type="button" id="bLoan" '+(canLoan()?'':'disabled')+'>💳 대출<br>'+wonS(loanAmt())+'</button><button class="setbtn ghost" type="button" id="bHalf" '+(debt&&balance>0?'':'disabled')+'>절반 상환</button><button class="setbtn ghost" type="button" id="bAll" '+(debt&&balance>0?'':'disabled')+'>전액 상환</button></div>'+(canLoan()?'':'<p class="lead" style="margin:8px 0 0">'+loanWhy()+'</p>')+(rdebt>=1?'<div class="bbtn rdb"><button class="setbtn ghost" type="button" id="rHalf" '+(balance>0?'':'disabled')+'>재기 자금<br>절반 상환</button><button class="setbtn ghost" type="button" id="rAll" '+(balance>0?'':'disabled')+'>재기 자금<br>전액 상환</button></div><p class="lead rdn">🌱 재기 자금은 이자·한도·압류와 상관없어요 · 익절하면 빚 다음으로 자동 상환</p>':'')+'<p class="lead bwarn">'+DEBT_NOTE+'</p>'+
    '</div><p class="lead bnote">대출받으면 신용이 1등급 떨어지고, 다 갚으면 1등급 올라요 · 자세한 규칙은 ?</p></section></div>';
 }
 
@@ -3445,13 +3459,42 @@ function pageMission(){ensureDaily();
 const histName=h=>{if(h.ni==null||h.ni<0)return h.n;if(h.k==='boss'){const bi=bossInfo(h.ni);return bi.B.e+' '+bi.B.n+' Lv.'+(bi.lv+1);}const n=TIERS[h.k]&&TIERS[h.k].names[h.ni];return n?(Array.isArray(n)?n[0]:n):h.n;};
 
 const PROD=[
-  {id:'save',e:'🏦',n:'정기적금',d:'원금 보장 · 판마다 +0.2%',r:.002,v:0,max:1e11,lv:0,fee:0},
-  {id:'bond',e:'📜',n:'국채',d:'판마다 약 +0.4% · 거의 안전',r:.004,v:.003,max:1e13,lv:1,fee:.005},
-  {id:'reit',e:'🏢',n:'부동산 리츠',d:'판마다 약 +0.6% · 하락장엔 손실',r:.006,v:.015,max:5e13,lv:3,fee:.01},
-  {id:'index',e:'📊',n:'인덱스 펀드',d:'판마다 약 +0.9% · 출렁임 있음',r:.009,v:.035,max:1e14,lv:4,fee:.01},
-  {id:'coin',e:'💱',n:'코인 바스켓',d:'판마다 ±15% · 한방 아니면 반토막',r:.012,v:.15,max:5e13,lv:6,fee:.02},
-  {id:'angel',e:'🚀',n:'스타트업 엔젤',d:'판마다 3% 확률 상장(x5) · 4% 확률 파산(0원)',angel:1,max:2e13,lv:8,fee:.03}
+  {id:'save',c:'dep',e:'🏦',n:'정기적금',d:'원금 보장 · 수수료 없음 · 언제든 빼기',r:.002,mx:2,mt:100,v:0,br:0,ur:0,fee:0,m0:1e11,cx:10,lv:0,get max(){return invCap(this)}},
+  {id:'term',c:'dep',e:'🗓️',n:'정기예금',d:'출렁임 없음 · 오래 둘수록 이율 ↑ · 만기 전 해지 수수료 최대 2%',r:.002,mx:3.5,mt:600,v:0,br:0,ur:0,fee:.02,feeM:1,m0:5e11,cx:20,lv:2,get max(){return invCap(this)}},
+  {id:'bond',c:'bond',e:'📜',n:'국채',d:'거의 안전 · 하락장에도 이자',r:.004,mx:1.8,mt:200,v:.003,br:-.002,ur:.003,fee:.005,m0:1e13,cx:30,lv:1,get max(){return invCap(this)}},
+  {id:'corp',c:'bond',e:'🧾',n:'회사채',d:'국채보다 이자 많고 조금 출렁임',r:.005,mx:1.8,mt:250,v:.008,br:-.003,ur:.003,fee:.0075,m0:3e13,cx:30,lv:9,get max(){return invCap(this)}},
+  {id:'reit',c:'estate',e:'🏢',n:'부동산 리츠',d:'출렁임 있음 · 하락장엔 이자 줄어듦',r:.006,mx:1.6,mt:300,v:.015,br:-.005,ur:.003,fee:.01,m0:5e13,cx:30,lv:3,get max(){return invCap(this)}},
+  {id:'rent',c:'estate',e:'🏠',n:'월세 주택',d:'월세가 판마다 예수금으로 · 팔 때 수수료 큼',r:.005,mx:1.6,mt:400,v:.003,br:-.002,ur:.001,fee:.03,m0:1e14,cx:30,lv:12,pay:'cash',get max(){return invCap(this)}},
+  {id:'office',c:'estate',e:'🏙️',n:'오피스 빌딩',d:'한도 큼 · 40분 묵혀야 제값',r:.007,mx:1.4,mt:400,v:.02,br:-.007,ur:.003,fee:.015,m0:5e14,cx:60,lvL:70,get max(){return invCap(this)}},
+  {id:'index',c:'stock',e:'📊',n:'인덱스 펀드',d:'시장 평균 · 출렁임 있음',r:.009,mx:1,mt:300,v:.035,br:-.008,ur:.003,fee:.01,m0:1e14,cx:50,lv:4,get max(){return invCap(this)}},
+  {id:'divi',c:'stock',e:'🌳',n:'배당주 펀드',d:'배당이 판마다 예수금으로 · 주가는 출렁임',r:.0065,mx:1.45,mt:300,v:.02,br:-.005,ur:.003,fee:.01,m0:5e13,cx:30,lv:10,pay:'cash',get max(){return invCap(this)}},
+  {id:'growth',c:'stock',e:'📈',n:'성장주 펀드',d:'이율 높고 출렁임 큼',r:.011,mx:1,mt:400,v:.045,br:-.011,ur:.005,fee:.015,m0:2e15,cx:60,lvL:100,get max(){return invCap(this)}},
+  {id:'space',c:'stock',e:'🛰️',n:'우주항공 펀드',d:'가장 큰 펀드 · 50분 묵혀야 제값',r:.011,mx:1.25,mt:500,v:.045,br:-.01,ur:.005,fee:.02,m0:1e18,cx:80,lvL:150,get max(){return invCap(this)}},
+  {id:'world',c:'world',e:'🌐',n:'해외 주식 펀드',d:'하락장 영향 절반 · 환전 수수료',r:.008,mx:1.1,mt:300,v:.03,br:-.004,ur:.002,fee:.015,m0:2e14,cx:50,lv:14,get max(){return invCap(this)}},
+  {id:'gold',c:'world',e:'🟡',n:'금',d:'장세와 상관없이 일정 · 조금 출렁임',r:.0042,mx:1.8,mt:300,v:.006,br:0,ur:0,fee:.0075,m0:2e13,cx:20,lv:7,get max(){return invCap(this)}},
+  {id:'coin',c:'alt',e:'💱',n:'코인 바스켓',d:'6초마다 ±15% 출렁임 · 오래 두면 손해 보기 쉬움',r:.012,v:.15,br:-.01,ur:.003,fee:.02,m0:5e13,lv:6,chance:1,get max(){return invCap(this)}},
+  {id:'angel',c:'alt',e:'🚀',n:'스타트업 엔젤',d:'6초마다 3% 확률 상장(한도 몫 ×5) · 4% 확률 파산(쉬는 돈까지 전부 0원)',angel:1,fee:.03,m0:2e13,lv:8,chance:1,get max(){return invCap(this)}}
 ];
+const INV_CAT=[{id:'dep',e:'🏦',n:'예금·적금'},{id:'bond',e:'📜',n:'채권'},{id:'estate',e:'🏢',n:'부동산'},{id:'stock',e:'📊',n:'주식·펀드'},{id:'world',e:'🌐',n:'해외·금'},{id:'alt',e:'💱',n:'대체투자'}];
+const INV_RT=6000,INV_K0=0,INV_FREE=.1,INV_CEIL=2e43,INV_HMAX=5e45,INV_U=INV_RT/1000+'초',invV0=!store.get('shg_invV',0);let invLastT=performance.now(),invTk=0,invHalfAt=-99;
+function invTm(t){const x=Math.max(0,+t||0)*INV_RT/1000;return x<60?Math.floor(x)+'초':Math.floor(x/60)+'분';}
+function invL1(){return 1e6*Math.pow(1.22,lvlOf(xp).L-1);}
+function invF(P,t){if(!P.mt)return 0;if(t==null){const h=invest[P.id];t=h&&h.a>0?h.t||0:0;}return Math.min(1,Math.max(0,t)/P.mt);}
+function invCapOn(P){return P.chance?P.m0:Math.min(INV_CEIL,Math.max(P.m0,P.cx*invL1()));}
+function invCapAt(P,t){const C=invCapOn(P);if(P.chance)return C;const C0=Math.min(C,Math.max(P.m0,INV_K0*C));return C0+(C-C0)*invF(P,t);}
+function invCap(P){return invCapAt(P);}
+function invFee(P,t){return P.feeM?P.fee*(1-invF(P,t)):P.fee||0;}
+function invMean(P,f){if(P.angel)return .12*(1-(P.fee||0))-.04;return P.r*(1+(P.mx||0)*(f||0))+.25*(P.br||0)+.125*(P.ur||0);}
+function ivP(x,sg,up){const v=x*100,b=Math.abs(v),d=up||b<1?2:1,k=Math.pow(10,d),s=(up||v<0?Math.ceil(b*k-1e-9):Math.floor(b*k+1e-9))/k;return (v<0?'−':sg===0?'':'+')+s.toFixed(d).replace(/\.?0+$/,'')+'%';}
+function invLock(P){return P.lvL?lvlOf(xp).L<P.lvL:rankOf(xp)<(P.lv||0);}
+function invLockT(P){return P.lvL?'Lv.'+P.lvL+'부터':RANKS[P.lv][1]+' 계급부터';}
+function invAfter(P,x){const h=invest[P.id]||{},a=h.a>0?h.a:0,t=a>0?h.t||0:0,xf=Math.min(x,Math.max(0,INV_FREE*(h.l||0)-(h.q||0))),t2=a+x>0?t*(a+xf)/(a+x):0;return {t:t2,cap:invCapAt(P,t2)};}
+function invRoom(P){const h=invest[P.id]||{},a=h.a>0?h.a:0;if(P.chance)return Math.max(0,Math.floor(invCapOn(P)-a));const c=invCapAt(P,a>0?h.t||0:0);if(!(c>a))return 0;let lo=0,hi=c-a;for(let i=0;i<60;i++){const m=(lo+hi)/2;if(a+m<=invAfter(P,m).cap)lo=m;else hi=m;}return lo<c*1e-12?0:Math.floor(lo);}
+function invIdle(P){const h=invest[P.id];return h&&h.a>0?Math.max(0,h.a-P.max):0;}
+function invNoFee(P){const h=invest[P.id],x=invIdle(P);return P.chance&&!P.angel?Math.min(x,h&&h.z>0?h.z:0):Math.max(0,x-(h&&h.y>0?h.y:0));}
+function invER(P,bear,bull){return P.angel?.08:P.r*(1+(P.mx||0)*invF(P))+((bear?P.br||0:0)+(bull?P.ur||0:0));}
+function invFrz(bear,bull){if(bear==null){const rg=regime();bear=(rg.crash||1)<1;bull=(rg.rate||1)>1;}let owe=debt>0?debt:0;const frz={};if(owe>0)PROD.filter(P=>invest[P.id]&&invest[P.id].a>0).sort((x,y)=>invER(y,bear,bull)-invER(x,bear,bull)).forEach(P=>{if(owe<=0)return;const h=invest[P.id],c=Math.min(owe,h.a,P.max);frz[P.id]=c;owe-=c;});return frz;}
+function invBlk(P){const h=invest[P.id];return !!h&&h.a>=INV_HMAX&&(P.pay!=='cash'||balance>=INV_HMAX);}
 const CATS=[
   {id:'lux',e:'💎',n:'명품'},{id:'ride',e:'🏎️',n:'탈것'},{id:'estate',e:'🏙️',n:'부동산'},{id:'sport',e:'🏟️',n:'스포츠'},
   {id:'art',e:'🎨',n:'예술 · 유물'},{id:'corp',e:'🏢',n:'기업 인수'},{id:'space',e:'🚀',n:'우주'},{id:'myth',e:'🌌',n:'상상 · 전설'}
@@ -3476,21 +3519,47 @@ const COL=[
   {id:'godkey',cat:'myth',e:'⌨️',n:'신의 키보드',p:1e40,fic:1},{id:'dim',cat:'myth',e:'♾️',n:'차원 그 자체',p:1e45,fic:1}
 ];
 let invest=store.get('shg_inv2',{}),col=store.get('shg_col',[]);
-if(!invest||typeof invest!=='object'||Array.isArray(invest))invest={};for(const k in invest){const h=invest[k];if(!h||typeof h!=='object'||!PROD.some(P=>P.id===k))delete invest[k];else{h.a=Math.max(0,fin(h.a));h.d=fin(h.d);}}
+if(!invest||typeof invest!=='object'||Array.isArray(invest))invest={};for(const k in invest){const h=invest[k];if(!h||typeof h!=='object'||!PROD.some(P=>P.id===k))delete invest[k];else{const P=PROD.find(Q=>Q.id===k);h.a=Math.max(0,fin(h.a));h.d=fin(h.d);h.p=fin(h.p);h.l=Math.max(0,fin(h.l));h.q=Math.max(0,fin(h.q));h.z=Math.max(0,fin(h.z));h.y=Math.max(0,fin(h.y));h.b=Math.max(0,fin(h.b));if(typeof h.t!=='number'&&h.a>0){if(invV0){h.t=P.mt||0;h.l=h.a;h.m=1;if(P.chance)h.z=Math.max(0,h.a-P.max);}else{h.t=0;h.l=0;h.q=0;}}h.t=h.a>0?Math.min(P.mt||0,Math.max(0,fin(h.t))):0;}}
+{let R=0,M=0;for(const k in invest){const h=invest[k];if(!h.m)continue;delete h.m;M=1;const P=PROD.find(Q=>Q.id===k);R+=Math.max(0,h.a-P.max);}if(M)store.set('shg_inv2',invest);store.set('shg_invV',1);if(R>=1&&!store.get('shg_invMig',0)){store.set('shg_invMig',1);setTimeout(()=>{try{toast('💼 투자 탭이 바뀌었어요 · 한도를 넘어 이자 없이 쉬는 돈 '+wonS(R)+' · 투자 탭에서 수수료 없이 뺄 수 있어요');}catch(e){}},1600);}}
 col=Array.isArray(col)?col.filter((id,i)=>COL.some(c=>c.id===id)&&col.indexOf(id)===i):[];
 let invPct=store.get('shg_ipct',.25);if(![.05,.1,.25,.5,1].includes(invPct))invPct=.25;
-const invTotal=()=>Object.values(invest).reduce((n,h)=>n+(h.a||0),0),invNet=()=>Object.keys(invest).reduce((n,id)=>n+(invest[id].a||0)*(1-((PROD.find(P=>P.id===id)||{}).fee||0)),0);
+const invTotal=()=>Object.values(invest).reduce((n,h)=>n+(h.a||0),0),invNet=()=>Object.keys(invest).reduce((n,id)=>{const h=invest[id],P=PROD.find(Q=>Q.id===id),a=h.a||0;return n+a-(P?invFee(P)*Math.max(0,a-invNoFee(P)):0);},0);
 const catDone=c=>COL.filter(x=>x.cat===c).every(x=>col.includes(x.id));
 const colSP=()=>{try{return col.reduce((n,id)=>{const c=COL.find(x=>x.id===id);return n+(c?(c.fic?2:1):0);},0)+CATS.filter(c=>catDone(c.id)).length*3}catch(e){return 0}};
 try{let gv=0;CATS.forEach(K=>{const R=DECOR.find(d=>d.set===K.id);if(R&&catDone(K.id)&&!decor.own.includes(R.id)){decor.own.push(R.id);gv=1;}});if(gv)decorSave();}catch(e){}
 const gauss=()=>(Math.random()+Math.random()+Math.random()-1.5)*2;
+const invWild=()=>levSel>=10||allin&&rankOf(xp)>=2;
+function invDep(id,want,q){const P=PROD.find(x=>x.id===id);if(!P||invLock(P))return 0;want=Math.floor(Math.min(want,balance));const room=invRoom(P),v=Math.min(want,room);if(!(v>=1)){if(!q)toast(room<1?'💼 '+P.n+' 한도가 꽉 찼어요 · 이자 붙는 한도 '+wonS(P.max):'💼 입금할 예수금이 없어요');return 0;}
+  const h=invest[id]=invest[id]||{a:0,d:0,t:0},t0=h.a>0?h.t||0:0,af=invAfter(P,v);balance-=v;h.a=(h.a>0?h.a:0)+v;h.t=af.t;h.q=(h.q||0)+v;store.set('shg_inv2',invest);
+  if(!q)toast('💼 입금 '+won(v)+' · '+P.n+(v<want?' · 한도까지만 넣었어요 (나머지는 예수금에)':'')+(P.mx&&af.t<t0&&invTm(t0)!==invTm(af.t)?' · 새 돈이라 차곡차곡 '+invTm(t0)+'→'+invTm(af.t):''));return v;}
+function invWd(id,frac){const P=PROD.find(x=>x.id===id),h=invest[id];if(!P||!h||!(h.a>0))return 0;const take=frac>=1?h.a:h.a*frac,nf=invNoFee(P),fe=invFee(P)*Math.max(0,take-nf),out=take-fe;balance+=out;h.a-=take;if(h.z>0)h.z=Math.max(0,h.z-take);if(h.y>0)h.y=Math.min(h.y,invIdle(P));if(h.a<1){h.a=0;h.d=0;h.p=0;h.t=0;h.z=0;h.y=0;}store.set('shg_inv2',invest);
+  toast('💼 출금 '+won(out)+' · '+P.n+(fe>0?' (수수료 '+wonS(fe)+')':P.fee?(take>nf?' (만기라 수수료 없음)':' (쉬던 돈이라 수수료 없음)'):''));return out;}
+function invWdIdle(id){let n=0;PROD.forEach(P=>{if(id&&P.id!==id)return;const x=invNoFee(P);if(x>=1){const h=invest[P.id];balance+=x;h.a-=x;if(h.z>0)h.z=Math.max(0,h.z-x);if(h.a<1){h.a=0;h.d=0;h.p=0;h.t=0;h.z=0;h.y=0;}n+=x;}});if(n>0){store.set('shg_inv2',invest);toast('💼 쉬는 돈 '+won(n)+' 출금 · 수수료 없음');}return n;}
+function invSafe(){return PROD.filter(P=>!P.chance&&!invLock(P)).sort((x,y)=>(x.v||0)-(y.v||0)||(x.fee||0)-(y.fee||0));}
+function invSplitPlan(want){let left=Math.floor(Math.min(want,balance));const plan=[];invSafe().forEach(P=>{if(left<1)return;const v=Math.min(left,invRoom(P));if(v>=1&&v>=balance*1e-12){plan.push([P,v]);left-=v;}});return plan;}
+function invFeeT(P){const h=invest[P.id],f=invFee(P);return ' · '+(P.feeM?(h&&h.a>0?(f>0?'출금 수수료 지금 '+ivP(f,0,1):'만기라 출금 수수료 없음'):'만기 전 출금 수수료 최대 '+ivP(P.fee,0,1)):f>0?'출금 수수료 '+ivP(f,0,1):'출금 수수료 없음');}
+function invSplitTag(P,t0,t1,fe){const m=[];if(P.v)m.push('±'+Math.round(P.v*1000)/10+'%');if(fe&&invFee(P,t1)>0)m.push((LANG==='en'?'withdrawal fee ':'수수료 ')+ivP(invFee(P,t1),0,1));if(P.mx&&t1<t0&&invTm(t0)!==invTm(t1))m.push('차곡차곡 '+invTm(t0)+'→'+invTm(t1));return m.length?' ('+m.join(', ')+')':'';}
+function invSplit(want){const plan=invSplitPlan(want);if(!plan.length){toast(Math.floor(Math.min(want,balance))<1?'💼 입금할 예수금이 없어요':'💼 코인·엔젤 말고 넣을 상품 한도가 모두 꽉 찼어요');return 0;}let n=0;const L=[];
+  plan.forEach(([P,v])=>{const h=invest[P.id],t0=h&&h.a>0?h.t||0:0,x=invDep(P.id,v,1);if(x>0){n+=x;L.push([P,x,t0,invest[P.id].t||0]);}});
+  if(n>0){L.sort((a,b)=>b[1]-a[1]);const K=4,r=L.slice(K).reduce((s,q)=>s+q[1],0);toast('💼 나눠 넣기 '+won(n)+' · '+L.slice(0,K).map(([P,x,t0,t1])=>P.e+' '+P.n+' '+wonS(x)+invSplitTag(P,t0,t1)).join(' · ')+(L.length>K?(LANG==='en'?' · +'+(L.length-K)+' smaller, '+wonS(r):' · 외 '+(L.length-K)+'개 '+wonS(r)):''));}return n;}
 function tickInvest(){
-  const rg=regime(),bear=(rg.crash||1)<1,bull=(rg.rate||1)>1;let sum=0;
-  PROD.forEach(P=>{const h=invest[P.id];if(!h)return;if(!(h.a>0)){h.d=0;return;}const base=Math.min(h.a,P.max);let d;
-    if(P.angel){const u=Math.random();d=u<.03?base*4:u<.07?-h.a:0;if(d>0)toast('🚀 투자한 스타트업 상장! '+sw(d));if(d<0)toast('💥 투자한 스타트업 파산…');}
-    else d=base*(P.r+(P.v?P.v*gauss():0)+(P.v&&bear?-.01*Math.min(1,P.v/.015):0)+(P.v&&bull?.003:0));
-    d=Math.max(-h.a,d);h.a+=d;h.d=d;sum+=d;});
-  store.set('shg_inv2',invest);if(sum){talkLines.push('<b class="tgs">[투자]</b> 평가손익 <span class="'+(sum>=0?'up':'dn')+'">'+sw(sum)+'</span>');renderTalk();}
+  const rg=regime(),bear=(rg.crash||1)<1,bull=(rg.rate||1)>1,now=performance.now(),dp=now-invLastT,w=dp>0?Math.min(1,dp/INV_RT):invTk?1:0;invLastT=now;invTk=1;
+  const sq=Math.sqrt(w),wild=invWild();
+  PROD.forEach(P=>{const h=invest[P.id];if(h&&h.a>0&&P.mx&&h.t>0){const k=(h.l||0)+(h.q||0);if(h.a>k*(1+1e-9)+1)h.t*=k/h.a;}});
+  const adj=P=>(bear?P.br||0:0)+(bull?P.ur||0:0),frz=invFrz(bear,bull);let sum=0,sumC=0,pay=0;const half=[],done=[];
+  PROD.forEach(P=>{const h=invest[P.id];if(!h)return;if(!(h.a>0)){h.a=0;h.d=0;h.p=0;h.t=0;h.l=0;h.q=0;h.z=0;h.y=0;return;}
+    if(wild&&P.mx&&h.t>0){const i0=Math.max(0,h.a-P.max);half.push([P,h.t,P.max]);h.t/=2;h.y=(h.y||0)+Math.max(0,h.a-P.max)-i0;}
+    const f=invF(P),c=frz[P.id]||0,base=Math.max(0,Math.min(h.a,P.max)-c);let d=0,p=0;
+    if(P.angel){const u=Math.random();d=u<.03*w?base*4*(1-P.fee):u<.07*w?-(h.a-c):0;if(d>0)toast('🚀 투자한 스타트업 상장! '+sw(d)+' (수수료 '+P.fee*100+'% 떼고) · 한도를 넘는 돈은 쉬는 돈: 이자 0원 · 파산하면 이 돈도 0원 · 수수료 없이 빼기');if(d<0)toast('💥 투자한 스타트업 파산 · '+wonS(-d)+' → 0원 (쉬는 돈 포함)'+(c>=1?' · 빚만큼 멈춰 있던 '+wonS(c)+'은 그대로':''));}
+    else{const m=P.r*(1+(P.mx||0)*f),g=P.v?sq*P.v*gauss():0;if(P.pay==='cash'){p=base*w*m;d=base*(w*adj(P)+g);}else d=base*(w*(m+adj(P))+g);}
+    if(p>0&&balance+p>INV_HMAX){const x=Math.min(p,balance+p-INV_HMAX);p-=x;d+=x;}
+    d=Math.max(-h.a,d);if(d>0&&h.a+d>INV_HMAX)d=Math.max(0,INV_HMAX-h.a);
+    h.a+=d;h.p=p;h.d=d+p;h.b=base;h.l=h.a;h.q=0;if(h.z>0)h.z=Math.min(h.z,Math.max(0,h.a-P.max));if(p>0){balance+=p;pay+=p;}if(P.chance)sumC+=d;else sum+=d+p;
+    if(P.mx&&!wild){h.t=Math.min(P.mt,(h.t||0)+w);if(f<1&&invF(P)>=1)done.push(P);}if(h.y>0)h.y=Math.min(h.y,invIdle(P));});
+  store.set('shg_inv2',invest);if(pay)store.set('shg_bal',Math.floor(balance));
+  if(sum||sumC){talkLines.push('<b class="tgs">[투자]</b> 코인·엔젤 외 <span class="'+(sum>=0?'up':'dn')+'">'+sw(sum)+'</span>'+(sumC?' · 코인·엔젤 <span class="'+(sumC>=0?'up':'dn')+'">'+sw(sumC)+'</span>':''));renderTalk();}
+  if(half.length){talkLines.push('<b class="tgs">[투자]</b> ⏳ 10배 이상·영끌 판이라 차곡차곡 절반: '+half.map(([P,t0,c0])=>P.n+' '+invTm(t0)+'→'+invTm(invest[P.id].t)+' (한도 '+wonS(c0)+'→'+wonS(P.max)+')').join(', '));renderTalk();if(stats.rounds-invHalfAt>=30&&half.some(([P,t0])=>t0>=P.mt*.25)){invHalfAt=stats.rounds;toast('⏳ 10배 이상·영끌 판이라 차곡차곡 절반 · 이자 붙는 한도도 줄어요');}}
+  done.forEach(P=>toast('⏳ '+P.n+' 차곡차곡 '+invTm(P.mt)+' 완성 · 평균 '+ivP(invMean(P,1))+'/'+INV_U+' · 이자 붙는 한도 '+wonS(P.max)));
 }
 
 
@@ -3600,6 +3669,43 @@ function colHtml(){
 function setDone(K){const R=DECOR.find(d=>d.set===K.id);if(R&&!decor.own.includes(R.id))giveDecor(R.id);roomJoy();stamp(K.e+' '+K.n+' 세트 완성!');cgHappy();
   if(!$('modal').hidden)return toast('✅ '+K.n+' 세트 완성 · 보너스 SP +3'+(R?' · '+R.n:''));
   openModal('<div class="rv"><div class="rv-st">'+rvPtH()+'<div class="rv-art">'+(R?'<span class="rwi swr" style="background:linear-gradient(160deg,'+R.c[1]+','+R.c[0]+')">'+icT(R.e)+'</span>':'<span class="rwi">'+icT(K.e)+'</span>')+(SET.fx&&!RM.matches?spkH(14):'')+'</div></div><h2 class="rv-t">'+K.n+' 세트 완성!</h2><div class="rv-amt">보너스 SP +3'+(R?' · '+R.n.replace(/ \([^)]*\)$/,''):'')+'</div>'+(R?'<p class="note">미니룸에 바로 적용했어요 · 상점 꾸미기에서 바꿀 수 있어요</p>':'')+'</div>','rv done');$('modalClose').textContent='받기';sfx.up();}
+const INV_PM=60000/INV_RT,ivMin=x=>LANG==='en'?'≈ +'+wonS(x*INV_PM)+'/min on average, non-stop with rounds of '+INV_U+' or less':'판마다 '+INV_U+' 안에 쉬지 않고 하면 1분에 평균 약 +'+wonS(x*INV_PM),ivTile=v=>'+'+(LANG==='en'?wonX(v):wonS(v));
+function invSplitHtml(dep){const pl=invSplitPlan(dep),n=pl.reduce((s,x)=>s+x[1],0),en=LANG==='en';
+  return '<div class="ivsp"><button class="setbtn ob" type="button" data-isplit="1"'+(n>=1?'':' disabled')+'>'+(en?'Split deposit · ':'한 번에 나눠 넣기 · ')+wonS(n)+'</button><p class="ivn">'+(n>=1?pl.map(([P,v])=>{const h=invest[P.id];return P.e+' '+P.n+' '+wonS(v)+invSplitTag(P,h&&h.a>0?h.t||0:0,invAfter(P,v).t,1);}).join(' · ')+(pl.some(x=>x[0].v>0)?(en?' · ±: swing per '+INV_U:' · ±: '+INV_U+'마다 출렁임'):'')+(en?' · steady products, smallest swing first, up to each cap · never meme stocks or angel':' · 코인·엔젤 빼고 출렁임 작은 순서로 한도까지'):(en?'Steady products are full, or no cash to put in':'코인·엔젤 말고 넣을 상품 한도가 다 찼거나 넣을 예수금이 없어요'))+'</p></div>';}
+function invSecHtml(){const tot=invTotal(),dep=Math.floor(balance*invPct),frz=invFrz();let ern=0,idl=0,exp=0,lastS=0,lastC=0,baseS=0,heldC=0,fz=0,nf=0,ia=0;
+  PROD.forEach(P=>{const h=invest[P.id];if(!h||!(h.a>0))return;const e0=Math.min(h.a,P.max),c=Math.min(e0,frz[P.id]||0),e=e0-c;ern+=e;fz+=c;idl+=h.a-e0;nf+=invNoFee(P);if(P.angel)ia+=h.a-e0;if(P.chance){lastC+=h.d||0;heldC=1;}else{lastS+=h.d||0;baseS+=h.b>0?h.b:e;if(!invBlk(P))exp+=e*invMean(P,invF(P));}});
+  const sc=v=>v>0?'up':v<0?'dn':'mu';let big='dep',bv=0;INV_CAT.forEach(C=>{const v=PROD.reduce((n,P)=>n+(P.c===C.id&&invest[P.id]&&invest[P.id].a>0?invest[P.id].a:0),0);if(v>bv){bv=v;big=C.id;}});
+  return '<section class="sec" id="secInv"><h3>💼 투자 <span class="mu rt">이자는 플레이 시간만큼 · 한 판 최대 '+INV_U+'</span></h3>'+
+   '<div class="tiles"><div class="tile"><small>투자 평가금</small><b>'+wonS(tot)+'</b></div><div class="tile"><small>'+(LANG==='en'?'Avg interest/min ('+INV_U+' rounds)':'1분 평균 이자 ('+INV_U+' 판 기준)')+'</small><b class="'+(exp*INV_PM>=1?'up':'mu')+'">'+(exp*INV_PM>=1?ivTile(exp*INV_PM):'0원')+'</b></div><div class="tile"><small>예수금</small><b>'+wonS(balance)+'</b></div></div>'+
+   (tot>0?'<div class="pan ivsum"><p>지난 판 · 코인·엔젤 외 <b class="'+sc(lastS)+'">'+swS(lastS)+'</b>'+(baseS>0?' ('+ivP(lastS/baseS)+')':'')+(heldC||lastC?' · 코인·엔젤 <b class="'+sc(lastC)+'">'+swS(lastC)+'</b>':'')+'</p>'+
+   '<div class="xpbar"><u style="width:'+Math.min(100,ern/tot*100)+'%"></u></div><p>이자 붙는 돈 <b>'+wonS(ern)+'</b> / 넣은 돈 '+wonS(tot)+(fz>=1?' · <span class="dn">빚만큼 이자 없는 돈 '+wonS(fz)+'</span>':'')+(idl>=1?' · <span class="dn">쉬는 돈 '+wonS(idl)+' (한도를 넘어 이자 0원'+(ia>=1?' · 그중 엔젤 '+wonS(ia)+'은 파산하면 0원':'')+(idl-nf>=1?' · '+wonS(idl-nf)+'은 빼면 수수료':'')+')</span>':'')+'</p>'+
+   (nf>=1?'<button class="setbtn ob" type="button" data-wdi="all">'+(idl-nf>=1?(LANG==='en'?'Take out '+wonS(nf)+' of resting money':'쉬는 돈 중 '+wonS(nf)+' 빼기'):'쉬는 돈 '+wonS(nf)+' 모두 빼기')+' · 수수료 없음</button>':'')+'</div>':'')+
+   '<div class="ivtop"><div class="betrow ipct" role="group" aria-label="입출금 비율">'+[.05,.1,.25,.5,1].map(r=>'<button type="button" data-ipct="'+r+'" aria-pressed="'+(invPct===r)+'">'+(r*100)+'%</button>').join('')+'</div><p class="ivn">입금 '+wonS(dep)+' (예수금의 '+(invPct*100)+'%, 한도까지만) · 출금은 잔액의 '+(invPct*100)+'%</p></div>'+invSplitHtml(dep)+
+   '<p class="ivno">⏳ 차곡차곡: 넣어 둔 채 판을 할수록 이율과 이자 붙는 한도가 커져요 · 판마다 잔액의 '+INV_FREE*100+'%를 넘게 새로 넣은 돈은 0분부터 · 10배 이상·영끌 판마다 절반 · 한도를 넘는 돈엔 이자가 안 붙어요'+(debt>0?' · 🏦 빚만큼의 투자금은 이자도 손실도 없어요':'')+'</p>'+
+   INV_CAT.map(C=>{const L=PROD.filter(P=>P.c===C.id),u=L.filter(P=>!invLock(P)).length,s=L.reduce((n,P)=>n+((invest[P.id]||{}).a||0),0);return '<details class="gl colcat ivc"'+(C.id===big?' open':'')+'><summary>'+C.e+' '+C.n+'<span class="mu">'+(s>0?wonS(s):u+'/'+L.length+(LANG==='en'?' open':'개 열림'))+'</span></summary><div class="pan iv">'+L.map(invRowHtml).join('')+'</div></details>';}).join('')+'</section>';}
+function invRowLine(P,h,f,cap,idle,c){const nf=invNoFee(P),ix=(c>=1?' · <span class="dn">빚만큼 이자 없는 돈 '+wonS(c)+'</span>':'')+(idle>=1?' · <span class="dn">쉬는 돈 '+wonS(idle)+(P.angel?' (이자 0원 · 파산하면 이 돈도 0원)':'')+'</span>'+(idle-nf>=1&&invFee(P)>0?(P.chance?' (수수료 '+P.fee*100+'%)':' (그중 '+wonS(idle-nf)+'은 10배 이상·영끌 판에 한도가 줄어 넘친 돈: 빼면 수수료)'):''):'')+(invBlk(P)?' · 최대 금액이라 이자 없음':'');
+  if(P.angel)return '기대 '+ivP(invMean(P,0))+'/'+INV_U+(c>=1?' (한도 몫) · 4% 확률 파산(빚만큼 멈춘 돈 빼고 전부 0원) · 한도 ':' (한도 몫) · 4% 확률 파산(전부 0원) · 한도 ')+wonS(cap)+invFeeT(P)+ix;
+  if(P.chance)return '평균 '+ivP(invMean(P,0))+'/'+INV_U+' · ±'+Math.round(P.v*100)+'% 출렁임 · 한도 '+wonS(cap)+invFeeT(P)+ix;
+  const pm=invBlk(P)?0:Math.max(0,Math.min(h.a||0,cap)-c)*invMean(P,f);
+  return (pm*INV_PM>=1?'<span class="up">'+ivMin(pm)+'</span> · ':'')+'평균 '+ivP(invMean(P,f))+'/'+INV_U+(f<1?' → '+ivP(invMean(P,1)):'')+' · ⏳'+invTm(h.a>0?h.t||0:0)+'/'+invTm(P.mt)+' · 이자 한도 '+wonS(cap)+invFeeT(P)+ix+(P.pay==='cash'&&!invBlk(P)?(balance>=INV_HMAX?' · 예수금이 최대라 이자는 잔액에':' · 이자는 예수금으로'):'');}
+function invRowHtml(P){const h=invest[P.id]||{a:0},lk=invLock(P),dep=Math.floor(balance*invPct),f=invF(P),cap=P.max,idle=invIdle(P),c=h.a>0?Math.min(h.a,cap,invFrz()[P.id]||0):0,base=Math.min(h.a||0,cap)-c,bb=h.b>0?h.b:base,ivB=LANG==='en'?['Add','Take out']:['입금','출금'];
+  return '<div class="ivr'+(lk?' lock':'')+'"><i>'+P.e+'</i><button class="ivh" type="button" data-ivi="'+P.id+'" aria-label="'+P.n+' 자세히">'+P.n+' <span class="mu">›</span></button><small class="ivs">'+(lk?'🔒 '+invLockT(P):(h.a>0?'잔액 <b class="v">'+wonS(h.a)+'</b>':'잔액 없음'))+'</small>'+
+   (h.d&&!lk?'<small class="ivx">지난 판 <span class="'+(h.d>=0?'up':'dn')+'">'+swS(h.d)+(!P.angel&&bb>0?' ('+ivP(h.d/bb)+')':'')+'</span></small>':'')+'<small class="ivd">'+(lk?P.d:invRowLine(P,h,f,cap,idle,c))+'</small>'+
+   (lk?'':'<div class="ivb2"><button class="setbtn ob" type="button" data-dep="'+P.id+'" aria-label="'+ivB[0]+' · '+P.n+' '+wonS(dep)+'"'+(dep<1?' disabled':'')+'>'+ivB[0]+'</button><button class="setbtn ob w" type="button" data-wd="'+P.id+'" aria-label="'+ivB[1]+' · '+P.n+' '+(invPct*100)+'%"'+(h.a>0?'':' disabled')+'>'+ivB[1]+'</button></div>')+'</div>';}
+function invSheet(P){const h=invest[P.id]||{a:0},f=invF(P),ie=h.a>0?Math.max(0,Math.min(h.a,P.max)-(invFrz()[P.id]||0)):0,im=invBlk(P)?0:ie*invMean(P,f),idle=invIdle(P),lk=invLock(P),C=INV_CAT.find(c=>c.id===P.c)||INV_CAT[0],room=lk?0:invRoom(P),want=Math.floor(balance*invPct),v=Math.min(want,room),af=v>=1?invAfter(P,v):null,t=h.a>0?h.t||0:0;
+  const R=[['분류',C.e+' '+C.n],['평균 이자/'+INV_U,P.angel?'기대 '+ivP(invMean(P,0))+' (한도 몫 기준, 상장 수수료 뺀 값)'+(idle>=1?' · 쉬는 돈까지 친 잔액 전체로는 '+ivP((Math.min(h.a,P.max)*.12*(1-P.fee)-.04*h.a)/h.a):''):P.chance?ivP(invMean(P,0))+' · 오래 두면 손해 보기 쉬움':'지금 '+ivP(invMean(P,f))+' · 처음 '+ivP(invMean(P,0))+' · 다 채우면('+invTm(P.mt)+') '+ivP(invMean(P,1))],
+   ['출렁임',P.angel?'3% 확률 한도 몫 ×5 (늘어난 몫에서 수수료 '+P.fee*100+'%) · 4% 확률 파산: 쉬는 돈까지 잔액 전부 0원 ('+INV_U+'마다)':P.v?'±'+Math.round(P.v*1000)/10+'% 안팎 ('+INV_U+'마다)':P.feeM?'없음 · 만기 전에 빼면 수수료만큼 원금이 줄어요':'없음 (원금 보장)'],
+   ['장세',P.angel||!(P.br||P.ur)?'상관없음':'하락장 '+(P.br<0?'−':'+')+Math.abs(Math.round(P.br*1000)/10)+'%p · 불장 +'+Math.round(P.ur*1000)/10+'%p']]
+   .concat(!P.chance&&im*INV_PM>=1?[[LANG==='en'?'Avg interest/min':'1분 평균 이자',LANG==='en'?'≈ +'+wonS(im*INV_PM)+' on '+wonS(ie)+' earning now (current rate, market average, non-stop with rounds of '+INV_U+' or less; a longer round still counts as '+INV_U+')':'약 +'+wonS(im*INV_PM)+' (지금 이자 붙는 돈 '+wonS(ie)+' 기준 · 지금 이율 · 장세 평균 · 판마다 '+INV_U+' 안에 쉬지 않고 할 때 · 더 오래 걸린 판도 '+INV_U+' 몫만)']]:[],P.mx?[['⏳ 차곡차곡',invTm(t)+'/'+invTm(P.mt)+' (판을 하는 시간만, 한 판 최대 '+INV_U+') · 판마다 잔액의 '+INV_FREE*100+'%를 넘는 새 돈은 0분부터 · 10배 이상·영끌 판마다 절반']]:[],
+   [['이자 붙는 한도','지금 '+wonS(P.max)+(P.mx&&f<1?' · 다 채우면('+invTm(P.mt)+') '+wonS(invCapOn(P)):'')+(P.chance?' (고정)':' (레벨 따라 커짐)')],['이자 받는 곳',P.pay==='cash'?'판마다 예수금으로 (잔액은 출렁임만)':'잔액에 붙음'],
+    ['출금 수수료',P.feeM?'만기 전 최대 '+P.fee*100+'% (지금 '+ivP(invFee(P),0,1)+') · 쉬는 돈은 없음 (10배 이상·영끌 판에 한도가 줄어 넘친 돈엔 있음)':P.angel?P.fee*100+'% · 이자 붙는 돈에만 (상장 이익은 미리 뗌)':P.chance?P.fee*100+'% · 한도 넘는 돈도':P.fee?P.fee*100+'% · 이자 붙는 돈과 10배 이상·영끌 판에 한도가 줄어 넘친 돈에만':'없음'],['잔액',h.a>0?wonS(h.a)+(idle>=1?' · 쉬는 돈 '+wonS(idle):''):'없음']]);
+  return '<h2>'+P.e+' '+P.n+'</h2><p class="note">'+P.d+'</p>'+
+   (lk?'<p class="note">🔒 '+invLockT(P)+'</p>':'<p class="note">'+(v>=1?'지금 입금하면 '+wonS(v)+(v<want?' (한도까지만)':'')+(P.mx&&af&&af.t<t&&invTm(af.t)!==invTm(t)?' · 차곡차곡 '+invTm(t)+'→'+invTm(af.t)+(wonS(P.max)!==wonS(af.cap)?' · 이자 한도 '+wonS(P.max)+'→'+wonS(af.cap):''):''):room<1?'한도가 꽉 찼어요':'입금할 예수금이 없어요')+'</p><div class="bbtn"><button class="setbtn ghost" type="button" data-sdep="1"'+(v>=1?'':' disabled')+'>입금<br>'+wonS(Math.max(0,v))+'</button><button class="setbtn ghost" type="button" data-swd="1"'+(h.a>0?'':' disabled')+'>출금<br>'+(invPct*100)+'%</button>'+(invNoFee(P)>=1?'<button class="setbtn ghost" type="button" data-sidle="1">쉬는 돈<br>빼기</button>':'')+'</div>')+
+   '<div class="pan bank">'+R.map(([k,x])=>'<div class="brow ivk"><span class="mu">'+k+'</span><b>'+x+'</b></div>').join('')+'</div>';}
+function invSheetOpen(id){const P=PROD.find(x=>x.id===id);if(!P)return;openModal(invSheet(P),'hs');const m=$('modal'),go=()=>{sfx.sell();paintTop();paintPickers();if(curTab==='account')rerender('invest');invSheetOpen(id);};
+  m.querySelectorAll('[data-sdep]').forEach(b=>b.onclick=()=>{const v=Math.floor(balance*invPct);if(v<1||!once())return;if(invDep(id,v)>0)go();});
+  m.querySelectorAll('[data-swd]').forEach(b=>b.onclick=()=>{if(!once())return;if(invWd(id,invPct>=1?1:invPct)>0)go();});
+  m.querySelectorAll('[data-sidle]').forEach(b=>b.onclick=()=>{if(!once())return;if(invWdIdle(id)>0)go();});}
 function pageAccount(){
   const wr=stats.rounds?Math.round(stats.wins/stats.rounds*100):0,T=profile&&TYPES[profile],ri=rankOf(xp),tot=invTotal(),last=Object.values(invest).reduce((n,h)=>n+(h.d||0),0),dep=Math.floor(balance*invPct);
   return phead('account','💼 내 계좌','우리 순자산 '+(netW()<0?swS(netW()):wonS(netW()))+'!',debt>0?'빚 '+wonS(debt)+' · 신용 '+crS(credit):'','<button class="ib phs" type="button" id="setGo" aria-label="설정">⚙️</button>')+
@@ -3607,11 +3713,7 @@ function pageAccount(){
    '<section class="sec" id="secAst"><h3>🏠 내 자산</h3>'+roomHtml()+(T?'<div class="pan" style="padding:12px 14px"><div class="typecard"><i>'+T.e+'</i><div><b>'+T.n+'</b><br><small class="mu">'+T.perk+' · '+RANKS[rankOf(xp)][1]+' · '+xp.toLocaleString('ko-KR')+' XP</small></div></div>'+(tipGot('quiz')?'':'<button class="setbtn ghost" type="button" id="retake" style="width:100%;margin-top:10px">🧪 투자 성향 테스트 (5문항)</button>')+'</div>':'')+
    '<div class="tiles">'+[['현재 자산',wonS(balance)],['투자 평가금',wonS(invTotal())],['빚',debt?mnS('-')+wonS(debt):'없음']].concat(rdebt>=1?[['재기 자금',mnS('-')+wonS(rdebt)]]:[],[['순자산',swS(netW())],['컬렉션',col.length+' / '+COL.length],['신용등급',crS(credit)+(credit>=8?' 😱':credit<=3?' 😎':'')],['다음 대출',canLoan()?wonS(loanAmt()):'불가'],['빚 한도',wonS(debtLimit())]]).map(([k,v])=>`<div class="tile"><small>${k}</small><b>${v}</b></div>`).join('')+'</div>'+
    (()=>{const nw=netW(),need=PRES_NEED();return '<h3>🔁 은퇴 · 환생 '+(pres?'<span class="mu">⭐'+pres+'</span>':'')+'</h3><div class="pan" style="padding:12px 14px"><p class="lead" style="margin:0 0 8px">순자산 <b>'+wonS(need)+'</b>을 넘기면 은퇴할 수 있어요. 돈·투자·장비·소모품·빚은 사라지고, <b>레벨·스킬·업적·컬렉션은 유지</b>돼요. 환생할 때마다 <b>익절 수익 +10%, SP +2</b> 영구 보너스.</p><div class="xpbar"><u style="width:'+Math.max(0,Math.min(100,nw/need*100))+'%"></u></div><p class="mu" style="font-size:12px;margin:4px 0 8px">현재 순자산 '+swS(nw)+' · 현재 보너스 익절 +'+pres*10+'%</p><button class="setbtn" type="button" id="prestige" style="width:100%"'+(nw>=need?'':' disabled')+'>🔁 은퇴하고 '+(pres+2)+'회차 시작</button></div>';})()+'</section>'+
-   '<section class="sec" id="secInv"><h3>💼 투자</h3>'+'<div class="tiles"><div class="tile"><small>투자 평가금</small><b>'+wonS(tot)+'</b></div><div class="tile"><small>지난 판 손익</small><b class="'+(last>0?'up':last<0?'dn':'mu')+'">'+swS(last)+'</b></div><div class="tile"><small>예수금</small><b>'+wonS(balance)+'</b></div></div>'+
-   '<div class="ivtop"><div class="betrow ipct" role="group" aria-label="입출금 비율">'+[.05,.1,.25,.5,1].map(r=>'<button type="button" data-ipct="'+r+'" aria-pressed="'+(invPct===r)+'">'+(r*100)+'%</button>').join('')+'</div><p class="ivn">입금 '+wonS(dep)+' (예수금의 '+(invPct*100)+'%) · 출금은 상품 잔액의 '+(invPct*100)+'%</p></div>'+
-   '<div class="pan iv">'+PROD.map(P=>{const h=invest[P.id]||{a:0},lk=ri<P.lv,ivB=LANG==='en'?['Add','Take out']:['입금','출금'];
-     return '<div class="ivr'+(lk?' lock':'')+'"><i>'+P.e+'</i><b class="ivh">'+P.n+'</b><small class="ivs">'+(lk?'🔒 '+RANKS[P.lv][1]+' 계급부터':(h.a>0?'잔액 <b class="v">'+wonS(h.a)+'</b>':'잔액 없음'))+'</small>'+(h.d&&!lk?'<small class="ivx">지난 판 <span class="'+(h.d>=0?'up':'dn')+'">'+swS(h.d)+'</span></small>':'')+'<small class="ivd">'+P.d+(lk?'':' · 수익 한도 '+wonS(P.max)+(P.fee?' · 출금 수수료 '+P.fee*100+'%':''))+'</small>'+
-      (lk?'':'<div class="ivb2"><button class="setbtn ob" type="button" data-dep="'+P.id+'" aria-label="'+ivB[0]+' · '+P.n+' '+wonS(dep)+'"'+(dep<1?' disabled':'')+'>'+ivB[0]+'</button><button class="setbtn ob w" type="button" data-wd="'+P.id+'" aria-label="'+ivB[1]+' · '+P.n+' '+(invPct*100)+'%"'+(h.a>0?'':' disabled')+'>'+ivB[1]+'</button></div>')+'</div>';}).join('')+'</div>'+'</section>'+
+   invSecHtml()+
    '<section class="sec" id="secCol">'+'<h3>🏆 컬렉션 <b class="cnt">'+col.length+'/'+COL.length+'</b><span class="mu rt">살 때마다 SP · 세트 완성 보상</span></h3>'+(debt>0?'<p class="lead dn">🏦 빚을 다 갚아야 컬렉션을 살 수 있어요</p>':'')+colHtml()+
    '<h3>장비 컬렉션</h3><div class="achgrid">'+GEAR.map(g=>`<div class="${gear[g.id]?'':'lock'}"><i>${g.e}</i>${g.n}</div>`).join('')+'</div>'+'</section>'+
    '<section class="sec" id="secRec">'+'<h3>통산 성적</h3><div class="tiles">'+
@@ -3639,7 +3741,7 @@ function glossary(){
   G('🏆 챌린지 · 리그 · 시즌',L('🏆','오늘의 챌린지','하루 한 번, 모두 같은 폭락 지점으로 5판. 매도 수익률이 점수, 물리면 −30점')+L('👥','친구 리그','친구가 공유한 SHG- 코드를 넣으면 이번 주 점수로 순위를 매겨요')+L('🎫','시즌 패스','판마다 XP가 쌓여 30단계 보상. 월요일마다 새 시즌')+L('🛋️','미니룸 꾸미기','상점에서 벽지·바닥·소품을 사서 방을 꾸며요')+L('💾','백업 코드','설정에서 복사해 두면 폰을 바꿔도 이어서 할 수 있어요'))+
   G('🔣 기타 아이콘',L('🔥','피버','5연속 익절. 보너스 2배')+L('💎','보물상자','익절하면 가끔 등장')+L('⚔️','보스 격파','보스 목표 배수 넘기고 매도')+L('🕵️','찌라시 진짜','힌트가 진짜였음')+L('🤡','찌라시 가짜','힌트가 거짓말이었음')+L('🏛️','부자세','고액 수익에 붙는 세금')+L('💸','빚 자동 상환','수익 30%로 빚 갚음'))+
   G('💳 빚 · 신용',
-    L('💳','대출','돈이 바닥나면 빌려서 계속 가능. 매 판 이자가 붙음')+L('🏦','신용등급','1등급이 최고. 대출하면 떨어지고, 갚으면 오름')+L('↩️','자동 상환','수익의 30%가 자동으로 빚을 갚음')+L('🚨','신용불량','빚이 한도를 넘었는데 못 갚으면 장비·소모품·투자금 압류 후 재시작')+L('🥫','파산 신청','빚이 남은 채 바닥나면 파산 신청: 빚 탕감 · 장비·소모품·투자금 압류 · 신용 10등급 (빚이 없으면 새로 시작 · 장비 유지)'))+
+    L('💳','대출','돈이 바닥나면 빌려서 계속 가능. 판마다 이자 '+(LOAN_R[1]*100).toFixed(1)+'%(1등급) ~ '+(LOAN_R[10]*100).toFixed(1)+'%(10등급)')+L('🏦','신용등급','1등급이 최고. 대출하면 떨어지고, 갚으면 오름')+L('↩️','자동 상환','수익의 30%가 자동으로 빚을 갚음')+L('🚨','신용불량','빚이 한도를 넘었는데 못 갚으면 장비·소모품·투자금 압류 후 재시작')+L('🥫','파산 신청','빚이 남은 채 바닥나면 파산 신청: 빚 탕감 · 장비·소모품·투자금 압류 · 신용 10등급 (빚이 없으면 새로 시작 · 장비 유지)'))+
   G('📜 크레딧 · 라이선스',HL('🎨','그림','캐릭터·아이콘·배경 그림: 제작자가 Higgsfield(Nano Banana Pro, Seedance)로 생성')+HL('🔣','글꼴','Noto Sans KR, Inter, Gasoek One (모두 SIL Open Font License 1.1, 게임 파일에 포함 · fonts/OFL.txt)')+HL('🎹','소리','효과음·배경음악: 게임 안에서 직접 합성 (외부 음원 없음)')+HL('🎭','가상','게임 속 회사·종목·뉴스·채팅은 모두 가상이며 실제와 관계없습니다.'))+
   '</div>';
 }
@@ -3672,8 +3774,11 @@ function bindPage(name){
   pg.querySelectorAll('[data-gear]').forEach(b=>b.onclick=()=>{const g=GEAR.find(x=>x.id===b.dataset.gear);if(gear[g.id]||balance<g.p||rankOf(xp)<g.lv)return;balance-=g.p;gear[g.id]=1;stats.c.gear++;store.set('shg_gear',gear);store.set('shg_stats',stats);unlock('gear1');careerCheck();
     sfx.up();burst(innerWidth/2,innerHeight*.4,60);toast(g.e+' '+g.n+' 구매! '+g.d);paintTop();rerender('shop');});
   pg.querySelectorAll('[data-ipct]').forEach(b=>b.onclick=()=>{invPct=+b.dataset.ipct;store.set('shg_ipct',invPct);rerender('invest');});
-  pg.querySelectorAll('[data-dep]').forEach(b=>b.onclick=()=>{const id=b.dataset.dep,v=Math.floor(balance*invPct);if(v<1||!once())return;balance-=v;invest[id]=invest[id]||{a:0};invest[id].a+=v;store.set('shg_inv2',invest);sfx.sell();toast('💼 입금 '+won(v)+' · '+PROD.find(x=>x.id===id).n);paintTop();paintPickers();rerender('invest');});
-  pg.querySelectorAll('[data-wd]').forEach(b=>b.onclick=()=>{const P=PROD.find(x=>x.id===b.dataset.wd),h=invest[P.id];if(!h||!(h.a>0)||!once())return;const take=invPct>=1?h.a:h.a*invPct,out=take*(1-P.fee);balance+=out;h.a-=take;if(h.a<1){h.a=0;h.d=0;}store.set('shg_inv2',invest);sfx.sell();toast('💼 출금 '+won(out)+(P.fee?' (수수료 '+P.fee*100+'%)':''));paintTop();paintPickers();rerender('invest');});
+  pg.querySelectorAll('[data-dep]').forEach(b=>b.onclick=()=>{const id=b.dataset.dep,v=Math.floor(balance*invPct);if(v<1||!once())return;if(invDep(id,v)>0){sfx.sell();paintTop();paintPickers();}rerender('invest');});
+  pg.querySelectorAll('[data-wd]').forEach(b=>b.onclick=()=>{const P=PROD.find(x=>x.id===b.dataset.wd),h=invest[P.id];if(!h||!(h.a>0)||!once())return;invWd(P.id,invPct>=1?1:invPct);sfx.sell();paintTop();paintPickers();rerender('invest');});
+  pg.querySelectorAll('[data-wdi]').forEach(b=>b.onclick=()=>{if(!once())return;if(invWdIdle(b.dataset.wdi==='all'?null:b.dataset.wdi)>0){sfx.sell();paintTop();paintPickers();}rerender('invest');});
+  pg.querySelectorAll('[data-ivi]').forEach(b=>b.onclick=()=>invSheetOpen(b.dataset.ivi));
+  pg.querySelectorAll('[data-isplit]').forEach(b=>b.onclick=()=>{const v=Math.floor(balance*invPct);if(v<1||!once())return;if(invSplit(v)>0){sfx.sell();paintTop();paintPickers();}rerender('invest');});
   pg.querySelectorAll('[data-col]').forEach(b=>b.onclick=()=>{const c=COL.find(x=>x.id===b.dataset.col);if(col.includes(c.id)||balance<c.p)return;if(debt>0){toast('🏦 빚을 다 갚아야 컬렉션을 살 수 있어요');return;}balance-=c.p;col.push(c.id);store.set('shg_col',col);sfx.up();burst(innerWidth/2,innerHeight*.4,80);stamp(c.e+' '+c.n+' 획득!');toast('🏆 컬렉션 '+col.length+'/'+COL.length+' · SP +'+(c.fic?2:1));roomJoy();delete colPk[c.cat];if(catDone(c.cat)){const K=CATS.find(k=>k.id===c.cat);setTimeout(()=>{setDone(K);if(curTab==='account'&&!$('page').hidden)rerender('account');},900);}paintTop();paintPickers();rerender('invest');});
   pg.querySelectorAll('[data-cpk]').forEach(b=>b.onclick=()=>{const c=COL.find(x=>x.id===b.dataset.cpk);if(!c||col.includes(c.id))return;colPk[c.cat]=c.id;rerender('account');});
   pg.querySelectorAll('[data-mgo]').forEach(b=>b.onclick=()=>misGo(b.dataset.mgo));
@@ -3684,7 +3789,7 @@ function bindPage(name){
     if(card.querySelector('#adWin,#adLoss')){card.hidden=true;card.innerHTML='';}
     if(state!=='holding'&&state!=='ghost'){offers=makeOffers();if(!run){buildChartIdle();paintQuote();renderBook();}}
     sfx.up();burst(innerWidth/2,innerHeight*.4,90);stamp('🔁 환생! '+(pres+1)+'회차 시작');toast('⭐ 환생 '+pres+'회 · 익절 수익 +'+pres*10+'% · SP +2');paintTop();paintPickers();if(curTab==='account')rerender('account');},300);});};
-  const bl=$('bLoan');if(bl)bl.onclick=()=>{const n=performance.now();if(n-loanTapAt<500)return;loanTapAt=n;if(takeLoan()){paintTop();paintPickers();rerender('shop');}};
+  const bl=$('bLoan');if(bl)bl.onclick=()=>{const n=performance.now();if(n-loanTapAt<500)return;loanTapAt=n;loanAsk(()=>{loanTapAt=performance.now();if(takeLoan()){paintTop();paintPickers();rerender('shop');}});};
   const payBank=(rd,want)=>{if(!once())return;const a=Math.min(want,rd?rdebt:debt,balance);if(!(a>0))return;
     const nb=balance-a,nd=rd?debt:debt-a,cr=!rd&&nd<1?Math.max(1,credit-1):credit,stuck=tutDone&&nb<1e5&&nb+invNet()<1e5&&!canLoan(nd<1?0:nd,cr);
     const go=()=>{const b=Math.min(a,rd?rdebt:debt,balance);if(!(b>0))return;if(rd)rdRepay(b);else repay(b);const left=rd?rdebt:debt;
@@ -3781,6 +3886,7 @@ if(/selftest/.test(location.search)){
     set allin(v){allin=v},set lev(v){levSel=v},set pct(v){betPct=v},set sel(v){Object.assign(sel,v)},get view(){return isPro()?'pro':'simple'},set view(v){viewForce=v==='pro'||v==='simple'?v:null;applyView();},get plotR(){return Math.round(plotRX*CK)},get cine(){return {on:CINE(),cardAt,pend:!!cardTm,coins:coins.length,hold:balHold>performance.now(),end:cineEnd}},get sellBox(){return sellBox&&sellBox.map(v=>Math.round(v*CK+1))},get peakBox(){return peakBox&&peakBox.map(v=>Math.round(v*CK))},pbSet(l,v,p,c){pbShow(true);pbSet(l,v,p,c);},
     get pb(){const b=$('pnlBar');return {on:!b.hidden,txt:b.innerText.replace(/\s+/g,' '),cls:b.className,goal:!$('goal').hidden}},fitTitle,
     closeCard(){cardCancel();card.hidden=true;$('modal').hidden=true;},
+    iv:{won,wonS,usd,tile:v=>ivTile(v),spFree,get PM(){return INV_PM},get invest(){return JSON.parse(JSON.stringify(invest))},prod:id=>{const P=PROD.find(x=>x.id===id);return P&&{id:P.id,n:P.n,c:P.c,chance:!!P.chance,v:P.v||0,fee:P.fee||0,max:P.max,lock:invLock(P),F:invF(P),mean:invMean(P,invF(P)),room:invRoom(P),blk:invBlk(P),idle:invIdle(P),nf:invNoFee(P),y:(invest[P.id]||{}).y||0};},ids:()=>PROD.map(P=>P.id),cats:()=>INV_CAT.map(C=>C.id),frz:()=>invFrz(),plan:v=>invSplitPlan(v).map(x=>[x[0].id,x[1]]),safe:()=>invSafe().map(P=>P.id),get loan(){return {X:LOAN_X.slice(),R:LOAN_R.slice(),amt:loanAmt(),credit,stake:betCap(1)}}},
     setDebt(d,r,bl){if(d!=null)debt=d;if(r!=null)rdebt=r;if(bl!=null)balance=bl;paintTop();paintPickers();setBtn();},
     get h8(){const h=run&&run.hint;return run?{lev:run.lev,real:!!(h&&h.real&&!h.crystal),v:h?h.v:0,x:h&&h.x!=null?h.x:null,liq:!!run.liq,liqLine:run.liqLine,t,cur,crashed,state}:null;},h8dip(a){if(run)events.push({t0:t,amp:a});},
     setXp(v){xp=Math.max(0,Math.floor(+v||0));store.set('shg_xp',xp);paintTop();},lvAt(L){let lo=0,hi=1e9;while(lo<hi){const m=Math.floor((lo+hi)/2);if(lvlOf(m).L>=L)hi=m;else lo=m+1;}return lo;},

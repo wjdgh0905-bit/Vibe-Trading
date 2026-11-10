@@ -1,0 +1,195 @@
+# Apple Design (KR) crawl
+
+Root: https://developer.apple.com/kr/design/
+
+184 pages
+
+## Design pages
+
+- [디자인 - Apple Developer](pages/index.md) — https://developer.apple.com/kr/design/
+- [Apple 디자인 어워드 - 2026년 수상작 및 최종 후보작 - Apple Developer](pages/awards.md) — https://developer.apple.com/kr/design/awards/
+- [2020년 Apple 디자인 어워드 수상작 - Apple 디자인 어워드 - Apple Developer](pages/awards/2020.md) — https://developer.apple.com/kr/design/awards/2020/
+- [2021년 Apple 디자인 어워드 수상작 - Apple 디자인 어워드 - Apple Developer](pages/awards/2021.md) — https://developer.apple.com/kr/design/awards/2021/
+- [2022년 수상작 및 후보작 - Apple 디자인 어워드 - Apple Developer](pages/awards/2022.md) — https://developer.apple.com/kr/design/awards/2022/
+- [2022 Apple 디자인 어워드 수상작 - Apple 디자인 어워드 - Apple Developer](pages/awards/2022/asl.md) — https://developer.apple.com/kr/design/awards/2022/asl/
+- [2023 수상작 및 최종 후보작 - Apple 디자인 어워드 - Apple Developer](pages/awards/2023.md) — https://developer.apple.com/kr/design/awards/2023/
+- [2024년 수상작 및 최종 후보작 - Apple 디자인 어워드 - Apple Developer](pages/awards/2024.md) — https://developer.apple.com/kr/design/awards/2024/
+- [2025년 수상작 및 최종 후보작 - Apple 디자인 어워드 - Apple Developer](pages/awards/2025.md) — https://developer.apple.com/kr/design/awards/2025/
+- [시작하기 - 디자인 - Apple Developer](pages/get-started.md) — https://developer.apple.com/kr/design/get-started/
+- [Apple 디자인 리소스 - Apple Developer](pages/resources.md) — https://developer.apple.com/kr/design/resources/
+- [What’s new - Design - Apple Developer](pages/whats-new.md) — https://developer.apple.com/kr/design/whats-new/
+
+## Human Interface Guidelines
+
+- [휴먼 인터페이스 가이드라인(HIG)](pages/human-interface-guidelines.md) — https://developer.apple.com/kr/design/human-interface-guidelines
+- [손쉬운 사용](pages/human-interface-guidelines/accessibility.md) — https://developer.apple.com/kr/design/human-interface-guidelines/accessibility
+- [동작 버튼](pages/human-interface-guidelines/action-button.md) — https://developer.apple.com/kr/design/human-interface-guidelines/action-button
+- [동작 시트](pages/human-interface-guidelines/action-sheets.md) — https://developer.apple.com/kr/design/human-interface-guidelines/action-sheets
+- [활동 링](pages/human-interface-guidelines/activity-rings.md) — https://developer.apple.com/kr/design/human-interface-guidelines/activity-rings
+- [동작 보기](pages/human-interface-guidelines/activity-views.md) — https://developer.apple.com/kr/design/human-interface-guidelines/activity-views
+- [AirPlay](pages/human-interface-guidelines/airplay.md) — https://developer.apple.com/kr/design/human-interface-guidelines/airplay
+- [경고](pages/human-interface-guidelines/alerts.md) — https://developer.apple.com/kr/design/human-interface-guidelines/alerts
+- [화면 상시표시](pages/human-interface-guidelines/always-on.md) — https://developer.apple.com/kr/design/human-interface-guidelines/always-on
+- [앱 클립](pages/human-interface-guidelines/app-clips.md) — https://developer.apple.com/kr/design/human-interface-guidelines/app-clips
+- [앱 아이콘](pages/human-interface-guidelines/app-icons.md) — https://developer.apple.com/kr/design/human-interface-guidelines/app-icons
+- [앱 단축어](pages/human-interface-guidelines/app-shortcuts.md) — https://developer.apple.com/kr/design/human-interface-guidelines/app-shortcuts
+- [Apple Pay](pages/human-interface-guidelines/apple-pay.md) — https://developer.apple.com/kr/design/human-interface-guidelines/apple-pay
+- [Apple Pencil 및 손글씨 입력](pages/human-interface-guidelines/apple-pencil-and-scribble.md) — https://developer.apple.com/kr/design/human-interface-guidelines/apple-pencil-and-scribble
+- [증강 현실](pages/human-interface-guidelines/augmented-reality.md) — https://developer.apple.com/kr/design/human-interface-guidelines/augmented-reality
+- [상자](pages/human-interface-guidelines/boxes.md) — https://developer.apple.com/kr/design/human-interface-guidelines/boxes
+- [브랜딩](pages/human-interface-guidelines/branding.md) — https://developer.apple.com/kr/design/human-interface-guidelines/branding
+- [버튼](pages/human-interface-guidelines/buttons.md) — https://developer.apple.com/kr/design/human-interface-guidelines/buttons
+- [카메라 컨트롤](pages/human-interface-guidelines/camera-control.md) — https://developer.apple.com/kr/design/human-interface-guidelines/camera-control
+- [CareKit](pages/human-interface-guidelines/carekit.md) — https://developer.apple.com/kr/design/human-interface-guidelines/carekit
+- [CarPlay](pages/human-interface-guidelines/carplay.md) — https://developer.apple.com/kr/design/human-interface-guidelines/carplay
+- [차트 데이터](pages/human-interface-guidelines/charting-data.md) — https://developer.apple.com/kr/design/human-interface-guidelines/charting-data
+- [차트](pages/human-interface-guidelines/charts.md) — https://developer.apple.com/kr/design/human-interface-guidelines/charts
+- [공동 작업 및 공유](pages/human-interface-guidelines/collaboration-and-sharing.md) — https://developer.apple.com/kr/design/human-interface-guidelines/collaboration-and-sharing
+- [모음](pages/human-interface-guidelines/collections.md) — https://developer.apple.com/kr/design/human-interface-guidelines/collections
+- [색상](pages/human-interface-guidelines/color.md) — https://developer.apple.com/kr/design/human-interface-guidelines/color
+- [색상 저장소](pages/human-interface-guidelines/color-wells.md) — https://developer.apple.com/kr/design/human-interface-guidelines/color-wells
+- [계층 보기](pages/human-interface-guidelines/column-views.md) — https://developer.apple.com/kr/design/human-interface-guidelines/column-views
+- [콤보 상자](pages/human-interface-guidelines/combo-boxes.md) — https://developer.apple.com/kr/design/human-interface-guidelines/combo-boxes
+- [컴플리케이션](pages/human-interface-guidelines/complications.md) — https://developer.apple.com/kr/design/human-interface-guidelines/complications
+- [구성요소](pages/human-interface-guidelines/components.md) — https://developer.apple.com/kr/design/human-interface-guidelines/components
+- [콘텐츠](pages/human-interface-guidelines/content.md) — https://developer.apple.com/kr/design/human-interface-guidelines/content
+- [빠른 메뉴](pages/human-interface-guidelines/context-menus.md) — https://developer.apple.com/kr/design/human-interface-guidelines/context-menus
+- [제어기](pages/human-interface-guidelines/controls.md) — https://developer.apple.com/kr/design/human-interface-guidelines/controls
+- [다크 모드](pages/human-interface-guidelines/dark-mode.md) — https://developer.apple.com/kr/design/human-interface-guidelines/dark-mode
+- [디자인 원칙](pages/human-interface-guidelines/design-principles.md) — https://developer.apple.com/kr/design/human-interface-guidelines/design-principles
+- [게임 설계하기](pages/human-interface-guidelines/designing-for-games.md) — https://developer.apple.com/kr/design/human-interface-guidelines/designing-for-games
+- [iOS용으로 디자인하기](pages/human-interface-guidelines/designing-for-ios.md) — https://developer.apple.com/kr/design/human-interface-guidelines/designing-for-ios
+- [iPadOS용으로 디자인하기](pages/human-interface-guidelines/designing-for-ipados.md) — https://developer.apple.com/kr/design/human-interface-guidelines/designing-for-ipados
+- [macOS용으로 디자인하기](pages/human-interface-guidelines/designing-for-macos.md) — https://developer.apple.com/kr/design/human-interface-guidelines/designing-for-macos
+- [tvOS용으로 디자인하기](pages/human-interface-guidelines/designing-for-tvos.md) — https://developer.apple.com/kr/design/human-interface-guidelines/designing-for-tvos
+- [visionOS용으로 디자인하기](pages/human-interface-guidelines/designing-for-visionos.md) — https://developer.apple.com/kr/design/human-interface-guidelines/designing-for-visionos
+- [watchOS용으로 디자인하기](pages/human-interface-guidelines/designing-for-watchos.md) — https://developer.apple.com/kr/design/human-interface-guidelines/designing-for-watchos
+- [숫자 입력 화면](pages/human-interface-guidelines/digit-entry-views.md) — https://developer.apple.com/kr/design/human-interface-guidelines/digit-entry-views
+- [Digital Crown](pages/human-interface-guidelines/digital-crown.md) — https://developer.apple.com/kr/design/human-interface-guidelines/digital-crown
+- [펼침 제어기](pages/human-interface-guidelines/disclosure-controls.md) — https://developer.apple.com/kr/design/human-interface-guidelines/disclosure-controls
+- [Dock 메뉴](pages/human-interface-guidelines/dock-menus.md) — https://developer.apple.com/kr/design/human-interface-guidelines/dock-menus
+- [드래그 앤 드롭](pages/human-interface-guidelines/drag-and-drop.md) — https://developer.apple.com/kr/design/human-interface-guidelines/drag-and-drop
+- [편집 메뉴](pages/human-interface-guidelines/edit-menus.md) — https://developer.apple.com/kr/design/human-interface-guidelines/edit-menus
+- [데이터 입력하기](pages/human-interface-guidelines/entering-data.md) — https://developer.apple.com/kr/design/human-interface-guidelines/entering-data
+- [눈](pages/human-interface-guidelines/eyes.md) — https://developer.apple.com/kr/design/human-interface-guidelines/eyes
+- [피드백](pages/human-interface-guidelines/feedback.md) — https://developer.apple.com/kr/design/human-interface-guidelines/feedback
+- [파일 관리](pages/human-interface-guidelines/file-management.md) — https://developer.apple.com/kr/design/human-interface-guidelines/file-management
+- [초점 및 선택](pages/human-interface-guidelines/focus-and-selection.md) — https://developer.apple.com/kr/design/human-interface-guidelines/focus-and-selection
+- [기본 사항](pages/human-interface-guidelines/foundations.md) — https://developer.apple.com/kr/design/human-interface-guidelines/foundations
+- [Game Center](pages/human-interface-guidelines/game-center.md) — https://developer.apple.com/kr/design/human-interface-guidelines/game-center
+- [게임 제어기](pages/human-interface-guidelines/game-controls.md) — https://developer.apple.com/kr/design/human-interface-guidelines/game-controls
+- [게이지](pages/human-interface-guidelines/gauges.md) — https://developer.apple.com/kr/design/human-interface-guidelines/gauges
+- [생성형 AI](pages/human-interface-guidelines/generative-ai.md) — https://developer.apple.com/kr/design/human-interface-guidelines/generative-ai
+- [제스처](pages/human-interface-guidelines/gestures.md) — https://developer.apple.com/kr/design/human-interface-guidelines/gestures
+- [시작하기](pages/human-interface-guidelines/getting-started.md) — https://developer.apple.com/kr/design/human-interface-guidelines/getting-started
+- [전체 화면 사용하기](pages/human-interface-guidelines/going-full-screen.md) — https://developer.apple.com/kr/design/human-interface-guidelines/going-full-screen
+- [자이로스코프 및 가속도계](pages/human-interface-guidelines/gyro-and-accelerometer.md) — https://developer.apple.com/kr/design/human-interface-guidelines/gyro-and-accelerometer
+- [HealthKit](pages/human-interface-guidelines/healthkit.md) — https://developer.apple.com/kr/design/human-interface-guidelines/healthkit
+- [홈 화면 빠른 동작](pages/human-interface-guidelines/home-screen-quick-actions.md) — https://developer.apple.com/kr/design/human-interface-guidelines/home-screen-quick-actions
+- [HomeKit](pages/human-interface-guidelines/homekit.md) — https://developer.apple.com/kr/design/human-interface-guidelines/homekit
+- [iCloud](pages/human-interface-guidelines/icloud.md) — https://developer.apple.com/kr/design/human-interface-guidelines/icloud
+- [아이콘](pages/human-interface-guidelines/icons.md) — https://developer.apple.com/kr/design/human-interface-guidelines/icons
+- [ID 검증자](pages/human-interface-guidelines/id-verifier.md) — https://developer.apple.com/kr/design/human-interface-guidelines/id-verifier
+- [이미지 보기](pages/human-interface-guidelines/image-views.md) — https://developer.apple.com/kr/design/human-interface-guidelines/image-views
+- [이미지 저장소](pages/human-interface-guidelines/image-wells.md) — https://developer.apple.com/kr/design/human-interface-guidelines/image-wells
+- [이미지](pages/human-interface-guidelines/images.md) — https://developer.apple.com/kr/design/human-interface-guidelines/images
+- [iMessage 앱 및 스티커](pages/human-interface-guidelines/imessage-apps-and-stickers.md) — https://developer.apple.com/kr/design/human-interface-guidelines/imessage-apps-and-stickers
+- [몰입형 경험](pages/human-interface-guidelines/immersive-experiences.md) — https://developer.apple.com/kr/design/human-interface-guidelines/immersive-experiences
+- [앱 내 구입](pages/human-interface-guidelines/in-app-purchase.md) — https://developer.apple.com/kr/design/human-interface-guidelines/in-app-purchase
+- [포용성](pages/human-interface-guidelines/inclusion.md) — https://developer.apple.com/kr/design/human-interface-guidelines/inclusion
+- [입력](pages/human-interface-guidelines/inputs.md) — https://developer.apple.com/kr/design/human-interface-guidelines/inputs
+- [키보드](pages/human-interface-guidelines/keyboards.md) — https://developer.apple.com/kr/design/human-interface-guidelines/keyboards
+- [레이블](pages/human-interface-guidelines/labels.md) — https://developer.apple.com/kr/design/human-interface-guidelines/labels
+- [실행하기](pages/human-interface-guidelines/launching.md) — https://developer.apple.com/kr/design/human-interface-guidelines/launching
+- [레이아웃](pages/human-interface-guidelines/layout.md) — https://developer.apple.com/kr/design/human-interface-guidelines/layout
+- [레이아웃 및 구성](pages/human-interface-guidelines/layout-and-organization.md) — https://developer.apple.com/kr/design/human-interface-guidelines/layout-and-organization
+- [목록 및 표](pages/human-interface-guidelines/lists-and-tables.md) — https://developer.apple.com/kr/design/human-interface-guidelines/lists-and-tables
+- [실시간 현황](pages/human-interface-guidelines/live-activities.md) — https://developer.apple.com/kr/design/human-interface-guidelines/live-activities
+- [Live Photo](pages/human-interface-guidelines/live-photos.md) — https://developer.apple.com/kr/design/human-interface-guidelines/live-photos
+- [라이브 시청 앱](pages/human-interface-guidelines/live-viewing-apps.md) — https://developer.apple.com/kr/design/human-interface-guidelines/live-viewing-apps
+- [로드하기](pages/human-interface-guidelines/loading.md) — https://developer.apple.com/kr/design/human-interface-guidelines/loading
+- [락업](pages/human-interface-guidelines/lockups.md) — https://developer.apple.com/kr/design/human-interface-guidelines/lockups
+- [Mac Catalyst](pages/human-interface-guidelines/mac-catalyst.md) — https://developer.apple.com/kr/design/human-interface-guidelines/mac-catalyst
+- [머신 러닝](pages/human-interface-guidelines/machine-learning.md) — https://developer.apple.com/kr/design/human-interface-guidelines/machine-learning
+- [계정 관리하기](pages/human-interface-guidelines/managing-accounts.md) — https://developer.apple.com/kr/design/human-interface-guidelines/managing-accounts
+- [알림 관리하기](pages/human-interface-guidelines/managing-notifications.md) — https://developer.apple.com/kr/design/human-interface-guidelines/managing-notifications
+- [지도](pages/human-interface-guidelines/maps.md) — https://developer.apple.com/kr/design/human-interface-guidelines/maps
+- [머티리얼](pages/human-interface-guidelines/materials.md) — https://developer.apple.com/kr/design/human-interface-guidelines/materials
+- [메뉴](pages/human-interface-guidelines/menus.md) — https://developer.apple.com/kr/design/human-interface-guidelines/menus
+- [메뉴 및 동작](pages/human-interface-guidelines/menus-and-actions.md) — https://developer.apple.com/kr/design/human-interface-guidelines/menus-and-actions
+- [모달 형식](pages/human-interface-guidelines/modality.md) — https://developer.apple.com/kr/design/human-interface-guidelines/modality
+- [동작](pages/human-interface-guidelines/motion.md) — https://developer.apple.com/kr/design/human-interface-guidelines/motion
+- [멀티태스킹](pages/human-interface-guidelines/multitasking.md) — https://developer.apple.com/kr/design/human-interface-guidelines/multitasking
+- [탐색 및 검색](pages/human-interface-guidelines/navigation-and-search.md) — https://developer.apple.com/kr/design/human-interface-guidelines/navigation-and-search
+- [근처 상호 작용](pages/human-interface-guidelines/nearby-interactions.md) — https://developer.apple.com/kr/design/human-interface-guidelines/nearby-interactions
+- [NFC](pages/human-interface-guidelines/nfc.md) — https://developer.apple.com/kr/design/human-interface-guidelines/nfc
+- [알림](pages/human-interface-guidelines/notifications.md) — https://developer.apple.com/kr/design/human-interface-guidelines/notifications
+- [도움말 제공하기](pages/human-interface-guidelines/offering-help.md) — https://developer.apple.com/kr/design/human-interface-guidelines/offering-help
+- [온보딩](pages/human-interface-guidelines/onboarding.md) — https://developer.apple.com/kr/design/human-interface-guidelines/onboarding
+- [오너먼트](pages/human-interface-guidelines/ornaments.md) — https://developer.apple.com/kr/design/human-interface-guidelines/ornaments
+- [개요 보기](pages/human-interface-guidelines/outline-views.md) — https://developer.apple.com/kr/design/human-interface-guidelines/outline-views
+- [페이지 제어기](pages/human-interface-guidelines/page-controls.md) — https://developer.apple.com/kr/design/human-interface-guidelines/page-controls
+- [패널](pages/human-interface-guidelines/panels.md) — https://developer.apple.com/kr/design/human-interface-guidelines/panels
+- [경로 제어기](pages/human-interface-guidelines/path-controls.md) — https://developer.apple.com/kr/design/human-interface-guidelines/path-controls
+- [패턴](pages/human-interface-guidelines/patterns.md) — https://developer.apple.com/kr/design/human-interface-guidelines/patterns
+- [사진 편집](pages/human-interface-guidelines/photo-editing.md) — https://developer.apple.com/kr/design/human-interface-guidelines/photo-editing
+- [선택기](pages/human-interface-guidelines/pickers.md) — https://developer.apple.com/kr/design/human-interface-guidelines/pickers
+- [오디오 재생하기](pages/human-interface-guidelines/playing-audio.md) — https://developer.apple.com/kr/design/human-interface-guidelines/playing-audio
+- [햅틱 재생하기](pages/human-interface-guidelines/playing-haptics.md) — https://developer.apple.com/kr/design/human-interface-guidelines/playing-haptics
+- [비디오 재생하기](pages/human-interface-guidelines/playing-video.md) — https://developer.apple.com/kr/design/human-interface-guidelines/playing-video
+- [포인팅 장치](pages/human-interface-guidelines/pointing-devices.md) — https://developer.apple.com/kr/design/human-interface-guidelines/pointing-devices
+- [팝업 버튼](pages/human-interface-guidelines/pop-up-buttons.md) — https://developer.apple.com/kr/design/human-interface-guidelines/pop-up-buttons
+- [팝오버](pages/human-interface-guidelines/popovers.md) — https://developer.apple.com/kr/design/human-interface-guidelines/popovers
+- [표시 방식](pages/human-interface-guidelines/presentation.md) — https://developer.apple.com/kr/design/human-interface-guidelines/presentation
+- [프린트](pages/human-interface-guidelines/printing.md) — https://developer.apple.com/kr/design/human-interface-guidelines/printing
+- [개인정보 보호](pages/human-interface-guidelines/privacy.md) — https://developer.apple.com/kr/design/human-interface-guidelines/privacy
+- [진행 과정 표시기](pages/human-interface-guidelines/progress-indicators.md) — https://developer.apple.com/kr/design/human-interface-guidelines/progress-indicators
+- [풀 다운 버튼](pages/human-interface-guidelines/pull-down-buttons.md) — https://developer.apple.com/kr/design/human-interface-guidelines/pull-down-buttons
+- [평가 표시기](pages/human-interface-guidelines/rating-indicators.md) — https://developer.apple.com/kr/design/human-interface-guidelines/rating-indicators
+- [평가 및 리뷰](pages/human-interface-guidelines/ratings-and-reviews.md) — https://developer.apple.com/kr/design/human-interface-guidelines/ratings-and-reviews
+- [리모컨](pages/human-interface-guidelines/remotes.md) — https://developer.apple.com/kr/design/human-interface-guidelines/remotes
+- [ResearchKit](pages/human-interface-guidelines/researchkit.md) — https://developer.apple.com/kr/design/human-interface-guidelines/researchkit
+- [오른쪽에서 왼쪽](pages/human-interface-guidelines/right-to-left.md) — https://developer.apple.com/kr/design/human-interface-guidelines/right-to-left
+- [스크롤 보기](pages/human-interface-guidelines/scroll-views.md) — https://developer.apple.com/kr/design/human-interface-guidelines/scroll-views
+- [검색 필드](pages/human-interface-guidelines/search-fields.md) — https://developer.apple.com/kr/design/human-interface-guidelines/search-fields
+- [검색하기](pages/human-interface-guidelines/searching.md) — https://developer.apple.com/kr/design/human-interface-guidelines/searching
+- [구분 제어기](pages/human-interface-guidelines/segmented-controls.md) — https://developer.apple.com/kr/design/human-interface-guidelines/segmented-controls
+- [선택 및 입력](pages/human-interface-guidelines/selection-and-input.md) — https://developer.apple.com/kr/design/human-interface-guidelines/selection-and-input
+- [설정](pages/human-interface-guidelines/settings.md) — https://developer.apple.com/kr/design/human-interface-guidelines/settings
+- [SF Symbols](pages/human-interface-guidelines/sf-symbols.md) — https://developer.apple.com/kr/design/human-interface-guidelines/sf-symbols
+- [SharePlay](pages/human-interface-guidelines/shareplay.md) — https://developer.apple.com/kr/design/human-interface-guidelines/shareplay
+- [ShazamKit](pages/human-interface-guidelines/shazamkit.md) — https://developer.apple.com/kr/design/human-interface-guidelines/shazamkit
+- [시트](pages/human-interface-guidelines/sheets.md) — https://developer.apple.com/kr/design/human-interface-guidelines/sheets
+- [사이드바](pages/human-interface-guidelines/sidebars.md) — https://developer.apple.com/kr/design/human-interface-guidelines/sidebars
+- [Apple로 로그인](pages/human-interface-guidelines/sign-in-with-apple.md) — https://developer.apple.com/kr/design/human-interface-guidelines/sign-in-with-apple
+- [Siri](pages/human-interface-guidelines/siri.md) — https://developer.apple.com/kr/design/human-interface-guidelines/siri
+- [슬라이더](pages/human-interface-guidelines/sliders.md) — https://developer.apple.com/kr/design/human-interface-guidelines/sliders
+- [스니펫](pages/human-interface-guidelines/snippets.md) — https://developer.apple.com/kr/design/human-interface-guidelines/snippets
+- [공간 레이아웃](pages/human-interface-guidelines/spatial-layout.md) — https://developer.apple.com/kr/design/human-interface-guidelines/spatial-layout
+- [Split View](pages/human-interface-guidelines/split-views.md) — https://developer.apple.com/kr/design/human-interface-guidelines/split-views
+- [상태](pages/human-interface-guidelines/status.md) — https://developer.apple.com/kr/design/human-interface-guidelines/status
+- [상태 막대](pages/human-interface-guidelines/status-bars.md) — https://developer.apple.com/kr/design/human-interface-guidelines/status-bars
+- [스텝퍼](pages/human-interface-guidelines/steppers.md) — https://developer.apple.com/kr/design/human-interface-guidelines/steppers
+- [시스템 경험](pages/human-interface-guidelines/system-experiences.md) — https://developer.apple.com/kr/design/human-interface-guidelines/system-experiences
+- [탭 막대](pages/human-interface-guidelines/tab-bars.md) — https://developer.apple.com/kr/design/human-interface-guidelines/tab-bars
+- [탭 보기](pages/human-interface-guidelines/tab-views.md) — https://developer.apple.com/kr/design/human-interface-guidelines/tab-views
+- [Tap to Pay on iPhone](pages/human-interface-guidelines/tap-to-pay-on-iphone.md) — https://developer.apple.com/kr/design/human-interface-guidelines/tap-to-pay-on-iphone
+- [기술](pages/human-interface-guidelines/technologies.md) — https://developer.apple.com/kr/design/human-interface-guidelines/technologies
+- [텍스트 필드](pages/human-interface-guidelines/text-fields.md) — https://developer.apple.com/kr/design/human-interface-guidelines/text-fields
+- [텍스트 보기](pages/human-interface-guidelines/text-views.md) — https://developer.apple.com/kr/design/human-interface-guidelines/text-views
+- [메뉴 막대](pages/human-interface-guidelines/the-menu-bar.md) — https://developer.apple.com/kr/design/human-interface-guidelines/the-menu-bar
+- [토글](pages/human-interface-guidelines/toggles.md) — https://developer.apple.com/kr/design/human-interface-guidelines/toggles
+- [토큰 필드](pages/human-interface-guidelines/token-fields.md) — https://developer.apple.com/kr/design/human-interface-guidelines/token-fields
+- [도구 막대](pages/human-interface-guidelines/toolbars.md) — https://developer.apple.com/kr/design/human-interface-guidelines/toolbars
+- [상단](pages/human-interface-guidelines/top-shelf.md) — https://developer.apple.com/kr/design/human-interface-guidelines/top-shelf
+- [타이포그래피](pages/human-interface-guidelines/typography.md) — https://developer.apple.com/kr/design/human-interface-guidelines/typography
+- [실행 취소 및 실행 복귀](pages/human-interface-guidelines/undo-and-redo.md) — https://developer.apple.com/kr/design/human-interface-guidelines/undo-and-redo
+- [가상 키보드](pages/human-interface-guidelines/virtual-keyboards.md) — https://developer.apple.com/kr/design/human-interface-guidelines/virtual-keyboards
+- [VoiceOver](pages/human-interface-guidelines/voiceover.md) — https://developer.apple.com/kr/design/human-interface-guidelines/voiceover
+- [지갑](pages/human-interface-guidelines/wallet.md) — https://developer.apple.com/kr/design/human-interface-guidelines/wallet
+- [시계 페이스](pages/human-interface-guidelines/watch-faces.md) — https://developer.apple.com/kr/design/human-interface-guidelines/watch-faces
+- [웹 뷰](pages/human-interface-guidelines/web-views.md) — https://developer.apple.com/kr/design/human-interface-guidelines/web-views
+- [위젯](pages/human-interface-guidelines/widgets.md) — https://developer.apple.com/kr/design/human-interface-guidelines/widgets
+- [윈도우](pages/human-interface-guidelines/windows.md) — https://developer.apple.com/kr/design/human-interface-guidelines/windows
+- [운동](pages/human-interface-guidelines/workouts.md) — https://developer.apple.com/kr/design/human-interface-guidelines/workouts
+- [글쓰기](pages/human-interface-guidelines/writing.md) — https://developer.apple.com/kr/design/human-interface-guidelines/writing

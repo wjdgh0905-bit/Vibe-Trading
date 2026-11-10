@@ -85,7 +85,18 @@
     "remotion-render": "name-only",
     "remotion-saas": "name-only",
     "remotion-studio": "name-only",
-    "remotion-upgrade": "name-only"
+    "remotion-upgrade": "name-only",
+    "founder-skill:founder-board": "name-only",
+    "founder-skill:founder-brand": "name-only",
+    "founder-skill:founder-cfo": "name-only",
+    "founder-skill:founder-competitors": "name-only",
+    "founder-skill:founder-consumer": "name-only",
+    "founder-skill:founder-launch": "name-only",
+    "founder-skill:founder-marketing": "name-only",
+    "founder-skill:founder-offer": "name-only",
+    "founder-skill:founder-ops": "name-only",
+    "founder-skill:founder-plan": "name-only",
+    "founder-skill:founder-pricing": "name-only"
   },
   "enableArtifact": true,
   "enableWorkflows": true,
@@ -99,7 +110,8 @@
     "impeccable@impeccable": true,
     "claude-code-setup@claude-plugins-official": true,
     "headroom@headroom-marketplace": true,
-    "ponytail@ponytail": true
+    "ponytail@ponytail": true,
+    "founder-skill@founder-skill": true
   },
   "extraKnownMarketplaces": {
     "superpowers-marketplace": {
@@ -154,6 +166,12 @@
       "source": {
         "source": "github",
         "repo": "DietrichGebert/ponytail"
+      }
+    },
+    "founder-skill": {
+      "source": {
+        "source": "github",
+        "repo": "Jakeschincariol/founder-skill"
       }
     }
   },

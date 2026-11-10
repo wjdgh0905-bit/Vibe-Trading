@@ -25,7 +25,7 @@ if ($robocopyExit -ge 8) {
 }
 Write-Host "  ok"
 
-Write-Host "==> 3/3 플러그인 9개 전역 동기화"
+Write-Host "==> 3/3 플러그인 10개 전역 동기화"
 $marketplaces = @(
     "obra/superpowers-marketplace",
     "coreyhaines31/marketingskills",
@@ -35,7 +35,8 @@ $marketplaces = @(
     "pbakaus/impeccable",
     "anthropics/claude-plugins-official",
     "chopratejas/headroom",
-    "DietrichGebert/ponytail"
+    "DietrichGebert/ponytail",
+    "Jakeschincariol/founder-skill"
 )
 foreach ($m in $marketplaces) {
     Write-Host "  marketplace: $m"
@@ -51,7 +52,8 @@ $plugins = @(
     "impeccable@impeccable",
     "claude-code-setup@claude-plugins-official",
     "headroom@headroom-marketplace",
-    "ponytail@ponytail"
+    "ponytail@ponytail",
+    "founder-skill@founder-skill"
 )
 foreach ($p in $plugins) {
     Write-Host "  plugin: $p"
@@ -98,7 +100,7 @@ if (-not ($settings.PSObject.Properties.Name -contains "env")) {
 }
 Set-JsonProperty $settings.env "PONYTAIL_DEFAULT_MODE" "full"
 
-Write-Host "==> 5/5 토큰 절약: 잘 안 쓰는 스킬 80개 설명 축소 (name-only)"
+Write-Host "==> 5/5 토큰 절약: 잘 안 쓰는 스킬 91개 설명 축소 (name-only)"
 $trimToNameOnly = @(
     "marketing-skills:ab-testing","marketing-skills:ad-creative","marketing-skills:ads",
     "marketing-skills:ai-seo","marketing-skills:analytics","marketing-skills:aso",
@@ -126,7 +128,11 @@ $trimToNameOnly = @(
     "taste-skill:soft-skill","taste-skill:stitch-skill","taste-skill:taste-skill-v1",
     "remotion-captions","remotion-create","remotion-docs","remotion-interactivity",
     "remotion-maps","remotion-markup","remotion-multimedia","remotion-render",
-    "remotion-saas","remotion-studio","remotion-upgrade"
+    "remotion-saas","remotion-studio","remotion-upgrade",
+    "founder-skill:founder-board","founder-skill:founder-brand","founder-skill:founder-cfo",
+    "founder-skill:founder-competitors","founder-skill:founder-consumer","founder-skill:founder-launch",
+    "founder-skill:founder-marketing","founder-skill:founder-offer","founder-skill:founder-ops",
+    "founder-skill:founder-plan","founder-skill:founder-pricing"
 )
 if (-not ($settings.PSObject.Properties.Name -contains "skillOverrides")) {
     Set-JsonProperty $settings "skillOverrides" (New-Object PSObject)

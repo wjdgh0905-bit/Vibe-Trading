@@ -1471,6 +1471,89 @@ html[lang=en] .skr{grid-template-columns:32px minmax(0,1fr) 64px;align-items:sta
 html.nofx #tour *,html.nofx .tbub{animation:none!important;transition:none!important}
 @media (max-width:374px){.tbub{padding:10px 12px}}
 /* TOURS end */
+/* BOSS-V2 v3.0.4 shim: v3.1 result-sheet rows/cells (kvH/rstH) used by the boss result sheet and boss sheet, copied from the v3.1 WIP (drop on v3.1) */
+.kvs{margin-top:10px;padding:4px 12px;border-radius:var(--r-md);background:var(--panel2);border:1px solid var(--hair)}
+.card .kvs{margin-top:6px;padding:2px 12px}
+.kv{display:grid;grid-template-columns:20px minmax(0,1fr) auto;align-items:center;column-gap:8px;min-height:26px;padding:1px 0;font:500 var(--t-body)/1.3 var(--ui);color:var(--fg2)}
+.kv+.kv{border-top:1px solid var(--hair)}
+.kv>i{font-style:normal;display:grid;place-items:center;width:20px;height:20px}
+.kv>i .ico{width:18px;height:18px;margin:0;vertical-align:0}
+.kv>span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.kv>span small{margin-left:6px;font:500 var(--t-meta)/1 var(--ui);color:var(--muted);white-space:nowrap}
+.kv>b{font:700 var(--t-item)/1.2 var(--num);font-variant-numeric:tabular-nums;color:var(--fg);text-align:right;white-space:nowrap}
+.kv>b.up{color:var(--up-t)}
+.kv>b.dn{color:var(--down-t)}
+.kv>b.gd{color:var(--gold-t)}
+.kv>b .un{font-size:.8em}
+.kv.nf>span{color:var(--muted)}
+.kv.nf>b{font:600 var(--t-chip)/1.2 var(--ui);color:var(--fg2)}
+.kv.nf>b.dn{color:var(--down-t)}
+.kv.nf>b.gd{color:var(--gold-t)}
+.kv.nf>b .un{font-size:max(12px,.8em)}
+.card .bigl{font:600 var(--t-meta)/1.25 var(--ui);color:var(--muted);margin-top:6px}
+.card.rs .bigl+.big{margin-top:2px}
+.card .rst{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin-top:8px;border-radius:var(--r-md);background:var(--panel2);border:1px solid var(--hair)}
+.card .rst.n2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.card .rst>div{padding:4px clamp(9px,2.6vw,12px) 5px;min-width:0}
+.card .rst>div+div{border-left:1px solid var(--hair)}
+html[lang=en] .card .rst>div{padding-inline:clamp(8px,2.2vw,12px)}
+.card .rst small{display:block;font:600 var(--t-meta)/1.3 var(--ui);color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card .rst b{display:block;margin-top:1px;font:800 clamp(15px,4.3vw,17px)/1.2 var(--num);color:var(--fg);font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card .rst b.up{color:var(--up-t)}
+.card .rst b.dn{color:var(--down-t)}
+.card .rst b.gd{color:var(--gold-t)}
+/* BOSS-V2 v3.0.4 shim end */
+
+#bossbar{grid-template-columns:minmax(0,max-content) minmax(72px,1fr) auto} /* the wind-up meter is the instrument: ≥ 72 px (gold zone ≥ 18 px); the name gives way first (bossFit) */
+#bossbar u{transition:none} /* the meter must not lag the gold zone */
+#bossbar i{position:relative;background:linear-gradient(90deg,#2a0a10 0 75%,color-mix(in srgb,var(--gold) 32%,#2a0a10) 75% 100%)}
+#bossbar i::after{content:'';position:absolute;left:75%;top:0;bottom:0;width:1px;background:var(--gold);z-index:1} /* gold zone = last 25% (tick: not colour only) */
+#bossbar.gz u{background:linear-gradient(90deg,#ff8a00,var(--gold))}
+#bossbar.kill{border-color:var(--gold)}#bossbar.kill u{background:var(--gold)}
+#bossbar.quiet,html[lang] #bossbar.quiet{background:color-mix(in srgb,#5b6474 60%,var(--bg));border-color:#cfd6e2}#bossbar.quiet i{background:#3a404c;border-color:#cfd6e2}#bossbar.quiet u{background:#fff}#bossbar.quiet small{color:#fff}
+#bossGoal{display:inline-flex;align-items:center;gap:1px}
+#bossGoal .bl{animation:bBl .5s steps(2) infinite}@keyframes bBl{50%{opacity:.25}}
+@media (prefers-reduced-motion:reduce){#bossGoal .bl{animation:none;box-shadow:0 2px 0 var(--gold)}}
+#bossGoal .bst{color:var(--gold)}#bossGoal .bst span{opacity:.35}
+.gbomb{display:inline-block;position:relative;width:.8em;height:.8em;border-radius:50%;background:radial-gradient(circle at 32% 30%,#8a93a5 0 16%,#323846 46%,#14171d 100%);vertical-align:-.06em;margin:0 .12em 0 .02em}
+.gbomb::before{content:'';position:absolute;right:-.03em;top:-.2em;width:.12em;height:.3em;background:#c9a46a;border-radius:.05em;transform:rotate(38deg)}
+.gbomb::after{content:'';position:absolute;right:-.2em;top:-.34em;width:.22em;height:.22em;border-radius:50%;background:radial-gradient(#fff4b0,#ffb703 55%,transparent 72%)}
+.gshh{display:inline-block;padding:1px 5px;border-radius:999px;background:#fff;color:#3a404c;font:800 .9em/1.1 var(--ui);letter-spacing:.02em}
+.gtri{display:inline-block;width:0;height:0;border-left:.34em solid transparent;border-right:.34em solid transparent;border-bottom:.6em solid #ff4d6d;vertical-align:.05em;margin:0 .05em}
+.bsp{margin:6px 0 0;color:var(--gold)}
+.card .big.gd{color:var(--gold)}.card .big.mu{color:var(--muted)}.card .sub.bnz{margin-top:2px;font-size:var(--t-meta);color:var(--muted)}
+.card .btl{position:relative;height:40px;margin:10px 0 0;border-radius:var(--r-sm);background:var(--panel2);border:1px solid var(--hair);overflow:hidden}
+.btl::before{content:'';position:absolute;left:10px;right:10px;top:27px;height:1px;background:var(--hair2)}
+.btl>*{position:absolute;top:27px;transform:translate(-50%,-50%);font:800 12px/1 var(--num)}
+.btl .bf{color:#ffb703}.btl .bx{color:#ff4d6d;font-size:15px;z-index:2;text-shadow:0 0 2px var(--panel2),0 0 2px var(--panel2)}
+.btl .br{height:10px;transform:translateY(-50%);border-radius:3px;background:linear-gradient(90deg,#ff2d55 0 75%,var(--gold) 75% 100%);opacity:.9}
+.btl .bme{top:10px;color:var(--fg);font-size:12px;z-index:1}.btl .bme::after{content:'';position:absolute;left:50%;top:100%;width:1px;height:8px;margin-top:1px;background:var(--fg2);transform:translateX(-50%)} /* my strike: above the axis, a stem down to the moment */
+.btl .bme small{position:absolute;left:calc(100% + 3px);top:50%;transform:translateY(-50%);font:700 9px/1 var(--ui);color:var(--fg2);white-space:nowrap}.btl .bme.l small{left:auto;right:calc(100% + 3px)}
+.card .btlg{display:flex;flex-wrap:wrap;justify-content:center;gap:2px 10px;margin:4px 0 0;font:600 10px/1.3 var(--ui);color:var(--muted)}.btlg b{font:800 11px/1 var(--num)}.btlg .bf{color:#ffb703}.btlg .bx{color:#ff4d6d}.btlg i{display:inline-block;width:16px;height:6px;margin-right:3px;border-radius:2px;vertical-align:1px;background:linear-gradient(90deg,#ff2d55 0 75%,var(--gold) 75% 100%)}
+.bsh{margin:0 0 8px}.bsr{display:flex;gap:6px;margin:0 0 8px}
+.bsr button{flex:1;min-height:44px;border-radius:var(--r-sm);border:1px solid var(--hair2);background:var(--panel2);color:var(--fg);font:700 var(--t-chip)/1 var(--ui);cursor:pointer}
+.spill.bosschip::after{bottom:-12px} /* the chip opens the rule sheet (the only way to read the rule before a fight at Ⅱ–Ⅳ): its hit box reaches 45 px; above it the goal pill keeps its own taps */
+.bsr button[aria-pressed=true]{border-color:#ff4d6d;background:color-mix(in srgb,#ff2d55 22%,var(--panel2))}
+.bcl{margin:8px 0;padding-left:18px;color:var(--fg2);font:500 var(--t-chip)/1.5 var(--ui)}.brl{margin:0 0 6px}
+#bossPr{width:100%;margin-top:8px}
+.bdxw{margin:0 0 14px}.bdxw h3{display:flex;align-items:center;flex-wrap:wrap;gap:4px 6px}
+.bdb{font:700 var(--t-meta)/1 var(--ui);padding:3px 6px;border-radius:999px;background:color-mix(in srgb,var(--gold) 18%,var(--panel2));color:var(--gold)}
+.bdxg{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.bdxg .bdx{display:flex;flex-direction:column;align-items:center;gap:3px;min-width:0;padding:8px 3px 6px;border-radius:var(--r-md);background:var(--sheen),var(--panel);border:1px solid var(--hair);box-shadow:var(--sh-panel);color:var(--fg);font:inherit;text-align:center;cursor:pointer}
+.bdxg .bdx .be{font:800 24px/28px var(--ui);height:28px}.bdxg .bdx .be .ico{width:28px;height:28px;vertical-align:top}.bdxg .bdx.un .be{color:var(--muted)}
+.bdxg .bdx b{font:700 var(--t-meta)/1.2 var(--ui);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.4em;word-break:keep-all;max-width:100%}
+.bdxg .bdx b.lw{font-size:11px;letter-spacing:-.03em}
+.bdxg .bdx .bmd{display:flex;gap:3px}.bdxg .bdx .bmd i{width:10px;height:10px;box-sizing:border-box;border-radius:50%;border:1.5px solid var(--mc);opacity:.35;display:grid;place-items:center;font:700 7px/1 var(--ui);font-style:normal;color:#111}
+.bdxg .bdx .bmd i.on,.bdxg .bdx .bmd i.s3{background:var(--mc);opacity:1}.bdxg .bdx .bmd i.s3{box-shadow:0 0 0 1.5px var(--gold)}
+.bdxg .bdx small{font:600 10px/1.2 var(--num);color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+/* quote header on a boss offer: name + rank spans; .qbx (set by qFit when it is still too long at 14 px) ellipsizes the name, never the rank */
+#qName .qbw{display:inline-flex;vertical-align:top;max-width:none}#qName.qbx .qbw{display:flex;max-width:100%}#qName .qbn{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}#qName .qbr{flex:none;white-space:pre}
+.bmt{margin:0 0 6px;color:var(--gold);font-weight:700}#bossGo{width:100%;margin-top:8px}
+/* forced colors (Windows high contrast): keep the meter, its gold zone/tick and the CSS-drawn ammo visible with system colours */
+@media (forced-colors:active){#bossbar i{forced-color-adjust:none;background:linear-gradient(90deg,Canvas 0 75%,GrayText 75% 100%);border:1px solid CanvasText}#bossbar u,#bossbar.gz u,#bossbar.kill u,#bossbar.quiet u{forced-color-adjust:none;background:Highlight}#bossbar i::after{forced-color-adjust:none;background:CanvasText;width:2px}
+  .gbomb{forced-color-adjust:none;background:CanvasText}.gbomb::before{forced-color-adjust:none;background:CanvasText}.gbomb::after{forced-color-adjust:none;background:Highlight}.gtri{forced-color-adjust:none;border-bottom-color:CanvasText}
+  .btl .br,.btlg i{forced-color-adjust:none;background:linear-gradient(90deg,CanvasText 0 75%,Highlight 75% 100%)}}
+/* BOSS-V2 end: css */
 </style>
 
 <div class="app" id="app">
@@ -1545,7 +1628,7 @@ const ASSET='';
 
 const ICM={'📈':'chart_up','📋':'clipboard','🌳':'skill_tree','💼':'briefcase','🛒':'shopping_cart','📊':'bar_chart','⚙':'gear_cog','🎁':'gift','📺':'watch_ad','📤':'share','📥':'download','💾':'floppy','🔒':'lock','🔓':'unlock','⚠':'warning','📱':'smartphone','✅':'check_badge','⬆':'level_up','⭐':'star','🌟':'star','✨':'sparkles','🏅':'medal','🎖':'rank_insignia','🏆':'trophy','🎉':'party_popper','🎫':'season_ticket','🆕':'new_badge','💓':'heartbeat','💡':'lightbulb','⏳':'hourglass','🔜':'hourglass','🔁':'repeat','🔄':'restart','📰':'newspaper','✏':'pencil','🗓':'calendar','📚':'books','📖':'open_book','🧪':'potion','🎓':'grad_cap','☕':'coffee','🧾':'receipt','🎯':'target','🧰':'toolbox','🔣':'symbols','👍':'thumbs_up','👋':'paw_wave','👇':'point_down','🙌':'raised_paws','🐾':'raised_paws','🙏':'golden_hand','😤':'grit','😱':'face_scream','💦':'sweat','😎':'face_cool','👥':'friends','💵':'cash','💰':'money_bag','↩':'money_wings','💸':'money_wings','💳':'credit_card','🏦':'bank','🏛':'classical_building','🥫':'empty_can','💱':'currency_exchange','📜':'scroll','🏷':'price_tag','💎':'gem','🏠':'house','🏢':'office_building','📉':'chart_down','🚫':'no_ads','⏱':'stopwatch','🛡':'shield','🔍':'magnifier','⚡':'lightning','💯':'hundred','🌡':'thermometer','🌊':'wave','🎨':'palette','🔥':'fire','💀':'skull','💥':'explosion','🚨':'siren','⚔':'crossed_swords','🚀':'rocket','💠':'gem','🔮':'crystal_ball','⏪':'rewind','🧯':'extinguisher','🍀':'clover','🎟':'boss_ticket','🪂':'parachute','📡':'satellite_dish','👂':'headset','🧘':'lotus','🐸':'frog_coin','🧬':'dna','🟡':'penny_coin','🇺🇸':'globe_dollar','🌐':'globe_dollar','🎭':'theater_masks','👹':'boss_ogre','🌑':'new_moon','⛔':'stop_sign','🦢':'black_swan','🐻':'bear','🐂':'bull','🌪':'tornado','💤':'zzz','🌱':'sprout','🕹':'joystick','🔟':'ten_badge','🏃':'running_shoe','🧻':'toilet_paper','🎣':'fishing_rod','🤡':'clown','🕵':'detective','🧟':'zombie_hand','👑':'crown','🌍':'earth','🌏':'earth','🥇':'rank_1','🥈':'rank_2','🥉':'rank_3','☀':'sun','🌙':'crescent_moon','🌕':'full_moon','☁':'cloud','🌸':'cherry_blossom','🦁':'type_lion','🐿':'type_squirrel','🐢':'type_turtle','🦊':'type_fox','🐣':'hatching_chick','🐥':'chick','🐤':'chick_teen','🐔':'hen','🦆':'duck','🦉':'owl','🐺':'wolf','🐯':'tiger','🐉':'dragon','🐲':'dragon','🦄':'unicorn','🌌':'milky_way','🐋':'whale','🖥':'dual_monitor','🪑':'gaming_chair','🏎':'supercar','🛥':'yacht','🛩':'private_jet','🐈':'cat','🌵':'cactus','🎮':'game_console','🎸':'guitar','🐠':'aquarium','🤖':'robot','🎶':'mirror_ball','🦖':'dino_toy','🎄':'xmas_tree','👾':'alien','🔔':'bell','🪐':'ringed_planet','🛋':'sofa','🧱':'brick_wall','🟫':'wood_floor','🧸':'teddy','🛌':'bed','🛏':'bed','🍜':'ramen','🕯':'candle','📦':'box','🧺':'basket','🐜':'ant','🌿':'plant','🍷':'wine','🍾':'champagne','🎹':'piano','⌚':'watch','👜':'handbag','💍':'diamond_ring','🥚':'jeweled_egg','🚁':'helicopter','🛳':'mega_yacht','✈':'jumbo_jet','🤿':'submarine','🚄':'bullet_train','🏙':'penthouse','🗽':'skyscraper','🏝':'private_island','🏖':'beach_resort','🌆':'new_city','🖼':'painting','⚾':'baseball','⚽':'soccer_ball','🏀':'basketball','🏁':'race_flag','🏟':'stadium','🗿':'moai','🏴‍☠':'treasure_ship','🔺':'pyramid','🔱':'atlantis_map','🛫':'airliner','🛢':'oil_barrel','⌨':'keyboard','🕳':'black_hole','🌠':'spiral_galaxy','🔘':'reset_button','♾':'infinity','🛸':'space_station','🛰':'satellite','👨‍🚀':'astronaut','🏳':'flag','🥂':'toast_glasses','👟':'sneaker','👠':'high_heel','🌃':'night_city','📟':'retro_terminal'};
 const ICX={'💎':[[/\uBCF4\uBB3C|[Tt]reasure/,'treasure_chest'],[/\uD551\uD06C|[Pp]ink [Dd]iamond/,'pink_diamond']],'🔁':[[/\uC740\uD1F4|\uD658\uC0DD|[Rr]etire|[Rr]ebirth|[Rr]eborn|[Pp]restige/,'rebirth']],'🧪':[[/\uC131\uD5A5|\uD14C\uC2A4\uD2B8|[Qq]uiz|[Ii]nvestor [Tt]ype|[Pp]ersonality/,'personality_quiz']],'🏆':[[/\uC6D4\uB4DC\uCEF5|[Ww]orld/,'world_trophy']],'🏅':[[/\uC62C\uB9BC\uD53D|[Oo]lympi|[Gg]ames/,'torch']],'⏳':[[/\uD0C0\uC784\uBA38\uC2E0|[Tt]ime [Mm]achine/,'time_machine']],'🐉':[[/\uB4DC\uB798\uACE4 \uC54C|[Dd]ragon [Ee]gg/,'dragon_egg']],'🦖':[[/\uD654\uC11D|[Ff]ossil/,'dino_fossil']],'💾':[[/\uBC18\uB3C4\uCCB4|[Cc]hip|[Ss]emiconductor/,'microchip']],'🔴':[[/\uD654\uC131|[Mm]ars/,'mars']]};
-const ICG={'🔴':'<span class="gdot r"></span>','🔵':'<span class="gdot b"></span>','🟢':'<span class="gdot g"></span>','⬜':'<span class="gbox"></span>','➕':'<b class="gplus">+</b>'};
+const ICG={'🔴':'<span class="gdot r"></span>','🔵':'<span class="gdot b"></span>','🟢':'<span class="gdot g"></span>','⬜':'<span class="gbox"></span>','➕':'<b class="gplus">+</b>','💣':'<span class="gbomb" role="img" aria-label="폭탄"><i class="sr">폭탄</i></span>','🤫':'<span class="gshh">쉿</span>','🔺':'<span class="gtri" role="img" aria-label="인상"><i class="sr">인상</i></span>'};ICX['🔺']=[[/^(?![\s\S]*(\uD53C\uB77C\uBBF8\uB4DC|[Pp]yramid))/,null]];
 const ICR=new RegExp(Object.keys(ICM).concat(Object.keys(ICX),Object.keys(ICG)).filter((k,i,a)=>a.indexOf(k)===i).sort((a,b)=>b.length-a.length).map(k=>Array.from(k).map(c=>c+'\uFE0F?').join('')).join('|'),'g');
 const icId=(m,a)=>{const k=m.replace(/\uFE0F/g,''),x=ICX[k];a=String(a||'').split('·')[0];if(x)for(const r of x)if(r[0].test(a))return r[1];return ICM[k]||null;};
 const icImg=(id,m,lz)=>'<img class="ico" src="'+ASSET+'ui/'+id+'.webp" alt="" draggable="false" data-e="'+m+'"'+(lz?' loading="lazy"':'')+' onerror="this.replaceWith(this.dataset.e)">';
@@ -1592,9 +1675,10 @@ function lsSet(k,s){try{localStorage.setItem(k,s);}catch(e){if(memSave)throw e;l
 const store={off:0,seen:{},get(k,d){try{const v=localStorage.getItem(k);store.seen[k]=v;return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){if(store.off)return;try{const s=JSON.stringify(v);if(store.seen[k]===s)return;lsSet(k,s);store.seen[k]=s;}catch(e){}}};
 const fin=v=>isFinite(v=+v)?v:0;
 const PET_T=[0,50,450];
-const SAVE_V=2,MIG=[()=>{const p=store.get('shg_profile',null);if(p&&p!=='squirrel'){let a=store.get('shg_tips',[]);if(!Array.isArray(a))a=[];if(!a.includes('quiz'))store.set('shg_tips',a.concat('quiz'));}},
+const SAVE_V=3,MIG=[()=>{const p=store.get('shg_profile',null);if(p&&p!=='squirrel'){let a=store.get('shg_tips',[]);if(!Array.isArray(a))a=[];if(!a.includes('quiz'))store.set('shg_tips',a.concat('quiz'));}},
   ()=>{if(store.get('shg_pet',null))return;const st=store.get('shg_stats',{})||{},r=Math.floor(fin(st.rounds));if(!(r>0))return;const p=store.get('shg_profile',null),id=p;if(!['lion','squirrel','turtle','fox'].includes(id))return;const w=Math.min(r,Math.max(0,Math.floor(fin(st.wins))));
-    store.set('shg_pet',{sel:id,own:{[id]:{xp:Math.max(0,Math.min(PET_T[2]-150,r+w+2*Math.max(0,Math.floor(fin(st.bossLv)))))}},q:['m'],nw:1});}];
+    store.set('shg_pet',{sel:id,own:{[id]:{xp:Math.max(0,Math.min(PET_T[2]-150,r+w+2*Math.max(0,Math.floor(fin(st.bossLv)))))}},q:['m'],nw:1});},
+  ()=>{const st=store.get('shg_stats',null);if(!st||typeof st!=='object')return;st.bossI=0;st.bossE=0;st.bossEK=0;st.bossDex={};store.set('shg_stats',st);}];
 {const v=Math.max(0,Math.floor(fin(store.get('shg_ver',0))));for(let i=v;i<SAVE_V;i++)try{MIG[i]();}catch(e){}if(v<SAVE_V)store.set('shg_ver',SAVE_V);}
 const START=1000000,CD=0.35;
 const tickOf=p=>p<2000?1:p<5000?5:p<20000?10:p<50000?50:p<200000?100:p<500000?500:1000;
@@ -1626,6 +1710,111 @@ const TIERS={
 };
 const BOSSES=[{e:'👹',n:'공매도 세력'},{e:'🌑',n:'검은 월요일'},{e:'🏦',n:'금리 인상'},{e:'🎭',n:'작전 세력 총수'},{e:'⛔',n:'서킷브레이커'},{e:'🦢',n:'블랙스완'},{e:'🐻',n:'대왕 곰'},{e:'🌪️',n:'금융 위기'}];
 const bossInfo=lv=>({lv,B:BOSSES[lv%BOSSES.length],target:+(1.5+.2*lv).toFixed(2)});
+/* BOSS-V2 begin: data + generator (boss = a reading duel, see final/boss/PROPOSAL.md)
+   Stake 0 · 1x · no items. 32 entries = 8 bosses x ranks I-IV. Every attack (bluff or real) fills a wind-up meter that is
+   full exactly when it lands; each boss has one fixed rule that tells the real attack from the bluffs. */
+const RN=['Ⅰ','Ⅱ','Ⅲ','Ⅳ'],BOUNTY=[.35,.20],BXP=[[40,50,60,10],[10,12,15,3]]; // bounty x betCap(1): book entry / rematch · XP ★ ★★ ★★★ miss: book / rematch
+const BOSSX=[ // per boss in BOSSES order: rule id, full rule, short hint (quote line at rank I), bluff stamps
+  {id:'count',rule:'마지막 💣 공격이 진짜',hint:'💡 마지막 💣이 진짜',st:['💣 공매도 폭탄 · 버텼다!']},
+  {id:'clock',rule:'⏱ 0:00에 떨어진다 · 그 전 하락은 겁주기',hint:'💡 ⏱ 0:00에 진짜',st:['📰 주말 악재 · 버텼다!']},
+  {id:'rhythm',rule:'🔺🔺🔺 인상 다음 박자에 폭락',hint:'💡 🔺🔺🔺 다음이 진짜',st:['🏦 금리 인상 🔺','🏦 빅스텝 🔺🔺','🏦 자이언트 스텝 🔺🔺🔺']},
+  {id:'lowerhigh',rule:'펌프가 직전 고점을 못 넘으면 털기 시작',hint:'💡 고점 실패 뒤가 진짜',st:['📈 세력 매집 · 신고가','🎭 개미 털기 · 버텼다!']},
+  {id:'line',rule:'빨간 선에 닿으면 정지 직전에 공격 · 닿기 전엔 버티기',hint:'💡 선에 닿은 뒤 공격',st:['🧱 매도 벽 · 못 닿음']},
+  {id:'quiet',rule:'시끄러운 경고는 가짜 · 조용해지면 진짜',hint:'💡 조용해지면 진짜',st:['⚠️ 경고 · 버텼다!']},
+  {id:'length',rule:'짧게 휘두르면 가짜 · 길게 기를 모으면 진짜',hint:'💡 길게 모으면 진짜',st:['🐾 휘두르기 · 버텼다!']},
+  {id:'mix',rule:'시작할 때 보여 주는 보스의 패턴으로 온다',hint:'💡 보여 준 보스대로',st:[]}];
+BOSSES.forEach((b,i)=>Object.assign(b,BOSSX[i]));
+const bossE_=i=>{i=Math.max(0,Math.min(31,Math.floor(+i)||0));const b=i%8,r=Math.floor(i/8)+1;return {i,b,r,B:BOSSES[b]};}; // entry i -> boss i%8 at rank floor(i/8)+1
+/* BOSS-V2 gen begin: port of sim_2/gen2.mjs gen()+gen1()+setupRound() with VARIANTS.tuned (eq nm nmc shake pre fixN gapEq, rm .25).
+   Same constants, same R() call order, same honesty retry loop (parity.mjs replays it against gen2.mjs). Script times are real hold
+   seconds at holdRate .6 (chart time = x*.6); events are chart time. Needs run (boss round: 1x, REGIMES[0]), events, base/wig/newsF, TIERS. */
+const BG={L:[1.8,1.4,1.1,.9],Lf:[1.0,.9,.8,.7],gap:[[1.4,2.4],[1.2,2.1],[1.0,1.8],[.9,1.6]],amp:[-.18,-.22,-.26,-.28],s0:[1.6,2.6],
+  GQ:[[1.8,3.0],[1.6,2.8],[1.5,2.6],[1.4,2.4]],HR0:.6,DIPBOT:.21,rm:.25,PAT:['count','clock','rhythm','lowerhigh','line','quiet','length','mix']};
+const bgU=(R,a,b)=>a+R()*(b-a),bgUI=(R,a,b)=>a+Math.floor(R()*(b-a+1));
+function bossCur(x){return Math.max(run.lev>1?.3:.85,base(x)*(1+(wig(x)-1)*Math.min(1,x/.3)*(run.T.wig||1)*(run.rg.wig||1)*(run.boss&&x>=run.boss.q0?0:1))*newsF(x));} // = the price line in frame() (change both together)
+function bossGen1(bi,rank,R,opt){
+  const r=rank-1,hr=BG.HR0,ex=opt.extra||0,dL=opt.dL||0,DB=BG.DIPBOT;
+  const L=BG.L[r]+dL,amp=BG.amp[r],gp=BG.gap[r],Lb=L; // eq: bluff wind-ups as long as the real one
+  const ev=[],meters=[];
+  const dip=(e,a,pre)=>ev.push({t0:e*hr-DB,amp:a,pre:pre?1:0}); // the dip bottom lands when the wind-up is full
+  let s=bgU(R,BG.s0[0],BG.s0[1]);
+  const sc={bi,rank,pat:BG.PAT[bi],ev,meters,q0:Infinity,nf:0,L};
+  const real=(ws,tc,tp,preAmp)=>{sc.ws=ws;sc.tc=tc;sc.tp=tp;meters.push({s:ws,e:tc,k:'r'});if(preAmp)dip(tc,preAmp,1);}; // pre: the real attack lands with the same dip as a bluff
+  const pkOf=t0=>{let m=0;for(let x=t0;x<=t0+.6;x+=.01)m=Math.max(m,bossCur(x));return m;};
+  switch(BG.PAT[bi]){
+    case 'count':{
+      const n=[bgUI(R,2,3),bgUI(R,3,4),bgUI(R,3,5),bgUI(R,4,6)][r]+ex;sc.ammo=n;
+      for(let i=0;i<n-1;i++){meters.push({s,e:s+Lb,k:'f'});dip(s+Lb,amp);s+=Lb+bgU(R,gp[0],gp[1]);}
+      sc.nf=n-1;real(s,s+L,s,amp);break;}
+    case 'clock':{
+      const nf=[bgUI(R,1,2),bgUI(R,1,3),bgUI(R,2,4),bgUI(R,2,5)][r]+ex;let last=s;
+      for(let k=0;k<nf;k++){meters.push({s,e:s+Lb,k:'f'});dip(s+Lb,amp*1.2);last=s+Lb;s=last+bgU(R,gp[0],gp[1]);}
+      const tc=last+bgU(R,gp[0],gp[1])+L;sc.nf=nf;sc.clock=tc;real(tc-L,tc,tc-L,amp*1.2);break;}
+    case 'rhythm':{
+      const P=[2.0,1.7,1.5,1.3][r]+(dL?-.1:0),npre=[bgUI(R,2,3),bgUI(R,2,4),bgUI(R,3,5),bgUI(R,3,6)][r]+ex;
+      const n50=Math.min(npre,[bgUI(R,0,1),bgUI(R,1,2),bgUI(R,1,3),bgUI(R,2,3)][r]+ex);
+      const lab=Array(npre).fill(25);{const idx=[...Array(npre).keys()];for(let i=0;i<n50;i++){const j=Math.floor(R()*idx.length);lab[idx.splice(j,1)[0]]=50;}}
+      lab.push(75);sc.labels=lab;
+      for(let k=0;k<lab.length;k++){const a=s+k*P,e=a+P;meters.push({s:a,e,k:'f',lab:lab[k]});dip(e,lab[k]===25?-.06:lab[k]===50?amp*.8:-.10);}
+      const ws=s+lab.length*P;sc.nf=lab.length;sc.P=P;real(ws,ws+P,ws,-.06);break;}
+    case 'lowerhigh':{
+      const Lp=BG.Lf[r],ng=opt.ng!=null?opt.ng:[bgUI(R,1,2),bgUI(R,2,3),bgUI(R,2,4),bgUI(R,3,4)][r]+ex,kf=[.90,.94,.97,.975][r],st=[1.10,1.18];
+      let prevPk=0;sc.peaks=[];sc.viol=0;sc.lines=[];
+      for(let i=0;i<=ng;i++){
+        const e=s+Lp,t0=e*hr-DB,fail=i===ng;meters.push({s,e,k:fail?'pf':'p'});
+        events=ev;const b0=pkOf(t0);
+        const want=i===0?b0*1.22:fail?prevPk*kf:prevPk*bgU(R,st[0],st[1]);
+        let a=Math.max(.04,want/b0-1);ev.push({t0,amp:a});events=ev;
+        let pk=pkOf(t0),it=0;while(it++<30&&Math.abs(pk/want-1)>.002&&!(a<=.04&&pk>want)){a=Math.max(.04,a*(want/pk));ev[ev.length-1].amp=a;pk=pkOf(t0);}
+        if(fail&&pk>=prevPk*(1-.4*(1-kf)))sc.viol++; // the failing peak must sit clearly under the line
+        if(!fail&&i>0&&pk<=prevPk*1.03)sc.viol++; // a good pump must clearly top the line
+        sc.peaks.push(pk);sc.lines.push({at:e,v:prevPk});
+        const tp=e+DB/hr; // the meter after the pump starts here (the line turns red on a fail)
+        if(fail){sc.nf=ng;sc.lineFail={pk,prevPk};real(tp,tp+L,tp,amp);}
+        else{prevPk=Math.max(prevPk,pk);meters.push({s:tp,e:tp+L,k:'f'});dip(tp+L,amp);s=tp+L+bgU(R,1.0,1.6);}
+      }
+      break;}
+    case 'line':{
+      const kn=[.92,.95,.97,.975][r],pks=[];let Tt;
+      const nn=opt.nn!=null?opt.nn:[bgUI(R,1,2),bgUI(R,1,3),bgUI(R,2,3),bgUI(R,2,4)][r]+ex;
+      {let st=s;for(let j=0;j<nn;j++){pks.push(st+Lb);st+=Lb+bgU(R,BG.GQ[r][0],BG.GQ[r][1]);}Tt=st;} // the touch comes after the same kind of quiet gap as every near miss
+      events=[];let H=bossCur(Tt*hr);sc.viol=0;sc.Tt=Tt;
+      const build=()=>{ev.length=0;meters.length=0;sc.viol=0;
+        for(const pt of pks){
+          const t0=pt*hr-DB;meters.push({s:pt-Lb,e:pt,k:'nm',hidden:false}); // near misses show a wind-up meter too
+          events=ev;const b0=pkOf(t0);let a=Math.max(.02,kn*H/b0-1);ev.push({t0,amp:a});events=ev;
+          let pk=pkOf(t0),it=0;while(it++<30&&Math.abs(pk/(kn*H)-1)>.002){a=Math.max(.02,a*(kn*H/pk));ev[ev.length-1].amp=a;pk=pkOf(t0);}
+          if(pk>=H)sc.viol++;dip(pt+.9,amp*.6);}};
+      build();
+      for(let it=0;it<6;it++){events=ev;const H2=bossCur(Tt*hr);if(Math.abs(H2/H-1)<.0005)break;H=H2;build();} // the line = the price at the planned touch with the near-miss tails
+      sc.H=H;sc.nf=pks.length;sc.nmPk=pks;sc.ws=NaN;sc.tc=NaN;sc.tp=NaN;break;} // the window starts at the live touch
+    case 'quiet':{
+      const nf=[bgUI(R,1,2),bgUI(R,2,3),bgUI(R,2,4),bgUI(R,3,4)][r]+ex,Lq=[1.8,1.5,1.2,1.0][r]+dL,Lbq=Lq;
+      for(let i=0;i<nf;i++){meters.push({s,e:s+Lbq,k:'f'});dip(s+Lbq,amp*1.1);s+=Lbq+bgU(R,gp[0],gp[1]);}
+      sc.nf=nf;sc.q0=s*hr;real(s,s+Lq,s,amp*1.1);break;}
+    case 'length':{
+      const nf=[bgUI(R,1,2),bgUI(R,2,3),bgUI(R,2,4),bgUI(R,3,4)][r]+ex,Lsw=[.7,.8,.9,1.0][r],Ls=Lsw+L;
+      for(let i=0;i<nf;i++){meters.push({s,e:s+Lsw,k:'f'});dip(s+Lsw,amp);s+=Lsw+bgU(R,gp[0],gp[1]);}
+      sc.nf=nf;sc.Lsw=Lsw;real(s,s+Ls,s+Lsw,amp);break;} // still filling after a swipe's length = the slam
+  }
+  return sc;}
+function bossGenP(bi,rank,R,opt){ // = gen2 gen(): attack counts drawn once, outside the honesty-retry loop (up to 8 tries)
+  const r=rank-1,ex=opt.extra||0,o2={...opt};
+  if(BG.PAT[bi]==='lowerhigh')o2.ng=[bgUI(R,1,2),bgUI(R,2,3),bgUI(R,2,4),bgUI(R,3,4)][r]+ex;
+  if(BG.PAT[bi]==='line')o2.nn=[bgUI(R,1,2),bgUI(R,1,3),bgUI(R,2,3),bgUI(R,2,4)][r]+ex;
+  let sc;for(let i=0;i<8;i++){sc=bossGen1(bi,rank,R,o2);if(!sc.viol){sc.tries=i+1;return sc;}}sc.rej=1;return sc;}
+function bossGen(bi,rank,R){ // = gen2 setupRound(): picks 🌪️'s copied boss, the calm 🎭 trend, generates; leaves run.boss {q0,tc} and events set
+  R=R||Math.random;run.boss={tc:Infinity,q0:Infinity};
+  const p=bi===7?Math.floor(R()*7):bi;
+  if(BG.PAT[p]==='lowerhigh')run.T={...TIERS.boss,rate:TIERS.boss.rate*BG.rm};
+  const opt=bi===7?{extra:rank>=2?1:0,dL:rank>=2?-.1:0}:{};
+  const sc=bossGenP(p,rank,R,opt);
+  if(bi===7){sc.bi=7;sc.sub=p;sc.pat='mix:'+BG.PAT[p];}
+  run.boss.q0=sc.q0;run.boss.tc=isNaN(sc.tc)?Infinity:sc.tc*BG.HR0;
+  events=sc.ev.map(e=>({...e}));
+  return sc;}
+/* BOSS-V2 gen end */
+/* BOSS-V2 end: data + generator */
 const IHINT='아이템·영끌은 판마다 다시 켜요';
 const ITEMS={
   shield:{short:'보험',name:'🛡️ 손절보험',cost:.08,desc:'폭락 손실 75% 감소 (최소 10%)',lv:1},
@@ -1653,8 +1842,8 @@ const ACH=[
   ['bk10','💀','깡통 장인','파산 10회'],
   ['legend','👑','시장 그 자체','최고 계급 달성'],
   ['spread','🌏','분산 투자','8가지 종목을 모두 거래'],
-  ['boss1','⚔️','첫 보스 처치','보스전에서 목표 수익 달성'],
-  ['boss5','🐉','보스 헌터','보스 5마리 처치'],
+  ['boss1','⚔️','첫 보스 처치','보스의 진짜 공격 직전에 처치'],
+  ['boss5','🐉','보스 헌터','서로 다른 보스 5종 처치'],
   ['liq','💀','청산의 맛','강제청산 당하기'],
   ['allin','💯','영끌 장인','영끌로 x2 이상 익절'],
   ['gear1','🛒','플렉스','상점에서 첫 장비 구매'],
@@ -1794,8 +1983,8 @@ let events=[],warned=false,newsTimer=0,talkT=0,bookT=0,lowFlag=false,volTotal=0;
 
 function makeOffers(){
   let bossNext=false;try{bossNext=tutDone&&!(chal&&chal.i<5)&&((stats.rounds+1)%10===0||armed.bossT>0);}catch(e){}
-  if(bossNext){const bi=bossInfo(stats.bossLv||0);
-    selId='o0';return [{id:'o0',k:'boss',ni:bi.lv,name:bi.B.e+' '+bi.B.n+' Lv.'+(bi.lv+1),code:'BOSS · 목표 +'+Math.round((bi.target-1)*100)+'%',p0:roundTick(rnd(5000,50000)),chg:0,spark:[1,1]}];}
+  if(bossNext){bossP=null;selId='o0';return [bossOfferO(bossEntry(),0)];} 
+  {const po=bossPracO();if(po){selId='o0';return [po];}} /* BOSS-V2: armed practice (not in tutorial/challenge) */
   const ri=rankOf(xp),open=Object.keys(TIERS).filter(k=>TIERS[k].lv<=ri&&!TIERS[k].hidden);
   if(!open.includes(tierSel))tierSel='theme';
   const keys=[tierSel];while(keys.length<8)keys.push(pick(open));
@@ -1872,7 +2061,7 @@ function toast(txt){
   showToast(txt);
 }
 function toastPause(){const te=$('toast'),tx=te._t;if(te.hidden||!tx)return;clearTimeout(toast.tm);te.hidden=true;te._t='';toastBusy=0;if(!toastQ.includes(tx))toastQ.unshift(tx);clearTimeout(nextToast.t);nextToast.t=setTimeout(nextToast,cineEnd-performance.now());}
-function toastWait(){if(toastCard&&(card.hidden||DESK.matches||!$('page').hidden))toastCard=0;if(toastCo&&($('coach').hidden||!card.hidden||DESK.matches||!$('page').hidden))toastCo=0;return toastCard||toastCo;}
+function toastWait(){if(toastCard&&(card.hidden||DESK.matches||!$('page').hidden))toastCard=0;if(toastCo&&($('coach').hidden||!card.hidden||DESK.matches||!$('page').hidden))toastCo=0;return toastCard||toastCo||bossTW();}
 function toastDefer(el,co){const tx=el._t;clearTimeout(toast.tm);el.hidden=true;el._t='';toastBusy=0;if(tx&&!toastQ.includes(tx))toastQ.unshift(tx);if(co)toastCo=1;else toastCard=1;clearTimeout(nextToast.t);}
 function nextToast(){const now=performance.now(),hold=Math.max(toastBusy,cineEnd);clearTimeout(nextToast.t);if(!toastQ.length||toastWait())return;if(now<hold-5){nextToast.t=setTimeout(nextToast,hold-now);return;}
   showToast(toastQ.shift());if(toastQ.length)nextToast.t=setTimeout(nextToast,toastBusy-performance.now());}
@@ -1905,10 +2094,10 @@ function petStart(k){const p=petFix(store.get('shg_pet',null))||pet;if(p){const 
 function petCheck(quiet){try{if(!pet)return;const ri=rankOf(xp),add=PET_ORD.filter(id=>!pet.own[id]&&(typeof PET_UN[id]==='number'?ri>=PET_UN[id]:Array.isArray(ach)&&ach.includes(PET_UN[id])));if(!add.length)return;
   petMod(p=>{const m=quiet||p.q.includes('m');add.forEach(id=>{if(p.own[id])return;p.own[id]={xp:0};if(!m)p.q.push('u:'+id);});p.nw=1;});if(SET.chars)add.forEach(id=>imgGet(chS(id,0)));}catch(e){}}
 function petGain(id,n){if(!pet||!pet.own[id]||!(n>0))return;petMod(p=>{const o=p.own[id];if(!o)return;const a=petLv(o.xp);o.xp=Math.min(1e6,o.xp+Math.floor(n));const b=petLv(o.xp);if(b>a){p.q=p.q.filter(x=>x.indexOf('s:'+id+':'));p.q.push('s:'+id+':'+b);p.nw=1;}});if(SET.chars)imgGet(chS(id,petSt(id)));}
-function petRound(r){try{if(!run||run.tut||run.chal)return;petGain(run.bd,1+(r.win?1:0)+(r.bossKill?2:0));petCheck();}catch(e){}}
+function petRound(r){try{if(!run||run.tut||run.chal)return;petGain(run.bd,1+(r.win?1:0)+(r.bossKill?3:0));petCheck();}catch(e){}}
 const petLeft=x=>{const s=petLv(x),w=stats.rounds?Math.min(1,stats.wins/stats.rounds):.5;return s>1?0:Math.max(1,Math.ceil((PET_T[s+1]-x)/(1+Math.max(.2,w))));};
 const petRn=n=>n+(LANG==='en'&&n===1?' round':'판쯤');
-const PET_AC={streak5:'5연속 익절',boss1:'첫 보스 처치',boss5:'보스 5마리 처치'};
+const PET_AC={streak5:'5연속 익절',boss1:'첫 보스 처치',boss5:'보스 5종 처치'};
 const petCond=(id,lg)=>{const u=PET_UN[id];if(typeof u==='number')return '🎖️ '+RANKS[u][1]+(lg?' 계급 승급':'');const a=ACH.find(a=>a[0]===u);return a?a[1]+' '+(lg?a[2]+' 업적 달성':PET_AC[u]||a[2]):'';};
 const petBg=s=>'<span class="pst s'+s+'">'+PET_S[s][1]+' '+PET_S[s][0]+'</span>',petImg=(id,s,c)=>'<img class="pim'+(c?' '+c:'')+'" src="'+chS(id,s)+'" alt="" draggable="false" data-e="'+(c==='sil'?'🔒':PET_E[id])+'" onerror="this.replaceWith(this.dataset.e)">';
 function petLine(pl,sh){if(!pet)return '';const id=pet.sel,x=pet.own[id].xp,s=petLv(x),n=pl?CHARS[id]:'<b>'+CHARS[id]+'</b>';return '🐾 '+(pl?'':'파트너 ')+n+' · '+PET_S[s][1]+' '+PET_S[s][0]+(s<2&&!sh?' · 다음 단계까지 '+petRn(petLeft(x)):'');}
@@ -2010,10 +2199,10 @@ function ptPaint(kick){const b=ptEl.firstChild,k=ptK==='cheer'?'happy':ptK,m=k==
 function ptKick(a){if(!ptOn||RM.matches)return;if(ptK==='cheer'){clearTimeout(ptTm);ptK='still';}ptPaint(a);}
 function ptReact(k){clearTimeout(ptTm);ptB=0;if(!ptOn){ptK='still';return;}const ok=ptS===1&&!RM.matches&&imgGet(chU(ptId,k))===1;ptK=ok?k:'still';ptPaint(ok?'':k==='happy'?'ptJmp .9s ease-out':'ptShk .8s ease-in-out');}
 function ptCheer(){if(ptOn&&$('ptBub').hidden)ptSay(pick(PT_SAY.up),1400);if(!ptOn||ptK!=='still'||RM.matches)return;if(ptS!==1||imgGet(chU(ptId,'happy'))<1){ptPaint('ptJmp .9s ease-out');return;}const g=ptId;ptK='cheer';ptPaint();clearTimeout(ptTm);ptTm=setTimeout(()=>{if(ptK==='cheer'&&ptId===g){ptK='still';if(ptOn)ptPaint();}},BDM.happy[0]*BDM.happy[1]+60);}
-function ptWinK(){if(run.tut)return 'happy';if(run.chal)return chal.pend>=0?'happy':'shock';const s=sell,re=run.re,net=s.gain+s.bonus-(s.tax||0)+(s.bossReward||0)+(re?(re.gain||0)-(re.loss||0)-re.fee:0),c=net-(run.cost||0)>=0;return (re?net>0&&(s.bossReward||s.m<1||c):s.bossReward||s.m>=1&&c)?'happy':'shock';}
+function ptWinK(){if(run.tut)return 'happy';if(run.boss)return run.boss.hit&&run.boss.hit.o==='kill'?'happy':'shock';if(run.chal)return chal.pend>=0?'happy':'shock';const s=sell,re=run.re,net=s.gain+s.bonus-(s.tax||0)+(s.bossReward||0)+(re?(re.gain||0)-(re.loss||0)-re.fee:0),c=net-(run.cost||0)>=0;return (re?net>0&&(s.bossReward||s.m<1||c):s.bossReward||s.m>=1&&c)?'happy':'shock';}
 const ptShift=()=>{const t=(performance.now()-ptSA[0])/ptSA[1];return t>0&&t<1?ptSA[2]*Math.min(1,t/.2,(1-t)/.15):0;};
 function ptZone(){const u=performance.now()<ptEnd?ptUp:[0,0];return [(6+Math.max(ptW,u[0])+ptSA[2])/CK,H-(3+Math.max(ptH*(1+PTR[ptB]),u[1]))/CK];}
-function ptBand(){if(!ptOn)return;const r=run.boss&&!run.re?cur-1:(cur/(run.re?run.re.entry:1)-1)*(run.lev||1);let b=ptB;while(b<4&&r>=PTT[b])b++;while(b>0&&r<PTT[b-1]-.02)b--;if(b!==ptB){ptB=b;ptEl.className='b'+b+(ptK==='still'?'':' cx')+' s'+ptS;}if(!ptHot&&b>=3&&cur>=2){ptHot=1;ptSay(pick(PT_SAY.hot),1600);}}
+function ptBand(){if(!ptOn)return;const r=run.boss&&!run.re?cur-1:(cur/(run.re?run.re.entry:1)-1)*(run.lev||1);let b=ptB;while(b<4&&r>=PTT[b])b++;while(b>0&&r<PTT[b-1]-.02)b--;if(b!==ptB){ptB=b;ptEl.className='b'+b+(ptK==='still'?'':' cx')+' s'+ptS;}if(!ptHot&&!run.boss&&b>=3&&cur>=2){ptHot=1;ptSay(pick(PT_SAY.hot),1600);}}
 
 const PT_SAY={buy:['가 보자!','두근두근…','이번엔 어디까지 갈까?'],up:['와, 계속 가!','좋아, 좋아!','어디까지 가는 거야?'],bear:['악재다… 조심!','으, 떨어진다…'],bull:['호재다!','좋은 소식이야!'],hot:['심장 터질 것 같아…','이제 팔까…?'],win:['나이스 익절!','챙겼다!'],big:['엄청나!!','최고야!'],cut:['손절도 실력이야','다음엔 올라갈 거야'],crash:['으악…!','아앗…!'],esc:['휴, 피했다!','팔길 잘했어!'],idle:['오늘 느낌 좋아!','이번 판, 같이 가 보자!','폭락 전에만 팔자!']};
 let ptHot=0,ptBubT=0;function ptSay(t,ms){const e=$('ptBub');if(!t||!ptOn||!SET.chars||ptEl.style.visibility==='hidden'||!ptH){e.hidden=true;return;}
@@ -2098,7 +2287,7 @@ function news(text,kind){
   const el=$('news');
   el.innerHTML='<small>'+(kind==='rumor'?'찌라시':(kind==='bull'?'[단독] ':'[속보] ')+pick(SRC))+' · '+clock()+'</small>'+icH(text);
   el.className=kind;el.hidden=false;el.style.animation='none';void el.offsetWidth;el.style.animation='';
-  clearTimeout(newsTimer);newsTimer=setTimeout(()=>el.hidden=true,3500);sfx.news();if(state==='holding'&&(kind==='bear'||kind==='bull')){ptKick(kind==='bear'?'ptShk 1s ease-in-out':'ptHop .5s ease-out');ptSay(pick(PT_SAY[kind]),1600);}
+  clearTimeout(newsTimer);newsTimer=setTimeout(()=>el.hidden=true,3500);sfx.news();if(state==='holding'&&!(run&&run.boss)&&(kind==='bear'||kind==='bull')){ptKick(kind==='bear'?'ptShk 1s ease-in-out':'ptHop .5s ease-out');ptSay(pick(PT_SAY[kind]),1600);}
   talkLines.push('<b class="tgs">[뉴스]</b>'+text.replace(/^[^ ]+ /,''));renderTalk();
 }
 function newsIdle(){const el=$('news');clearTimeout(newsTimer);el.hidden=true;el.className='idle';el.innerHTML=icT('📰 실시간 뉴스');}
@@ -2127,11 +2316,11 @@ function pbFit(val,pct){const v=$('pbV'),e=$('pbP'),n=typeof val==='number',full
   put(s?short:full,c);pbFK=fk;pbFR=[s,c];}
 addEventListener('resize',()=>{pbFK='';if(pbA&&!$('pnlBar').hidden){pbK='';pbSet(...pbA);}});if(document.fonts&&document.fonts.addEventListener)document.fonts.addEventListener('loadingdone',()=>{pbFK='';if(pbA&&!$('pnlBar').hidden){pbK='';pbSet(...pbA);}});
 const pctS=v=>(v>=0?'+':'\u2212')+(Math.abs(v)>=1000?Math.round(Math.abs(v)).toLocaleString('ko-KR'):Math.abs(v).toFixed(1))+'%';
-function pbLive(){if(!run)return;if(run.chal){const pv=Math.round((cur-1)*100);pbSet('🏆 챌린지 점수',ptsL(pv),pctS((cur-1)*100),'gd');return;}
+function pbLive(){if(!run)return;if(run.boss){pbSet('⚔️ 보스전 · '+RN[run.boss.e.r-1],'돈은 안 걸었어요','','gd');return;} /* BOSS-V2: no won amount, no % */if(run.chal){const pv=Math.round((cur-1)*100);pbSet('🏆 챌린지 점수',ptsL(pv),pctS((cur-1)*100),'gd');return;}
   const lev=run.lev,g0=run.re?run.re.bet*(cur/run.re.entry-1)*lev:run.bet*(cur-1)*lev,g=g0>0?g0*profitMul():g0,v=(cur/(run.re?run.re.entry:1)-1)*lev*100;
   pbSet((run.re?'🔁 ':'')+'평가손익'+(lev>1?' · ⚡'+lev+'배':'')+(run.allin?' · 💯':''),g,pctS(v),g>=0?'up':'dn');}
 function renderTalk(){while(talkLines.length>2)talkLines.shift();$('talk').innerHTML=icH(talkLines.map(x=>'<p>'+x+'</p>').join(''));}
-function talk(kind){
+function talk(kind){if(run&&run.boss&&state!=='ready')return; 
   let msg;
   if(state==='holding'&&Math.random()<.12)msg='<b class="tgs">[뉴스]</b>'+pick(NEUTRAL);
   else msg='<b>'+pick(NICK)+Math.floor(rnd(1,999))+'</b>'+(state==='holding'&&(kind==='hype'||kind==='fear')&&Math.random()<.55?dynTalk(kind):pick(TALK[kind]))+(Math.random()<.4?' <em>👍'+Math.floor(rnd(1,99))+'</em>':'');
@@ -2204,7 +2393,7 @@ function paintTop(){try{checkHome()}catch(e){}
   $('rankBar').style.width=(lv.cur/lv.need*100).toFixed(0)+'%';
   {const pc=Math.max(0,Math.min(100,Math.round(lv.cur/lv.need*100))),a=$('ava');if(a._p!==pc){a._p=pc;a.style.setProperty('--p',pc);}htm($('avaLv'),'Lv.'+lv.L);htm($('rkL'),$('rankName').innerHTML);avaPaint();}
   {const k=$('stkP');k.hidden=!(streak>=2);if(streak>=2)htm(k,icH('🔥'+streak+(LANG==='en'?'':'연속')));}
-  {const R=regime();let left=5,cR=false;try{left=5-stats.rounds%5}catch(e){}try{cR=!!(tutDone&&chal&&chal.i<5)}catch(e){}htm($('regime'),icT(cR?'🏆 챌린지 판 '+(chal.i+1)+'/5':R.e+' '+(LANG==='en'&&R.s&&R.s!=='기본'?R.s:R.n)+' · '+left+'판 남음'));$('regime').title=cR?'':R.d;}
+  {const bR=run&&run.boss||bossRgO(),R=bR?REGIMES[0]:regime();let left=5,cR=false;try{left=5-stats.rounds%5}catch(e){}try{cR=!!(tutDone&&chal&&chal.i<5)}catch(e){}htm($('regime'),icT(cR?'🏆 챌린지 판 '+(chal.i+1)+'/5':R.e+' '+(LANG==='en'&&R.s&&R.s!=='기본'?R.s:R.n)+(bR?'':' · '+left+'판 남음')));$('regime').title=cR?'':R.d;}
   {let ok=false;try{ok=!usedToday('shg_spin')}catch(e){}$('giftBtn').classList.toggle('ready',ok);$('giftBtn').setAttribute('aria-label',ok?'매일 선물 · 받을 수 있음':'매일 선물');}
   {const n=spFree(),b=$('spBtn'),e=b.querySelector('.spn');if(e){e.textContent=n;e.hidden=!(n>0);}const al='SP '+n;if(b.getAttribute('aria-label')!==al)b.setAttribute('aria-label',al);}ensureDaily();dotSync();goalPaint();
   {const g=card.querySelector('.goal');if(g&&cardUp())g.innerHTML=icH(goalIn());}
@@ -2216,13 +2405,13 @@ function paintPickers(){
   const chOn=!tutDone||(chal&&chal.i<5),crL=T=>{let L=T.loss;if(chOn)return Math.round(L*100);if(levSel>1)L*=levSel*.6;const sh=sel.shield&&rankOf(xp)>=ITEMS.shield.lv;if(sh)L=Math.min(L,Math.max(.1,L*.25));if(profile==='turtle'&&!sh)L*=.8;L*=1-.03*skl('risk');return Math.round(L*100);};
   const crX=T=>crL(T)>100?' (매수 금액 초과 가능)':'';
   const chP=tutDone&&chal&&chal.i<5,crT=T=>!tutDone?'연습 판 · 물려도 돈은 그대로예요':chP?'폭락에 물리면 −30점 · 내 돈은 안 걸려요':'폭락에 물리면 매수 금액의 '+crL(T)+'%를 잃어요'+crX(T),crS=T=>!tutDone?'연습 판':chP?'물리면 −30점':'물리면 −'+crL(T)+'%'+(crX(T)?'⚠':'');
-  const co=curOffer(),CT=TIERS[co.k],spark=(o,w,h)=>{const mn=Math.min(...o.spark),mx=Math.max(...o.spark);return `<svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" aria-hidden="true"><polyline fill="none" stroke="${o.chg>=0?C.up:C.down}" stroke-width="1.6" points="${o.spark.map((v,i)=>(i/(o.spark.length-1)*w).toFixed(1)+','+(h-1-(v-mn)/((mx-mn)||1)*(h-2)).toFixed(1)).join(' ')}"/></svg>`;};
-  qLoss=co.k==='boss'?'목표 +'+Math.round((bossInfo(co.ni).target-1)*100)+'% 넘기고 팔면 처치 · SP +2':crS(CT);qK='';
-  $('offers').innerHTML=icH(co.k==='boss'?`<button class="spill bosschip" type="button" ${lock?'disabled':''} title="${crT(CT)}">${bossInfo(co.ni).B.e} 보스전 Lv.${co.ni+1}</button>`
+  const co=bossPkO()||curOffer(),CT=TIERS[co.k],spark=(o,w,h)=>{const mn=Math.min(...o.spark),mx=Math.max(...o.spark);return `<svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" aria-hidden="true"><polyline fill="none" stroke="${o.chg>=0?C.up:C.down}" stroke-width="1.6" points="${o.spark.map((v,i)=>(i/(o.spark.length-1)*w).toFixed(1)+','+(h-1-(v-mn)/((mx-mn)||1)*(h-2)).toFixed(1)).join(' ')}"/></svg>`;};
+  qLoss=co.k==='boss'?bossQ(co):crS(CT);qK='';
+  $('offers').innerHTML=icH(co.k==='boss'?`<button class="spill bosschip" type="button" ${lock?'disabled':''} aria-haspopup="dialog">${bossChip(co)}</button>`
    :`<button class="spill" type="button" id="openSheet" aria-haspopup="dialog" ${lock?'disabled':''} title="${crT(CT)}">종목 ${offers.length}개 ▾</button>`);
   $('shList').innerHTML=icH(offers.map(o=>{const T=TIERS[o.k];return `<button class="srow ${o.id===co.id?'on':''}" type="button" data-o="${o.id}"><span class="pe">${T.e}</span><span class="pt"><b>${o.name}</b><small>${T.label} · ${!tutDone?'연습 판':chP?'물리면 −30점':'물리면 −'+crL(T)+'%'+crX(T)}${T.desc?' · '+T.desc:''}</small></span>${spark(o,64,26)}<span class="pr ${o.chg>=0?'up':'dn'}">${o.chg>=0?'+':'−'}${Math.abs(o.chg).toFixed(1)}%</span></button>`}).join(''));
   const ri=rankOf(xp);
-  $('offers').hidden=state==='holding'||state==='ghost';$('items').hidden=$('betrow').hidden=$('offers').hidden||!!chOn;
+  $('offers').hidden=state==='holding'||state==='ghost';$('items').hidden=$('betrow').hidden=$('offers').hidden||!!chOn||co.k==='boss';
   $('ord').hidden=$('betrow').hidden;qFit();
   const AI=allin&&ri>=2,maxBet=AI?maxStake(1):Math.min(balance,maxStake(0))*betPct,pro=isPro()||DESK.matches;
   const nOn=Object.keys(ITEMS).filter(k=>sel[k]&&ri>=ITEMS[k].lv).length+(levSel>1&&ri>=LEVS[1][1]?1:0)+(AI?1:0),hot=AI||levSel>=5&&ri>=LEVS[1][1],nU=Object.values(ITEMS).filter(v=>ri>=v.lv).length+(ri>=LEVS[1][1]?1:0)+(ri>=2?1:0);
@@ -2234,12 +2423,12 @@ function paintPickers(){
   chipFit();if(fk){const n=document.querySelector(fk);if(n&&!n.disabled)n.focus({preventScroll:true});}
 }
 const volFmt=v=>LANG==='en'?(v<1e4?v.toLocaleString('ko-KR'):v<1e5?Math.floor(v/100)/10+'K':v<1e6?Math.floor(v/1e3)+'K':Math.floor(v/1e5)/10+'M'):(v<1e4?v.toLocaleString('ko-KR'):v<1e6?Math.floor(v/1e3)/10+'만':v<1e8?Math.floor(v/1e4).toLocaleString('ko-KR')+'만':Math.floor(v/1e7)/10+'억');
-function qFit(){const e=$('qName');e.style.removeProperty('font-size');e.style.removeProperty('line-height');if(DESK.matches||!e.clientWidth||e.scrollWidth<=e.clientWidth+1)return;const cs=getComputedStyle(e);let f=parseFloat(cs.fontSize);e.style.lineHeight=cs.lineHeight;while(e.scrollWidth>e.clientWidth+1&&f>14){f-=1;e.style.fontSize=f+'px';}}
+function qFit(){const e=$('qName');e.classList.remove('qbx');e.style.removeProperty('font-size');e.style.removeProperty('line-height');if(DESK.matches||!e.clientWidth||e.scrollWidth<=e.clientWidth+1)return;const cs=getComputedStyle(e);let f=parseFloat(cs.fontSize);e.style.lineHeight=cs.lineHeight;while(e.scrollWidth>e.clientWidth+1&&f>14){f-=1;e.style.fontSize=f+'px';}if(e.scrollWidth>e.clientWidth+1&&e.querySelector('.qbr'))e.classList.add('qbx');} /* BOSS-V2: still too long at 14 px → the boss name ellipsizes, the rank stays */
 addEventListener('resize',()=>{try{qFit()}catch(e){}});
 function paintQuote(){
   const o=offer(),T=TIERS[o.k],Q=(id,k,v)=>{const e=$(id);if(e['_'+k]!==v){e['_'+k]=v;e[k]=v;}};
-  {const nm=icT(o.name);if($('qName')._innerHTML!==nm){Q('qName','innerHTML',nm);qFit();}}
-  {const live=state==='holding'||state==='ghost';Q('qCode','innerHTML','<span class="tier">'+T.label+'</span><span class="vol">'+(live||!qLoss?' · 거래량 '+volFmt(Math.floor(volTotal*1373)):' · '+esc(qLoss))+'</span>'+(o.k==='boss'?'':'<span class="cd"> · '+o.code+'</span>'));}
+  {const nm=o.k==='boss'?bossQN(o):icT(o.name);if($('qName')._innerHTML!==nm){Q('qName','innerHTML',nm);qFit();}}
+  {const live=state==='holding'||state==='ghost';Q('qCode','innerHTML',o.k==='boss'?'<span class="vol">'+icT(qLoss)+'</span>':'<span class="tier">'+T.label+'</span><span class="vol">'+(live||!qLoss?' · 거래량 '+volFmt(Math.floor(volTotal*1373)):' · '+esc(qLoss))+'</span>'+'<span class="cd"> · '+o.code+'</span>');}
   const m=!run?liveM:(crashed?(run.liq?cur*.8:Math.min(cur,run.crashAt*.62)):cur);
   const p=priceOf(m),d=p-o.p0,pc=d/o.p0*100;
   {const k=state+'|'+stats.rounds+'|'+o.code;if(cv._ak!==k){cv._ak=k;cv.setAttribute('aria-label','차트: '+o.name+' · 현재가 '+fmtP(p)+' · 기준가 대비 '+pctS(pc));}}
@@ -2275,16 +2464,16 @@ function pushTrade(m){
   if(trades.length>32)trades.length=32;
 }
 const cashLbl=()=>{try{return tutDone&&!(chal&&chal.i<5)&&(state==='ready'||state==='result')&&balance<1e5&&balance+invNet()>=1e5?'💼 예수금 '+wonS(balance)+' · 투자금 찾기':'';}catch(e){return '';}};
-function bossBtn(){if(!tutDone||!(state==='result'||state==='ready')||curOffer().k!=='boss')return '';return '⚔️ 보스전 도전 · 목표 +'+Math.round((bossInfo(stats.bossLv||0).target-1)*100)+'%';}
-function sellLbl(){if(run.boss&&!run.re){const v=Math.floor((cur-1)*1000+1e-6)/10,ok=cur>=run.boss.target||run.boss.down&&performance.now()<run.boss.downAt+1050;return '탭해서 매도!'+' · ⚔️ '+(v>=0?'+':'−')+(Math.abs(v)>=100?Math.floor(Math.abs(v)):Math.abs(v).toFixed(1))+'%'+(ok?' ✅':'/'+Math.round((run.boss.target-1)*100)+'%');}
+/* BOSS-V2: bossBtn(sh) is defined in block B (CTA names the boss) */
+function sellLbl(){if(run.boss)return '⚔️ 탭해서 공격!'; /* BOSS-V2: no % (price is not money here) */
   const v=Math.round((cur/(run.re?run.re.entry:1)-1)*(run.lev||1)*1000)/10;return '탭해서 매도!'+' · '+(run.re?'🔁 ':'')+(v>=0?'+':'−')+Math.abs(v).toFixed(1)+'%';}
 function setBtn(){proSync();app.classList.toggle('st-over',state==='over');{const ov=state==='over';if(btn._ov!==ov){btn._ov=ov;btn.tabIndex=ov?-1:0;if(ov)btn.setAttribute('aria-hidden','true');else btn.removeAttribute('aria-hidden');}}
   {const cn=$('cNext');if(cn){const l=nextLbl();cn.classList.toggle('wait',/^⏳/.test(l));if(cn._l!==l){cn._l=l;cn.innerHTML=icT(l);}}}
   const busy=state==='holding'||state==='ghost';document.querySelectorAll('#tabs button').forEach(b=>b.disabled=busy&&b.dataset.tab!=='trade');
   const cool=state==='result'&&performance.now()<readyAt;
-  const canRe=state==='ghost'&&sell&&!crashed&&run&&!run.tut&&!run.chal&&!run.re&&Math.min(balance,run.bet)>=1e4&&performance.now()-sellAt>=700;
+  const canRe=state==='ghost'&&sell&&!crashed&&run&&!run.boss&&!run.tut&&!run.chal&&!run.re&&Math.min(balance,run.bet)>=1e4&&performance.now()-sellAt>=700;
   btn.className=state==='holding'?'on':canRe?'re':(state==='ghost'||cool||state==='over'||!profile&&!$('qSkip'))?'wait':'';if(bossBtn()&&profile&&!(chal&&chal.i<5)&&!cashLbl())btn.classList.add('boss');
-  btnTxt(state==='holding'?sellLbl():canRe?'🔁 탭해서 재진입 (한 번 더)':state==='ghost'?'차트 끝까지 보는 중…':state==='over'?'이어갈 방법을 골라 주세요':state==='result'?(cool?'⏳ 잠시만…':chal&&tutDone&&chal.i<5?'🏆 챌린지 '+(chal.i+1)+'/5 매수':cashLbl()||bossBtn()||(tutDone?'탭해서 다음 종목 매수':'탭해서 매수')):profile?cashLbl()||bossBtn()||'탭해서 매수':$('qSkip')?'▶ 바로 시작':'🧪 성향 테스트 먼저!');
+  btnTxt(state==='holding'?sellLbl():canRe?'🔁 탭해서 재진입 (한 번 더)':state==='ghost'?(run&&run.boss?'보스의 진짜 공격 보는 중…':'차트 끝까지 보는 중…'):state==='over'?'이어갈 방법을 골라 주세요':state==='result'?(cool?'⏳ 잠시만…':chal&&tutDone&&chal.i<5?'🏆 챌린지 '+(chal.i+1)+'/5 매수':cashLbl()||bossBtn()||(tutDone?'탭해서 다음 종목 매수':'탭해서 매수')):profile?cashLbl()||bossBtn()||'탭해서 매수':$('qSkip')?'▶ 바로 시작':'🧪 성향 테스트 먼저!');
 }
 
 function selectOffer(id){if(state==='holding'||state==='ghost'||state==='over')return;const o=offers.find(x=>x.id===id);if(!o||o.k==='boss')return;selId=id;tierSel=o.k;store.set('shg_tier',tierSel);
@@ -2298,7 +2487,7 @@ function shMode(it){const sh=$('sheet');sh.classList.toggle('im',!!it);$('shTtl'
 $('shIt').insertAdjacentHTML('beforeend','<ul class="shd">'+icH(Object.values(ITEMS).map(it=>'<li><b>'+it.name+'</b> '+it.desc+'</li>').join('')+'<li><b>⚡ 레버리지</b> 수익·손실이 함께 커지고 폭락도 빨리 와요</li><li><b>💯 영끌</b> 전재산을 이번 판에 걸어요</li>')+'</ul>');
 $('proBtn').onclick=()=>{if(!(proOK()||viewForce)||state==='holding'||state==='ghost')return;const on=!isPro();if(viewForce)viewForce=on?'pro':'simple';else{SET.pro=on;store.set('shg_set',SET);}applyView();beep(520,.03,'sine',.03);toast(on?'📊 프로 HTS · 호가창과 아이템을 펼쳐 봐요':'📱 간편 모드 · 차트를 크게 봐요');if(curTab==='set')rerender('set');};
 let sheetAt=0;
-$('offers').addEventListener('click',e=>{if(performance.now()-uiAt<400)return;const b=e.target.closest('#openSheet');if(b&&!b.disabled&&curTab==='trade'){ovRet.sheet=b;sheetAt=performance.now();shMode(0);$('sheet').hidden=false;$('sheet').firstChild.scrollTop=0;$('sheet').firstChild.focus({preventScroll:true});beep(520,.03,'sine',.03);}else{const bc=e.target.closest('.bosschip');if(bc&&!bc.disabled&&curTab==='trade')toast('👹 보스전 판은 종목을 바꿀 수 없어요');}});
+$('offers').addEventListener('click',e=>{if(performance.now()-uiAt<400)return;const b=e.target.closest('#openSheet');if(b&&!b.disabled&&curTab==='trade'){ovRet.sheet=b;sheetAt=performance.now();shMode(0);$('sheet').hidden=false;$('sheet').firstChild.scrollTop=0;$('sheet').firstChild.focus({preventScroll:true});beep(520,.03,'sine',.03);}else{const bc=e.target.closest('.bosschip');if(bc&&!bc.disabled&&curTab==='trade')bossSheet(curOffer().ni);}});
 $('shList').addEventListener('click',e=>{if(performance.now()-sheetAt<400)return;const b=e.target.closest('[data-o]');if(b){selectOffer(b.dataset.o);$('sheet').hidden=true;}});
 $('sheet').addEventListener('click',e=>{if(e.target.id==='sheet'||e.target.id==='shClose')$('sheet').hidden=true;});
 $('betrow').addEventListener('click',e=>{if(performance.now()-uiAt<400)return;const ib=e.target.closest('#itemBtn');if(ib&&!ib.disabled&&curTab==='trade'){ovRet.sheet=ib;sheetAt=performance.now();shMode(1);$('sheet').hidden=false;requestAnimationFrame(chipFit);$('sheet').firstChild.scrollTop=0;$('sheet').firstChild.focus({preventScroll:true});beep(520,.03,'sine',.03);return;}const b=e.target.closest('[data-pct]');if(b&&!b.disabled){betPct=+b.dataset.pct;store.set('shg_pct',betPct);beep(520,.03,'sine',.03);paintPickers();}});
@@ -2314,14 +2503,14 @@ const shape=x=>x<0||x>1?0:x<.15?x/.15:1-(x-.15)/.85;
 const newsF=x=>events.reduce((f,e)=>f*(1+e.amp*shape((x-e.t0)/1.4)),1);
 const inDip=x=>events.some(e=>e.amp<0&&x>=e.t0&&x<=e.t0+1.4);
 
-function bossFit(){const b=$('bossName');if(!b||$('bossbar').hidden)return;b.classList.remove('short');if(b.scrollWidth>b.clientWidth+1)b.classList.add('short');}
+function bossFit(keep){const b=$('bossName');if(!b||$('bossbar').hidden)return;if(keep===1&&b.classList.contains('short'))return;b.classList.remove('short');const m=$('bossbar').querySelector('i');if(b.scrollWidth>b.clientWidth||m&&m.getBoundingClientRect().width<71.5)b.classList.add('short');} /* BOSS-V2: no tolerance; the meter keeps ≥ 72 px (name hidden first) · keep===1 (bossPaint): mid-fight calls never bring a hidden name back; resize/font events (an Event arg) re-fit from scratch */
 addEventListener('resize',bossFit);if(document.fonts&&document.fonts.addEventListener)document.fonts.addEventListener('loadingdone',bossFit);
 let iNow=0,exK='',exAt=0;
 function exWarn(ex){const k=Math.ceil(debt)+'|'+ex,n=performance.now(),again=k===exK&&n-exAt<15000;exK=k;exAt=n;if(again){tab('bank');return;}toast('🚨 이자가 붙으면 빚이 한도를 '+wonS(ex)+' 넘어요 · 투자금을 출금해 상점 › 은행에서 갚으세요');}
 function start(){
   if(TR&&!TR.fold&&curTab==='trade'){const st=tStep();if(st&&st.hold&&!TR.g)tourEnd(true,'hold');else tourFold();} // TOURS: any round start folds the tour (item chips restored first)
   if(presPend||tabNow()||cardTm)return;
-  const chRound=tutDone&&chal&&chal.i<5&&debt<=debtLimit();
+  const chRound=tutDone&&chal&&chal.i<5&&debt<=debtLimit()||bossPracR();
   if(adHold&&adDue&&!onCG&&state==='result'&&!card.querySelector('#adWin,#adLoss,#adRevive'))adDecide();
   if(adReq||adHold&&state==='result'&&!card.querySelector('#adWin,#adLoss,#adRevive')){toast('📺 광고 준비 중…');return;}
   if(!profile&&$('qSkip')&&curTab==='trade'&&$('modal').hidden&&$('sheet').hidden){$('qSkip').click();return;}
@@ -2329,7 +2518,7 @@ function start(){
   if(adPause||curTab!=='trade'||!profile||!$('modal').hidden||!$('sheet').hidden||state==='ghost'||(state==='over'&&!unOver()&&!chRound)||state==='holding')return;
   if(state==='result'&&performance.now()<readyAt)return;
   if(!card.hidden&&card.querySelector('.opts'))return;
-  if(!card.hidden&&card.querySelector('#petGo')&&performance.now()-petAt<450||petCue(1))return;
+  if(!card.hidden&&card.querySelector('#petGo')&&performance.now()-petAt<450||petCue(1))return;if(bossGate())return;
   au();
   const low=()=>{if(balance+invNet()>=100000){toast('💼 예수금이 부족해요. 내 계좌 탭에서 출금하세요');tab('invest');}else{state='over';showOver(0);paintPickers();setBtn();}};
   if(tutDone&&!chRound&&balance<100000){low();return;}
@@ -2349,48 +2538,48 @@ function start(){
   const o=curOffer(),T=TIERS[o.k];
   if(run||chartStock!==o){run=null;sell=null;crashed=false;eM=1;buildChartIdle();}
   eM=liveM;candles.forEach(c=>{c.o/=eM;c.h/=eM;c.l/=eM;c.c/=eM;});runBase=candles.length;
-  const lv=tut||ch?1:levSel,ai=!tut&&!ch&&allin&&rankOf(xp)>=2;
-  const bet=ch?0:tut?(store.get('shg_tutPaid',0)?0:Math.min(balance,START)):ai?Math.min(balance,maxStake(1)):Math.min(balance,maxStake(0))*betPct;
-  const cry=!tut&&!ch&&armed.crystal>0;
-  let cost=0;for(const k of Object.keys(ITEMS))if(useSel[k]&&!(cry&&k==='insider'))cost+=itemCost(k,bet);
+  const bs=o.k==='boss'&&!tut&&!ch,lv=tut||ch||bs?1:levSel,ai=!bs&&!tut&&!ch&&allin&&rankOf(xp)>=2;
+  const bet=ch||bs?0:tut?(store.get('shg_tutPaid',0)?0:Math.min(balance,START)):ai?Math.min(balance,maxStake(1)):Math.min(balance,maxStake(0))*betPct;
+  const cry=!bs&&!tut&&!ch&&armed.crystal>0;
+  let cost=0;if(!bs)for(const k of Object.keys(ITEMS))if(useSel[k]&&!(cry&&k==='insider'))cost+=itemCost(k,bet);
   const fee=tut||ch||gear.vip?0:bet*(.003+.002*(lv-1));
   balance-=cost+fee;
-  const wr=tut||ch?0:wealthRisk(balance);
+  const wr=tut||ch||bs?0:wealthRisk(balance);
   const raw=Math.random()<T.instant+wr*.25?1+Math.random()*.06:Math.min(60,Math.max(1.01,.92*Math.min(1,1.15/Math.sqrt(T.scale))/(1-Math.random())));
-  const rg=tut?{...REGIMES[0],rate:.75/T.rate}:ch?REGIMES[0]:regime();
+  const rg=tut?{...REGIMES[0],rate:.75/T.rate}:ch||bs?REGIMES[0]:regime();
   const hard=1-Math.min(.35,Math.max(0,lvlOf(xp).L-20)*.008);
   let crashAt=tut?1.85:ch?ch.pts[ch.i]:1+(Math.max(1.01,1+(raw-1)*T.scale*hard*(1-wr))-1)*(rg.crash||1)*(1+.015*skl('jackpot'));
   if(!tut&&!ch&&lv>1)crashAt=1+(crashAt-1)/Math.sqrt(lv);
   const u0={inv:{...inv},armed:{...armed}};
-  if(!tut&&!ch&&armed.luck>0){armed.luck--;crashAt=1+(crashAt-1)*1.12;store.set('shg_armed',armed);}
+  if(!bs&&!tut&&!ch&&armed.luck>0){armed.luck--;crashAt=1+(crashAt-1)*1.12;store.set('shg_armed',armed);}
   let entryTag='';
-  if(!tut&&!ch){const d=liveM-1;if(d<=-.04){crashAt=1+(crashAt-1)*1.08;entryTag='📉 저점 매수 · 폭락 조금 늦게';}else if(d>=.05){crashAt=1+(crashAt-1)*.93;entryTag='🔥 추격 매수 · 폭락 조금 빨리';}}
+  if(!bs&&!tut&&!ch){const d=liveM-1;if(d<=-.04){crashAt=1+(crashAt-1)*1.08;entryTag='📉 저점 매수 · 폭락 조금 늦게';}else if(d>=.05){crashAt=1+(crashAt-1)*.93;entryTag='🔥 추격 매수 · 폭락 조금 빨리';}}
   if(entryTag&&(stats.rounds||0)>=20)setTimeout(()=>{if(!crashed)toast(entryTag);},120);
   if(!tut&&!ch)crashAt=Math.max(1.002,crashAt);
-  if(!tut&&!ch){const nr=stats.rounds||0;if(nr<5||nr<10&&Math.random()<(10-nr)/6)crashAt=Math.max(crashAt,1.2+Math.random()*.3);}
-  const it={...useSel};if(cry)it.insider=false;let hint=null;
-  if(!tut&&!ch){for(const k in sel)sel[k]=false;allin=false;}
+  if(!bs&&!tut&&!ch){const nr=stats.rounds||0;if(nr<5||nr<10&&Math.random()<(10-nr)/6)crashAt=Math.max(crashAt,1.2+Math.random()*.3);}
+  const it=bs?{}:{...useSel};if(cry)it.insider=false;let hint=null;
+  if(!bs&&!tut&&!ch){for(const k in sel)sel[k]=false;allin=false;}
   if(it.insider){const real=Math.random()<.7+.03*skl('radar'),A=T.rate*(rg.rate||1),tc=(Math.sqrt(.0121+.012*Math.log(crashAt)/A)-.11)/.006,lnAt=q=>{const u=tc-(1+(.98-q)*20)*holdRate(it);return Math.max(1.002,Math.min(Math.max(Math.min(1.02,crashAt*.99),crashAt*q),u>0?Math.exp(A*(.11*u+.003*u*u)):1));};hint={real,v:real?lnAt(rnd(.88,.98)):crashAt*rnd(1.4,3)};}
   if(cry){armed.crystal--;store.set('shg_armed',armed);crashAt=Math.max(crashAt,Math.exp(T.rate*(rg.rate||1)*.14));hint={real:true,v:Math.max(Math.min(1.02,crashAt*.99),crashAt*rnd(.94,.99)),crystal:1};}
   cgPlay(true);
   run={offer:o,T,key:o.k,crashAt,entryTag,it,hint,sawDip:false,tut,chal:!!ch,cost:cost+fee,bet,lev:lv,allin:ai,liqLine:lv>1?1-(gear.jet?.95:.85)/lv:0};run.tMin=.3*holdRate();
   if(tut&&tutFail)run.retry=1;run.bd=bdRound(tut);run.u0=u0;
   if(ch){ch.pend=-30;store.set('shg_chalRun',ch);}
-  if(!tut&&!ch&&o.k==='boss'&&armed.bossT>0&&(stats.rounds+1)%10!==0){armed.bossT--;store.set('shg_armed',armed);}
+  if(!tut&&!ch&&o.k==='boss'&&!o.prac&&armed.bossT>0&&(stats.rounds+1)%10!==0){armed.bossT--;store.set('shg_armed',armed);}
   if(ai)setTimeout(()=>stamp('💯 영끌 '+won(bet),'wn'),60);else if(lv>=5)setTimeout(()=>stamp('⚡ '+lv+'배','wn'),60);
-  run.rg=rg;const rgi=REGIMES.indexOf(rg);if(!tut&&!ch&&stats.lastRg==null&&rgi===0){stats.lastRg=0;store.set('shg_stats',stats);}if(!tut&&!ch&&stats.lastRg!==rgi){const seen=stats.lastRg===rg.n,rep=(stats.rgSeen|0)>>rgi&1;stats.lastRg=rgi;stats.rgSeen=(stats.rgSeen|0)|1<<rgi;store.set('shg_stats',stats);if(!seen)setTimeout(()=>{stamp(rg.e+' '+rg.n);if(!rep)toast(rg.e+' '+rg.n+' 시작 · '+rg.d);},80);}
-  run.boss=o.k==='boss'&&!ch&&!tut?bossInfo(stats.bossLv||0):null;$('bossbar').hidden=!run.boss;
-  if(run.boss){$('bossName').innerHTML=icH(run.boss.B.e+'<span class="bn"> '+esc(run.boss.B.n)+'</span> Lv.'+(run.boss.lv+1));$('bossGoal').textContent='목표 +'+Math.round((run.boss.target-1)*100)+'%';bossFit();$('bossHp').style.width='100%';setTimeout(()=>stamp('⚔️ 보스전 시작'),50);}tutStep=0;
+  run.rg=rg;const rgi=REGIMES.indexOf(rg);if(!bs&&!tut&&!ch&&stats.lastRg==null&&rgi===0){stats.lastRg=0;store.set('shg_stats',stats);}if(!bs&&!tut&&!ch&&stats.lastRg!==rgi){const seen=stats.lastRg===rg.n,rep=(stats.rgSeen|0)>>rgi&1;stats.lastRg=rgi;stats.rgSeen=(stats.rgSeen|0)|1<<rgi;store.set('shg_stats',stats);if(!seen)setTimeout(()=>{stamp(rg.e+' '+rg.n);if(!rep)toast(rg.e+' '+rg.n+' 시작 · '+rg.d);},80);}
+  run.boss=bs?bossSetup(o):null;$('bossbar').hidden=!run.boss; /* BOSS-V2: generate the script (crashAt=Infinity, chart-time meters), paint the bar */
+  tutStep=0;
   card.hidden=true;newsIdle();
-  t=0;cur=1;peak=1;sell=null;crashed=false;events=[];warned=!!(hint&&hint.crystal);volTotal=0;talkT=0;hbT=0;vigA=0;run.mi=0;
+  t=0;cur=1;peak=1;sell=null;crashed=false;events=[];warned=!!(hint&&hint.crystal);volTotal=0;talkT=0;hbT=0;vigA=0;run.mi=0;if(run.boss){events=run.boss.sc.ev.map(x=>({...x}));bossPaint(run.boss);} /* BOSS-V2: scripted events after the reset */
   if(run.lev>1&&!tut&&Math.random()<Math.min(.75,.08*run.lev))events.push({t0:rnd(.15,.8),amp:-rnd(.05,.18)*(T.amp||1),shake:1});
   state='holding';vib(HAP.buy);paintTop();paintPickers();setBtn();ptK='still';ptB=0;ptHot=0;clearTimeout(ptTm);ptSync();ptKick('ptHop .5s ease-out');
-  $('pnl').hidden=false;pbShow(true);pbLive();ptSay(pick(PT_SAY.buy),1800);proSync();
+  $('pnl').hidden=false;pbShow(true);pbLive();ptSay(pick(run.boss?PT_SAY.bossGo:PT_SAY.buy),1800);proSync();
   if(hint&&hint.crystal)news('🔮 수정구슬: "'+fmtP(priceOf(hint.v))+(isUsd()?'':'원')+' 부근에서 폭락"','rumor');
   else if(hint)news('🔍 찌라시: "'+fmtP(priceOf(hint.v))+(isUsd()?'':'원')+' 근처에서 세력 턴다"','rumor');
 }
 function reenter(){
-  if(adReq||adPause||!(state==='ghost'&&sell&&!crashed&&run&&!run.tut&&!run.chal&&!run.re)||performance.now()-sellAt<700)return;
+  if(adReq||adPause||!(state==='ghost'&&sell&&!crashed&&run&&!run.boss&&!run.tut&&!run.chal&&!run.re)||performance.now()-sellAt<700)return;
   const bet=Math.min(balance,run.bet),fee=gear.vip?0:bet*(.003+.002*(run.lev-1));if(bet<1e4)return;
   balance-=fee;run.re={bet,entry:cur,fee};run.tMin=t+.3*holdRate();while(run.mi<MS.length&&cur*(MS[run.mi][0]===1.3&&!run.tut?eM:1)>=MS[run.mi][0])run.mi++;run.liqLine=run.lev>1?cur*(1-(gear.jet?.95:.85)/run.lev):0;
   state='holding';ptK='still';ptB=0;ptKick('ptHop .5s ease-out');vib(HAP.buy);sfx.tick(cur);stamp('🔁 재진입!');toast('🔁 '+won(bet)+' 다시 진입 · 폭락 전에 또 팔아야 함');
@@ -2398,7 +2587,7 @@ function reenter(){
 }
 function profitMul(){return (1+.1*pres)*(profile==='lion'?1.05:1)*(1+.02*skl('profit')+(gear.monitor?.03:0))*(run.rg.pay||1)*(run.rg.boost&&run.rg.boost.includes(run.key)?run.rg.pay2:1);}
 function release(){
-  if(state!=='holding')return;
+  if(state!=='holding')return;if(run.boss){bossStrike();return;} /* BOSS-V2 */
   if(run.re&&!run.re.done){const r=run.re,r0=r.bet*(cur/r.entry-1)*run.lev,raw=r0>0?r0*profitMul():Math.max(r0,-balance),tr=raw>0?taxRate(balance):0,g=raw-(raw>0?raw*tr:0);
     balance+=g;if(debt>0&&raw>0){const rp=Math.min(debt,raw*.3,balance);r.repaid=rp;repay(rp);}if(rdebt>0&&raw>0)r.rdPaid=rdRepay(raw*.3-(r.repaid||0));r.gain=g;r.done=1;state='ghost';ptReact(ptWinK());if(g<0&&netW()<300000){lowFlag=true;stats.low=1;store.set('shg_stats',stats);}sfx.sell();freezeT=.1;sellJuice(g,(cur/r.entry-1)*run.lev*100);pbSet('🔁 재진입 매도',g,pctS((cur/r.entry-1)*run.lev*100),g>=0?'up':'dn');
     pnlH('<span class="dn">재진입 매도</span> <span class="'+(g>=0?'up':'dn')+'">'+sw(g)+'</span>');
@@ -2423,8 +2612,6 @@ function release(){
   paintTop();paintPickers();setBtn();
   pnlH('<span class="dn">매도 체결</span> <span class="'+(gain+bonus>=0?'up':'dn')+'">'+sw(gain+bonus-tax)+'</span>');pbSet('매도 체결',gain+bonus-tax,pctS((cur-1)*lev*100),gain+bonus-tax>=0?'up':'dn');
   if(gain>0)unlock('first');
-  if(run.boss&&!run.tut&&(cur>=run.boss.target||run.boss.down&&performance.now()<run.boss.downAt+1050)){const rw=run.bet*.5;balance+=rw;sell.bossReward=rw;stats.bossLv=(stats.bossLv||0)+1;stats.bossSP=(stats.bossSP||0)+2;store.set('shg_stats',stats);
-    unlock('boss1');if(stats.bossLv>=5)unlock('boss5');gainXp(60);setTimeout(()=>{stamp('⚔️ 보스 처치!');burst(innerWidth/2,innerHeight*.4,30);cgHappy();},200);paintTop();}
   ptReact(ptWinK());
   if(cur>=10)unlock('ten');
   if(fever)unlock('streak5');
@@ -2435,13 +2622,13 @@ function release(){
   if(run.hint&&run.hint.real&&!run.hint.crystal&&cur>=3)unlock('insider');
   if(!run.tut&&gain<0&&netW()<300000){lowFlag=true;stats.low=1;store.set('shg_stats',stats);}
   if(lowFlag&&netW()>=START){lowFlag=false;stats.low=0;store.set('shg_stats',stats);unlock('comeback');}
-  if(!run.tut&&(sell.bossReward||(gain>0&&Math.random()<.07))){const pz=rollPrize(true),txt=pz.f();store.set('shg_bal',Math.floor(balance));setTimeout(()=>{stamp('💎 보물상자!');toast('💎 보물상자 · '+(pz.e==='🧪'?'':pz.e+' ')+txt);paintTop();paintPickers();},1300);}
+  if(!run.tut&&gain>0&&Math.random()<.07){const pz=rollPrize(true),txt=pz.f();store.set('shg_bal',Math.floor(balance));setTimeout(()=>{stamp('💎 보물상자!');toast('💎 보물상자 · '+(pz.e==='🧪'?'':pz.e+' ')+txt);paintTop();paintPickers();},1300);}
 }
 let pendBust=null;
 function lossFactor(){
   let L=run.T.loss;if(run.lev>1)L=L*run.lev*.6;if(run.it.shield)L=Math.min(L,Math.max(.1,L*.25));if(profile==='turtle'&&!run.it.shield)L*=.8;L*=1-.03*skl('risk');if(!run.liq&&Math.random()<.03*skl('insure')){L*=.5;setTimeout(()=>toast('🪂 자동 손절 발동! 손실 절반'),600);}
   if(run.liq)L=1;return L;}
-const holdRate=(i=run.it)=>.6*(i.slow?.6:1)*(SET.slow?.8:1)*(1-.02*skl('mind'))*(gear.chair?.97:1);
+const holdRate=(i=run.it)=>run&&i===run.it&&run.boss?.6*(SET.slow?.8:1):.6*(i.slow?.6:1)*(SET.slow?.8:1)*(1-.02*skl('mind'))*(gear.chair?.97:1);
 const gapS=()=>(crashT-sell.t)/holdRate();
 function crash(){
   const hold=state==='holding',cn=CINE(),t0=performance.now(),ed=cn&&!hold&&sell&&cineEnd>t0+20?Math.ceil(cineEnd-t0):0;
@@ -2453,6 +2640,7 @@ function crash(){
   if(SET.fx&&hold){chart.classList.remove('shake','hit','gw1','gw2');void chart.offsetWidth;chart.classList.add('shake','hit');clearTimeout(crash.ht);crash.ht=setTimeout(()=>chart.classList.remove('shake','hit'),720);}
   vib(hold?HAP.crash:12);
   sfx.crash();talk('crash');setTimeout(()=>talk('crash'),500);vigA=0;vignSet(0,0);btn.style.setProperty('--heat',0);
+  if(run.boss){bossCrash(hold,cn);return;} /* BOSS-V2: no stake loss, no 🧯/⏪/lowFlag; result = showBoss */
   if(hold){if(cn){freezeT=.12;balHold=t0+300;setTimeout(()=>{balHold=0;animBal(700);},300);}
     const st=!sell?(run.liq?'💀 강제청산':'💥 폭락'):(run.liq?'💀 재진입 강제청산':'💥 재진입 물림'),hit=()=>{stamp(st,'dn');if(cn){ptReact('shock');setTimeout(()=>ptSay(pick(PT_SAY.crash),1400),150);}};if(cn)setTimeout(hit,80);else hit();if(!sell)shards();}
   else if(sell){const rr=run,go=()=>{if(run!==rr)return;const sd=stamp('🛟 피함 −'+lossPct()+'%');ptReact('happy');if(cn)setTimeout(()=>ptSay(pick(PT_SAY.esc),1400),sd+150);else ptSay(pick(PT_SAY.esc),1500);};if(ed)setTimeout(go,ed);else go();if(crashT-sell.t<.6)sfx.up();}
@@ -2538,7 +2726,7 @@ function progH(xg){const L0=lvlOf(Math.max(0,xp-xg)),L1=lvlOf(xp),up=L1.L>L0.L,a
   return '<div class="prog"><div class="pr xp"><div class="prh"><i>⬆️</i><b><span class="lvn">Lv.'+L0.L+'</span><em class="xpv">+'+xg+' XP</em></b><span class="p">'+b+'%</span></div>'+pbH(a,b)+'</div>'+(gi?'<div class="pr goal">'+gi+'</div>':'')+'</div>';}
 const shB='<button type="button" id="share" class="ish" aria-label="결과 공유">📤</button>';
 function actsH(ad,sh){return ad?'<div class="acts">'+ad+(sh?shB:'')+'</div>'+ctaH():ctaH(sh);}
-function nextLbl(){return state!=='result'||performance.now()<readyAt?'⏳ 잠시만…':chal&&tutDone&&chal.i<5?'🏆 챌린지 '+(chal.i+1)+'/5 매수':cashLbl()||bossBtn()||(tutDone?'다음 종목 매수':'다시 매수');}
+function nextLbl(){return state!=='result'||performance.now()<readyAt?'⏳ 잠시만…':chal&&tutDone&&chal.i<5?'🏆 챌린지 '+(chal.i+1)+'/5 매수':cashLbl()||bossBtn(1)||(tutDone?'다음 종목 매수':'다시 매수');}
 const ctaH=sh=>'<div class="ctaw'+(sh?' wsh':'')+'"><button type="button" class="mk wait" id="cNext">'+nextLbl()+'</button>'+(sh?shB:'')+'</div>';
 const intrH=()=>iNow>0?'<div class="sub dn">🏦 이번 판 이자 '+won(iNow)+'이 빚에 붙었어요</div>':'';
 function rpH(){const d=(sell.repaid||0)+((run.re&&run.re.repaid)||0),r=(sell.rdPaid||0)+((run.re&&run.re.rdPaid)||0);if(!d&&!r)return '';
@@ -2551,7 +2739,7 @@ function useH(no){const u=run&&run.u0;if(!u||run.tut||run.chal)return '';const L
 function showWin(pct,xg){
   const soldT='매도 +'+nf(1).format((sell.m-1)*100)+'%',plain=!run.re&&run.lev<=1&&!sell.tax&&!sell.bossReward&&!Object.values(run.it||{}).some(Boolean);
   const rc=!!(run.re&&run.re.caught),s1=sell.gain+sell.bonus-(sell.tax||0),rl=!!run.re&&(rc||lastAmt<=0),wb=Math.floor(Math.max(0,run.re?s1+(run.re.gain||0)-(run.re.loss||0)-run.re.fee:s1)*.5),lb=wb>0||!rc?0:Math.floor(Math.max(0,Math.min(run.re.loss||0,-lastAmt))*.3);
-  const g=rc?(run.liq?['💀 재진입 강제청산','dn','다시 탔다가 강제청산 당했습니다.']:['재진입 물림','dn','팔고 다시 탔다가 폭락에 물렸어요']):rl?['재진입 손해','dn','다시 탔다가 손해를 봤습니다.']:run.boss&&sell.bossReward?['⚔️ 보스 처치!','gd','목표 +'+Math.round((run.boss.target-1)*100)+'% 돌파!']:run.re&&sell.m<1?['재진입 만회','up','손절 후 재진입해 수익으로 마감']:sell.m<1?['손절','dn','손해를 줄이고 빠져나왔습니다.']:lastAmt-(run.cost||0)<0?['수수료에 털림','dn','수수료·아이템값이 수익보다 컸어요']:pct>=95?['신의 손','gd','고점에서 정확히 던졌습니다.']:sell.m>=2?['🚀 큰 수익!','gd',soldT]:sell.m>=1.3?['익절 성공 🏆','up',soldT]:['소소한 익절 👍','',soldT];
+  const g=rc?(run.liq?['💀 재진입 강제청산','dn','다시 탔다가 강제청산 당했습니다.']:['재진입 물림','dn','팔고 다시 탔다가 폭락에 물렸어요']):rl?['재진입 손해','dn','다시 탔다가 손해를 봤습니다.']:run.re&&sell.m<1?['재진입 만회','up','손절 후 재진입해 수익으로 마감']:sell.m<1?['손절','dn','손해를 줄이고 빠져나왔습니다.']:lastAmt-(run.cost||0)<0?['수수료에 털림','dn','수수료·아이템값이 수익보다 컸어요']:pct>=95?['신의 손','gd','고점에서 정확히 던졌습니다.']:sell.m>=2?['🚀 큰 수익!','gd',soldT]:sell.m>=1.3?['익절 성공 🏆','up',soldT]:['소소한 익절 👍','',soldT];
   const close=!rc&&(crashT-sell.t)<.4?'<div class="sub gd">폭락 '+gapS().toFixed(2)+'초 전 탈출!</div>':'';
   const shook=sell.dip&&peak>=sell.m*1.5?'<div class="sub dn">그 악재 뉴스는 개미털기였습니다.</div>':'';
   const o=run.offer,pp=x=>nf(1).format((x-1)*100)+'%',win=run.re?lastAmt>0:sell.m>1;
@@ -2563,12 +2751,11 @@ function showWin(pct,xg){
    (run.re?'<div class="sub">1차 매도 '+sw(sell.gain+sell.bonus-(sell.tax||0))+'</div>':'')+close+shook+promoLine()+
    (run.re?'<div class="sub '+(run.re.caught?run.re.rw?'gd':'dn':(run.re.gain||0)>=0?'up':'dn')+'">🔁 '+(run.re.caught?(run.liq?'재진입 강제청산 ':'재진입 물림 ')+(run.re.rw?'⏪ 손실 복구권 · '+won(0):sw(-(run.re.loss||0))):'재진입 매도 '+sw(run.re.gain||0))+'</div>':'')+
    (sell.tax?'<div class="sub dn">🏛️ 부자세 '+Math.round(sell.taxR*100)+'% '+sw(-sell.tax)+' (반영됨)</div>':'')+
-   (run.boss&&sell.bossReward?'<div class="sub gd">⚔️ '+run.boss.B.n+' 처치! '+sw(sell.bossReward)+' · SP +2 · XP +'+Math.round(60*xpMul())+'</div>':'')+
    (()=>{const c=(run.cost||0)+(run.re?run.re.fee||0:0);return c>0&&!plain?'<div class="sub dn">🧾 수수료·아이템 '+sw(-c)+' · 순손익 '+sw(lastAmt-(run.cost||0))+'</div>':'';})()+
    intrH()+rpH()+useH()+
    (run.lev>1||run.allin?'<div class="sub wn">'+(run.lev>1?'⚡ 레버리지 '+run.lev+'배 ':'')+(run.allin?'💯 영끌':'')+'</div>':'')+
    (sell.bonus?'<div class="sub gd">'+(sell.fever?'🔥 FEVER ':'')+streak+'연속 보너스 '+sw(sell.bonus)+'</div>':'')+
-   (run.boss&&!sell.bossReward?'<div class="sub dn">👹 보스가 살아남았다 (목표 +'+Math.round((run.boss.target-1)*100)+'%)</div>':'')+hintLine()+progH(xg)+
+   hintLine()+progH(xg)+
    actsH(wb>0&&adOk('win')&&adWinBig(wb)?'<button id="adWin" type="button" class="adq"><span>📺 광고 보고 수익 +50%</span><em>+'+swS(wb).replace(/^\+/,'')+' · '+(AD_LIM.win-adCnt('win'))+'/'+AD_LIM.win+'</em></button>':lb>0&&adOk('loss')&&adBig(Math.max(0,Math.min(run.re.loss||0,-lastAmt)))?'<button id="adLoss" type="button" class="adq"><span>📺 광고 보고 손실 30% 복구</span><em>+'+swS(lb).replace(/^\+/,'')+' · '+(AD_LIM.loss-adCnt('loss'))+'/'+AD_LIM.loss+'</em></button>':'',!onCG||sell.m>=2||!!sell.bossReward);
   bdNext={k:g[1]==='dn'?'shock':'happy',id:run.bd||petSel()};showCard();bindShare();
   if($('adWin'))$('adWin').onclick=()=>{const b=$('adWin'),p0=pres;if(adFull('win'))return b.remove();b.disabled=true;rewardAd('winx',()=>{if(pres!==p0||b.dataset.paid)return;if(adFull('win'))return b.remove();b.dataset.paid=1;adUse('win');balance+=wb;stats.net+=wb;store.set('shg_stats',stats);b.remove();paintTop();paintPickers();setBtn();stamp('📺 +50%');toast('📺 보너스 '+swS(wb)+' 지급!');});setTimeout(()=>{if(b.isConnected)b.disabled=false;},3000);};
@@ -2593,11 +2780,211 @@ function showBust(loss,L,xg,rw,sh,ps){
    (sh?'<div class="sub gd">🛡️ 손절보험이 손실을 줄였습니다.</div>':'')+intrH()+useH(rw?'rewind':'')+
    (run.cost&&!plain?'<div class="sub dn">🧾 수수료·아이템 '+sw(-run.cost)+'</div>':'')+
    (ps>1?'<div class="sub">🔥 '+ps+'연속 익절 끊김</div>':'')+hintLine()+
-   (run.boss?'<div class="sub dn">👹 보스가 살아남았다 (목표 +'+Math.round((run.boss.target-1)*100)+'%)</div>':'')+progH(xg)+
+   progH(xg)+
    actsH(lb>0&&adOk('loss')&&adBig(loss)?'<button id="adLoss" type="button" class="adq"><span>📺 광고 보고 손실 30% 복구</span><em>+'+swS(lb).replace(/^\+/,'')+' · '+(AD_LIM.loss-adCnt('loss'))+'/'+AD_LIM.loss+'</em></button>':'',!onCG);
   bdNext={k:'shock',id:run.bd||petSel()};showCard();bindShare();
   if($('adLoss'))$('adLoss').onclick=()=>{const b=$('adLoss'),p0=pres;if(adFull('loss'))return b.remove();b.disabled=true;rewardAd('lossback',()=>{if(pres!==p0||b.dataset.paid)return;if(adFull('loss'))return b.remove();b.dataset.paid=1;adUse('loss');balance+=lb;stats.net+=lb;store.set('shg_stats',stats);b.remove();paintTop();paintPickers();setBtn();stamp('📺 복구');toast('📺 '+swS(lb)+' 돌려받았어요');});setTimeout(()=>{if(b.isConnected)b.disabled=false;},3000);};
 }
+/* (block B) */
+/* BOSS-V2 v3.0.4 shim: the v3.1 result-sheet primitives that block B uses (kvH label|value rows, rstH number cells), copied from the v3.1 WIP. v3.0.3 has neither. Drop this file when porting onto v3.1 (it defines them itself). */
+const UNRE=LANG==='en'?/(\d)([KMBT])(?![a-z])/g:/(\d)(\uC870\uC6D0|\uC5B5\uC6D0|\uB9CC\uC6D0|\uC870|\uC5B5|\uB9CC|\uC6D0)/g;
+const unH=s=>String(s).replace(UNRE,'$1<span class="un">$2</span>'); // the unit at 0.8em
+const kvH=(ic,k,v,o={})=>'<div class="kv'+(o.tot?' tot':'')+(o.nf?' nf':'')+'"'+(o.v!=null?' data-v="'+Math.round(o.v)+'"':'')+'><i>'+(ic||'')+'</i><span>'+k+(o.note?'<small>'+o.note+'</small>':'')+'</span>'+(v==null?'':'<b'+(o.c?' class="'+o.c+'"':'')+'>'+unH(v)+'</b>')+'</div>'; // label | value row · o.c color (up/dn/gd) · o.nf info row · o.v raw value (money rows)
+const rstH=a=>'<div class="rst'+(a.length===2?' n2':'')+'">'+a.map(c=>'<div><small>'+c[0]+'</small><b'+(c[2]?' class="'+c[2]+'"':'')+'>'+c[1]+'</b></div>').join('')+'</div>'; // number cells: label above, value below
+/* BOSS-V2 v3.0.4 shim end */
+
+Object.assign(PT_SAY,{bossKill:['읽었다!','패턴 완벽!'],bossEsc:['너무 일찍!','끝까지 봐야지'],bossHit:['늦었어…'],bossGo:['패턴을 읽자!','신호를 잘 보자!'],bossLoud:['시끄럽네…','요란하다…']}); // partner lines: only what the player saw
+const bT=(k,e)=>LANG==='en'?e:k; // lines with numbers inside need their own word order
+const bDex=()=>{const d=stats.bossDex;if(!d||typeof d!=='object'||Array.isArray(d))stats.bossDex={};return stats.bossDex;}; // {[entry]:{k kills, s best stars, b best time in 1/100 s (0 = none)}} · an entry exists once the boss was met
+const bossMet=i=>!!bDex()[i],bossBMet=b=>Object.keys(bDex()).some(k=>k%8===b);
+const bossBefS=cs=>bT('⏱ '+nf(2).format(cs/100)+'초 전','⏱ '+nf(2).format(cs/100)+'s left'),bossSec=x=>bT(nf(1).format(x)+'초',nf(1).format(x)+' s'),bossBef=cs=>bT('폭락 '+nf(2).format(cs/100)+'초 전',nf(2).format(cs/100)+' s before the crash');
+let bossP=null,bossCo={},bossForce=null; // bossP: armed practice entry (memory only) · bossCo: first-meeting coach shown this session · bossForce: selftest script seed
+function bossNextE(from){const d=bDex();for(let k=0;k<32;k++){const i=(from+k)%32;if(!(d[i]&&d[i].s>=3))return i;}return 24+Math.floor(Math.random()*8);}
+function bossEntry(){const I=Math.max(0,Math.min(32,stats.bossI|0));return I<32?Object.assign(bossE_(I),{E:0}):Object.assign(bossE_(stats.bossE|0),{E:1});} // the boss of the next cadence/ticket round (a miss keeps it)
+function bossOfferO(e,prac){return {id:'o0',k:'boss',ni:e.i,E:e.E?1:0,prac:prac?1:0,name:e.B.e+' '+e.B.n+' '+RN[e.r-1],code:'BOSS · '+RN[e.r-1],p0:roundTick(rnd(5000,50000)),chg:0,spark:[1,1]};}
+function bossPracO(){let p=null;try{p=bossP;}catch(e){}return p!=null&&tutDone&&!(chal&&chal.i<5)?bossOfferO(Object.assign(bossE_(p),{E:0}),1):null;} // makeOffers() runs once before this block is evaluated (bossP not yet declared)
+const bossChip=o=>{const e=bossE_(o.ni);return o.prac?'🎯 연습':e.B.e+' 규칙';}; // the name + rank is already the quote header (an EN name in both cut the header at 360 px); the chip opens the boss sheet
+const bossQ=o=>{const e=bossE_(o.ni);return e.r===1?e.B.hint:'돈은 안 걸어요';}; // quote line: the short hint at rank Ⅰ, else 'no money at stake'
+const bossPracR=()=>{try{const o=curOffer();return !!(o&&o.k==='boss'&&o.prac&&tutDone&&state!=='over');}catch(e){return false;}}; // start(): a practice round skips the round-start bookkeeping like a challenge round
+const bossRule=(b,sub)=>b===7&&sub!=null?'🌪️='+BOSSES[sub].e+' · '+BOSSES[sub].rule:BOSSES[b].rule;
+const bossRng=seed=>{let a=seed>>>0;return ()=>{a=(a+0x6D2B79F5)>>>0;let q=Math.imul(a^a>>>15,1|a);q=q+Math.imul(q^q>>>7,61|q)^q;return ((q^q>>>14)>>>0)/4294967296;};}; // selftest only: fixed scripts
+function bossSetup(o){
+  const e=Object.assign(bossE_(o.ni),{E:o.E?1:0}),H0=BG.HR0;let R;if(bossForce!=null){R=bossRng(bossForce);bossForce=null;}if(o.prac)bossP=null;
+  const sc=bossGen(e.b,e.r,R),B=run.boss,sub=sc.sub!=null?sc.sub:e.b,pat=BG.PAT[sub],line=pat==='line';
+  Object.assign(B,{e,E:e.E,prac:!!o.prac,sc,sub,pat,L:sc.L*H0,ws:line?NaN:sc.ws*H0,H:sc.H,Tt:line?sc.Tt*H0:NaN,hr:.6*(SET.slow?.8:1),
+    m:sc.meters.filter(x=>!x.hidden).map(x=>({s:x.s*H0,e:x.e*H0,k:x.k,lab:x.lab})),st:[],en:[],cues:[],pk:0,np:0,ng:0,used:0,fail:0,mute:0,hit:null,bounty:0,xg:0,slot:null,hp:'',auto:null});
+  B.W=B.tc-B.ws;run.crashAt=Infinity;run.tMin=.3*holdRate(); // the crash is time-based (t >= tc); NaN W/ws for ⛔ until the live touch
+  $('bossbar').className='';{const bb=$('bossbar'),g=$('bossGoal');bb.setAttribute('role','group');bb.setAttribute('aria-label',e.B.e+' '+e.B.n+' '+RN[e.r-1]);g.setAttribute('role','img');g.setAttribute('aria-label','');}$('bossName').innerHTML=icH((sub!==e.b?e.B.e+'='+BOSSES[sub].e:e.B.e)+'<span class="bn"> '+esc(e.B.n)+'</span> '+RN[e.r-1]);
+  $('bossHp').style.width='0%';try{toastPause();}catch(x){}bossFit();setTimeout(()=>stamp(bT('⚔️ '+e.B.n+' 등장','⚔️ '+e.B.n+'!')),50); // the cue slot is painted after start() resets t/cur
+  return B;}
+const bossGrade=(B,x)=>x>=B.ws&&x<B.tc?{o:'kill',st:(x-B.ws)/B.W>=.75?3:(x-B.ws)/B.W>=.5?2:1,u:(x-B.ws)/B.W}:x>=B.tc?{o:'hit',st:0,u:0}:{o:'esc',st:0,u:0};
+function bossTick(){const B=run.boss,hold=state==='holding',H0=BG.HR0; // frame(): holding and ghost, after cur is set
+  if(hold&&B.auto!=null&&t>=B.auto&&t>=run.tMin){B.auto=null;release();return;} // selftest: strike at a chart time (not before 0.3 s of holding: bossStrike ignores those)
+  if(B.pat==='line'&&!(B.ws>=0)&&(cur>=B.H||t>=B.Tt+.3*H0)){B.ws=t;B.tc=t+B.L;B.W=B.L;B.touch=cur>=B.H?1:2;B.m.push({s:t,e:B.tc,k:'r'});} // ⛔ the real wind-up starts at the first frame on the line (safety: 0.3 s after the planned touch)
+  for(let j=0;j<B.m.length;j++){const m=B.m[j];if(!B.st[j]&&t>=m.s){B.st[j]=1;bossCue(B,m,hold);}if(B.st[j]&&!B.en[j]&&m.k!=='r'&&t>=m.e){B.en[j]=1;bossLand(B,m,hold);}}
+  let a=null;for(const m of B.m)if(t>=m.s&&t<m.e)a=m; // the wind-up being filled (never two at once)
+  const f=a?Math.max(0,Math.min(1,(t-a.s)/(a.e-a.s))):0,w=(f*100).toFixed(1);if(w!==B.hp){B.hp=w;$('bossHp').style.width=w+'%';}
+  $('bossbar').classList.toggle('gz',!!a&&f>=.75);bossPaint(B);}
+function bossCue(B,m,hold){ // a wind-up starts: the same partner shake + vibration + sound for bluffs and the real one (H8) · 🦢's real one is silent (its rule)
+  if(B.pat==='quiet'&&m.k==='r'){B.mute=1;$('bossbar').classList.add('quiet');B.cues.push({k:m.k,t,sh:0,vb:0,sn:0,hold});return;}
+  if(!hold){B.cues.push({k:m.k,t,sh:0,vb:0,sn:0,hold});return;}
+  ptKick('ptShk .6s ease-in-out');vib(HAP.warn);sfx.news();if(B.pat==='quiet'){news('⚠️ 블랙스완 경보!','bear');ptSay(pick(PT_SAY.bossLoud),1600);}B.cues.push({k:m.k,t,sh:1,vb:1,sn:1,hold});}
+function bossLand(B,m,hold){ // a bluff lands (dip, pump top or sell wall): stamp + partner hop while holding
+  if(m.k==='p'){B.pk=Math.max(B.pk,B.sc.peaks[B.np]);B.np++;B.ng++;}else if(m.k==='pf'){B.fail=1;B.np++;}else if(B.pat==='count')B.used++;
+  if(!hold||m.k==='pf')return;const st=BOSSES[B.sub].st,tx=m.k==='p'?st[0]:B.pat==='lowerhigh'?st[1]:B.pat==='rhythm'?st[m.lab===25?0:m.lab===50?1:2]:st[0];
+  if(tx){stamp(tx);ptKick('ptHop .5s ease-out');}}
+function bossSlot(B){ // the cue slot (≤ 64 px at 360): ammo · countdown · next hike · pumps · distance to the line · loud/quiet · paw · stars
+  if(B.hit&&B.hit.o==='kill')return '<span class="bst">'+'★'.repeat(B.hit.st)+'<span>'+'☆'.repeat(3-B.hit.st)+'</span></span>';
+  const act=B.m.some(m=>t>=m.s&&t<m.e);
+  switch(B.pat){
+    case 'count':{const n=B.sc.ammo-B.used,one=act?'<span class="bl">💣</span>':'💣';return n>3?one+'×'+n:n>0?one+'💣'.repeat(n-1):'';}
+    case 'clock':{const s=Math.max(0,Math.ceil((B.tc-t)/B.hr-1e-9));return '⏱ '+Math.floor(s/60)+':'+String(s%60).padStart(2,'0');}
+    case 'rhythm':{const m=B.m.find(m=>m.e>t);return m&&m.k==='f'?'🔺'.repeat(m.lab/25):'?';}
+    case 'lowerhigh':return '📈×'+B.ng;
+    case 'line':return B.ws>=0?'⛔ 정지':Math.min(99,Math.floor(cur/B.H*100))+'%';
+    case 'quiet':return B.mute?'🤫':'⚠️';
+    case 'length':return '🐾';}
+  return '';}
+function bossSlotA(B){ // the cue slot in words (#bossGoal is role=img): the slot's glyphs (💣 🔺 🤫 ⏱) are pictures to a screen reader
+  if(B.hit&&B.hit.o==='kill')return bT('별 '+B.hit.st+'개',B.hit.st+(B.hit.st>1?' stars':' star'));
+  switch(B.pat){
+    case 'count':{const n=B.sc.ammo-B.used;return bT('폭탄 '+n+'개 남음',n+(n===1?' bomb left':' bombs left'));}
+    case 'clock':{const s=Math.max(0,Math.ceil((B.tc-t)/B.hr-1e-9));return bT('하락까지 '+s+'초',s+' s to the drop');}
+    case 'rhythm':{const m=B.m.find(m=>m.e>t);return m&&m.k==='f'?bT('다음 인상 '+m.lab/25+'단계','Next hike: size '+m.lab/25):bT('다음 박자 ?','Next beat: ?');}
+    case 'lowerhigh':return bT('펌프 '+B.ng+'번','Pumps: '+B.ng);
+    case 'line':return B.ws>=0?bT('정지','Halt'):bT('발동선까지 '+Math.min(99,Math.floor(cur/B.H*100))+'%',Math.min(99,Math.floor(cur/B.H*100))+'% of the way to the line');
+    case 'quiet':return B.mute?bT('조용','Silent'):bT('경고','Loud');
+    case 'length':return bT('앞발','Paw');}
+  return '';}
+function bossPaint(B){const h=bossSlot(B);if(h!==B.slot){B.slot=h;const g=$('bossGoal');g.innerHTML=icH(h);g.setAttribute('aria-label',bossSlotA(B));bossFit(1);}} // the slot width changes → fit again (once the name is hidden it stays hidden for this fight: no flicker)
+function bossLines(hl,P){const B=run.boss;if(!B||!B.m)return; // draw(): 🎭 last high (gold dashed → red solid on a failed high) · ⛔ halt line from the tap
+  if(B.pat==='lowerhigh'&&B.pk>0)hl(B.pk,B.fail?'#ff4d6d':P.gold,B.fail?'🎭 고점 실패':'직전 고점',B.fail?[]:[4,4]);
+  if(B.pat==='line'&&B.H>0)hl(B.H,'#ff4d6d','⛔ 발동선 +'+Math.round((B.H-1)*100)+'%',[]);}
+function bossStrike(){ // release() on a boss round: one graded strike at the chart time of the last drawn frame
+  const B=run.boss;if(!B||B.hit||t<run.tMin)return;const g=bossGrade(B,t),kill=g.o==='kill',e=B.e,nm=e.B.n;
+  B.hit={t,o:kill?'kill':'esc',st:kill?g.st:0,u:g.u,gap:kill?(B.tc-t)/BG.HR0:0,forced:!!B.forced};
+  sell={t,m:cur,dip:false,sawDip:false,idx:candles.length-1,st0:streak,gain:0,bonus:0,tax:0,amt:0,boss:1};
+  state='ghost';sellAt=performance.now();freezeT=.14;vigA=0;vignSet(0,0);btn.style.setProperty('--heat',0);
+  if(kill){$('bossbar').classList.add('kill');stamp(bT('⚔️ '+nm+' 처치!','⚔️ Defeated!'));sfx.sell();if(B.hit.st===3)setTimeout(()=>burst(innerWidth/2,innerHeight*.4,12),120);ptSay(pick(PT_SAY.bossKill),1500);
+    pnlH('<span class="gd">⚔️ '+'★'.repeat(B.hit.st)+'</span>');pbSet('⚔️ '+nm+' 처치','★'.repeat(B.hit.st)+'☆'.repeat(3-B.hit.st),'','gd');}
+  else{stamp('🏃 도망쳤다','dn');ptSay(pick(PT_SAY.bossEsc),1500);pnlH('<span class="dn">🏃 도망</span>');pbSet('🏃 도망쳤다','돈은 안 걸었어요','','dn');}
+  bossPaint(B);ptReact(ptWinK());paintTop();paintPickers();setBtn();setTimeout(setBtn,720);}
+function bossKill(B){
+  const h=B.hit,e=B.e,i=e.i,d=bDex(),o=d[i]||(d[i]={k:0,s:0,b:0}),first=!o.k,s3=h.st===3&&o.s<3,cs=Math.max(1,Math.round(h.gap*100)),hadPet=pet?Object.keys(pet.own):[];
+  const bounty=Math.round(betCap(1)*BOUNTY[B.E]/1e4)*1e4;balance+=bounty;B.bounty=bounty;if(balance>best){best=balance;store.set('shg_best',Math.floor(best));}
+  stats.bossLv=(stats.bossLv||0)+1;B.newBest=!!o.b&&cs<o.b;B.best=Math.min(o.b||cs,cs);o.k++;o.s=Math.max(o.s,h.st);o.b=B.best;
+  let sp=0;if(first&&i<24){sp++;B.spFirst=1;}if(s3){sp++;B.sp3=1;}
+  if(!B.E){stats.bossI=Math.min(32,(stats.bossI|0)+1);if(stats.bossI>=32)stats.bossE=bossNextE(0);}
+  else{stats.bossEK=(stats.bossEK|0)+1;if(stats.bossEK%5===0){sp++;B.sp5=1;}stats.bossE=bossNextE((i+1)%32);}
+  stats.bossSP=(stats.bossSP||0)+sp;B.sp=sp;store.set('shg_stats',stats);store.set('shg_bal',Math.floor(balance));
+  unlock('boss1');if(first&&Object.values(d).filter(x=>x.k>0).length>=5)unlock('boss5');
+  B.pets=pet?Object.keys(pet.own).filter(k=>!hadPet.includes(k)):[];
+  B.xg=gainXp(BXP[B.E][h.st-1]);if(first||s3)cgHappy();}
+function bossCrash(hold,cn){
+  const B=run.boss;if(!B.hit)B.hit={t:NaN,o:'hit',st:0,u:0,gap:0,forced:false};const h=B.hit;B.mute=0;$('bossbar').classList.remove('quiet','gz');
+  if(hold){const hit=()=>{stamp('💥 보스의 일격','dn');if(cn){ptReact('shock');setTimeout(()=>ptSay(pick(PT_SAY.bossHit),1400),150);}else ptSay(pick(PT_SAY.bossHit),1400);};if(cn)setTimeout(hit,80);else hit();shards();
+    pnlH('<span class="dn">💥 보스의 일격</span>');pbSet('💥 보스의 일격','돈은 안 걸었어요','','dn');}
+  hideCoach();cgPlay(false);state='result';let res=null;
+  if(!B.prac){if(h.o==='kill')bossKill(B);const d=bDex();if(!d[B.e.i])d[B.e.i]={k:0,s:0,b:0};if(h.o!=='kill')B.xg=gainXp(BXP[B.E][3]);
+    res={win:false,key:'boss',m:1,pct:0,streak,insider:false,sawDip:false,boss:true,bossKill:h.o==='kill',lev:1,allin:false,liq:false,shield:false};
+    lastAmt=B.bounty||0;missionsUpdate(res);recordRound(res);}else lastAmt=0;
+  showBoss();if(res)petRound(res);
+  offers=makeOffers();readyAt=Math.max(performance.now(),cardAt)+800;
+  paintTop();paintPickers();setBtn();setTimeout(setBtn,readyAt-performance.now()+20);scheduleSwitch();afterCard(nudge);if(!cardTm)cardAt=0;try{nextToast();}catch(x){}} // toasts held during the fight (bossTW) come back now
+function btlH(B){
+  const h=B.hit,ws=B.ws,tc=B.tc,T=Math.max(tc,h.t>=0?h.t:0)*1.05||1,x=v=>Math.max(0,Math.min(1,v/T)),f=v=>'calc(10px + (100% - 20px)*'+x(v).toFixed(4)+')',hr=B.hr;let o='',nb=0;
+  for(const m of B.m)if(m.k==='f'||m.k==='nm'){nb++;o+='<b class="bf" style="left:'+f(m.e)+'">▲</b>';}
+  if(ws>=0)o+='<i class="br" style="left:'+f(ws)+';width:calc((100% - 20px)*'+(x(tc)-x(ws)).toFixed(4)+')"></i>';
+  o+='<b class="bx" style="left:'+f(tc)+'">×</b>';if(h.t>=0)o+='<b class="bme'+(x(h.t)>.5?' l':'')+'" style="left:'+f(h.t)+'">●<small>나</small></b>';
+  const al=bT('복기 · 가짜 공격 '+nb+'번 · 진짜 신호 '+(ws>=0?bossSec(ws/hr):'—')+' · 내 공격 '+(h.t>=0?bossSec(h.t/hr):'—'),'Replay · '+nb+' bluffs · real tell '+(ws>=0?bossSec(ws/hr):'—')+' · my strike '+(h.t>=0?bossSec(h.t/hr):'—'));
+  return '<div class="btl" role="img" aria-label="'+al+'">'+o+'</div><div class="btlg" aria-hidden="true"><span><b class="bf">▲</b> 가짜 공격</span><span><i></i>진짜 공격</span><span><b class="bx">×</b> 폭락</span>'+(h.t>=0?'<span><b>●</b> 나</span>':'')+'</div>';}
+function showBoss(){ // the result sheet of a boss fight (v3.1 sheet shell)
+  const B=run.boss,h=B.hit,e=B.e,nm=e.B.n,kill=h.o==='kill',hr=B.hr,ws=B.ws,bv=B.bounty||0,s2=x=>nf(2).format(x);
+  const g=kill?[bT('⚔️ '+nm+' 처치!','⚔️ Boss defeated!'),'gd',h.st===3?bT('완벽한 일격 · 폭락 '+s2((B.tc-h.t)/hr)+'초 전','Perfect hit · '+s2((B.tc-h.t)/hr)+' s before the crash'):h.st===2?bT('정확한 일격 · 폭락 '+s2((B.tc-h.t)/hr)+'초 전','Clean hit · '+s2((B.tc-h.t)/hr)+' s before the crash'):'진짜 신호를 읽었어요']
+    :h.o==='esc'?[bT('🏃 보스가 도망쳤다','🏃 It got away'),'dn',h.forced?'화면을 떠나서 자동으로 공격했어요':ws>=0?bT(nf(1).format((ws-h.t)/hr)+'초 일찍 공격했어요','You struck '+nf(1).format((ws-h.t)/hr)+' s too early'):'진짜 공격 전에 공격했어요']
+    :[bT('💥 보스의 일격','💥 You got hit'),'dn',bT('진짜 공격은 '+nf(1).format(ws/hr)+'초에 시작됐어요','The real attack started at '+nf(1).format(ws/hr)+' s')];
+  const cells=kill?[['별','★'.repeat(h.st)+'<span class="mu">'+'☆'.repeat(3-h.st)+'</span>','gd'],['내 공격',bossSec(h.t/hr)],['진짜 신호',bossSec(ws/hr)]]
+    :h.o==='esc'?[['내 공격',bossSec(h.t/hr)],['진짜 신호',ws>=0?bossSec(ws/hr):'—'],['차이',ws>=0?'−'+bossSec((ws-h.t)/hr):'—','dn']]
+    :[['내 공격','—'],['진짜 신호',bossSec(ws/hr)],['폭락',bossSec(B.tc/hr),'dn']];
+  const K=[],I=[];
+  if(!B.prac)K.push(kvH('⚔️','현상금',bv?sw(bv):won(0),{c:bv?'gd':'',v:bv,note:B.E?'재대결':nm+' '+RN[e.r-1]}));
+  if(B.spFirst)I.push(kvH('📖','보스 도감 · 첫 처치','SP +1',{nf:1,c:'gd'}));
+  if(B.sp3)I.push(kvH('⭐','첫 ★★★','SP +1',{nf:1,c:'gd'}));
+  if(B.sp5)I.push(kvH('⚔️','재대결 5번 처치','SP +1',{nf:1,c:'gd'}));
+  if(B.newBest)I.push(kvH('⏱','새 최고 기록',bossBef(B.best),{nf:1,c:'gd'}));
+  (B.pets||[]).forEach(id=>I.push(kvH('🐾','친구 합류',CHARS[id]||id,{nf:1,c:'gd'})));
+  if(B.prac)I.push(kvH('🎯','연습이라 기록·보상은 없어요',null,{nf:1}));
+  shareText=kill?`[떡상 계좌 키우기] ⚔️ ${nm} ${RN[e.r-1]} ${'★'.repeat(h.st)} · ${bossBef(Math.max(1,Math.round(h.gap*100)))}\n자산 ${won(balance)}(가상)`:'';
+  gPrev={nw:balance+invTotal()-debt-bv,xp:xp-(B.xg||0)};
+  card.innerHTML=heroH((B.prac?'':pkLine(1+(kill?3:0)))+'<div class="grade br '+g[1]+'">'+g[0]+'</div><div class="sub">'+g[2]+'</div>')+
+    '<div class="bigl">⚔️ 현상금</div><div class="big '+(bv?'gd':'mu')+'" data-v="'+bv+'">'+unitU(bv?sw(bv):won(0))+'</div>'+(bv?'':'<div class="sub bnz">돈은 안 걸었어요</div>')+
+    rstH(cells)+btlH(B)+(!kill||e.r===1?'<div class="tip">💡 <span>'+bossRule(e.b,B.sub)+'</span></div>':'')+promoLine()+
+    (K.length||I.length?'<div class="kvs">'+K.join('')+I.join('')+'</div>':'')+progH(B.xg||0)+actsH('',kill&&!B.prac);
+  bdNext={k:kill?'happy':'shock',id:run.bd||petSel()};showCard();bindShare();afterCard(()=>{requestAnimationFrame(fitTitle);setTimeout(fitTitle,450);});} // and again once the title icon image has its size // long boss names: the one-line title shrinks to fit
+function bossPrac(i){ // arm (entry) or cancel (null) a no-reward practice round as the next round
+  if(state==='holding'||state==='ghost'||state==='over')return;bossP=i==null?null:Math.max(0,Math.min(31,i|0));offers=makeOffers();
+  if(state==='ready'||state==='result'){run=null;sell=null;crashed=false;eM=1;$('bossbar').hidden=true;$('pnl').hidden=true;pbShow(false);newsIdle();}
+  buildChartIdle();paintPickers();paintQuote();renderBook();setBtn();paintTop(); // paintTop: the regime badge follows the armed/cancelled practice offer (bossRgO)
+  if(bossP!=null){if(curTab!=='trade')tab('trade');const e=bossE_(bossP);toast('🎯 '+bT('다음 판은 연습 · ','Next round is practice · ')+e.B.e+' '+e.B.n+' '+RN[e.r-1]);}}
+function bossSheet(i){ // the boss sheet: rule, my record, best time, bounty, common lines, practice (not mid-fight)
+  if(state==='holding'||state==='ghost')return;const e=bossE_(i),b=e.b,d=bDex(),me=bossMet(i),bm=bossBMet(b),co=curOffer(),nx=!!co&&co.k==='boss'&&!co.prac,x=d[i],killed=!!(x&&x.k);
+  const rec=RN.map((r,k)=>{const y=d[k*8+b];return r+' '+(y&&y.k?'★'.repeat(Math.max(1,y.s)):'—');}).join(' · ');
+  const bst=Math.min(...[0,1,2,3].map(k=>{const y=d[k*8+b];return y&&y.b>0?y.b:Infinity;}));
+  const rules=b===7?[0,1,2,3,4,5,6].filter(k=>bossBMet(k)).map(k=>'<li>'+BOSSES[k].e+' '+BOSSES[k].rule+'</li>').join(''):'';
+  const rule=b===7?(bm||e.r===1?e.B.rule:''):(bm||e.r===1?e.B.rule:'');
+  const bnt=Math.round(betCap(1)*BOUNTY[killed?1:0]/1e4)*1e4,spn=[!killed&&i<24?'첫 처치 SP +1':'',!(x&&x.s>=3)?'첫 ★★★ SP +1':''].filter(Boolean).join(' · ');
+  const canP=me&&tutDone&&!(chal&&chal.i<5)&&(state==='ready'||state==='result')&&!nx;
+  openModal('<h2 class="bsh">'+e.B.e+' '+esc(e.B.n)+' '+RN[e.r-1]+'</h2>'+
+    '<div class="bsr" role="group">'+RN.map((r,k)=>'<button type="button" data-bsr="'+(k*8+b)+'" aria-pressed="'+(k===e.r-1)+'">'+r+'</button>').join('')+'</div>'+
+    (rule?'<p class="lead brl">💡 '+rule+'</p>':'<p class="lead brl mu">? · '+bT('만나면 규칙이 보여요','Meet it to see its rule')+'</p>')+(rules?'<ul class="bcl">'+rules+'</ul>':'')+
+    '<div class="kvs">'+kvH('📖','내 기록',rec,{nf:1})+(bst<Infinity?kvH('⏱','최고 기록',bossBef(bst),{nf:1}):'')+(killed&&(stats.bossI|0)<32?'':kvH('⚔️',killed?'재대결 현상금':'현상금',wonS(bnt),{nf:1,c:'gd'}))+'</div>'+(spn?'<p class="lead bsp">🌳 '+spn+'</p>':'')+
+    '<ul class="bcl"><li>게이지가 꽉 차는 순간 공격이 들어와요</li><li>금색 구간에서 공격하면 ★★★</li><li>돈은 안 걸어요</li></ul>'+
+    (canP?'<button class="setbtn'+(bossP===i?' ghost':'')+'" type="button" id="bossPr">'+(bossP===i?'연습 취소':'🎯 연습하기 (보상 없음)')+'</button>':nx&&me?'<p class="lead mu">'+bT('다음 판이 보스전이라 연습은 그 뒤에 할 수 있어요','The next round is a boss fight · practise after it')+'</p>':''));
+  const pb=$('bossPr');if(pb)pb.onclick=()=>{const c=bossP===i;$('modalClose').click();bossPrac(c?null:i);};
+  document.querySelectorAll('#modalBody [data-bsr]').forEach(q=>q.onclick=()=>bossSheet(+q.dataset.bsr));}
+function bossDexI(b){const d=bDex();for(let r=3;r>=0;r--)if(d[r*8+b])return r*8+b;const c=bossEntry();return c.b===b?c.i:b;}
+function bossDexH(){
+  const d=bDex(),v=Object.values(d),n=v.filter(x=>x.k>0).length,n3=v.filter(x=>x.s>=3).length;
+  const bd=[0,1,2,3].filter(r=>d[r*8+7]&&d[r*8+7].k>0).map(r=>'<span class="bdb">'+RN[r]+' 완성</span>').join('');
+  return '<div class="bdxw"><h3>📖 보스 도감 <b class="cnt">'+n+'/32</b><span class="mu"> · ★★★ '+n3+'</span>'+bd+'</h3><div class="bdxg">'+BOSSES.map((B,b)=>{const m=bossBMet(b),bs=Math.min(...[0,1,2,3].map(r=>{const y=d[r*8+b];return y&&y.b>0?y.b:Infinity;}));
+    const dots=[0,1,2,3].map(r=>{const y=d[r*8+b],on=!!(y&&y.k);return '<i class="'+(on?y.s>=3?'s3':'on':'')+'" style="--mc:'+STAR_T[r][1]+'"'+(on?'':' aria-hidden="true"')+'>'+(on&&y.s>=3?'★':'')+'</i>';}).join('');
+    return '<button type="button" class="bdx'+(m?'':' un')+'" data-bdx="'+bossDexI(b)+'" aria-label="'+esc(B.n)+'"><span class="be">'+(m?B.e:'?')+'</span><b'+(!/\s/.test(B.n)&&B.n.length>=6?' class="lw"':'')+'>'+esc(B.n)+'</b><span class="bmd">'+dots+'</span><small>'+(bs<Infinity?bossBefS(bs):'—')+'</small></button>';}).join('')+'</div></div>';}
+function bossFix(){ // fixStats(): clamp the boss keys of imported/old saves
+  const I=x=>Math.floor(fin(x));stats.bossI=Math.max(0,Math.min(32,I(stats.bossI)));stats.bossE=Math.max(0,Math.min(31,I(stats.bossE)));stats.bossEK=Math.max(0,Math.min(1e6,I(stats.bossEK)));
+  const d=stats.bossDex,o={};if(d&&typeof d==='object'&&!Array.isArray(d))for(const k in d){const i=+k,y=d[k];if(Number.isInteger(i)&&i>=0&&i<32&&y&&typeof y==='object')o[i]={k:Math.max(0,Math.min(1e6,I(y.k))),s:Math.max(0,Math.min(3,I(y.s))),b:Math.max(0,Math.min(1e5,I(y.b)))};}
+  stats.bossDex=o;(stats.hist||[]).forEach(h=>{if(h.bx!=null&&!(Number.isInteger(h.bx)&&h.bx>=0&&h.bx<32))delete h.bx;if(h.st!=null)h.st=Math.max(0,Math.min(3,I(h.st)));});}
+$('page').addEventListener('click',ev=>{const c=ev.target.closest('[data-bdx]');if(c)bossSheet(+c.dataset.bdx);});
+setInterval(()=>{try{ // first meeting of each boss: one coach bubble with the full rule (ready state, nothing else open)
+  if(!tutDone||!(state==='ready'||state==='result')||curTab!=='trade'||!card.hidden||cardTm||!$('modal').hidden||!$('sheet').hidden||!$('coach').hidden||!$('page').hidden||!$('tbg').hidden||!$('toast').hidden)return;
+  const o=curOffer();if(!o||o.k!=='boss')return;const e=bossE_(o.ni);if(bossCo[e.b]||bossBMet(e.b))return;bossCo[e.b]=1;
+  coach(e.B.e+' <b>'+esc(e.B.n)+'</b> · 돈은 안 걸어요<br>'+e.B.rule+'<br>입장한 뒤 진짜 공격 게이지가 차는 동안 ⚔️ 공격 · 너무 일찍 누르면 도망가요',btn,'above');}catch(x){}},500);
+var bossAdQ=null; // [token, time]: an ad request that timed out with no answer from the SDK yet (its interstitial could still start late)
+function bossAdLate(tk){bossAdQ=[tk,performance.now()];} // midAd()/rewardAd() time-out
+function bossAdOk(tk){if(bossAdQ&&bossAdQ[0]===tk)bossAdQ=null;} // adStart()/adEnd(): the SDK answered that request
+function bossPkO(){try{return run&&run.boss&&state==='result'&&cardTm&&run.offer&&run.offer.k==='boss'?run.offer:null;}catch(x){return null;}}
+function bossLblC(C,x,y,sw0,pL,pR){if(x-10-2*sw0>=pL)C.push([x-10-sw0,y+12],[x-10-sw0,y+28]);if(x+10+2*sw0<=pR)C.push([x+10+sw0,y+12],[x+10+sw0,y+28]);} // draw(): strike label beside/below the marker (the strike is near the high, right under the boss bar)
+function bossRgO(){try{const o=curOffer();return !!(o&&o.k==='boss'&&(state==='ready'||state==='result'));}catch(x){return false;}}
+function bossTW(){try{return !!(run&&run.boss&&(state==='holding'||state==='ghost'));}catch(x){return false;}} // toastWait(): no toast over the hint/bar during a fight (queued, shown after the result)
+function bossGate(){ // start(), before any round-start bookkeeping: true = this tap does not start the boss round
+  let o=null;try{o=curOffer();}catch(x){}if(!tutDone||!o||o.k!=='boss'||chal&&chal.i<5)return false;
+  if(bossAdQ&&performance.now()-bossAdQ[1]<60000){toast('📺 광고 준비 중…');return true;} // a late interstitial must never land on a fight: wait for the SDK's answer (60 s at most)
+  if(o.prac)return false;const e=bossE_(o.ni);if(bossCo[e.b]||bossBMet(e.b))return false;
+  bossCo[e.b]=1;hideCoach();bossMeet(e);return true;}
+function bossMeet(e){
+  openModal('<h2 class="bsh">'+e.B.e+' '+esc(e.B.n)+' '+RN[e.r-1]+'</h2><p class="lead bmt">처음 만나는 보스 · 돈은 안 걸어요</p><p class="lead brl">💡 '+e.B.rule+'</p>'+
+    '<ul class="bcl"><li>게이지가 꽉 차는 순간 공격이 들어와요</li><li>입장한 뒤 진짜 공격 게이지가 차는 동안 ⚔️ 공격 · 너무 일찍 누르면 도망가요</li><li>금색 구간에서 공격하면 ★★★</li></ul>'+
+    '<button class="setbtn" type="button" id="bossGo">⚔️ 입장</button>');
+  const g=$('bossGo');if(g)g.onclick=()=>{const n=performance.now();if(n-tapAt<300)return;tapAt=n;$('modalClose').click();start();};}
+function bossBtn(sh){if(!tutDone||!(state==='result'||state==='ready')||curOffer().k!=='boss')return '';const o=curOffer(),e=bossE_(o.ni),n=(e.B.n+' '+RN[e.r-1]).replace(/ /g,'\u00a0'); // the name never breaks inside: a long CTA wraps only at ' · '
+  return (o.prac?'🎯 연습 입장 · ':sh?'⚔️ 보스전 · ':'⚔️ 보스전 입장 · ')+n;}
+function bossQN(o){const e=bossE_(o.ni);return '<span class="qbw"><span class="qbn">'+icT(e.B.e+' '+e.B.n)+'</span><span class="qbr">\u00a0'+RN[e.r-1]+'</span></span>';} // quote header: when it has to cut, the name gets the ellipsis, never the rank (qFit adds .qbx)
+function bossHook(){return { // selftest only (window.__t.boss)
+  get st(){const B=run&&run.boss;if(!B||!B.m)return null;return JSON.parse(JSON.stringify({pat:B.pat,i:B.e.i,b:B.e.b,r:B.e.r,sub:B.sub,E:B.E,prac:B.prac,ws:B.ws,tc:B.tc,W:B.W,L:B.L,q0:B.q0,H:B.H,m:B.m,hit:B.hit,bounty:B.bounty,cues:B.cues,sp:B.sp,xg:B.xg,mute:B.mute,touch:B.touch||0,ammo:B.sc.ammo,t,cur,lev:run.lev,bet:run.bet,icost:run.icost,cost:run.cost,fee:run.fee,it:run.it,allin:run.allin,crashInf:run.crashAt===Infinity,rate:run.T.rate,rg:run.rg.n,slot:B.slot,cls:$('bossbar').className}));},
+  force(seed){bossForce=seed;},auto(x){if(run&&run.boss)run.boss.auto=x;},grade(x){return run&&run.boss?bossGrade(run.boss,x):null;},
+  get cfg(){return JSON.parse(JSON.stringify({lev:levSel,pct:betPct,sel,allin,armed,inv,streak,debt,credit,bal:balance,xp,cap:betCap(1),clean:stats.cleanRounds|0,rounds:stats.rounds,bossI:stats.bossI|0,bossE:stats.bossE|0,bossEK:stats.bossEK|0,bossLv:stats.bossLv|0,bossSP:stats.bossSP|0,dex:bDex(),invest,season,daily:daily.prog,weekly:weekly.prog,wins:stats.c.wins,bestM:stats.bestM,bestPct:stats.bestPct,petxp:pet?pet.own:null,ach:achC}));},
+  get entry(){return bossEntry();},get dex(){return JSON.parse(JSON.stringify(bDex()));},get p(){return bossP;},prac:bossPrac,sheet:bossSheet,
+  get candle(){const c=candles[candles.length-1];return c?{l:c.l,c:c.c,h:c.h,o:c.o,crash:!!c.crash}:null;},get crashAt(){return run?run.crashAt:null;}};}
+/* BOSS-V2 end: fight + UI */
 const TIPS=['💡 투자 비율을 25%로 낮추면 폭락을 맞아도 다시 해 볼 돈이 남아요','💡 5연속 익절하면 FEVER로 보너스가 2배예요','💡 작은 수익이라도 꾸준히 챙기면 연속 익절 보너스가 쌓여요','💡 매일 선물과 미션 보상으로 현금을 다시 모을 수 있어요','💡 수익 중에 악재 뉴스가 뜨면 팔고 다음 판을 노리는 것도 방법이에요'];
 const overTip=()=>{const r=rankOf(xp),u=r+1<RANKS.length?unlOf(r+1):[],D=[];if(u.length)D.push('🔓 '+RANKS[r+1][1]+' 계급이 되면 열려요: '+u.join(', '));if(spFree()>0&&skl('risk')<15)D.push('🌳 남은 SP로 🛡️ 리스크 관리를 올리면 폭락 손실이 줄어요');return D.length&&Math.random()<.5?pick(D):pick(TIPS);};
 
@@ -2669,19 +3056,19 @@ function showDefault(quiet){
 const CFG={adClient:'',adTest:false,donateUrl:'',iap:false,iapDev:false};
 if(/^(localhost|127\.0\.0\.1)$/.test(location.hostname)&&/[?&]adsense\b/.test(location.search))CFG.adClient='ca-pub-2213068202184499';
 const CG={on:false,S:null,last:0,noAds:0,done:0},onCG=/crazygames/.test(location.hostname)||(window.top!==window&&/crazygames/.test(document.referrer))||/^(localhost|127\.0\.0\.1)$/.test(location.hostname)&&/[?&]cg\b/.test(location.search);
-const BUILD='v3.0.3 · b261110 · '+LANG+'-'+(onCG?'cg':/(^|\.)itch\.(io|zone)$|hwcdn\.net$/.test(location.hostname)||/itch\.io/.test(document.referrer)?'itch':'web');
+const BUILD='v3.0.4 · b261110b · '+LANG+'-'+(onCG?'cg':/(^|\.)itch\.(io|zone)$|hwcdn\.net$/.test(location.hostname)||/itch\.io/.test(document.referrer)?'itch':'web');
 if(onCG){const sc=document.createElement('script');sc.src='https://sdk.crazygames.com/crazygames-sdk-v3.js';
   sc.onload=async()=>{try{const S=window.CrazyGames.SDK;await S.init();if(S.environment!=='disabled'){CG.S=S;CG.on=true;cgLoad();try{const ms=v=>{v=v&&typeof v==='object'?v:S.game.settings;cgMute=!!(v&&v.muteAudio);document.body.classList.toggle('noChat',!!(v&&v.disableChat));if(touched||cgMute)bgm.sync();};ms();S.game.addSettingsChangeListener(ms);}catch(e){}if(state==='holding'||state==='ghost')cgPlay(true);}}catch(e){}CG.done=1;};sc.onerror=()=>{CG.done=1;};document.head.appendChild(sc);}
 let cgG=false;
 const cgPlay=on=>{on=!!on;if(!CG.on||cgG===on)return;cgG=on;try{on?CG.S.game.gameplayStart():CG.S.game.gameplayStop();}catch(e){}};
 function cgLoad(){try{CG.S.game.loadingStart();}catch(e){}let done=0;const end=()=>{if(done)return;done=1;try{CG.S.game.loadingStop();}catch(e){}};try{document.fonts.ready.then(()=>requestAnimationFrame(end),end);}catch(e){end();}setTimeout(end,4000);}
 function cgHappy(){try{const n=performance.now();if(!CG.on||n-(cgHappy.t||-1e9)<180000)return;cgHappy.t=n;CG.S.game.happytime();}catch(e){}}
-let adTok=0,adWd=0,AD_WD=90000;const adStart=tk=>{adTok=tk;adPause=true;muted=true;bgm.sync();if(state==='holding'||state==='ghost')cgPlay(false);if(!onCG){clearTimeout(adWd);adWd=setTimeout(()=>{if(adPause&&adTok===tk){adEnd(tk);adsOff(1);}},AD_WD);}},adEnd=tk=>{if(tk!==adTok)return;clearTimeout(adWd);adTok=0;adPause=false;muted=!SET.sound;bgm.sync();if(state==='holding'||state==='ghost')cgPlay(true);};
+let adTok=0,adWd=0,AD_WD=90000;const adStart=tk=>{bossAdOk(tk);adTok=tk;adPause=true;muted=true;bgm.sync();if(state==='holding'||state==='ghost')cgPlay(false);if(!onCG){clearTimeout(adWd);adWd=setTimeout(()=>{if(adPause&&adTok===tk){adEnd(tk);adsOff(1);}},AD_WD);}},adEnd=tk=>{bossAdOk(tk);if(tk!==adTok)return;clearTimeout(adWd);adTok=0;adPause=false;muted=!SET.sound;bgm.sync();if(state==='holding'||state==='ghost')cgPlay(true);};
 let adHold=0,adDue=0,adPend=0,adReq=0,adReqT=0,presPend=0;
 const reqEnd=()=>{adReq=0;clearTimeout(adReqT);};
 function adDecide(){adDue=0;adHold=0;if(state==='holding'||state==='ghost'||document.hidden||(state==='result'||state==='over')&&card.querySelector('#adWin,#adLoss,#adRevive'))adPend=1;else midAd();}
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&adDue)adDecide();});
-function midAd(){if(premOwn('noads'))return;if(!adsOn())return;if(adPause||adReq){adPend=1;return;}adReq=1;adReqT=setTimeout(()=>{reqEnd();if(CG.on)adsOff();},CG.on?45000:1500);const tk=adReqT;let got=0;const on=()=>{got=1;if(adReqT===tk)reqEnd();adStart(tk);},off=i=>{got=1;if(adReqT===tk)reqEnd();adEnd(tk);if(!CG.on&&i&&/^(notReady|error|timeout|invalid|other)$/.test(i.breakStatus))adsOff();};if(!CG.on)setTimeout(()=>{if(!got)adsOff();},10000);
+function midAd(){if(premOwn('noads'))return;if(!adsOn())return;if(adPause||adReq){adPend=1;return;}adReq=1;adReqT=setTimeout(()=>{bossAdLate(adReqT);reqEnd();if(CG.on)adsOff();},CG.on?45000:1500);const tk=adReqT;let got=0;const on=()=>{got=1;if(adReqT===tk)reqEnd();adStart(tk);},off=i=>{got=1;if(adReqT===tk)reqEnd();adEnd(tk);if(!CG.on&&i&&/^(notReady|error|timeout|invalid|other)$/.test(i.breakStatus))adsOff();};if(!CG.on)setTimeout(()=>{if(!got)adsOff();},10000);
   try{if(CG.on)CG.S.ad.requestAd('midgame',{adStarted:on,adFinished:off,adError:()=>{off();adsOff();}});else window.adBreak({type:'next',name:'round30',beforeAd:on,afterAd:off,adBreakDone:off});}catch(e){off();adsOff();}}
 const AD_LIM={win:5,loss:3,item:3};
 const adCnt=k=>{const a=store.get('shg_adc',{});return dayOrd(a.d)>=dayN()?(a[k]||0):0;};
@@ -2692,11 +3079,11 @@ let webNoAds=0;
 const adsOn=()=>onCG?CG.on&&!CG.noAds:(!webNoAds&&!!CFG.adClient&&typeof window.adBreak==='function'&&!!(window.adsbygoogle&&window.adsbygoogle.loaded));
 const adsWait=()=>(onCG?!CG.done:!!CFG.adClient&&!webNoAds&&!adsOn())&&performance.now()<10000;
 const adsOff=say=>{if(onCG?CG.noAds:webNoAds||!CFG.adClient)return;if(onCG)CG.noAds=1;else webNoAds=1;let n=0;if($('adSpin'))$('modal').hidden=true;['adWin','adLoss','adRevive','adItem','adSpin'].forEach(id=>{const b=$(id);if(b){b.remove();n++;}});if(say||n)toast('지금은 광고 보상을 받을 수 없어요');if(overRev)overRev();};
-const adBig=l=>l>0&&l>=.3*(balance+l),adWinBig=w=>w>=stakeCap()*.25||!!sell&&(sell.m>=2||!!sell.fever||!!sell.bossReward);
+const adBig=l=>l>0&&l>=.3*(balance+l),adWinBig=w=>w>=stakeCap()*.25||!!sell&&(sell.m>=2||!!sell.fever);
 if(CFG.adClient&&!onCG){const adFail=()=>adsOff(),old=document.querySelector('script[src*=adsbygoogle]');if(old)old.addEventListener('error',adFail);else{const sc=document.createElement('script');sc.async=true;sc.src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client='+CFG.adClient;sc.crossOrigin='anonymous';sc.onerror=adFail;
   if(CFG.adTest)sc.dataset.adbreakTest='on';sc.dataset.adFrequencyHint='120s';document.head.appendChild(sc);}setTimeout(()=>{if(!adsOn())adFail();},6000);
   window.adsbygoogle=window.adsbygoogle||[];window.adBreak=window.adConfig=function(o){window.adsbygoogle.push(o);};window.adConfig({preloadAdBreaks:'on',sound:SET.sound||SET.bgm?'on':'off'});}
-function rewardAd(name,onReward){if(store.off&&tabNow())return;if(!adsOn()){toast('광고를 불러올 수 없어요');return;}if(adReq||adPause){toast('📺 광고 준비 중…');return;}adReq=1;adReqT=setTimeout(()=>{reqEnd();adsOff(1);},CG.on?45000:6000);const tk=adReqT,end=()=>{if(adReqT===tk)reqEnd();};let ok=false,dis=false,skip=false;
+function rewardAd(name,onReward){if(store.off&&tabNow())return;if(bossTW()){toast('⚔️ 보스전 중에는 광고를 열지 않아요');return;} /* BOSS-V2: no rewarded ad (adPause) during a boss fight */if(!adsOn()){toast('광고를 불러올 수 없어요');return;}if(adReq||adPause){toast('📺 광고 준비 중…');return;}adReq=1;adReqT=setTimeout(()=>{bossAdLate(adReqT);reqEnd();adsOff(1);},CG.on?45000:6000);const tk=adReqT,end=()=>{if(adReqT===tk)reqEnd();};let ok=false,dis=false,skip=false;
   if(CG.on){CG.last=performance.now();try{CG.S.ad.requestAd('rewarded',{adStarted:()=>{end();adStart(tk);},adFinished:()=>{end();adEnd(tk);onReward();},adError:()=>{end();adEnd(tk);adsOff(!adPause);}});}catch(e){reqEnd();adEnd(tk);adsOff(1);}return;}
   try{window.adBreak({type:'reward',name,beforeAd:()=>{end();adStart(tk);},afterAd:()=>adEnd(tk),beforeReward:show=>{if(state==='holding'||state==='ghost'){skip=true;end();return;}show();},adViewed:()=>{ok=true;onReward();},adDismissed:()=>{dis=true;toast('끝까지 봐야 보상을 받아요');},adBreakDone:i=>{end();adEnd(tk);const st=i&&i.breakStatus;if(!ok&&!dis&&!skip&&st!=='viewed'&&st!=='dismissed')adsOff(1);}});}catch(e){reqEnd();adEnd(tk);adsOff(1);}}
 const badge=()=>{try{if(!navigator.setAppBadge)return;if(!usedToday('shg_spin'))navigator.setAppBadge(1);else navigator.clearAppBadge();}catch(e){}};
@@ -2813,7 +3200,7 @@ function showLevel(){if(state==='holding'||state==='ghost')return;
    '<div class="xpbar" style="margin-top:8px"><u style="width:'+pct+'%"></u></div><p class="mu" style="margin:4px 0 10px;font-size:13px">다음 레벨까지 '+(lv.need-lv.cur).toLocaleString('ko-KR')+' XP ('+lv.cur.toLocaleString('ko-KR')+' / '+lv.need.toLocaleString('ko-KR')+') · 누적 '+xp.toLocaleString('ko-KR')+' XP</p>'+
    '<div class="lvl"><div><small>레벨 투자 한도</small><b>'+won(prevCap)+'</b></div><div><small>다음 계급</small><b>'+(nx?nx[1]+' · <span class="nb">'+(nx[0]-xp).toLocaleString('ko-KR')+' XP 남음</span>':'최고 계급!')+'</b></div></div>'+
    '<p class="mu" style="font-size:12px;margin:10px 0 4px">레벨업마다 레벨 한도 +22% · 2레벨마다 SP +1</p>'+
-   '<h3>XP 얻는 법</h3><p class="mu" style="font-size:13px;margin:0;line-height:1.55">익절 '+xv(8*sq)+(LANG==='en'?'–':'~')+xv(48*sq)+' XP (배수·근접도↑, 피버 2배) · 물림 '+xv(3)+' XP · 보스 처치 '+xv(60)+' XP · 일일미션 완료 · 매일 선물</p>'+
+   '<h3>XP 얻는 법</h3><p class="mu" style="font-size:13px;margin:0;line-height:1.55">익절 '+xv(8*sq)+(LANG==='en'?'–':'~')+xv(48*sq)+' XP (배수·근접도↑, 피버 2배) · 물림 '+xv(3)+' XP · 보스 처치 '+xv(40)+(LANG==='en'?'–':'~')+xv(60)+' XP · 일일미션 완료 · 매일 선물</p>'+
    '<h3>계급표</h3><div class="rk">'+roadHtml()+'</div>','lv');
   const rk=$('modalBody').querySelector('.rk'),on=rk&&rk.querySelector('.rd.on');if(on&&rk.scrollHeight>rk.clientHeight)rk.scrollTop=Math.max(0,on.offsetTop-rk.offsetTop-rk.clientHeight/2+on.offsetHeight/2);
   else if(on){const sc=$('modalBody');if(sc.scrollHeight>sc.clientHeight+1){const a=on.getBoundingClientRect(),b=sc.getBoundingClientRect(),k=sc.offsetHeight/(b.height||1);sc.scrollTop=Math.max(0,sc.scrollTop+(a.top-b.top)*k-sc.clientHeight/2+on.offsetHeight/2);}}
@@ -2850,13 +3237,13 @@ document.addEventListener('click',e=>{if(e.target.closest&&e.target.closest('#mo
 const tutTapNo=()=>{if(!tutTapOff())return false;toast('⏳ 아직! 노란 +30% 줄을 넘으면 파세요');return true;};
 const tapHold=e=>{if(e.button>0)return;e.preventDefault();const n=performance.now();if(n-tapAt<300)return;if(state!=='holding'&&n-uiAt<400)return;if(tutTapNo())return;tapAt=n;if(state==='holding')release();else if(state==='ghost')reenter();else start();};
 if(window.PointerEvent)btn.addEventListener('pointerdown',tapHold);else{btn.addEventListener('touchstart',tapHold,{passive:false});btn.addEventListener('mousedown',tapHold);}
-const forceSell=()=>{if(state==='holding'&&run&&t<run.tMin){
+const forceSell=()=>{if(run&&run.boss&&state==='holding')run.boss.forced=1; /* BOSS-V2: hide/rotate/reload = a strike now */if(state==='holding'&&run&&t<run.tMin){
     while(t<run.tMin&&base(t)<run.crashAt){t+=.01;cur=Math.max(run.lev>1?.3:.85,base(t)*(1+(wig(t)-1)*Math.min(1,t/.3)*(run.T.wig||1)*(run.rg.wig||1))*newsF(t));peak=Math.max(peak,cur);
       if(run.liqLine&&cur<=run.liqLine&&!(run.hint&&t<run.hint.x)){if(inv.noliq>0){inv.noliq--;store.set('shg_inv',inv);stats.c.items++;store.set('shg_stats',stats);run.liqLine=0;toast('🧯 청산 방지권 발동! 살았다');}else{run.liq=1;crash();return;}}
       const idx=runBase+Math.floor(t/CD);while(candles.length<=idx){const pc=candles.length?candles[candles.length-1].c:1;candles.push({o:pc,h:pc,l:pc,c:pc,v:0,r:1});}const c=candles[candles.length-1];c.h=Math.max(c.h,cur);c.l=Math.min(c.l,cur);c.c=cur;}
     if(base(t)>=run.crashAt){crash();return;}}
   release();};
-const flushRound=()=>{forceSell();if(state!=='ghost'||!run||crashed)return;
+const flushRound=()=>{forceSell();if(state!=='ghost'||!run||crashed)return;if(run.boss){run.crashAt=cur;crash();return;} /* BOSS-V2: outcome already fixed by the strike; no 1e5-step loop with crashAt=Infinity */
   for(let i=0;i<1e5&&base(t)<run.crashAt;i++){t+=.05;cur=Math.max(run.lev>1?.3:.85,base(t)*(1+(wig(t)-1)*Math.min(1,t/.3)*(run.T.wig||1)*(run.rg.wig||1))*newsF(t));peak=Math.max(peak,cur);
     const idx=runBase+Math.floor(t/CD);while(candles.length<=idx){const pc=candles.length?candles[candles.length-1].c:1;candles.push({o:pc,h:pc,l:pc,c:pc,v:0,ghost:true,r:1});}const c=candles[candles.length-1];c.h=Math.max(c.h,cur);c.l=Math.min(c.l,cur);c.c=cur;}
   crash();};
@@ -2929,7 +3316,7 @@ function draw(){
   const all=candles;
   const vis=all.slice(-N),pr=priceOf(vis.length?vis[vis.length-1].c:1);
   let lo=.97,hi=1.12;vis.forEach(c=>{lo=Math.min(lo,c.l);hi=Math.max(hi,c.h)});
-  if(run&&run.hint&&state!=='ready')hi=Math.max(hi,Math.min(run.hint.v*1.05,hi*1.6));
+  if(run&&run.hint&&state!=='ready')hi=Math.max(hi,Math.min(run.hint.v*1.05,hi*1.6));if(run&&run.boss&&run.boss.m)hi=Math.max(hi,run.boss.H||0,run.boss.pk||0); /* BOSS-V2: the ⛔ halt line and the 🎭 last high stay on the scale */
   const L0=Math.log(lo)-.03,L1=Math.log(hi)+.05;
   const Y=m=>plotB-(Math.log(m)-L0)/(L1-L0)*(plotB-plotT);
   const X=i=>plotL+i*cw+cw/2;
@@ -2949,7 +3336,7 @@ function draw(){
   if(run&&run.liqLine&&state==='holding')hl(run.liqLine,P.down,'💀 청산가',[6,3]);
   hl(1/eM,P.muted,'기준가',[2,3]);
   if(!T.hidden)hl(run&&run.tut?1.3:1.3/eM,P.gold,T.limit&&!(run&&run.tut)?'상한가 +30%':'+30%',[4,4]);
-  else if(run&&run.boss)hl(run.boss.target,P.gold,'목표 +'+Math.round((run.boss.target-1)*100)+'%',[4,4]);
+  else if(run&&run.boss)bossLines(hl,P);
   if(run&&run.hint&&state!=='ready'){ctx.lineWidth=2;hl(run.hint.v,P.rumor,run.hint.crystal?'수정구슬':'찌라시 목표가',[2,5]);ctx.lineWidth=1;}
   // volume
   const vmax=Math.max(1,...vis.map(c=>c.v));
@@ -2975,7 +3362,7 @@ function draw(){
   ctx.globalAlpha=1;
   ctx.font='700 '+AX+'px '+CF_UI;for(const b of lbls){if(dk)pill(b.label,b.x,b.y-7,b.w,b.col);else{ctx.fillStyle=b.col;olT(b.label,b.x,b.y-7);boxes.push([b.x-2,b.y-7-PH,b.x+b.w+2,b.y-7+PH]);}}
   if(!vis.length)return;
-  const peak=()=>{if(crashed){let pi=-1,pm=0;vis.forEach((c,i)=>{if(c.h>pm&&!c.crash&&c.r){pm=c.h;pi=i}});
+  const peak=()=>{if(crashed&&!(run&&run.boss)){let pi=-1,pm=0;vis.forEach((c,i)=>{if(c.h>pm&&!c.crash&&c.r){pm=c.h;pi=i}});
     if(pi>=0){ctx.fillStyle=P.gold;ctx.font='700 '+AX+'px '+CF_UI;ctx.textAlign='center';
       let py=Y(pm)-10;const bb=($('regime').offsetTop+$('regime').offsetHeight)/CK;if(py-6<bb)py=Y(pm)+12;const pt='고점 '+fmtP(priceOf(pm),pr),px=Math.min(plotR-34,Math.max(34,X(pi)));
       const w=ctx.measureText(pt).width;if(dk){ctx.textAlign='left';pill(pt,px-w/2,py,w,P.gold);}else{olT(pt,px,py);boxes.push([px-w/2-2,py-PH,px+w/2+2,py+PH]);}peakBox=boxes[boxes.length-1];ctx.textAlign='left';}}};
@@ -2983,10 +3370,10 @@ function draw(){
   // sell marker
   sellBox=null;if(sell){const i=sell.idx-off;if(i>=0&&i<vis.length){const x=X(i),y=Y(vis[i].h)-8;
     ctx.fillStyle=P.down;ctx.beginPath();ctx.moveTo(x-5,y-8);ctx.lineTo(x+5,y-8);ctx.lineTo(x,y);ctx.closePath();ctx.fill();
-    const am=sell.amt!=null&&run&&!run.tut&&!run.chal,ka=Math.min(1,(performance.now()-sellAt)/260);ctx.font=am?'800 '+AX+'px '+CF_NUM:'700 '+AX+'px '+CF_UI;ctx.textAlign='center';const sl=am?'매도 '+swS(sell.amt):'매도',sw0=ctx.measureText(sl).width/2,cl=v=>Math.min(plotR-sw0-2,Math.max(sw0+4,v));
+    const am=sell.amt!=null&&run&&!run.tut&&!run.chal&&!run.boss,ka=Math.min(1,(performance.now()-sellAt)/260);ctx.font=am?'800 '+AX+'px '+CF_NUM:'700 '+AX+'px '+CF_UI;ctx.textAlign='center';const sl=am?'매도 '+swS(sell.amt):sell.boss?'⚔️ 공격':'매도',sw0=ctx.measureText(sl).width/2,cl=v=>Math.min(plotR-sw0-2,Math.max(sw0+4,v));
     const ov=['news','regime','proBtn','bossbar','fever'].map(id=>$(id)).filter(e=>e&&!e.hidden&&e.offsetHeight).map(e=>{const k=e.id==='regime'?7:0;return [(e.offsetLeft+k)/CK,(e.offsetTop+k)/CK,(e.offsetLeft+e.offsetWidth-k)/CK,(e.offsetTop+e.offsetHeight-k)/CK];}).concat([...chart.querySelectorAll('.stamp')].map(e=>stampBox(e).map(v=>(v-1)/CK))),
-      pzB=pz?[[0,pz[1]-6,pz[0],H]]:[],hit=(cx,v)=>boxes.concat(ov,pzB).some(b=>cx-sw0-2<b[2]&&cx+sw0+2>b[0]&&v-7<b[3]&&v+7>b[1]),C=[[cl(x),y-16]];if(dk)C.push([cl(x),y-30],[cl(x),y-44]);if(x-10-2*sw0>=plotL)C.push([x-10-sw0,y-4]);if(x+10+2*sw0<=plotR)C.push([x+10+sw0,y-4]);if(!dk)C.push([cl(x),y-30],[cl(x),y-44]);if(pz&&x-sw0<pz[0]){if(pz[0]+8+2*sw0<=plotR)C.push([pz[0]+6+sw0,y-4]);C.push([cl(x),pz[1]-16]);}C.push([cl(x),Y(vis[i].l)+14]);
-    const inH=([,v])=>v-7>=2&&v+7<=H-2,ar=(cx,v)=>boxes.concat(ov,pzB).reduce((a,b)=>a+Math.max(0,Math.min(cx+sw0+2,b[2])-Math.max(cx-sw0-2,b[0]))*Math.max(0,Math.min(v+7,b[3])-Math.max(v-7,b[1])),0),
+      pzB=pz?[[0,pz[1]-6,pz[0],H]]:[],hit=(cx,v)=>boxes.concat(ov,pzB).some(b=>cx-sw0-2<b[2]&&cx+sw0+2>b[0]&&v-7<b[3]&&v+7>b[1]),C=[[cl(x),y-16]];if(dk)C.push([cl(x),y-30],[cl(x),y-44]);if(x-10-2*sw0>=plotL)C.push([x-10-sw0,y-4]);if(x+10+2*sw0<=plotR)C.push([x+10+sw0,y-4]);if(!dk)C.push([cl(x),y-30],[cl(x),y-44]);if(pz&&x-sw0<pz[0]){if(pz[0]+8+2*sw0<=plotR)C.push([pz[0]+6+sw0,y-4]);C.push([cl(x),pz[1]-16]);}if(sell.boss)bossLblC(C,x,y,sw0,plotL,plotR);C.push([cl(x),Y(vis[i].l)+14]);
+    const bbT=sell.boss&&!$('bossbar').hidden?($('bossbar').offsetTop+$('bossbar').offsetHeight)/CK+1:2,inH=([,v])=>v-7>=bbT&&v+7<=H-2,ar=(cx,v)=>boxes.concat(ov,pzB).reduce((a,b)=>a+Math.max(0,Math.min(cx+sw0+2,b[2])-Math.max(cx-sw0-2,b[0]))*Math.max(0,Math.min(v+7,b[3])-Math.max(v-7,b[1])),0),
       [sx,sy]=C.find(c=>inH(c)&&!hit(...c))||C.filter(inH).sort((a,b)=>ar(...a)-ar(...b))[0]||C[0];sellBox=[sx-sw0-2,sy-8,sx+sw0+2,sy+8];
     if(am){ctx.globalAlpha=ka;ctx.fillStyle=sell.amt>=0?P.up:P.down;ctx.font='800 '+Math.round(AX*(1+.3*(1-ka)))+'px '+CF_NUM;}olT(sl,sx,sy);ctx.globalAlpha=1;ctx.textAlign='left';}}
   // current price tag
@@ -3027,7 +3414,7 @@ function showStamp(text,cls){
   if(cls!=='dn')vib(12);
 }
 function stampBox(el){const w=el.offsetWidth,h=el.offsetHeight,cx=el.offsetLeft,cy=el.offsetTop,hw=1.04*(w*.4993+h*.0262),hh=1.04*(w*.0262+h*.4993);return [cx-hw,cy-hh-h*.3,cx+hw,cy+hh];}
-function stampFit(el){if(!el.isConnected||el.parentNode!==chart)return;if(plotRX>0){const pr=plotRX*CK-4,pl=6;let fs=parseFloat(el.style.fontSize||getComputedStyle(el).fontSize);while(fs>16&&el.offsetWidth*1.04+8>pr-pl){fs-=1;el.style.fontSize=fs+'px';}const hw0=1.04*(el.offsetWidth*.4993+el.offsetHeight*.0262);el.style.left=Math.round(Math.min(pr-hw0,Math.max(pl+hw0,chart.clientWidth/2)))+'px';}
+function stampFit(el){if(!el.isConnected||el.parentNode!==chart)return;if(plotRX>0){const pr=plotRX*CK-4,pl=6;let fs=parseFloat(el.style.fontSize||getComputedStyle(el).fontSize);while(fs>16&&el.offsetWidth*1.04+8>pr-pl){fs-=1;el.style.fontSize=fs+'px';}if(run&&run.boss&&el.offsetWidth*1.04+8>pr-pl){el.style.whiteSpace='normal';el.style.maxWidth=Math.floor((pr-pl-8)/1.04)+'px';} /* BOSS-V2: still wider than the plot at 16 px → wrap inside the plot (never cut at the left edge) */const hw0=1.04*(el.offsetWidth*.4993+el.offsetHeight*.0262);el.style.left=Math.round(Math.min(pr-hw0,Math.max(pl+hw0,chart.clientWidth/2)))+'px';}
   const ch=chart.clientHeight,w=el.offsetWidth,h=el.offsetHeight,cx=el.offsetLeft,hw=1.04*(w*.4993+h*.0262),hh=1.04*(w*.0262+h*.4993),ob=[];
   if(sellBox)ob.push(sellBox.map(v=>v*CK+1));
   chartObs.forEach(b=>ob.push(b.map(v=>v*CK)));
@@ -3599,7 +3986,7 @@ function tSeenSet(id){if(!tSeen(id))tipSet('tr_'+id+TOURS[id].v);}
 function tourFold(){if(!TR||TR.fold)return;tRestore();if(TR.mock){TR.mock.remove();TR.mock=null;}TR.fold=1;TR.foldR=stats.rounds||0;tEl('.tbub').hidden=true;$('tour').classList.add('nodim');tSave();tChip();}
 function tourResume(){if(!TR||!TR.fold)return;TR.fold=0;TR.auto=0;tEl('.tchip').hidden=true;$('tour').classList.remove('nodim');if(TOURS[TR.id].mock&&!TR.mock)tMock();tShow();}
 function tChip(){const c=tEl('.tchip');if(!TR||!TR.fold){c.hidden=true;return;}
-  const ok=(state==='ready'||state==='result')&&$('modal').hidden&&$('sheet').hidden&&(curTab!=='trade'||card.hidden)&&!adPause&&!adReq&&$('tbg').hidden;
+  const ok=(state==='ready'||state==='result')&&$('modal').hidden&&$('sheet').hidden&&(curTab!=='trade'||card.hidden)&&!adPause&&!adReq&&$('tbg').hidden&&!(TR.id!=='boss'&&TOURS[TR.id].g==='trade'&&bossRgO()); /* BOSS-V2 v3.0.4 */
   $('tour').hidden=!ok;if(!ok)return;
   if(!c.firstChild||c.dataset.k!==TR.i+'|'+LANG){c.dataset.k=TR.i+'|'+LANG;c.innerHTML=icH('<button type="button" data-ta="resume">'+tsay('fold',{i:Math.min(tDots(),(TR.st[TR.i]&&TR.st[TR.i].d)||TR.i+1),n:tDots()})+'</button><button type="button" class="tcx" data-ta="x" aria-label="'+tsay('foldx')+'">✕</button>');}
   c.hidden=false;tSpot(c);}
@@ -3652,7 +4039,7 @@ function tResTry(){if(!TRES)return;if(Date.now()-TRES.t>18e5||!TRES.q&&tSeen(TRE
   if(!tourIdle(TRES.id==='boss'?'boss':'x',1))return;const r=TRES;TRES=null;if(tourStart(r.id,{at:r.i,fold:r.fold,replay:r.q})&&TR&&r.bpT&&[.1,.25,.5,1].includes(r.bp0)){TR.bp0=r.bp0;TR.bpT=1;}}
 function tLater(id){TSESS.later++;TSESS.off[id]=1;if(tipGot('tl_'+id))tipSet('tx_'+id);else tipSet('tl_'+id);}
 function tVet(id){const b=(store.get('shg_tips',[])||[]).find(x=>/^tr_b\d+$/.test(x));if(!b)return false;const T=TOURS[id];if(T.v>1)return false;return (T.lv?T.lv():0)<=+b.slice(4);}
-function tInvOk(id){const T=TOURS[id];if(!T.inv||T.never||TSESS.off[id])return false;if(tSeen(id)||tipGot('tx_'+id))return false;  if(T.used&&T.used())return false;if(tVet(id))return false;if(id!=='boss'&&!((stats.rounds||0)>=3))return false;if(T.spend&&debt>0)return false;if(T.lock&&T.lock())return false;
+function tInvOk(id){const T=TOURS[id];if(!T.inv||T.never||TSESS.off[id])return false;if(tSeen(id)||tipGot('tx_'+id))return false;  if(T.used&&T.used())return false;if(tVet(id))return false;if(id!=='boss'&&!((stats.rounds||0)>=3))return false;if(T.spend&&debt>0)return false;if(T.lock&&T.lock())return false;if(id!=='boss'&&T.g==='trade'&&bossRgO())return false; /* BOSS-V2 v3.0.4 */
   return T.inv()&&tourIdle(id);}
 function tInvTick(){if(TR||TRES)return;
   if(TINV){const id=TINV.id,T=TOURS[id],here=curTab===TINV.tab&&(curTab!=='shop'||shopSeg===TINV.seg)&&$('modal').hidden&&$('sheet').hidden&&(curTab!=='trade'||card.hidden&&(state==='ready'||state==='result'));
@@ -3757,7 +4144,7 @@ const fixStats=()=>{const N=fin,obj=o=>o&&typeof o==='object'&&!Array.isArray(o)
   ['rounds','wins','bestM','bestPct','net','maxStreak','bankrupts','bossLv','bossSP','bonusSP','careerSP','cleanRounds','loans','curRun'].forEach(k=>stats[k]=N(stats[k]));
   stats.hist=(Array.isArray(stats.hist)?stats.hist:[]).filter(h=>obj(h)&&isFinite(h.m)&&isFinite(h.a)).slice(0,20).map(h=>Object.assign(h,{m:+h.m,a:+h.a,l:+h.l||1,i:Array.isArray(h.i)?h.i:[],k:Object.prototype.hasOwnProperty.call(TIERS,h.k)?h.k:'',ni:Number.isInteger(h.ni)?h.ni:-1}));
   if(!obj(stats.c))stats.c={};for(const k in stats.c)stats.c[k]=Math.max(0,Math.min(k==='profit'?1e300:1e18,N(stats.c[k])));if(!obj(stats.ct))stats.ct={};for(const k in stats.ct)stats.ct[k]=Math.max(0,Math.min(1e3,Math.floor(N(stats.ct[k]))));stats.bossLv=Math.max(0,Math.min(1e6,stats.bossLv));stats.bankrupts=Math.max(0,Math.min(1e6,stats.bankrupts));
-  stats.types=(Array.isArray(stats.types)?stats.types:[]).filter(k=>Object.prototype.hasOwnProperty.call(TIERS,k));};fixStats();lowFlag=!!stats.low;
+  stats.types=(Array.isArray(stats.types)?stats.types:[]).filter(k=>Object.prototype.hasOwnProperty.call(TIERS,k));bossFix();};fixStats();lowFlag=!!stats.low;
 if(!stats.lsp){const g=['debt1','payoff'].reduce((n,id)=>{const x=achStars(id);return n+(x.st>=1?1:0)+(x.st>=5?1:0);},0);stats.lsp=1;if(g>0)stats.bonusSP=(stats.bonusSP||0)+g;store.set('shg_stats',stats);}
 const cVal=d=>d.id==='boss'?(stats.bossLv||0):d.id==='bk'?(stats.bankrupts||0):(stats.c[d.id]||0);
 const cTarget=(d,tier)=>d.money?Math.round(d.b*Math.pow(d.m,tier)):Math.ceil(d.b*Math.pow(d.m,tier));
@@ -3769,13 +4156,13 @@ function careerCheck(){
 }
 function recordRound(r){
   if(adPend||(stats.rounds+1)%30===0){adPend=0;adHold=adsOn()&&!premOwn('noads');adDue=performance.now()+1800;}
-  try{seasonXp(r.win?20:10);}catch(e){}
+  try{seasonXp(r.win||r.bossKill?20:10);}catch(e){}
   const c=stats.c;c.rounds++;if(r.win){c.wins++;if(r.m>=2)c.x2++;if(r.m>=3)c.x3++;if(r.m>=5)c.x5++;if(r.m>=10)c.x10++;if(r.pct>=90)c.p90++;if(r.pct>=95)c.p95++;if(r.streak===5)c.fever++;if(r.lev>=5)c.levWin++;if(r.allin)c.allinWin++;if(r.sawDip)c.dip++;if(r.allin&&r.m>=2)unlock('allin');}
   if(r.liq)c.liq++;
   stats.rounds++;stats.curRun=(stats.curRun||0)+1;if(r.win){stats.wins++;if(r.m>=3&&r.m>stats.bestM)cgHappy();stats.bestM=Math.max(stats.bestM,r.m);stats.bestPct=Math.max(stats.bestPct,r.pct);}
   lastAmt-=run.cost||0;stats.maxStreak=Math.max(stats.maxStreak,streak);stats.net+=lastAmt;
   stats.types=stats.types||[];if(!stats.types.includes(run.key))stats.types.push(run.key);if(stats.types.filter(k=>!TIERS[k].hidden).length>=Object.keys(TIERS).filter(k=>!TIERS[k].hidden).length)unlock('spread');
-  stats.hist.unshift({n:run.offer.name,k:run.offer.k,ni:run.offer.ni,w:r.win,s:sell&&!(run.re&&run.re.caught)?1:0,m:sell?sell.m:peak,a:lastAmt,l:run.lev,y:run.allin?1:0,q:r.liq?1:0,i:Object.keys(run.it||{}).filter(k=>run.it[k])});stats.hist=stats.hist.slice(0,20);
+  stats.hist.unshift({n:run.offer.name,k:run.offer.k,ni:run.offer.ni,w:r.win,s:sell&&!(run.re&&run.re.caught)?1:0,m:sell?sell.m:peak,a:lastAmt,l:run.lev,y:run.allin?1:0,q:r.liq?1:0,i:Object.keys(run.it||{}).filter(k=>run.it[k]),...(run.boss&&run.boss.e?{bx:run.boss.e.i,st:run.boss.hit?run.boss.hit.st:0}:{})});stats.hist=stats.hist.slice(0,20);
   if(lastAmt>0)c.profit+=lastAmt;careerCheck();
   store.set('shg_stats',stats);
 }
@@ -3813,7 +4200,7 @@ const pjump=a=>'<nav class="pjump" style="overflow-x:auto">'+a.map(([id,t])=>'<b
 const HL=(i,t,d)=>'<div class="li"><i>'+icI(i,t)+'</i><div><b>'+t+'</b><small>'+d+'</small></div></div>';
 const HELP={
   mission:()=>'<h2>📋 미션</h2><p class="note">일일 미션은 자정마다, 주간 미션은 월요일마다 바뀝니다.</p>'+HL('🏆','오늘의 챌린지','하루 한 번, 모두 같은 폭락 지점으로 5판. 매도 수익률이 점수, 물리면 −30점')+HL('👥','친구 리그','친구가 공유한 SHG- 코드를 넣으면 이번 주 점수로 순위를 매겨요')+HL('🎫','시즌 패스','판마다 XP가 쌓여 30단계 보상. 월요일마다 새 시즌')+HL('📋','미션','일일 8개 · 주간 10개 · 커리어 20개'),
-  grow:()=>'<h2>🌱 성장</h2>'+HL('🐾','파트너','판마다 친밀도 +1 · 익절 +1 · 보스 처치 +2 (연습·챌린지 판 제외)')+HL('🔁','파트너 바꾸기','친구를 누르면 파트너가 바뀌어요 · 친밀도는 친구마다 따로 쌓이고 경험치 보너스는 가장 많이 자란 친구 기준 · 잠긴 친구는 아래 계급·업적을 달성하면 합류해요')+HL('🌳','SP · 스킬','SP는 2레벨마다 1개, 업적마다 1개(대출 업적 제외), 기록 미션 2단계마다 1개, 보스 처치 2개, 주간 미션 1개로 천천히 모입니다. 강화 비용은 같은 스킬을 5레벨 올릴 때마다 1씩 오르고, 각 계열의 상위 스킬은 그 계열에 10포인트를 찍으면 열립니다.')+HL('🎖️','계급표','XP가 쌓이면 계급이 올라 아이템·레버리지·종목이 열려요'),
+  grow:()=>'<h2>🌱 성장</h2>'+HL('🐾','파트너','판마다 친밀도 +1 · 익절 +1 · 보스 처치 +3 (연습·챌린지 판 제외)')+HL('🔁','파트너 바꾸기','친구를 누르면 파트너가 바뀌어요 · 친밀도는 친구마다 따로 쌓이고 경험치 보너스는 가장 많이 자란 친구 기준 · 잠긴 친구는 아래 계급·업적을 달성하면 합류해요')+HL('🌳','SP · 스킬','SP는 2레벨마다 1개, 업적마다 1개(대출 업적 제외), 기록 미션 2단계마다 1개, 보스 도감 새 칸·첫 ★★★마다 1개, 주간 미션 1개로 천천히 모입니다. 강화 비용은 같은 스킬을 5레벨 올릴 때마다 1씩 오르고, 각 계열의 상위 스킬은 그 계열에 10포인트를 찍으면 열립니다.')+HL('🎖️','계급표','XP가 쌓이면 계급이 올라 아이템·레버리지·종목이 열려요'),
   shop:()=>'<h2>🛒 상점</h2><p class="note">'+tsay('shopNote')+' 소모품은 효과를 다 쓰면 사라지고, 장비는 영구 보너스예요 (빚으로 파산하면 압류).</p>'+HL('🧪','소모품','소모품은 예수금에 비례 · 많이 가질수록 1.6배씩 비싸짐')+HL('🏦','은행','대출받으면 신용이 1등급 떨어지고, 다 갚으면 1등급 오릅니다. 이자는 판마다 붙고 신용이 나쁠수록 비싸요 (1등급 '+(LOAN_R[1]*100).toFixed(1)+'% ~ 10등급 '+(LOAN_R[10]*100).toFixed(1)+'%). 빚이 한도를 넘으면 넘는 만큼 예수금에서 자동 상환, 못 갚으면 신용불량 · 장비·소모품·투자금 압류. 익절하면 수익의 30%가 자동 상환됩니다.')+HL('🥫','파산 신청','빚이 남은 채 바닥나면 새로 시작 대신 파산 신청: 빚 탕감 · 장비·소모품·투자금 압류 · 신용 10등급. 압류 전에 목록을 보여 주고 한 번 더 확인해요. 레벨·스킬·업적·컬렉션·파트너·꾸미기는 남아요.')+HL('🌱','재기 자금','새로 시작·파산 신청으로 받는 돈은 재기 자금(무이자 빚)이에요. 이자·빚 한도·압류와는 상관없고, 익절하면 수익의 30%에서 빚 다음으로 자동 상환돼요. 은행에서 직접 갚을 수도 있어요. 순자산에서는 빠져요.')+HL('🛋️','미니룸 꾸미기','상점에서 벽지·바닥·소품을 사서 방을 꾸며요'),
   account:()=>'<h2>💼 내 계좌</h2>'+HL('💼','투자','예수금을 넣어 두면 판을 할 때마다 이자(또는 손실)가 붙어요. 상품마다 이자 붙는 한도가 있고, 한도를 넘는 돈에는 이자가 붙지 않아요(0원). 입금은 한도까지만 들어가요.')+HL('⏳','차곡차곡','넣어 둔 돈이 판을 함께 한 평균 시간이에요(한 판은 최대 '+INV_U+'로 셈). 오래 둘수록 이율과 이자 붙는 한도가 커지고, 다 채운 한도는 레벨 따라 커져요. 판마다 잔액의 '+INV_FREE*100+'%까지 더 넣는 건 그대로지만, 그보다 많이 새로 넣은 돈은 0분부터라 평균이 줄어요. 다 빼면 0분부터 다시.')+HL('⚡','10배 이상·영끌','그런 판을 할 때마다 모든 상품의 차곡차곡이 절반이 돼요. 이자 붙는 한도도 같이 줄고, 넘는 돈은 쉬는 돈이 돼요(이자 0원 · 빼면 수수료는 그대로).')+HL('💸','출금 수수료','이자 붙는 돈을 뺄 때만 나가요. 한도를 넘어 쉬는 돈은 수수료 없이 뺄 수 있어요(10배 이상·영끌 판에 한도가 줄어 넘친 돈은 수수료 그대로). 코인은 한도를 넘은 돈에도 수수료가 붙어요(업데이트 전부터 있던 쉬는 돈은 빼고). 엔젤은 상장 이익에서 수수료를 미리 떼고, 파산하면 쉬는 돈까지 잔액 전부 0원이에요(상장 이익은 수수료 없이 바로 뺄 수 있어요).')+HL('🏦','빚이 있으면','빚만큼의 투자금(이율 높은 상품부터)은 이자도 손실도 없어요.')+HL('⏱️','플레이 시간','이자와 출렁임, 차곡차곡은 판 수가 아니라 플레이 시간으로 세요. 한 판은 걸린 시간만큼, 최대 '+INV_U+'까지예요. 화면의 /'+INV_U+' 숫자는 '+INV_U+' 동안 붙는 몫이에요. '+INV_U+'보다 오래 걸린 판도 '+INV_U+' 몫만, 그 절반 시간에 넘긴 판은 절반만 붙어요. 그래서 판을 빨리 넘겨도 1분에 붙는 이자는 늘지 않아요. ‘판마다 '+INV_U+' 안에 쉬지 않고 하면 1분에 평균 약 +X원’은 지금 이자 붙는 돈에 지금 이율로 '+INV_U+' 몫 평균 이자를 '+INV_PM+'번 더한 값이에요. 판이 '+INV_U+'보다 오래 걸리면 1분에 그만큼 덜 붙어요(판마다 '+INV_RT/750+'초면 3/4, '+INV_RT/500+'초면 절반 · 결과를 읽거나 쉬는 시간도 판 시간에 들어가요). 이율은 장세를 평균 낸 값이라 하락장·블랙스완 주의보엔 덜, 다른 장세엔 더 붙고(예금·적금·금은 장세와 상관없음), 차곡차곡이 차는 동안엔 조금씩 늘어요. 배당주 펀드·월세 주택은 이자를 예수금으로 그대로 받고, 장세 몫(하락장 −, 불장 +)은 잔액에 붙어요.')+HL('📥','한 번에 나눠 넣기','입금 비율만큼의 예수금을 코인·엔젤 빼고 출렁임이 작은 상품부터 이자 붙는 한도까지 나눠 넣어요. 출렁임이 큰 펀드(±'+Math.round(Math.max(...PROD.filter(P=>!P.chance).map(P=>P.v||0))*1000)/10+'%까지)에도 들어가요. 어디에 얼마, 출렁임과 출금 수수료가 얼마인지는 버튼 아래에 먼저 보여요.')+HL('🔓','새 상품','계급과 레벨이 오르면 분류마다 새 상품이 열려요. 상품 이름을 누르면 자세한 숫자가 나와요.')+HL('🏆','컬렉션','8개 분류 50종. 살 때마다 SP, 분류를 다 모으면 보너스 SP +3')+HL('🏠','미니룸','순자산이 늘면 더 좋은 집으로 이사해요')+HL('💾','백업 코드','설정에서 복사해 두면 폰을 바꿔도 이어서 할 수 있어요')};
 function help(k){const f=HELP[k];if(f)openModal(f()+tourHelpH(k),'hs');}
@@ -3839,7 +4226,7 @@ const CONSUM=[
   {id:'rewind',e:'⏪',n:'손실 복구권',d:'크게 물렸을 때 손실을 0원으로 (자동 사용)',p:4},
   {id:'crystal',e:'🔮',n:'수정구슬',d:'다음 판 폭락 지점을 거의 정확히 표시',p:.5,arm:1},
   {id:'luck',e:'🍀',n:'행운의 부적',d:'다음 3판 동안 폭락이 12% 늦게 옴',p:.6,arm:3},
-  {id:'bossT',e:'🎟️',n:'보스 소환권',d:'다음 판에 바로 보스 등장',p:.4,arm:1}
+  {id:'bossT',e:'🎟️',n:'보스 소환권',d:'다음 판에 바로 보스 등장 · 판매 종료',p:.4,arm:1,nobuy:1}
 ];
 const GEAR=[
   {id:'monitor',e:'🖥️',n:'듀얼 모니터',d:'익절 수익 +3%',p:5e7,lv:2},{id:'chair',e:'🪑',n:'게이밍 의자',d:'차트 속도 -3%',p:4e8,lv:4},
@@ -4021,7 +4408,7 @@ function seasonBind(pg){pg.querySelectorAll('[data-stier]').forEach(b=>b.onclick
    w.querySelectorAll('.spa').forEach(b=>b.onclick=()=>st.scrollBy({left:(b.classList.contains('l')?-1:1)*Math.max(140,st.clientWidth*.8),behavior:RM.matches||!SET.fx?'auto':'smooth'}));}}
 const CGL={noliq:'255,84,104',rewind:'91,150,255',crystal:'155,123,255',luck:'80,200,120',bossT:'255,200,74'};
 const SEG_OF={secItem:'item',secDecor:'decor',secBank:'bank'};
-function pageShop(){const wc=CONSUM[wkOrd(weekKey())%CONSUM.length];
+function pageShop(){const CB=CONSUM.filter(c=>!c.nobuy),wc=CB[wkOrd(weekKey())%CB.length];
   const pb=(c,pr,pri)=>{const no=balance<pr;return '<button class="setbtn'+(pri&&!no?'':' tone')+(no?' no':'')+'" type="button" data-buy="'+c.id+'" aria-label="'+(pri?buyV(pr)+' · '+c.n:buyL(c.n,pr))+'"'+(no?' disabled':'')+'>'+(no?'🔒 ':'')+(pri?buyV(pr):wonS(pr))+'</button>';},
     ub=c=>{const own=inv[c.id]||0,arm=armed[c.id]||0;return c.arm?'<button class="setbtn ghost" type="button" data-use="'+c.id+'" aria-label="'+c.n+' · '+(arm>0?'사용 중':'사용')+'" '+(own<1||arm>0?'disabled':'')+'>'+(arm>0?'사용 중':'사용')+'</button>':'';},
     own=c=>'<span class="ownc">보유 <b>'+(inv[c.id]||0)+'</b>'+(armed[c.id]>0?c.arm>1?' · '+armed[c.id]+'판 남음':' · 사용 중':'')+'</span>';
@@ -4030,10 +4417,10 @@ function pageShop(){const wc=CONSUM[wkOrd(weekKey())%CONSUM.length];
    '<div class="seg sseg" role="group" aria-label="상점">'+[['item','아이템'],['decor','꾸미기'],['bank','은행']].map(([k,t])=>'<button type="button" data-sseg="'+k+'" aria-pressed="'+(shopSeg===k)+'">'+t+'</button>').join('')+'</div>'+
    '<div class="secs shop" data-seg="'+shopSeg+'">'+
    '<section class="sec full" id="secItem">'+
-   (adOk('item')?'<div class="free"><i>📺</i><div><b>광고 보고 소모품 1개 받기</b><small>오늘 '+(AD_LIM.item-adCnt('item'))+'번 남음</small></div><button class="setbtn rw" id="adItem" type="button">받기</button></div>':'')+
+   (adOk('item')&&!bossTW()?'<div class="free"><i>📺</i><div><b>광고 보고 소모품 1개 받기</b><small>오늘 '+(AD_LIM.item-adCnt('item'))+'번 남음</small></div><button class="setbtn rw" id="adItem" type="button">받기</button></div>':'')+
    '<h3>✨ 소모품 <span class="mu">· 가질수록 1.6배씩 비싸져요</span></h3>'+
    '<div class="feat pan" style="--g:'+CGL[wc.id]+'"><div class="fart">'+icI(wc.e,wc.n)+'</div><div class="ftx"><h4>'+wc.n+' <span class="rtag">추천</span></h4><p>'+wc.d+'</p>'+own(wc)+'</div><div class="frow">'+ub(wc)+pb(wc,fp,1)+'</div></div>'+
-   '<div class="scards">'+CONSUM.filter(c=>c!==wc).map(c=>'<div class="scard" style="--g:'+CGL[c.id]+'">'+own(c)+'<div class="sart">'+icI(c.e,c.n)+'</div><b>'+c.n+'</b><p>'+c.d+'</p><div class="pair">'+ub(c)+pb(c,cPrice(c))+'</div></div>').join('')+'</div>'+
+   '<div class="scards">'+CONSUM.filter(c=>c!==wc&&(!c.nobuy||inv[c.id]>0||armed[c.id]>0)).map(c=>'<div class="scard" style="--g:'+CGL[c.id]+'">'+own(c)+'<div class="sart">'+icI(c.e,c.n)+'</div><b>'+c.n+'</b><p>'+c.d+'</p><div class="pair">'+ub(c)+(c.nobuy?'':pb(c,cPrice(c)))+'</div></div>').join('')+'</div>'+
    '<h3>💎 장비 <span class="mu">· 영구 보너스 (빚으로 파산하면 압류)</span></h3><div class="scards">'+GEAR.map(g=>{const ow=gear[g.id],lk=rankOf(xp)<g.lv,no=balance<g.p;
      return '<div class="scard gear'+(ow?' done':lk?' lock':'')+'" data-g="'+g.id+'"><div class="sart">'+icI(g.e,g.n)+'</div><b>'+g.n+'</b><p>'+g.d+'</p><div class="pair">'+(ow?'<span class="ownb">보유 ✓</span>':lk?'<span class="lkb"><span aria-hidden="true">🔒 '+RANKS[g.lv][1]+'</span><span class="sr">'+g.n+' · 잠김, '+RANKS[g.lv][1]+' 계급에 열림</span></span>':'<button class="setbtn tone'+(no?' no':'')+'" type="button" data-gear="'+g.id+'" aria-label="'+buyL(g.n,g.p)+'"'+(no?' disabled':'')+'>'+(no?'🔒 ':'')+wonS(g.p)+'</button>')+'</div></div>';}).join('')+'</div>'+
    '</section>'+
@@ -4109,7 +4496,7 @@ function pageMission(){ensureDaily();
    '<section class="sec" id="secCareer"><h3>🏅 기록 미션 <span class="mu rt">2단계마다 SP +1 · '+Math.round(30*xpMul())+' XP</span></h3><div class="pan mis">'+CAREER.map(d=>{const tier=(stats.ct||{})[d.id]||0,tg=cTarget(d,tier),v=cVal(d);return '<div class="mrow"><i>'+d.e+'</i><div><b>'+d.t+(LANG==='en'?': ':' ')+(d.money?wonS(tg):tg.toLocaleString('ko-KR')+(LANG==='en'?'':'번'))+' <span class="mu">· '+tierLbl(tier+1)+'</span></b><div class="pb"><u style="width:'+Math.min(100,v/tg*100)+'%"></u></div></div><span class="mp">'+(d.money?wonX(v)+' / '+wonX(tg):v.toLocaleString('ko-KR')+'/'+tg.toLocaleString('ko-KR'))+'</span></div>';}).join('')+'</div>'+
    '</section></div>';
 }
-const histName=h=>{if(h.ni==null||h.ni<0)return h.n;if(h.k==='boss'){const bi=bossInfo(h.ni);return bi.B.e+' '+bi.B.n+' Lv.'+(bi.lv+1);}const n=TIERS[h.k]&&TIERS[h.k].names[h.ni];return n?(Array.isArray(n)?n[0]:n):h.n;};
+const histName=h=>{if(h.ni==null||h.ni<0)return h.n;if(h.k==='boss'){if(h.bx!=null){const e=bossE_(h.bx);return e.B.e+' '+e.B.n+' '+RN[e.r-1];}const bi=bossInfo(h.ni);return bi.B.e+' '+bi.B.n+' Lv.'+(bi.lv+1);}const n=TIERS[h.k]&&TIERS[h.k].names[h.ni];return n?(Array.isArray(n)?n[0]:n):h.n;};
 
 const PROD=[
   {id:'save',c:'dep',e:'🏦',n:'정기적금',d:'원금 보장 · 수수료 없음 · 언제든 빼기',r:.002,mx:2,mt:100,v:0,br:0,ur:0,fee:0,m0:1e11,cx:10,lv:0,get max(){return invCap(this)}},
@@ -4312,7 +4699,7 @@ let colPk={};
 const ACH_R=s=>s.col>=0?[STAR_T[s.col][1],STAR_T[s.col][0]]:s.st>=5?['#ffc84a','골드']:s.st>=3?['#cfd6e2','실버']:s.st>=1?['#d08a4f','브론즈']:['#2a3344',''];
 function achHtml(){
   const L=ACH.map(a=>{const s=achStars(a[0]),p=s.next?Math.max(0,Math.min(1,(s.c||0)/s.next)):1;return {a,s,p};}).sort((x,y)=>(y.s.next?y.p:-1)-(x.s.next?x.p:-1)||y.s.st-x.s.st);
-  return '<div class="achs">'+L.map(({a,s,p})=>{const [rc,rn]=ACH_R(s);return '<div class="ach'+(s.st?'':' lock')+'" style="--rc:'+rc+'" title="'+a[3]+' · '+(s.c||0).toLocaleString('ko-KR')+(LANG==='en'?(s.c===1?' time':' times'):'회')+'"><span class="rg"><i>'+a[1]+'</i>'+(s.st?'<em>★'+s.st+'</em>':'')+'</span><b>'+a[2]+'</b><small>'+a[3]+'</small>'+(s.next?'<div class="pb"><u style="width:'+Math.round(p*100)+'%"></u></div><small class="nx">'+(rn?rn+' · ':'')+'다음 '+(s.c||0).toLocaleString('ko-KR')+'/'+s.next.toLocaleString('ko-KR')+'</small>':'<small class="nx">'+rn+' · 최고</small>')+'</div>';}).join('')+'</div>';}
+  return bossDexH()+'<div class="achs">'+L.map(({a,s,p})=>{const [rc,rn]=ACH_R(s);return '<div class="ach'+(s.st?'':' lock')+'" style="--rc:'+rc+'" title="'+a[3]+' · '+(s.c||0).toLocaleString('ko-KR')+(LANG==='en'?(s.c===1?' time':' times'):'회')+'"><span class="rg"><i>'+a[1]+'</i>'+(s.st?'<em>★'+s.st+'</em>':'')+'</span><b>'+a[2]+'</b><small>'+a[3]+'</small>'+(s.next?'<div class="pb"><u style="width:'+Math.round(p*100)+'%"></u></div><small class="nx">'+(rn?rn+' · ':'')+'다음 '+(s.c||0).toLocaleString('ko-KR')+'/'+s.next.toLocaleString('ko-KR')+'</small>':'<small class="nx">'+rn+' · 최고</small>')+'</div>';}).join('')+'</div>';}
 function colHtml(){
   return '<div class="sets">'+CATS.map(K=>{const items=COL.filter(c=>c.cat===K.id),got=items.filter(c=>col.includes(c.id)).length,done=got===items.length,R=DECOR.find(d=>d.set===K.id),miss=items.filter(c=>!col.includes(c.id)),nx=miss.find(c=>c.id===colPk[K.id])||miss.sort((a,b)=>a.p-b.p)[0];
     return '<div class="set'+(done?' done':'')+'"><div class="setg">'+items.map(c=>{const own=col.includes(c.id);return '<button type="button" class="ci'+(own?' own':'')+(nx&&nx.id===c.id?' sel':'')+'" data-cpk="'+c.id+'" aria-label="'+c.n+(own?' · 보유':' · '+wonS(c.p))+'"'+(own?' disabled':'')+'>'+icI(c.e,c.n)+'</button>';}).join('')+'</div>'+
@@ -4370,9 +4757,9 @@ function pageAccount(){
    '<section class="sec" id="secCol">'+'<h3>🏆 컬렉션 <b class="cnt">'+col.length+'/'+COL.length+'</b><span class="mu rt">살 때마다 SP · 세트 완성 보상</span></h3>'+(debt>0?'<p class="lead dn">🏦 빚을 다 갚아야 컬렉션을 살 수 있어요</p>':'')+colHtml()+
    '<h3>장비 컬렉션</h3><div class="achgrid">'+GEAR.map(g=>`<div class="${gear[g.id]?'':'lock'}"><i>${g.e}</i>${g.n}</div>`).join('')+'</div>'+'</section>'+
    '<section class="sec" id="secRec">'+'<h3>통산 성적</h3><div class="tiles">'+
-   [['플레이',(stats.rounds||0).toLocaleString('ko-KR')+'판'],['승률',wr+'%'],['최고 수익률','+'+Math.round(Math.max(0,(stats.bestM||1)-1)*100).toLocaleString('ko-KR')+'%'],['최고 근접도',Math.round(stats.bestPct)+'%'],['최장 연승',stats.maxStreak+(LANG==='en'?'':'연속')],['파산',stats.bankrupts+(LANG==='en'?(stats.bankrupts===1?' time':' times'):'회')],['누적 손익',swS(stats.net)],['최고 자산',best?wonS(best):'-'],['캐릭터 레벨','Lv.'+lvlOf(xp).L],['보스 처치',(stats.bossLv||0)+'마리'],['업적 별',ACH.reduce((n,a)=>n+achStars(a[0]).st,0)+'/'+ACH.length*5]]
+   [['플레이',(stats.rounds||0).toLocaleString('ko-KR')+'판'],['승률',wr+'%'],['최고 수익률','+'+Math.round(Math.max(0,(stats.bestM||1)-1)*100).toLocaleString('ko-KR')+'%'],['최고 근접도',Math.round(stats.bestPct)+'%'],['최장 연승',stats.maxStreak+(LANG==='en'?'':'연속')],['파산',stats.bankrupts+(LANG==='en'?(stats.bankrupts===1?' time':' times'):'회')],['누적 손익',swS(stats.net)],['최고 자산',best?wonS(best):'-'],['캐릭터 레벨','Lv.'+lvlOf(xp).L],['보스 처치',(stats.bossLv||0)+'마리'],['보스 도감',Object.values(bDex()).filter(x=>x.k>0).length+'/32'],['업적 별',ACH.reduce((n,a)=>n+achStars(a[0]).st,0)+'/'+ACH.length*5]]
      .map(([k,v])=>`<div class="tile"><small>${k}</small><b>${v}</b></div>`).join('')+'</div>'+
-   '<h3>최근 거래</h3><div class="pan">'+(stats.hist.length?stats.hist.map(h=>`<div class="hist"><span>${h.w&&h.a>=0?'🔴 익절':h.w?'🔵 손해':h.s?'🔵 손절':'🔵 물림'} · ${esc(histName(h))} <small class="mu">${LANG==='en'?(h.m>=1?'+':'\u2212')+nf(1).format(Math.abs(h.m-1)*100)+'%':'x'+h.m.toFixed(2)}</small>${h.l>1?`<b class="tg">⚡${h.l}배</b>`:''}${h.y?'<b class="tg y">'+(LANG==='en'?'Max Buy':'영끌')+'</b>':''}${h.q?'<b class="tg q">청산</b>':''}${(h.i||[]).map(t=>`<b class="tg i">${esc(ITEMS[t]?ITEMS[t].short:t)}</b>`).join('')}</span><span class="${h.a>=0?'up':'dn'}">${sw(h.a)}</span></div>`).join(''):'<div class="hist"><span class="mu">아직 거래 기록이 없습니다.</span></div>')+'</div>'+'</section>'+
+   '<h3>최근 거래</h3><div class="pan">'+(stats.hist.length?stats.hist.map(h=>`<div class="hist"><span>${h.bx!=null?(h.st?'⚔️ 처치':h.s?'🏃 도망':'💥 당함'):h.w&&h.a>=0?'🔴 익절':h.w?'🔵 손해':h.s?'🔵 손절':'🔵 물림'} · ${esc(histName(h))} <small class="mu">${h.bx!=null?'★'.repeat(h.st||0):LANG==='en'?(h.m>=1?'+':'\u2212')+nf(1).format(Math.abs(h.m-1)*100)+'%':'x'+h.m.toFixed(2)}</small>${h.l>1?`<b class="tg">⚡${h.l}배</b>`:''}${h.y?'<b class="tg y">'+(LANG==='en'?'Max Buy':'영끌')+'</b>':''}${h.q?'<b class="tg q">청산</b>':''}${(h.i||[]).map(t=>`<b class="tg i">${esc(ITEMS[t]?ITEMS[t].short:t)}</b>`).join('')}</span><span class="${h.a>=0?'up':'dn'}">${sw(h.a)}</span></div>`).join(''):'<div class="hist"><span class="mu">아직 거래 기록이 없습니다.</span></div>')+'</div>'+'</section>'+
    '<section class="sec full" id="secAch">'+'<h3>업적 <span class="mu rt">거의 다 된 것부터</span></h3>'+achHtml()+'</section></div>';
 }
 function glossary(){
@@ -4386,13 +4773,13 @@ function glossary(){
   G('💰 매매 용어',
     L(LANG==='en'?'🟢':'🔴','매수 → 익절',tw('버튼을 눌러 사고, 다시 눌러 팔아 수익 확정'))+L('🔁','재진입','매도 후 폭락 전이면 한 번 더 같은 금액으로 들어갈 수 있음. 또 팔아야 함')+L('📉','저점 매수 · 추격 매수','매수 전 차트가 기준가보다 4% 아래면 폭락이 조금 늦게, 5% 위면 조금 빨리 옴')+L(LANG==='en'?'🔴':'🔵','물림 · 손절','못 팔고 폭락을 맞거나, 산 값보다 낮게 판 경우')+L('🐣','초반 보호','진짜 판 처음 5판은 +20%를 넘기 전엔 폭락하지 않아요. 다음 5판은 보호가 점점 줄어요')+L('✖','배수 (x2.0)','산 가격 대비 몇 배인지. x2면 +100%')+L('🎯','근접도','폭락 직전 고점에 얼마나 가깝게 팔았는지')+
     L('⚡','레버리지','수익도 손실도 배수로 커짐. 물리면 매수 금액의 몇 배를 잃고, 배율이 높을수록 폭락도 빨리 옴. 청산가에 닿으면 매수 금액만 잃고 끝')+L('💯',LANG==='en'?'Max Buy':'영끌','투자 비율 무시하고 전재산 투자 (한도 없음). 잃으면 크게 잃음')+L('%','투자 비율','투자 한도 중 이번 판에 걸 비율 (예수금이 한도보다 적으면 예수금 기준)')+L('🧾','수수료','매수할 때 떼는 비용. 레버리지가 높을수록 비쌈')+L('🏛️','부자세','예수금 100억부터 수익에 세금. 100억 5% → 1조 25% → 100조 45% → 최대 65%')+L('🌊','유동성 한도','일반 매수는 한 판 최대 1경. 영끌은 예외')+L('📉','자산 리스크','예수금 10억부터 폭락이 빨라지고 즉시 폭락 확률↑. 1조면 약 10%, 최대 30%')+L('💀','고레벨 난이도','Lv.20부터 레벨마다 폭락이 조금씩 빨라짐 (최대 35%)'))+
-  G('🏷️ 종목 종류',Object.values(TIERS).filter(T=>!T.hidden).map(T=>L(T.e,T.label,`물리면 −${Math.round(T.loss*100)}% · 상승 폭 ×${T.scale}`)).join('')+L('👹','보스전','10판마다 등장. 목표 배수까지 버티고 팔면 처치'))+
+  G('🏷️ 종목 종류',Object.values(TIERS).filter(T=>!T.hidden).map(T=>L(T.e,T.label,`물리면 −${Math.round(T.loss*100)}% · 상승 폭 ×${T.scale}`)).join('')+L('👹','보스전','10판마다 등장. 돈을 걸지 않는 대결. 보스마다 정해진 신호를 읽고 진짜 공격 직전에 공격'))+
   G('🧰 아이템 · 성장',Object.values(ITEMS).map(it=>L(it.name.split(' ')[0],it.name.split(' ').slice(1).join(' '),it.desc+' · 판마다 비용')).join('')+
     L('🌳','SP · 스킬','레벨업·업적·미션으로 얻는 포인트. 성장 탭에서 강화')+L('🎁','선물','하루 한 번 선물, 가끔 보물상자')+L('📋','미션','일일 8개 · 주간 10개 · 커리어 20개')+L('⭐','업적 별','반복 달성하면 ★1→★5, 그 뒤엔 색이 바뀜')+L('🛒','상점','소모품·장비 구매, 은행(대출·상환)'))+
   G('🌡️ 장세 (차트 위 배지)',REGIMES.map(r=>L(r.e,r.n,r.d)).join('')+L('⏱️','N판 남음','장세는 5판마다 바뀜'))+
   G('💼 투자 · 컬렉션',PROD.map(P=>L(P.e,P.n,P.d)).join('')+L('🏆','컬렉션','8개 분류 50종. 살 때마다 SP, 분류를 다 모으면 보너스 SP +3'))+
   G('🏆 챌린지 · 리그 · 시즌',L('🏆','오늘의 챌린지','하루 한 번, 모두 같은 폭락 지점으로 5판. 매도 수익률이 점수, 물리면 −30점')+L('👥','친구 리그','친구가 공유한 SHG- 코드를 넣으면 이번 주 점수로 순위를 매겨요')+L('🎫','시즌 패스','판마다 XP가 쌓여 30단계 보상. 월요일마다 새 시즌')+L('🛋️','미니룸 꾸미기','상점에서 벽지·바닥·소품을 사서 방을 꾸며요')+L('💾','백업 코드','설정에서 복사해 두면 폰을 바꿔도 이어서 할 수 있어요'))+
-  G('🔣 기타 아이콘',L('🔥','피버','5연속 익절. 보너스 2배')+L('💎','보물상자','익절하면 가끔 등장')+L('⚔️','보스 격파','보스 목표 배수 넘기고 매도')+L('🕵️','찌라시 진짜','힌트가 진짜였음')+L('🤡','찌라시 가짜','힌트가 거짓말이었음')+L('🏛️','부자세','고액 수익에 붙는 세금')+L('💸','빚 자동 상환','수익 30%로 빚 갚음'))+
+  G('🔣 기타 아이콘',L('🔥','피버','5연속 익절. 보너스 2배')+L('💎','보물상자','익절하면 가끔 등장')+L('⚔️','보스 처치','진짜 공격 게이지가 차는 동안 공격')+L('🕵️','찌라시 진짜','힌트가 진짜였음')+L('🤡','찌라시 가짜','힌트가 거짓말이었음')+L('🏛️','부자세','고액 수익에 붙는 세금')+L('💸','빚 자동 상환','수익 30%로 빚 갚음'))+
   G('💳 빚 · 신용',
     L('💳','대출','돈이 바닥나면 빌려서 계속 가능. 판마다 이자 '+(LOAN_R[1]*100).toFixed(1)+'%(1등급) ~ '+(LOAN_R[10]*100).toFixed(1)+'%(10등급)')+L('🏦','신용등급','1등급이 최고. 대출하면 떨어지고, 갚으면 오름')+L('↩️','자동 상환','수익의 30%가 자동으로 빚을 갚음')+L('🚨','신용불량','빚이 한도를 넘었는데 못 갚으면 장비·소모품·투자금 압류 후 재시작')+L('🥫','파산 신청','빚이 남은 채 바닥나면 파산 신청: 빚 탕감 · 장비·소모품·투자금 압류 · 신용 10등급 (빚이 없으면 새로 시작 · 장비 유지)'))+
   G('📜 크레딧 · 라이선스',HL('🎨','그림','캐릭터·아이콘·배경 그림: 제작자가 Higgsfield(Nano Banana Pro, Seedance)로 생성')+HL('🔣','글꼴','Noto Sans KR, Inter, Gasoek One (모두 SIL Open Font License 1.1, 게임 파일에 포함 · fonts/OFL.txt)')+HL('🎹','소리','효과음·배경음악: 게임 안에서 직접 합성 (외부 음원 없음)')+HL('🎭','가상','게임 속 회사·종목·뉴스·채팅은 모두 가상이며 실제와 관계없습니다.'))+
@@ -4420,7 +4807,7 @@ function bindPage(name){
   chalBind(pg);seasonBind(pg);decorBind(pg);premBind(pg);
   pg.querySelectorAll('[data-pet]').forEach(b=>b.onclick=()=>{const id=b.dataset.pet;if(!pet||!pet.own[id]||pet.sel===id)return;petMod(p=>{if(p.own[id])p.sel=id;});petLoad(id);toast('🐾 새 파트너 · '+CHARS[id]+(state==='holding'||state==='ghost'?' · 다음 판부터':''));rerender('grow');});
   pg.querySelectorAll('[data-up]').forEach(b=>b.onclick=()=>{const id=b.dataset.up;if(spFree()>=costOf(skl(id))&&skOnce()){sk[id]=skl(id)+1;store.set('shg_sk',sk);sfx.up();toast('🌳 '+SKILLS.find(x=>x.id===id).n+' Lv.'+sk[id]);paintTop();rerender('skill');}});
-  pg.querySelectorAll('[data-buy]').forEach(b=>b.onclick=()=>{const c=CONSUM.find(x=>x.id===b.dataset.buy),pr=cPrice(c);if(balance<pr||!once())return;balance-=pr;inv[c.id]=(inv[c.id]||0)+1;store.set('shg_inv',inv);sfx.sell();toast(c.e+' '+c.n+' 구매 완료');paintTop();rerender('shop');});
+  pg.querySelectorAll('[data-buy]').forEach(b=>b.onclick=()=>{const c=CONSUM.find(x=>x.id===b.dataset.buy),pr=c?cPrice(c):0;if(!c||c.nobuy||balance<pr||!once())return;balance-=pr;inv[c.id]=(inv[c.id]||0)+1;store.set('shg_inv',inv);sfx.sell();toast(c.e+' '+c.n+' 구매 완료');paintTop();rerender('shop');});
   {const ai=pg.querySelector('#adItem');if(ai)ai.onclick=()=>{if(adFull('item'))return ai.remove();ai.disabled=true;rewardAd('freeitem',()=>{if(ai.dataset.paid)return;if(adFull('item'))return ai.remove();ai.dataset.paid=1;adUse('item');const c=pick(CONSUM);inv[c.id]=(inv[c.id]||0)+1;store.set('shg_inv',inv);toast('📺 '+c.e+' '+c.n+' 1개 받았어요');sfx.up();if(curTab==='shop')rerender('shop');else paintTop();});setTimeout(()=>{if(ai.isConnected)ai.disabled=false;},3000);};}
   pg.querySelectorAll('[data-use]').forEach(b=>b.onclick=()=>{const c=CONSUM.find(x=>x.id===b.dataset.use);if(!(inv[c.id]>0)||armed[c.id]>0)return;b.disabled=true;inv[c.id]--;armed[c.id]=(armed[c.id]||0)+c.arm;stats.c.items++;store.set('shg_inv',inv);store.set('shg_armed',armed);store.set('shg_stats',stats);
     if(c.id==='bossT'&&state!=='holding'&&state!=='ghost'){offers=makeOffers();paintPickers();}toast(c.e+' '+c.n+' 사용 · 다음 판부터 적용');sfx.up();rerender('shop');});
@@ -4491,25 +4878,25 @@ function frame(ts){
     t+=dt*(state==='ghost'?3:holdRate());if(state==='holding')run.hold=(run.hold||0)+dt;
     const b=base(t);
     if(state==='holding'){
-      if(!run.tut&&!warned&&base(t+1)>=run.crashAt){warned=true;if(Math.random()<(profile==='fox'?.65:.4)+.04*skl('intel')+(run.T.warn||0))news('⚠️ '+newsPick(0),'bear');}
-      else if(!run.tut&&t>.8&&!(run.hint&&run.hint.crystal&&run.hold<3.5)&&!events.some(e=>t<e.t0+1.6)&&Math.random()<dt*.18*(run.T.news||1)*(run.rg.news||1)){
+      if(!run.tut&&!run.boss&&!warned&&base(t+1)>=run.crashAt){warned=true;if(Math.random()<(profile==='fox'?.65:.4)+.04*skl('intel')+(run.T.warn||0))news('⚠️ '+newsPick(0),'bear');}
+      else if(!run.tut&&!run.boss&&t>.8&&!(run.hint&&run.hint.crystal&&run.hold<3.5)&&!events.some(e=>t<e.t0+1.6)&&Math.random()<dt*.18*(run.T.news||1)*(run.rg.news||1)){
         const bull=Math.random()<.45;events.push({t0:t,amp:(bull?.12:-.14)*(run.T.amp||1)});if(!bull)run.sawDip=true;
         news(bull?'📈 '+newsPick(1):'⚠️ '+newsPick(0),bull?'bull':'bear');talk(bull?'hype':'fear');
       }
       talkT+=dt;if(talkT>.4+Math.random()*.5){talkT=0;talk(inDip(t)?'fear':cur>1.15?'hype':pick(['hype','idle']));}
     }
     const xh=run.hint&&run.hint.real&&!run.hint.crystal?run.hint:null;if(xh&&xh.x==null)run.crashAt=Math.max(run.crashAt,base(t+holdRate()));
-    if(b>=run.crashAt){if(xh&&xh.x&&state==='holding'&&run.liqLine&&cur<=run.liqLine)run.liq=1;crash();}
+    if(run.boss?t>=run.boss.tc:b>=run.crashAt){if(run.boss)run.crashAt=cur;if(xh&&xh.x&&state==='holding'&&run.liqLine&&cur<=run.liqLine)run.liq=1;crash();}
     else{
-      cur=Math.max(run.lev>1?.3:.85,b*(1+(wig(t)-1)*Math.min(1,t/.3)*(run.T.wig||1)*(run.rg.wig||1))*newsF(t));peak=Math.max(peak,cur);
+      cur=Math.max(run.lev>1?.3:.85,b*(1+(wig(t)-1)*Math.min(1,t/.3)*(run.T.wig||1)*(run.rg.wig||1)*(run.boss&&t>=run.boss.q0?0:1))*newsF(t));peak=Math.max(peak,cur);
       if(xh&&xh.x==null&&cur>=xh.v)xh.x=t+holdRate();
       if(state==='holding'&&run.liqLine&&cur<=run.liqLine&&!(xh&&t<xh.x)){if(inv.noliq>0){inv.noliq--;store.set('shg_inv',inv);stats.c.items++;store.set('shg_stats',stats);run.liqLine=0;toast('🧯 청산 방지권 발동! 살았다');}else{run.liq=1;crash();draw();requestAnimationFrame(frame);return;}}
       const idx=runBase+Math.floor(t/CD);
-      while(candles.length<=idx){const pc=candles.length?candles[candles.length-1].c:1;candles.push({o:pc,h:pc,l:pc,c:pc,v:0,ghost:state==='ghost',r:1});if(state==='holding')sfx.tick(cur);}
+      while(candles.length<=idx){const pc=candles.length?candles[candles.length-1].c:1;candles.push({o:pc,h:pc,l:pc,c:pc,v:0,ghost:state==='ghost',r:1});if(state==='holding'&&!(run.boss&&run.boss.mute))sfx.tick(cur);}
       const c=candles[candles.length-1];c.h=Math.max(c.h,cur);c.l=Math.min(c.l,cur);c.c=cur;
       const dv=dt*(1+Math.abs(cur-prev)/prev*300+(events.some(e=>t>=e.t0&&t<=e.t0+1.4)?3:0))*rnd(.6,1.4);c.v+=dv;volTotal+=dv*(1+cur);
-      if(state==='holding'&&run.boss&&!run.re){const pn=performance.now(),hp=run.boss.down&&pn<run.boss.downAt+1050?0:Math.max(0,1-(cur-1)/(run.boss.target-1));$('bossHp').style.width=(hp*100).toFixed(1)+'%';if(hp<=0&&!run.boss.down){run.boss.down=1;run.boss.downAt=pn+Math.max(0,stampAt-pn);stamp('💥 HP 0! 지금 팔면 처치');}}
-      if(state==='holding'){events.forEach(e=>{if(e.shake&&!e.shown&&t>=e.t0){e.shown=1;run.sawDip=true;news('⚠️ 세력의 개미털기 매도 폭탄','bear');talk('fear');}});tension(dt);if(run.tut)tutTick();while(run.mi<MS.length&&cur*(MS[run.mi][0]===1.3&&!run.tut?eM:1)>=MS[run.mi][0]){if(!(MS[run.mi][0]===1.3&&!run.T.limit&&!run.tut)){stamp(MS[run.mi][1]);ptCheer();}run.mi++;}ptBand();}
+      if(run.boss)bossTick(); /* BOSS-V2: meters, cues, bluff stamps, ⛔ touch (holding and ghost) */
+      if(state==='holding'){events.forEach(e=>{if(e.shake&&!e.shown&&t>=e.t0){e.shown=1;run.sawDip=true;news('⚠️ 세력의 개미털기 매도 폭탄','bear');talk('fear');}});if(!(run.boss&&run.boss.mute))tension(dt);if(run.tut)tutTick();while(!run.boss&&run.mi<MS.length&&cur*(MS[run.mi][0]===1.3&&!run.tut?eM:1)>=MS[run.mi][0]){if(!(MS[run.mi][0]===1.3&&!run.T.limit&&!run.tut)){stamp(MS[run.mi][1]);ptCheer();}run.mi++;}ptBand();}
       if(state==='holding')pbLive();
       if(state==='holding')btnTxt(sellLbl());
     }
@@ -4544,7 +4931,7 @@ if(/selftest/.test(location.search)){
     get h8(){const h=run&&run.hint;return run?{lev:run.lev,real:!!(h&&h.real&&!h.crystal),v:h?h.v:0,x:h&&h.x!=null?h.x:null,liq:!!run.liq,liqLine:run.liqLine,t,cur,crashed,state}:null;},h8dip(a){if(run)events.push({t0:t,amp:a});},
     setXp(v){xp=Math.max(0,Math.floor(+v||0));store.set('shg_xp',xp);paintTop();},lvAt(L){let lo=0,hi=1e9;while(lo<hi){const m=Math.floor((lo+hi)/2);if(lvlOf(m).L>=L)hi=m;else lo=m+1;}return lo;},
     prem:{on:PREM_ON,pay:PAY.id,grant:grantPremium,equip:premEquip,get own(){return prem.slice()},get eq(){return Object.assign({},premEq)},get theme(){return CP===C?null:premEq.th}},
-    ads:{get on(){return adsOn()},get cg(){return {on:CG.on,noAds:CG.noAds,done:CG.done}},off:adsOff,get web(){return {noAds:webNoAds,client:!!CFG.adClient,req:adReq,hold:adHold,pause:adPause,wait:adsWait()}},set wd(v){AD_WD=v},midAd,get revOk(){return revAvail()}}};
+    ads:{get on(){return adsOn()},get cg(){return {on:CG.on,noAds:CG.noAds,done:CG.done}},off:adsOff,get web(){return {noAds:webNoAds,client:!!CFG.adClient,req:adReq,hold:adHold,pause:adPause,wait:adsWait()}},set wd(v){AD_WD=v},midAd,get revOk(){return revAvail()}},boss:bossHook()}; /* BOSS-V2: window.__t.boss */
   setInterval(()=>{if(adsOn())return;const b=['adWin','adLoss','adRevive','adItem','adSpin'].filter(id=>{const e=$(id);return e&&e.offsetParent;});if(b.length)throw new Error('ad button visible while ads are off: '+b.join(','));},500);
   if(/fast/.test(location.search)){draw=()=>{};}
 }

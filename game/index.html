@@ -1531,6 +1531,7 @@ html[lang=en] .card .rst>div{padding-inline:clamp(8px,2.2vw,12px)}
 .btl .bme small{position:absolute;left:calc(100% + 3px);top:50%;transform:translateY(-50%);font:700 9px/1 var(--ui);color:var(--fg2);white-space:nowrap}.btl .bme.l small{left:auto;right:calc(100% + 3px)}
 .card .btlg{display:flex;flex-wrap:wrap;justify-content:center;gap:2px 10px;margin:4px 0 0;font:600 10px/1.3 var(--ui);color:var(--muted)}.btlg b{font:800 11px/1 var(--num)}.btlg .bf{color:#ffb703}.btlg .bx{color:#ff4d6d}.btlg i{display:inline-block;width:16px;height:6px;margin-right:3px;border-radius:2px;vertical-align:1px;background:linear-gradient(90deg,#ff2d55 0 75%,var(--gold) 75% 100%)}
 .bsh{margin:0 0 8px}.bsr{display:flex;gap:6px;margin:0 0 8px}
+.bsk>.kv:first-child{grid-template-columns:20px auto minmax(0,1fr)}.bsk>.kv:first-child>b{white-space:normal;text-align:right;text-wrap:balance} 
 .bsr button{flex:1;min-height:44px;border-radius:var(--r-sm);border:1px solid var(--hair2);background:var(--panel2);color:var(--fg);font:700 var(--t-chip)/1 var(--ui);cursor:pointer}
 .spill.bosschip::after{bottom:-12px} /* the chip opens the rule sheet (the only way to read the rule before a fight at Ⅱ–Ⅳ): its hit box reaches 45 px; above it the goal pill keeps its own taps */
 .bsr button[aria-pressed=true]{border-color:#ff4d6d;background:color-mix(in srgb,#ff2d55 22%,var(--panel2))}
@@ -2288,7 +2289,7 @@ function news(text,kind){
   el.innerHTML='<small>'+(kind==='rumor'?'찌라시':(kind==='bull'?'[단독] ':'[속보] ')+pick(SRC))+' · '+clock()+'</small>'+icH(text);
   el.className=kind;el.hidden=false;el.style.animation='none';void el.offsetWidth;el.style.animation='';
   clearTimeout(newsTimer);newsTimer=setTimeout(()=>el.hidden=true,3500);sfx.news();if(state==='holding'&&!(run&&run.boss)&&(kind==='bear'||kind==='bull')){ptKick(kind==='bear'?'ptShk 1s ease-in-out':'ptHop .5s ease-out');ptSay(pick(PT_SAY[kind]),1600);}
-  talkLines.push('<b class="tgs">[뉴스]</b>'+text.replace(/^[^ ]+ /,''));renderTalk();
+  if(!(run&&run.boss&&state!=='ready')){talkLines.push('<b class="tgs">[뉴스]</b>'+text.replace(/^[^ ]+ /,''));renderTalk();} /* v3.0.5: in a boss fight the ⚠️ headline banner is the cue (🦢 loud bluffs), not a chat-ticker line */
 }
 function newsIdle(){const el=$('news');clearTimeout(newsTimer);el.hidden=true;el.className='idle';el.innerHTML=icT('📰 실시간 뉴스');}
 const talkLines=[];
@@ -2568,7 +2569,7 @@ function start(){
   if(!tut&&!ch&&o.k==='boss'&&!o.prac&&armed.bossT>0&&(stats.rounds+1)%10!==0){armed.bossT--;store.set('shg_armed',armed);}
   if(ai)setTimeout(()=>stamp('💯 영끌 '+won(bet),'wn'),60);else if(lv>=5)setTimeout(()=>stamp('⚡ '+lv+'배','wn'),60);
   run.rg=rg;const rgi=REGIMES.indexOf(rg);if(!bs&&!tut&&!ch&&stats.lastRg==null&&rgi===0){stats.lastRg=0;store.set('shg_stats',stats);}if(!bs&&!tut&&!ch&&stats.lastRg!==rgi){const seen=stats.lastRg===rg.n,rep=(stats.rgSeen|0)>>rgi&1;stats.lastRg=rgi;stats.rgSeen=(stats.rgSeen|0)|1<<rgi;store.set('shg_stats',stats);if(!seen)setTimeout(()=>{stamp(rg.e+' '+rg.n);if(!rep)toast(rg.e+' '+rg.n+' 시작 · '+rg.d);},80);}
-  run.boss=bs?bossSetup(o):null;$('bossbar').hidden=!run.boss; /* BOSS-V2: generate the script (crashAt=Infinity, chart-time meters), paint the bar */
+  run.boss=bs?bossSetup(o):null;$('bossbar').hidden=!run.boss;if(run.boss){talkLines.length=0;renderTalk();} /* v3.0.5: no stale pre-fight chat line during the fight (talk() is off until the next round is ready) */ /* BOSS-V2: generate the script (crashAt=Infinity, chart-time meters), paint the bar */
   tutStep=0;
   card.hidden=true;newsIdle();
   t=0;cur=1;peak=1;sell=null;crashed=false;events=[];warned=!!(hint&&hint.crystal);volTotal=0;talkT=0;hbT=0;vigA=0;run.mi=0;if(run.boss){events=run.boss.sc.ev.map(x=>({...x}));bossPaint(run.boss);} /* BOSS-V2: scripted events after the reset */
@@ -2797,7 +2798,7 @@ Object.assign(PT_SAY,{bossKill:['읽었다!','패턴 완벽!'],bossEsc:['너무 
 const bT=(k,e)=>LANG==='en'?e:k; // lines with numbers inside need their own word order
 const bDex=()=>{const d=stats.bossDex;if(!d||typeof d!=='object'||Array.isArray(d))stats.bossDex={};return stats.bossDex;}; // {[entry]:{k kills, s best stars, b best time in 1/100 s (0 = none)}} · an entry exists once the boss was met
 const bossMet=i=>!!bDex()[i],bossBMet=b=>Object.keys(bDex()).some(k=>k%8===b);
-const bossBefS=cs=>bT('⏱ '+nf(2).format(cs/100)+'초 전','⏱ '+nf(2).format(cs/100)+'s left'),bossSec=x=>bT(nf(1).format(x)+'초',nf(1).format(x)+' s'),bossBef=cs=>bT('폭락 '+nf(2).format(cs/100)+'초 전',nf(2).format(cs/100)+' s before the crash');
+const bossBefS=cs=>bT('⏱ '+nf(2).format(cs/100)+'초 전','⏱ '+nf(2).format(cs/100)+'s left'),bossSec=x=>bT(nf(1).format(x)+'초',nf(1).format(x)+'\u00a0s'),bossBef=cs=>bT('폭락 '+nf(2).format(cs/100)+'초 전',nf(2).format(cs/100)+'\u00a0s before the crash'); // v3.0.5: no-break space keeps the number with its unit
 let bossP=null,bossCo={},bossForce=null; // bossP: armed practice entry (memory only) · bossCo: first-meeting coach shown this session · bossForce: selftest script seed
 function bossNextE(from){const d=bDex();for(let k=0;k<32;k++){const i=(from+k)%32;if(!(d[i]&&d[i].s>=3))return i;}return 24+Math.floor(Math.random()*8);}
 function bossEntry(){const I=Math.max(0,Math.min(32,stats.bossI|0));return I<32?Object.assign(bossE_(I),{E:0}):Object.assign(bossE_(stats.bossE|0),{E:1});} // the boss of the next cadence/ticket round (a miss keeps it)
@@ -2815,7 +2816,7 @@ function bossSetup(o){
     m:sc.meters.filter(x=>!x.hidden).map(x=>({s:x.s*H0,e:x.e*H0,k:x.k,lab:x.lab})),st:[],en:[],cues:[],pk:0,np:0,ng:0,used:0,fail:0,mute:0,hit:null,bounty:0,xg:0,slot:null,hp:'',auto:null});
   B.W=B.tc-B.ws;run.crashAt=Infinity;run.tMin=.3*holdRate(); // the crash is time-based (t >= tc); NaN W/ws for ⛔ until the live touch
   $('bossbar').className='';{const bb=$('bossbar'),g=$('bossGoal');bb.setAttribute('role','group');bb.setAttribute('aria-label',e.B.e+' '+e.B.n+' '+RN[e.r-1]);g.setAttribute('role','img');g.setAttribute('aria-label','');}$('bossName').innerHTML=icH((sub!==e.b?e.B.e+'='+BOSSES[sub].e:e.B.e)+'<span class="bn"> '+esc(e.B.n)+'</span> '+RN[e.r-1]);
-  $('bossHp').style.width='0%';try{toastPause();}catch(x){}bossFit();setTimeout(()=>stamp(bT('⚔️ '+e.B.n+' 등장','⚔️ '+e.B.n+'!')),50); // the cue slot is painted after start() resets t/cur
+  $('bossHp').style.width='0%';try{toastPause();}catch(x){}if(o.prac){const pq='🎯 '+bT('다음 판은 연습 · ','Next round is practice · ');for(let q=toastQ.length;q--;)if(toastQ[q].startsWith(pq))toastQ.splice(q,1);} /* v3.0.5: the practice round has started, so its 'next round is practice' toast is stale (not shown over the result sheet) */bossFit();setTimeout(()=>stamp(bT('⚔️ '+e.B.n+' 등장','⚔️ '+e.B.n+'!')),50); // the cue slot is painted after start() resets t/cur
   return B;}
 const bossGrade=(B,x)=>x>=B.ws&&x<B.tc?{o:'kill',st:(x-B.ws)/B.W>=.75?3:(x-B.ws)/B.W>=.5?2:1,u:(x-B.ws)/B.W}:x>=B.tc?{o:'hit',st:0,u:0}:{o:'esc',st:0,u:0};
 function bossTick(){const B=run.boss,hold=state==='holding',H0=BG.HR0; // frame(): holding and ghost, after cur is set
@@ -2900,9 +2901,9 @@ function btlH(B){
   return '<div class="btl" role="img" aria-label="'+al+'">'+o+'</div><div class="btlg" aria-hidden="true"><span><b class="bf">▲</b> 가짜 공격</span><span><i></i>진짜 공격</span><span><b class="bx">×</b> 폭락</span>'+(h.t>=0?'<span><b>●</b> 나</span>':'')+'</div>';}
 function showBoss(){ // the result sheet of a boss fight (v3.1 sheet shell)
   const B=run.boss,h=B.hit,e=B.e,nm=e.B.n,kill=h.o==='kill',hr=B.hr,ws=B.ws,bv=B.bounty||0,s2=x=>nf(2).format(x);
-  const g=kill?[bT('⚔️ '+nm+' 처치!','⚔️ Boss defeated!'),'gd',h.st===3?bT('완벽한 일격 · 폭락 '+s2((B.tc-h.t)/hr)+'초 전','Perfect hit · '+s2((B.tc-h.t)/hr)+' s before the crash'):h.st===2?bT('정확한 일격 · 폭락 '+s2((B.tc-h.t)/hr)+'초 전','Clean hit · '+s2((B.tc-h.t)/hr)+' s before the crash'):'진짜 신호를 읽었어요']
-    :h.o==='esc'?[bT('🏃 보스가 도망쳤다','🏃 It got away'),'dn',h.forced?'화면을 떠나서 자동으로 공격했어요':ws>=0?bT(nf(1).format((ws-h.t)/hr)+'초 일찍 공격했어요','You struck '+nf(1).format((ws-h.t)/hr)+' s too early'):'진짜 공격 전에 공격했어요']
-    :[bT('💥 보스의 일격','💥 You got hit'),'dn',bT('진짜 공격은 '+nf(1).format(ws/hr)+'초에 시작됐어요','The real attack started at '+nf(1).format(ws/hr)+' s')];
+  const g=kill?[bT('⚔️ '+nm+' 처치!','⚔️ Boss defeated!'),'gd',h.st===3?bT('완벽한 일격 · 폭락 '+s2((B.tc-h.t)/hr)+'초 전','Perfect hit · '+s2((B.tc-h.t)/hr)+'\u00a0s before the crash'):h.st===2?bT('정확한 일격 · 폭락 '+s2((B.tc-h.t)/hr)+'초 전','Clean hit · '+s2((B.tc-h.t)/hr)+'\u00a0s before the crash'):'진짜 신호를 읽었어요']
+    :h.o==='esc'?[bT('🏃 보스가 도망쳤다','🏃 It got away'),'dn',h.forced?'화면을 떠나서 자동으로 공격했어요':ws>=0?bT(nf(1).format((ws-h.t)/hr)+'초 일찍 공격했어요','You struck '+nf(1).format((ws-h.t)/hr)+'\u00a0s too early'):'진짜 공격 전에 공격했어요']
+    :[bT('💥 보스의 일격','💥 You got hit'),'dn',bT('진짜 공격은 '+nf(1).format(ws/hr)+'초에 시작됐어요','The real attack started at '+nf(1).format(ws/hr)+'\u00a0s')];
   const cells=kill?[['별','★'.repeat(h.st)+'<span class="mu">'+'☆'.repeat(3-h.st)+'</span>','gd'],['내 공격',bossSec(h.t/hr)],['진짜 신호',bossSec(ws/hr)]]
     :h.o==='esc'?[['내 공격',bossSec(h.t/hr)],['진짜 신호',ws>=0?bossSec(ws/hr):'—'],['차이',ws>=0?'−'+bossSec((ws-h.t)/hr):'—','dn']]
     :[['내 공격','—'],['진짜 신호',bossSec(ws/hr)],['폭락',bossSec(B.tc/hr),'dn']];
@@ -2928,7 +2929,7 @@ function bossPrac(i){ // arm (entry) or cancel (null) a no-reward practice round
   if(bossP!=null){if(curTab!=='trade')tab('trade');const e=bossE_(bossP);toast('🎯 '+bT('다음 판은 연습 · ','Next round is practice · ')+e.B.e+' '+e.B.n+' '+RN[e.r-1]);}}
 function bossSheet(i){ // the boss sheet: rule, my record, best time, bounty, common lines, practice (not mid-fight)
   if(state==='holding'||state==='ghost')return;const e=bossE_(i),b=e.b,d=bDex(),me=bossMet(i),bm=bossBMet(b),co=curOffer(),nx=!!co&&co.k==='boss'&&!co.prac,x=d[i],killed=!!(x&&x.k);
-  const rec=RN.map((r,k)=>{const y=d[k*8+b];return r+' '+(y&&y.k?'★'.repeat(Math.max(1,y.s)):'—');}).join(' · ');
+  const rec=RN.map((r,k)=>{const y=d[k*8+b];return r+'\u00a0'+(y&&y.k?'★'.repeat(Math.max(1,y.s)):'—');}).join('\u00a0· '); // v3.0.5: wraps only after a ' · ' (360 px: the label is not cut)
   const bst=Math.min(...[0,1,2,3].map(k=>{const y=d[k*8+b];return y&&y.b>0?y.b:Infinity;}));
   const rules=b===7?[0,1,2,3,4,5,6].filter(k=>bossBMet(k)).map(k=>'<li>'+BOSSES[k].e+' '+BOSSES[k].rule+'</li>').join(''):'';
   const rule=b===7?(bm||e.r===1?e.B.rule:''):(bm||e.r===1?e.B.rule:'');
@@ -2937,7 +2938,7 @@ function bossSheet(i){ // the boss sheet: rule, my record, best time, bounty, co
   openModal('<h2 class="bsh">'+e.B.e+' '+esc(e.B.n)+' '+RN[e.r-1]+'</h2>'+
     '<div class="bsr" role="group">'+RN.map((r,k)=>'<button type="button" data-bsr="'+(k*8+b)+'" aria-pressed="'+(k===e.r-1)+'">'+r+'</button>').join('')+'</div>'+
     (rule?'<p class="lead brl">💡 '+rule+'</p>':'<p class="lead brl mu">? · '+bT('만나면 규칙이 보여요','Meet it to see its rule')+'</p>')+(rules?'<ul class="bcl">'+rules+'</ul>':'')+
-    '<div class="kvs">'+kvH('📖','내 기록',rec,{nf:1})+(bst<Infinity?kvH('⏱','최고 기록',bossBef(bst),{nf:1}):'')+(killed&&(stats.bossI|0)<32?'':kvH('⚔️',killed?'재대결 현상금':'현상금',wonS(bnt),{nf:1,c:'gd'}))+'</div>'+(spn?'<p class="lead bsp">🌳 '+spn+'</p>':'')+
+    '<div class="kvs bsk">'+kvH('📖','내 기록',rec,{nf:1})+(bst<Infinity?kvH('⏱','최고 기록',bossBef(bst),{nf:1}):'')+(killed&&(stats.bossI|0)<32?'':kvH('⚔️',killed?'재대결 현상금':'현상금',wonS(bnt),{nf:1,c:'gd'}))+'</div>'+(spn?'<p class="lead bsp">🌳 '+spn+'</p>':'')+
     '<ul class="bcl"><li>게이지가 꽉 차는 순간 공격이 들어와요</li><li>금색 구간에서 공격하면 ★★★</li><li>돈은 안 걸어요</li></ul>'+
     (canP?'<button class="setbtn'+(bossP===i?' ghost':'')+'" type="button" id="bossPr">'+(bossP===i?'연습 취소':'🎯 연습하기 (보상 없음)')+'</button>':nx&&me?'<p class="lead mu">'+bT('다음 판이 보스전이라 연습은 그 뒤에 할 수 있어요','The next round is a boss fight · practise after it')+'</p>':''));
   const pb=$('bossPr');if(pb)pb.onclick=()=>{const c=bossP===i;$('modalClose').click();bossPrac(c?null:i);};
@@ -3056,7 +3057,7 @@ function showDefault(quiet){
 const CFG={adClient:'',adTest:false,donateUrl:'',iap:false,iapDev:false};
 if(/^(localhost|127\.0\.0\.1)$/.test(location.hostname)&&/[?&]adsense\b/.test(location.search))CFG.adClient='ca-pub-2213068202184499';
 const CG={on:false,S:null,last:0,noAds:0,done:0},onCG=/crazygames/.test(location.hostname)||(window.top!==window&&/crazygames/.test(document.referrer))||/^(localhost|127\.0\.0\.1)$/.test(location.hostname)&&/[?&]cg\b/.test(location.search);
-const BUILD='v3.0.4 · b261110b · '+LANG+'-'+(onCG?'cg':/(^|\.)itch\.(io|zone)$|hwcdn\.net$/.test(location.hostname)||/itch\.io/.test(document.referrer)?'itch':'web');
+const BUILD='v3.0.5 · b261111 · '+LANG+'-'+(onCG?'cg':/(^|\.)itch\.(io|zone)$|hwcdn\.net$/.test(location.hostname)||/itch\.io/.test(document.referrer)?'itch':'web');
 if(onCG){const sc=document.createElement('script');sc.src='https://sdk.crazygames.com/crazygames-sdk-v3.js';
   sc.onload=async()=>{try{const S=window.CrazyGames.SDK;await S.init();if(S.environment!=='disabled'){CG.S=S;CG.on=true;cgLoad();try{const ms=v=>{v=v&&typeof v==='object'?v:S.game.settings;cgMute=!!(v&&v.muteAudio);document.body.classList.toggle('noChat',!!(v&&v.disableChat));if(touched||cgMute)bgm.sync();};ms();S.game.addSettingsChangeListener(ms);}catch(e){}if(state==='holding'||state==='ghost')cgPlay(true);}}catch(e){}CG.done=1;};sc.onerror=()=>{CG.done=1;};document.head.appendChild(sc);}
 let cgG=false;
@@ -3582,7 +3583,7 @@ const TS={
   cardSub:'버튼을 하나씩 직접 눌러 보며 화면을 둘러볼까요?',cardGo:'💡 버튼 둘러보기 · 약 %s%초',cardNo:'바로 시작',fEnd:'💡 둘러보기 끝 · 내 계좌 › ⚙️ 설정에서 다시 볼 수 있어요',
   itTip:'켜면 그 판에만 비용이 들어요 · 아래 칩에서 켜고 꺼요',shopNote:'상점엔 아이템 · 장비 · 꾸미기 · 은행이 있어요.',shopNote2:'소모품은 효과를 다 쓰면 사라지고, 장비는 영구 보너스예요.',
   menu:'💡 버튼 안내 다시 보기',lsT:'💡 버튼 안내',lsSub:'돈이 드는 버튼은 체험이라 눌러도 돈은 그대로예요.',lsSeen:'✓ 봤어요',lsLock:'🔒 %c%',lsSec:'약 %s%초',lsAll:'전체 안내 목록 ›',hpT:'💡 이 화면 안내',
-  lockBoss:'보스전 차례에 볼 수 있어요',lockRank:'%r% 계급부터',
+  lockBoss:'보스전 차례에 볼 수 있어요',lockBO:'보스전이 끝나면 볼 수 있어요',lockRank:'%r% 계급부터',
   nFirst:'버튼 둘러보기',nItem:'아이템',nBoss:'보스전',nMission:'미션',nGrow:'성장 · 스킬',nGear:'장비',nDecor:'꾸미기',nBank:'은행',nLoan:'대출',nInvest:'투자',nCol:'컬렉션',nBroke:'바닥났을 때 화면',
   dFirst:'거래 화면과 아래 탭을 직접 눌러 봐요',dItem:'아이템 켜고 끄기 · 드는 비용',dBoss:'보스전 규칙과 목표',dMission:'미션 · 챌린지 · 시즌 패스',dGrow:'파트너 · 스킬 고르기 체험',
   dGear:'장비 체험 구매 · 압류 규칙',dDecor:'미리 입혀 보기 · 체험 구매',dBank:'빚 · 신용 보기 · 입금 · 출금 체험',dLoan:'이자 · 신용 · 압류 위험 · 체험 (빚 안 생겨요)',dInvest:'상품별 위험 · 입금 · 출금 체험',
@@ -3736,15 +3737,16 @@ const TSIM={
 };
 const tSeen=id=>tipGot('tr_'+id+TOURS[id].v);
 const tLockR=lv=>rankOf(xp)<lv?tsay('lockRank',{r:RANKS[lv][1]}):'';
+const tLockBO=()=>typeof bossRgO==='function'&&bossRgO()?tsay('lockBO'):''; // v3.0.5: a boss/practice offer hides the stake row and item strip, so the trade-tab tours wait (list row locked, not started and stopped)
 const tBoss2=()=>typeof bossSheet==='function'&&typeof bossE_==='function';
 const TOURS={
-  first:{v:1,e:'💡',n:'nFirst',d:'dFirst',g:'trade',inv:()=>curTab==='trade'&&tutDone&&(stats.rounds||0)<20,ii:'iFirst',endT:'fEnd',steps:[
+  first:{v:1,e:'💡',n:'nFirst',d:'dFirst',g:'trade',lock:()=>tLockBO(),inv:()=>curTab==='trade'&&tutDone&&(stats.rounds||0)<20,ii:'iFirst',endT:'fEnd',steps:[
     {k:'P',at:'trade',t:'bet',look:'#betrow',h:'f1h',b:'f1b',done:R=>R.pv!=null&&betPct===R.pv},
     {k:'P',at:'trade',t:'tab:mission',look:'#tabs',h:'f2h',b:'f2b',done:()=>curTab==='mission'},
     {k:'P',at:'mission',t:'tab:shop',look:'#secDaily',h:'f3h',b:'f3b',done:()=>curTab==='shop'},
     {k:'P',at:'shop',t:'tab:account',look:'[data-sseg]',h:'f4h',b:'f4b',done:()=>curTab==='account'},
     {k:'P',at:'account',t:'tab:trade',look:'#secAst .room',h:'f6h',b:'f6b',done:()=>curTab==='trade'}]},
-  item:{v:1,e:'🧰',n:'nItem',d:'dItem',g:'trade',lv:()=>ITEMS.shield.lv,lock:()=>tLockR(ITEMS.shield.lv),inv:()=>curTab==='trade'&&rankOf(xp)>=ITEMS.shield.lv,ii:'iItem',
+  item:{v:1,e:'🧰',n:'nItem',d:'dItem',g:'trade',lv:()=>ITEMS.shield.lv,lock:()=>tLockR(ITEMS.shield.lv)||tLockBO(),inv:()=>curTab==='trade'&&rankOf(xp)>=ITEMS.shield.lv,ii:'iItem',
     used:()=>!!store.get('shg_itemTip',0)||tipGot('it_shield'),init:R=>{R.k=tItemK();},steps:[
     {k:'P',at:'trade',t:'itemBtn',if:()=>tSimple(),h:'i1h',b:'i1b',v:R=>({n:ITEMS[R.k].name,d:ITEMS[R.k].desc}),done:()=>!$('sheet').hidden&&$('sheet').classList.contains('im')},
     {k:'I',at:'trade',t:'item',if:()=>!tSimple(),h:'i1h',b:'i1bP',v:R=>({n:ITEMS[R.k].name,d:ITEMS[R.k].desc})},

@@ -1530,6 +1530,7 @@ html[lang=en] .card .rst>div{padding-inline:clamp(8px,2.2vw,12px)}
 .btl .bme small{position:absolute;left:calc(100% + 3px);top:50%;transform:translateY(-50%);font:700 9px/1 var(--ui);color:var(--fg2);white-space:nowrap}.btl .bme.l small{left:auto;right:calc(100% + 3px)}
 .card .btlg{display:flex;flex-wrap:wrap;justify-content:center;gap:2px 10px;margin:4px 0 0;font:600 10px/1.3 var(--ui);color:var(--muted)}.btlg b{font:800 11px/1 var(--num)}.btlg .bf{color:#ffb703}.btlg .bx{color:#ff4d6d}.btlg i{display:inline-block;width:16px;height:6px;margin-right:3px;border-radius:2px;vertical-align:1px;background:linear-gradient(90deg,#ff2d55 0 75%,var(--gold) 75% 100%)}
 .bsh{margin:0 0 8px}.bsr{display:flex;gap:6px;margin:0 0 8px}
+.bsk>.kv:first-child{grid-template-columns:20px auto minmax(0,1fr)}.bsk>.kv:first-child>b{white-space:normal;text-align:right;text-wrap:balance} 
 .bsr button{flex:1;min-height:44px;border-radius:var(--r-sm);border:1px solid var(--hair2);background:var(--panel2);color:var(--fg);font:700 var(--t-chip)/1 var(--ui);cursor:pointer}
 .spill.bosschip::after{bottom:-12px} /* the chip opens the rule sheet (the only way to read the rule before a fight at Ⅱ–Ⅳ): its hit box reaches 45 px; above it the goal pill keeps its own taps */
 .bsr button[aria-pressed=true]{border-color:#ff4d6d;background:color-mix(in srgb,#ff2d55 22%,var(--panel2))}
@@ -2287,7 +2288,7 @@ function news(text,kind){
   el.innerHTML='<small>'+(kind==='rumor'?'Tip':(kind==='bull'?'[EXCLUSIVE] ':'[BREAKING] ')+pick(SRC))+' · '+clock()+'</small>'+icH(text);
   el.className=kind;el.hidden=false;el.style.animation='none';void el.offsetWidth;el.style.animation='';
   clearTimeout(newsTimer);newsTimer=setTimeout(()=>el.hidden=true,3500);sfx.news();if(state==='holding'&&!(run&&run.boss)&&(kind==='bear'||kind==='bull')){ptKick(kind==='bear'?'ptShk 1s ease-in-out':'ptHop .5s ease-out');ptSay(pick(PT_SAY[kind]),1600);}
-  talkLines.push('<b class="tgs">[News]</b>'+text.replace(/^[^ ]+ /,''));renderTalk();
+  if(!(run&&run.boss&&state!=='ready')){talkLines.push('<b class="tgs">[News]</b>'+text.replace(/^[^ ]+ /,''));renderTalk();} /* v3.0.5: in a boss fight the ⚠️ headline banner is the cue (🦢 loud bluffs), not a chat-ticker line */
 }
 function newsIdle(){const el=$('news');clearTimeout(newsTimer);el.hidden=true;el.className='idle';el.innerHTML=icT('📰 Live news');}
 const talkLines=[];
@@ -2567,7 +2568,7 @@ function start(){
   if(!tut&&!ch&&o.k==='boss'&&!o.prac&&armed.bossT>0&&(stats.rounds+1)%10!==0){armed.bossT--;store.set('shg_armed',armed);}
   if(ai)setTimeout(()=>stamp('💯 Max Buy '+won(bet),'wn'),60);else if(lv>=5)setTimeout(()=>stamp('⚡ '+lv+'×','wn'),60);
   run.rg=rg;const rgi=REGIMES.indexOf(rg);if(!bs&&!tut&&!ch&&stats.lastRg==null&&rgi===0){stats.lastRg=0;store.set('shg_stats',stats);}if(!bs&&!tut&&!ch&&stats.lastRg!==rgi){const seen=stats.lastRg===rg.n,rep=(stats.rgSeen|0)>>rgi&1;stats.lastRg=rgi;stats.rgSeen=(stats.rgSeen|0)|1<<rgi;store.set('shg_stats',stats);if(!seen)setTimeout(()=>{stamp(rg.e+' '+rg.n);if(!rep)toast(rg.e+' '+rg.n+' begins · '+rg.d);},80);}
-  run.boss=bs?bossSetup(o):null;$('bossbar').hidden=!run.boss; /* BOSS-V2: generate the script (crashAt=Infinity, chart-time meters), paint the bar */
+  run.boss=bs?bossSetup(o):null;$('bossbar').hidden=!run.boss;if(run.boss){talkLines.length=0;renderTalk();} /* v3.0.5: no stale pre-fight chat line during the fight (talk() is off until the next round is ready) */ /* BOSS-V2: generate the script (crashAt=Infinity, chart-time meters), paint the bar */
   tutStep=0;
   card.hidden=true;newsIdle();
   t=0;cur=1;peak=1;sell=null;crashed=false;events=[];warned=!!(hint&&hint.crystal);volTotal=0;talkT=0;hbT=0;vigA=0;run.mi=0;if(run.boss){events=run.boss.sc.ev.map(x=>({...x}));bossPaint(run.boss);} /* BOSS-V2: scripted events after the reset */
@@ -2796,7 +2797,7 @@ Object.assign(PT_SAY,{bossKill:['Read it!','Perfect read!'],bossEsc:['Too early!
 const bT=(k,e)=>LANG==='en'?e:k; // lines with numbers inside need their own word order
 const bDex=()=>{const d=stats.bossDex;if(!d||typeof d!=='object'||Array.isArray(d))stats.bossDex={};return stats.bossDex;}; // {[entry]:{k kills, s best stars, b best time in 1/100 s (0 = none)}} · an entry exists once the boss was met
 const bossMet=i=>!!bDex()[i],bossBMet=b=>Object.keys(bDex()).some(k=>k%8===b);
-const bossBefS=cs=>bT('⏱ '+nf(2).format(cs/100)+'s before the crash','⏱ '+nf(2).format(cs/100)+'s left'),bossSec=x=>bT(nf(1).format(x)+'s',nf(1).format(x)+' s'),bossBef=cs=>bT('Crash '+nf(2).format(cs/100)+'s before the crash',nf(2).format(cs/100)+' s before the crash');
+const bossBefS=cs=>bT('⏱ '+nf(2).format(cs/100)+'s before the crash','⏱ '+nf(2).format(cs/100)+'s left'),bossSec=x=>bT(nf(1).format(x)+'s',nf(1).format(x)+'\u00a0s'),bossBef=cs=>bT('Crash '+nf(2).format(cs/100)+'s before the crash',nf(2).format(cs/100)+'\u00a0s before the crash'); // v3.0.5: no-break space keeps the number with its unit
 let bossP=null,bossCo={},bossForce=null; // bossP: armed practice entry (memory only) · bossCo: first-meeting coach shown this session · bossForce: selftest script seed
 function bossNextE(from){const d=bDex();for(let k=0;k<32;k++){const i=(from+k)%32;if(!(d[i]&&d[i].s>=3))return i;}return 24+Math.floor(Math.random()*8);}
 function bossEntry(){const I=Math.max(0,Math.min(32,stats.bossI|0));return I<32?Object.assign(bossE_(I),{E:0}):Object.assign(bossE_(stats.bossE|0),{E:1});} // the boss of the next cadence/ticket round (a miss keeps it)
@@ -2814,7 +2815,7 @@ function bossSetup(o){
     m:sc.meters.filter(x=>!x.hidden).map(x=>({s:x.s*H0,e:x.e*H0,k:x.k,lab:x.lab})),st:[],en:[],cues:[],pk:0,np:0,ng:0,used:0,fail:0,mute:0,hit:null,bounty:0,xg:0,slot:null,hp:'',auto:null});
   B.W=B.tc-B.ws;run.crashAt=Infinity;run.tMin=.3*holdRate(); // the crash is time-based (t >= tc); NaN W/ws for ⛔ until the live touch
   $('bossbar').className='';{const bb=$('bossbar'),g=$('bossGoal');bb.setAttribute('role','group');bb.setAttribute('aria-label',e.B.e+' '+e.B.n+' '+RN[e.r-1]);g.setAttribute('role','img');g.setAttribute('aria-label','');}$('bossName').innerHTML=icH((sub!==e.b?e.B.e+'='+BOSSES[sub].e:e.B.e)+'<span class="bn"> '+esc(e.B.n)+'</span> '+RN[e.r-1]);
-  $('bossHp').style.width='0%';try{toastPause();}catch(x){}bossFit();setTimeout(()=>stamp(bT('⚔️ '+e.B.n+' appears','⚔️ '+e.B.n+'!')),50); // the cue slot is painted after start() resets t/cur
+  $('bossHp').style.width='0%';try{toastPause();}catch(x){}if(o.prac){const pq='🎯 '+bT('Next round is practice · ','Next round is practice · ');for(let q=toastQ.length;q--;)if(toastQ[q].startsWith(pq))toastQ.splice(q,1);} /* v3.0.5: the practice round has started, so its 'next round is practice' toast is stale (not shown over the result sheet) */bossFit();setTimeout(()=>stamp(bT('⚔️ '+e.B.n+' appears','⚔️ '+e.B.n+'!')),50); // the cue slot is painted after start() resets t/cur
   return B;}
 const bossGrade=(B,x)=>x>=B.ws&&x<B.tc?{o:'kill',st:(x-B.ws)/B.W>=.75?3:(x-B.ws)/B.W>=.5?2:1,u:(x-B.ws)/B.W}:x>=B.tc?{o:'hit',st:0,u:0}:{o:'esc',st:0,u:0};
 function bossTick(){const B=run.boss,hold=state==='holding',H0=BG.HR0; // frame(): holding and ghost, after cur is set
@@ -2899,9 +2900,9 @@ function btlH(B){
   return '<div class="btl" role="img" aria-label="'+al+'">'+o+'</div><div class="btlg" aria-hidden="true"><span><b class="bf">▲</b> Bluff</span><span><i></i>Real attack</span><span><b class="bx">×</b> Crash</span>'+(h.t>=0?'<span><b>●</b> You</span>':'')+'</div>';}
 function showBoss(){ // the result sheet of a boss fight (v3.1 sheet shell)
   const B=run.boss,h=B.hit,e=B.e,nm=e.B.n,kill=h.o==='kill',hr=B.hr,ws=B.ws,bv=B.bounty||0,s2=x=>nf(2).format(x);
-  const g=kill?[bT('⚔️ '+nm+' defeated!','⚔️ Boss defeated!'),'gd',h.st===3?bT('Perfect hit · '+s2((B.tc-h.t)/hr)+'s before the crash','Perfect hit · '+s2((B.tc-h.t)/hr)+' s before the crash'):h.st===2?bT('Clean hit · '+s2((B.tc-h.t)/hr)+'s before the crash','Clean hit · '+s2((B.tc-h.t)/hr)+' s before the crash'):'You read the real tell']
-    :h.o==='esc'?[bT('🏃 The boss got away','🏃 It got away'),'dn',h.forced?'You left the screen, so it struck':ws>=0?bT(nf(1).format((ws-h.t)/hr)+'s too early','You struck '+nf(1).format((ws-h.t)/hr)+' s too early'):'You struck before the real attack']
-    :[bT('💥 The boss hit you','💥 You got hit'),'dn',bT('The real attack started at '+nf(1).format(ws/hr)+'s','The real attack started at '+nf(1).format(ws/hr)+' s')];
+  const g=kill?[bT('⚔️ '+nm+' defeated!','⚔️ Boss defeated!'),'gd',h.st===3?bT('Perfect hit · '+s2((B.tc-h.t)/hr)+'s before the crash','Perfect hit · '+s2((B.tc-h.t)/hr)+'\u00a0s before the crash'):h.st===2?bT('Clean hit · '+s2((B.tc-h.t)/hr)+'s before the crash','Clean hit · '+s2((B.tc-h.t)/hr)+'\u00a0s before the crash'):'You read the real tell']
+    :h.o==='esc'?[bT('🏃 The boss got away','🏃 It got away'),'dn',h.forced?'You left the screen, so it struck':ws>=0?bT(nf(1).format((ws-h.t)/hr)+'s too early','You struck '+nf(1).format((ws-h.t)/hr)+'\u00a0s too early'):'You struck before the real attack']
+    :[bT('💥 The boss hit you','💥 You got hit'),'dn',bT('The real attack started at '+nf(1).format(ws/hr)+'s','The real attack started at '+nf(1).format(ws/hr)+'\u00a0s')];
   const cells=kill?[['Stars','★'.repeat(h.st)+'<span class="mu">'+'☆'.repeat(3-h.st)+'</span>','gd'],['My strike',bossSec(h.t/hr)],['Real tell',bossSec(ws/hr)]]
     :h.o==='esc'?[['My strike',bossSec(h.t/hr)],['Real tell',ws>=0?bossSec(ws/hr):'—'],['Gap',ws>=0?'−'+bossSec((ws-h.t)/hr):'—','dn']]
     :[['My strike','—'],['Real tell',bossSec(ws/hr)],['Crash',bossSec(B.tc/hr),'dn']];
@@ -2927,7 +2928,7 @@ function bossPrac(i){ // arm (entry) or cancel (null) a no-reward practice round
   if(bossP!=null){if(curTab!=='trade')tab('trade');const e=bossE_(bossP);toast('🎯 '+bT('Next round is practice · ','Next round is practice · ')+e.B.e+' '+e.B.n+' '+RN[e.r-1]);}}
 function bossSheet(i){ // the boss sheet: rule, my record, best time, bounty, common lines, practice (not mid-fight)
   if(state==='holding'||state==='ghost')return;const e=bossE_(i),b=e.b,d=bDex(),me=bossMet(i),bm=bossBMet(b),co=curOffer(),nx=!!co&&co.k==='boss'&&!co.prac,x=d[i],killed=!!(x&&x.k);
-  const rec=RN.map((r,k)=>{const y=d[k*8+b];return r+' '+(y&&y.k?'★'.repeat(Math.max(1,y.s)):'—');}).join(' · ');
+  const rec=RN.map((r,k)=>{const y=d[k*8+b];return r+'\u00a0'+(y&&y.k?'★'.repeat(Math.max(1,y.s)):'—');}).join('\u00a0· '); // v3.0.5: wraps only after a ' · ' (360 px: the label is not cut)
   const bst=Math.min(...[0,1,2,3].map(k=>{const y=d[k*8+b];return y&&y.b>0?y.b:Infinity;}));
   const rules=b===7?[0,1,2,3,4,5,6].filter(k=>bossBMet(k)).map(k=>'<li>'+BOSSES[k].e+' '+BOSSES[k].rule+'</li>').join(''):'';
   const rule=b===7?(bm||e.r===1?e.B.rule:''):(bm||e.r===1?e.B.rule:'');
@@ -2936,7 +2937,7 @@ function bossSheet(i){ // the boss sheet: rule, my record, best time, bounty, co
   openModal('<h2 class="bsh">'+e.B.e+' '+esc(e.B.n)+' '+RN[e.r-1]+'</h2>'+
     '<div class="bsr" role="group">'+RN.map((r,k)=>'<button type="button" data-bsr="'+(k*8+b)+'" aria-pressed="'+(k===e.r-1)+'">'+r+'</button>').join('')+'</div>'+
     (rule?'<p class="lead brl">💡 '+rule+'</p>':'<p class="lead brl mu">? · '+bT('Meet it to see its rule','Meet it to see its rule')+'</p>')+(rules?'<ul class="bcl">'+rules+'</ul>':'')+
-    '<div class="kvs">'+kvH('📖','My record',rec,{nf:1})+(bst<Infinity?kvH('⏱','Best',bossBef(bst),{nf:1}):'')+(killed&&(stats.bossI|0)<32?'':kvH('⚔️',killed?'Rematch bounty':'Bounty',wonS(bnt),{nf:1,c:'gd'}))+'</div>'+(spn?'<p class="lead bsp">🌳 '+spn+'</p>':'')+
+    '<div class="kvs bsk">'+kvH('📖','My record',rec,{nf:1})+(bst<Infinity?kvH('⏱','Best',bossBef(bst),{nf:1}):'')+(killed&&(stats.bossI|0)<32?'':kvH('⚔️',killed?'Rematch bounty':'Bounty',wonS(bnt),{nf:1,c:'gd'}))+'</div>'+(spn?'<p class="lead bsp">🌳 '+spn+'</p>':'')+
     '<ul class="bcl"><li>The attack lands when the meter is full</li><li>Strike in the gold zone for ★★★</li><li>No money at stake</li></ul>'+
     (canP?'<button class="setbtn'+(bossP===i?' ghost':'')+'" type="button" id="bossPr">'+(bossP===i?'Cancel practice':'🎯 Practice (no rewards)')+'</button>':nx&&me?'<p class="lead mu">'+bT('The next round is a boss fight · practise after it','The next round is a boss fight · practise after it')+'</p>':''));
   const pb=$('bossPr');if(pb)pb.onclick=()=>{const c=bossP===i;$('modalClose').click();bossPrac(c?null:i);};
@@ -3055,7 +3056,7 @@ function showDefault(quiet){
 const CFG={adClient:'',adTest:false,donateUrl:'',iap:false,iapDev:false};
 if(/^(localhost|127\.0\.0\.1)$/.test(location.hostname)&&/[?&]adsense\b/.test(location.search))CFG.adClient='ca-pub-2213068202184499';
 const CG={on:false,S:null,last:0,noAds:0,done:0},onCG=/crazygames/.test(location.hostname)||(window.top!==window&&/crazygames/.test(document.referrer))||/^(localhost|127\.0\.0\.1)$/.test(location.hostname)&&/[?&]cg\b/.test(location.search);
-const BUILD='v3.0.4 · b261110b · '+LANG+'-'+(onCG?'cg':/(^|\.)itch\.(io|zone)$|hwcdn\.net$/.test(location.hostname)||/itch\.io/.test(document.referrer)?'itch':'web');
+const BUILD='v3.0.5 · b261111 · '+LANG+'-'+(onCG?'cg':/(^|\.)itch\.(io|zone)$|hwcdn\.net$/.test(location.hostname)||/itch\.io/.test(document.referrer)?'itch':'web');
 if(onCG){const sc=document.createElement('script');sc.src='https://sdk.crazygames.com/crazygames-sdk-v3.js';
   sc.onload=async()=>{try{const S=window.CrazyGames.SDK;await S.init();if(S.environment!=='disabled'){CG.S=S;CG.on=true;cgLoad();try{const ms=v=>{v=v&&typeof v==='object'?v:S.game.settings;cgMute=!!(v&&v.muteAudio);document.body.classList.toggle('noChat',!!(v&&v.disableChat));if(touched||cgMute)bgm.sync();};ms();S.game.addSettingsChangeListener(ms);}catch(e){}if(state==='holding'||state==='ghost')cgPlay(true);}}catch(e){}CG.done=1;};sc.onerror=()=>{CG.done=1;};document.head.appendChild(sc);}
 let cgG=false;
@@ -3581,7 +3582,7 @@ const TS={
   cardSub:'Want a quick look around, pressing the buttons yourself?',cardGo:'💡 Button tour · about %s% s',cardNo:'Just play',fEnd:'💡 Tour done · replay it in Account › ⚙️ Settings',
   itTip:'It costs money only in a round where it’s on · switch it with the chip below',shopNote:'The shop has items, gear, decor and the bank.',shopNote2:'Consumables are used up once their effect is spent; gear gives permanent bonuses.',
   menu:'💡 Replay button guides',lsT:'💡 Button guide',lsSub:'Buttons that cost money are practice here, so your money stays the same.',lsSeen:'✓ Seen',lsLock:'🔒 %c%',lsSec:'≈ %s% s',lsAll:'All guides ›',hpT:'💡 Guides for this screen',
-  lockBoss:'Available when a boss fight is next',lockRank:'From rank %r%',
+  lockBoss:'Available when a boss fight is next',lockBO:'Available after the boss fight',lockRank:'From rank %r%',
   nFirst:'Button tour',nItem:'Items',nBoss:'Boss Fight',nMission:'Missions',nGrow:'Grow · skills',nGear:'Gear',nDecor:'Decor',nBank:'Bank',nLoan:'Loan',nInvest:'Invest',nCol:'Collection',nBroke:'If you hit zero',
   dFirst:'Tap through the trade screen and the tabs yourself',dItem:'Switching items on and off · what they cost',dBoss:'Boss fight rules and target',dMission:'Missions · challenge · season pass',dGrow:'Partner · practice picking a skill',
   dGear:'Practice gear buy · seizure rule',dDecor:'Try things on · practice buy',dBank:'Reading debt and credit · practice adding and taking out',dLoan:'Interest · credit · seizure risk · practice (no debt)',dInvest:'Risk per product · practice adding and taking out',
@@ -3735,15 +3736,16 @@ const TSIM={
 };
 const tSeen=id=>tipGot('tr_'+id+TOURS[id].v);
 const tLockR=lv=>rankOf(xp)<lv?tsay('lockRank',{r:RANKS[lv][1]}):'';
+const tLockBO=()=>typeof bossRgO==='function'&&bossRgO()?tsay('lockBO'):''; // v3.0.5: a boss/practice offer hides the stake row and item strip, so the trade-tab tours wait (list row locked, not started and stopped)
 const tBoss2=()=>typeof bossSheet==='function'&&typeof bossE_==='function';
 const TOURS={
-  first:{v:1,e:'💡',n:'nFirst',d:'dFirst',g:'trade',inv:()=>curTab==='trade'&&tutDone&&(stats.rounds||0)<20,ii:'iFirst',endT:'fEnd',steps:[
+  first:{v:1,e:'💡',n:'nFirst',d:'dFirst',g:'trade',lock:()=>tLockBO(),inv:()=>curTab==='trade'&&tutDone&&(stats.rounds||0)<20,ii:'iFirst',endT:'fEnd',steps:[
     {k:'P',at:'trade',t:'bet',look:'#betrow',h:'f1h',b:'f1b',done:R=>R.pv!=null&&betPct===R.pv},
     {k:'P',at:'trade',t:'tab:mission',look:'#tabs',h:'f2h',b:'f2b',done:()=>curTab==='mission'},
     {k:'P',at:'mission',t:'tab:shop',look:'#secDaily',h:'f3h',b:'f3b',done:()=>curTab==='shop'},
     {k:'P',at:'shop',t:'tab:account',look:'[data-sseg]',h:'f4h',b:'f4b',done:()=>curTab==='account'},
     {k:'P',at:'account',t:'tab:trade',look:'#secAst .room',h:'f6h',b:'f6b',done:()=>curTab==='trade'}]},
-  item:{v:1,e:'🧰',n:'nItem',d:'dItem',g:'trade',lv:()=>ITEMS.shield.lv,lock:()=>tLockR(ITEMS.shield.lv),inv:()=>curTab==='trade'&&rankOf(xp)>=ITEMS.shield.lv,ii:'iItem',
+  item:{v:1,e:'🧰',n:'nItem',d:'dItem',g:'trade',lv:()=>ITEMS.shield.lv,lock:()=>tLockR(ITEMS.shield.lv)||tLockBO(),inv:()=>curTab==='trade'&&rankOf(xp)>=ITEMS.shield.lv,ii:'iItem',
     used:()=>!!store.get('shg_itemTip',0)||tipGot('it_shield'),init:R=>{R.k=tItemK();},steps:[
     {k:'P',at:'trade',t:'itemBtn',if:()=>tSimple(),h:'i1h',b:'i1b',v:R=>({n:ITEMS[R.k].name,d:ITEMS[R.k].desc}),done:()=>!$('sheet').hidden&&$('sheet').classList.contains('im')},
     {k:'I',at:'trade',t:'item',if:()=>!tSimple(),h:'i1h',b:'i1bP',v:R=>({n:ITEMS[R.k].name,d:ITEMS[R.k].desc})},

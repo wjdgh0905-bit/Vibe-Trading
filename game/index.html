@@ -2223,7 +2223,7 @@ function rdBuild(){RDC=[];for(let L=1;L<=300;L++)RDC[L]=[];const lvx=x=>lvlOf(x)
   GEAR.forEach(g=>{const G=GL[g.id];for(let s=1;s<7;s++)if(G.lv[s]<=300)rdRow(G.lv[s],'gear',{e:G.e[s],t:'상점 장비 '+rq(G.n[s])+' · '+gGrade(s),tag:'장비'});});
   RNOTE.forEach((n,j)=>rdRow(n[1],'note',{ic:'open_book',ref:j,t:'투자 노트 #'+n[0]+' '+rq(n[2]),tag:'투자 노트'}));
   RDEC.forEach(d=>rdRow(d.L,d.t,{e:d.t==='furn'?d.e:d.t==='wall'?'🧱':'🟫',ic:d.t==='furn'?d.ic:'',sw:d.t==='furn'?null:d.c,ref:d.id,t:(d.t==='wall'?'벽지 ':d.t==='floor'?'바닥 ':'')+(d.t==='furn'?d.n:rq(d.n)),tag:'방 꾸미기'}));
-  RTK.forEach((p,j)=>rdRow(p[0],'tick',{ic:'price_tag',ref:j,t:'새 종목 3개 · '+TIERS[p[1]].label+' ('+p[2].map(n=>Array.isArray(n)?n[0]:n).join(' · ')+')',tag:'새 종목'}));
+  RTK.forEach((p,j)=>rdRow(p[0],'tick',{ic:'price_tag',ref:j,t:'새 종목 3개 · '+TIERS[p[1]].label+' ('+p[2].map(n=>(Array.isArray(n)?n[0]:n).replace(/^\([^)]*\)\s*/,'')).join(' · ')+')',tag:'새 종목'}));
   RLN.forEach((p,j)=>rdRow(p[0],'line',{ic:'paw_wave',ref:j,t:'파트너 새 대사 2줄 · '+RLSIT[p[1]],tag:'파트너 대사'}));
   RNW.forEach((p,j)=>rdRow(p[0],'news',{ic:'newspaper',ref:j,t:'새 뉴스 3개 · '+p[1],tag:'뉴스'}));
   RMOT.forEach((m,j)=>rdRow(m[0],'motto',{ic:'pencil',ref:j,t:'좌우명 '+rq(m[1]),tag:'좌우명'}));
@@ -2369,7 +2369,7 @@ function rdRecapH(){const rs=rdAll().filter(r=>r.x<=xp&&RD_NEW[r.k]),C2={};rs.fo
   const T=[['emb',EMB[rankOf(xp)],'휘장'],['dan','star','단 (Ⅱ·Ⅲ)'],['furn','sofa','방 소품'],['wf','palette','벽지·바닥'],['note','open_book','투자 노트'],['tick','price_tag','새 종목 팩'],['line','paw_wave','파트너 대사 팩'],['news','newspaper','뉴스 팩'],['motto','pencil','좌우명'],['ms','trophy','장식장·테마·테두리']].filter(t=>C2[t[0]]);
   const nx=rdAll().filter(r=>r.x>xp).slice(0,3);
   return '<div class="rdhd">업데이트 정리 · 레벨 길이 생겼어요</div><h2 class="rv-t">지금까지 쌓인 것</h2><div class="rv-amt">Lv.'+lvlOf(xp).L+' · '+rkLbl(xp)+'</div><div class="sub">새 해금 '+rs.length+'개가 이미 열려 있어요 · 빼앗기는 것은 없어요</div>'+
-    '<div class="rcg">'+T.slice(0,8).map(t=>'<div class="rct">'+icImg(t[1],'🔓')+'<span>'+t[2]+'</span><b>'+C2[t[0]]+'</b></div>').join('')+'</div>'+
+    '<div class="rcg">'+T.map(t=>'<div class="rct">'+icImg(t[1],'🔓')+'<span>'+t[2]+'</span><b>'+C2[t[0]]+'</b></div>').join('')+'</div>'+
     (nx.length?'<div class="rcn"><small>다음 '+nx.length+'개</small>'+nx.map(r=>'<div class="rcr">'+rdIc(r)+'<span>'+(r.k==='dan'?'⭐ ':r.ms?'★ ':'')+rdName(r)+'</span><em>'+(r.k==='dan'||r.k==='rank'?(r.x-xp).toLocaleString('ko-KR')+' XP':'Lv.'+r.L)+'</em></div>').join('')+'</div>':'');}
 const RK_LINE=n=>LANG==='en'?n+'! Today I cheer for you 👏':n+'라니! 오늘은 내가 박수 쳐 줄게 👏';
 function rdRankH(r){const p2=r>=15,pn=p2?r-14:r+1,L=lvlOf(RANKS[r][0]).L,rs=rdRows(L).filter(x=>['gear','prod','unl','pet','ach','part','mis'].includes(x.k)).sort((a,b)=>['part','gear','prod','unl','pet','ach','mis'].indexOf(a.k)-['part','gear','prod','unl','pet','ach','mis'].indexOf(b.k)).slice(0,3),sb=rdSub(),from=r>0?rkName(r-1,DAN[r-1]?3:0):'';
@@ -2387,7 +2387,8 @@ function rdMsH(L){const rs=rdRows(L).filter(r=>r.ms),m=rs.find(r=>r.k==='theme')
 function rdLevH(rows){const r=rows[rows.length-1],ai=/💯/.test(r.e),m=(r.t.match(/\d+/)||['2'])[0];
   return '<div class="rdhd">새 기능 · Lv.'+r.L+'</div><div class="rv-st"><div class="rv-art calm">'+icT(r.e)+'</div></div><h2 class="rdlt">'+(ai?'💯 영끌을 쓸 수 있어요':'⚡ 레버리지 '+m+'배를 고를 수 있어요')+'</h2>'+
    '<div class="sub">'+(ai?'켜면 그 판은 예수금 전부로 사요 · 판마다 다시 켜야 해요':'거래 화면 레버리지 칸에서 고를 수 있어요')+' · 1배로 해도 레벨은 똑같이 올라요</div>'+
-   '<div class="rdrisk">⚠️ '+(ai?'물리면 예수금 전부가 함께 떨어져요 · 빚이 남은 채 바닥나면 파산·압류예요':'수익·손실이 함께 '+m+'배로 커지고 폭락도 빨리 와요 · 많이 떨어지면 강제청산돼요 · 배수가 클수록 수수료(이자)도 커져요')+'</div>'+
+   [...new Set(rows.map(x=>{const a=/💯/.test(x.e),n=(x.t.match(/\d+/)||['2'])[0];return '<div class="rdrisk">⚠️ '+(a?'물리면 예수금 전부가 함께 떨어져요 · 빚이 남은 채 바닥나면 파산·압류예요':'수익·손실이 함께 '+n+'배로 커지고 폭락도 빨리 와요 · 많이 떨어지면 강제청산돼요 · 배수가 클수록 수수료(이자)도 커져요')+'</div>';}))].reverse().join('')+
+
    (rows.length>1?'<div class="sub">'+rows.slice(0,-1).map(x=>x.t).join(' · ')+'도 열려 있어요</div>':'');}
 
 let offers=makeOffers(),run=null,candles=[],t=0,cur=1,peak=1,sell=null,crashed=false,crashT=0,readyAt=0,sellAt=0,lastTs=0,intPaid=store.get('shg_intPaid',false);
@@ -3717,7 +3718,7 @@ function goalNext(){const nw=netW(),hi=homeIdx(),nh=HOMES[hi+1],G=[],r=rdGoal();
   if(!G.length)G.push({k:'end',e:'🌟',t:'레벨 길 완주',p:1});
   return G[Math.floor((stats.rounds||0)/3)%G.length];}
 let goalK='',goalG=null,goalW=-1;function goalPaint(){try{const g=goalNext(),el=$('goal'),pc=Math.max(0,Math.min(99,Math.floor(g.p*100))),k=g.k+'|'+g.t+'|'+pc+'|'+(g.lv||0)+'|'+(g.cur?1:0);el.dataset.k=g.k;if(k===goalK){if(g.k==='road'&&!el.hidden&&el.clientWidth!==goalW)goalFit();return;}goalK=k;goalG=g;
-  const rd=g.k==='road';el.children[0].innerHTML=g.ic?rdIc(g.ic):icT(g.e);el.children[1].classList.toggle('rdg',rd);el.children[1].innerHTML='<small>'+(rd?'다음 해금'+(g.cur?'':' · Lv.'+g.lv):g.k==='home'?'다음 집':'레벨 길')+'</small>'+(rd?'<span class="grw">':'')+(LANG==='en'?'<span class="gk gn">Next: </span>':'')+(rd?'<span class="gnm">'+esc(g.b)+'</span>'+(g.fx?'<span class="gfx">'+esc(g.fx)+'</span>':''):esc(g.t))+(LANG==='en'?'':'<span class="gk">까지</span>')+(rd?(g.cur?'':'<span class="glv">Lv.'+g.lv+'</span>')+'</span>':'');
+  const rd=g.k==='road';el.children[0].innerHTML=g.ic?rdIc(g.ic):icT(g.e);el.children[1].classList.toggle('rdg',rd);el.children[1].innerHTML='<small>'+(rd?'다음 해금'+(g.cur?'':' · Lv.'+g.lv):g.k==='home'?'다음 집':'레벨 길')+'</small>'+(rd?'<span class="grw">':'')+(LANG==='en'?'<span class="gk gn" style="margin-right:.3em">Next:</span>':'')+(rd?'<span class="gnm">'+esc(g.b)+'</span>'+(g.fx?'<span class="gfx">'+esc(g.fx)+'</span>':''):esc(g.t))+(LANG==='en'?'':'<span class="gk">까지</span>')+(rd?(g.cur?'':'<span class="glv">Lv.'+g.lv+'</span>')+'</span>':'');
   el.children[2].firstChild.style.width=pc+'%';el.children[3].textContent=pc+'%';el.setAttribute('aria-label',(LANG==='en'?'Next: '+g.t:g.t+'까지')+(rd&&!g.cur?' · Lv.'+g.lv:'')+' '+pc+'% · '+'다음 목표');goalFit();}catch(e){}}
 function goalFit(){const el=$('goal'),g=goalG;if(!el)return;el.classList.remove('gtt','gt2','gt3');goalW=el.hidden?-1:el.clientWidth;const nm=el.querySelector('.gnm');if(!g||g.k!=='road'||!nm||goalW<=0)return;nm.textContent=g.a[0];const ov=()=>nm.scrollWidth>nm.clientWidth+1;if(!ov())return;
   el.classList.add('gtt');for(const s of g.a){nm.textContent=s;if(!ov())return;}el.classList.add('gt2');const ov2=()=>nm.scrollHeight>nm.clientHeight+1||nm.scrollWidth>nm.clientWidth+1;for(const s of g.a){nm.textContent=s+(g.fx?' '+g.fx:'');if(!ov2())return;}if(g.fx){el.classList.add('gt3');nm.textContent=g.a[g.a.length-1];}}

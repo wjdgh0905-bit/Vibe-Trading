@@ -2222,7 +2222,7 @@ function rdBuild(){RDC=[];for(let L=1;L<=300;L++)RDC[L]=[];const lvx=x=>lvlOf(x)
   GEAR.forEach(g=>{const G=GL[g.id];for(let s=1;s<7;s++)if(G.lv[s]<=300)rdRow(G.lv[s],'gear',{e:G.e[s],t:'Shop gear '+rq(G.n[s])+' · '+gGrade(s),tag:'Gear'});});
   RNOTE.forEach((n,j)=>rdRow(n[1],'note',{ic:'open_book',ref:j,t:'Investing note #'+n[0]+' '+rq(n[2]),tag:'Investing notes'}));
   RDEC.forEach(d=>rdRow(d.L,d.t,{e:d.t==='furn'?d.e:d.t==='wall'?'🧱':'🟫',ic:d.t==='furn'?d.ic:'',sw:d.t==='furn'?null:d.c,ref:d.id,t:(d.t==='wall'?'Wall ':d.t==='floor'?'Floor ':'')+(d.t==='furn'?d.n:rq(d.n)),tag:'Room'}));
-  RTK.forEach((p,j)=>rdRow(p[0],'tick',{ic:'price_tag',ref:j,t:'3 new tickers · '+TIERS[p[1]].label+' ('+p[2].map(n=>Array.isArray(n)?n[0]:n).join(' · ')+')',tag:'Tickers'}));
+  RTK.forEach((p,j)=>rdRow(p[0],'tick',{ic:'price_tag',ref:j,t:'3 new tickers · '+TIERS[p[1]].label+' ('+p[2].map(n=>(Array.isArray(n)?n[0]:n).replace(/^\([^)]*\)\s*/,'')).join(' · ')+')',tag:'Tickers'}));
   RLN.forEach((p,j)=>rdRow(p[0],'line',{ic:'paw_wave',ref:j,t:'Partner learns 2 lines · '+RLSIT[p[1]],tag:'Partner lines'}));
   RNW.forEach((p,j)=>rdRow(p[0],'news',{ic:'newspaper',ref:j,t:'3 new headlines · '+p[1],tag:'News'}));
   RMOT.forEach((m,j)=>rdRow(m[0],'motto',{ic:'pencil',ref:j,t:'Motto '+rq(m[1]),tag:'Motto'}));
@@ -2368,7 +2368,7 @@ function rdRecapH(){const rs=rdAll().filter(r=>r.x<=xp&&RD_NEW[r.k]),C2={};rs.fo
   const T=[['emb',EMB[rankOf(xp)],'Emblems'],['dan','star','Steps (Ⅱ·Ⅲ)'],['furn','sofa','Room items'],['wf','palette','Walls & floors'],['note','open_book','Investing notes'],['tick','price_tag','Ticker packs'],['line','paw_wave','Partner line packs'],['news','newspaper','Headline packs'],['motto','pencil','Motto'],['ms','trophy','Shelf, themes, frames']].filter(t=>C2[t[0]]);
   const nx=rdAll().filter(r=>r.x>xp).slice(0,3);
   return '<div class="rdhd">Update summary · the level road is here</div><h2 class="rv-t">Your road so far</h2><div class="rv-amt">Lv.'+lvlOf(xp).L+' · '+rkLbl(xp)+'</div><div class="sub">Already open: '+rs.length+' new unlocks · nothing is taken away</div>'+
-    '<div class="rcg">'+T.slice(0,8).map(t=>'<div class="rct">'+icImg(t[1],'🔓')+'<span>'+t[2]+'</span><b>'+C2[t[0]]+'</b></div>').join('')+'</div>'+
+    '<div class="rcg">'+T.map(t=>'<div class="rct">'+icImg(t[1],'🔓')+'<span>'+t[2]+'</span><b>'+C2[t[0]]+'</b></div>').join('')+'</div>'+
     (nx.length?'<div class="rcn"><small>Next: '+nx.length+'</small>'+nx.map(r=>'<div class="rcr">'+rdIc(r)+'<span>'+(r.k==='dan'?'⭐ ':r.ms?'★ ':'')+rdName(r)+'</span><em>'+(r.k==='dan'||r.k==='rank'?(r.x-xp).toLocaleString('en-US')+' XP':'Lv.'+r.L)+'</em></div>').join('')+'</div>':'');}
 const RK_LINE=n=>LANG==='en'?n+'! Today I cheer for you 👏':n+'! Today I cheer for you 👏';
 function rdRankH(r){const p2=r>=15,pn=p2?r-14:r+1,L=lvlOf(RANKS[r][0]).L,rs=rdRows(L).filter(x=>['gear','prod','unl','pet','ach','part','mis'].includes(x.k)).sort((a,b)=>['part','gear','prod','unl','pet','ach','mis'].indexOf(a.k)-['part','gear','prod','unl','pet','ach','mis'].indexOf(b.k)).slice(0,3),sb=rdSub(),from=r>0?rkName(r-1,DAN[r-1]?3:0):'';
@@ -2386,7 +2386,8 @@ function rdMsH(L){const rs=rdRows(L).filter(r=>r.ms),m=rs.find(r=>r.k==='theme')
 function rdLevH(rows){const r=rows[rows.length-1],ai=/💯/.test(r.e),m=(r.t.match(/\d+/)||['2'])[0];
   return '<div class="rdhd">New feature · Lv.'+r.L+'</div><div class="rv-st"><div class="rv-art calm">'+icT(r.e)+'</div></div><h2 class="rdlt">'+(ai?'💯 Max Buy is now available':'⚡ Leverage '+m+'× is now available')+'</h2>'+
    '<div class="sub">'+(ai?'When on, that round buys with all your cash · turn it on again each round':'Pick it in the leverage box on the trade screen')+' · at 1x you level up just the same</div>'+
-   '<div class="rdrisk">⚠️ '+(ai?'If you get caught, all your cash falls with it · hitting zero while in debt means bankruptcy and seizure':'Gains and losses both grow '+m+'× and crashes come sooner · a deep drop means forced liquidation · higher multiples cost more in fees (interest)')+'</div>'+
+   [...new Set(rows.map(x=>{const a=/💯/.test(x.e),n=(x.t.match(/\d+/)||['2'])[0];return '<div class="rdrisk">⚠️ '+(a?'If you get caught, all your cash falls with it · hitting zero while in debt means bankruptcy and seizure':'Gains and losses both grow '+n+'× and crashes come sooner · a deep drop means forced liquidation · higher multiples cost more in fees (interest)')+'</div>';}))].reverse().join('')+
+
    (rows.length>1?'<div class="sub">'+rows.slice(0,-1).map(x=>x.t).join(' · ')+'are open too</div>':'');}
 
 let offers=makeOffers(),run=null,candles=[],t=0,cur=1,peak=1,sell=null,crashed=false,crashT=0,readyAt=0,sellAt=0,lastTs=0,intPaid=store.get('shg_intPaid',false);
@@ -3716,7 +3717,7 @@ function goalNext(){const nw=netW(),hi=homeIdx(),nh=HOMES[hi+1],G=[],r=rdGoal();
   if(!G.length)G.push({k:'end',e:'🌟',t:'Level road complete',p:1});
   return G[Math.floor((stats.rounds||0)/3)%G.length];}
 let goalK='',goalG=null,goalW=-1;function goalPaint(){try{const g=goalNext(),el=$('goal'),pc=Math.max(0,Math.min(99,Math.floor(g.p*100))),k=g.k+'|'+g.t+'|'+pc+'|'+(g.lv||0)+'|'+(g.cur?1:0);el.dataset.k=g.k;if(k===goalK){if(g.k==='road'&&!el.hidden&&el.clientWidth!==goalW)goalFit();return;}goalK=k;goalG=g;
-  const rd=g.k==='road';el.children[0].innerHTML=g.ic?rdIc(g.ic):icT(g.e);el.children[1].classList.toggle('rdg',rd);el.children[1].innerHTML='<small>'+(rd?'Next unlock'+(g.cur?'':' · Lv.'+g.lv):g.k==='home'?'Next home':'Level road')+'</small>'+(rd?'<span class="grw">':'')+(LANG==='en'?'<span class="gk gn">Next: </span>':'')+(rd?'<span class="gnm">'+esc(g.b)+'</span>'+(g.fx?'<span class="gfx">'+esc(g.fx)+'</span>':''):esc(g.t))+(LANG==='en'?'':'<span class="gk"> in</span>')+(rd?(g.cur?'':'<span class="glv">Lv.'+g.lv+'</span>')+'</span>':'');
+  const rd=g.k==='road';el.children[0].innerHTML=g.ic?rdIc(g.ic):icT(g.e);el.children[1].classList.toggle('rdg',rd);el.children[1].innerHTML='<small>'+(rd?'Next unlock'+(g.cur?'':' · Lv.'+g.lv):g.k==='home'?'Next home':'Level road')+'</small>'+(rd?'<span class="grw">':'')+(LANG==='en'?'<span class="gk gn" style="margin-right:.3em">Next:</span>':'')+(rd?'<span class="gnm">'+esc(g.b)+'</span>'+(g.fx?'<span class="gfx">'+esc(g.fx)+'</span>':''):esc(g.t))+(LANG==='en'?'':'<span class="gk"> in</span>')+(rd?(g.cur?'':'<span class="glv">Lv.'+g.lv+'</span>')+'</span>':'');
   el.children[2].firstChild.style.width=pc+'%';el.children[3].textContent=pc+'%';el.setAttribute('aria-label',(LANG==='en'?'Next: '+g.t:g.t+' in')+(rd&&!g.cur?' · Lv.'+g.lv:'')+' '+pc+'% · '+'Next goal');goalFit();}catch(e){}}
 function goalFit(){const el=$('goal'),g=goalG;if(!el)return;el.classList.remove('gtt','gt2','gt3');goalW=el.hidden?-1:el.clientWidth;const nm=el.querySelector('.gnm');if(!g||g.k!=='road'||!nm||goalW<=0)return;nm.textContent=g.a[0];const ov=()=>nm.scrollWidth>nm.clientWidth+1;if(!ov())return;
   el.classList.add('gtt');for(const s of g.a){nm.textContent=s;if(!ov())return;}el.classList.add('gt2');const ov2=()=>nm.scrollHeight>nm.clientHeight+1||nm.scrollWidth>nm.clientWidth+1;for(const s of g.a){nm.textContent=s+(g.fx?' '+g.fx:'');if(!ov2())return;}if(g.fx){el.classList.add('gt3');nm.textContent=g.a[g.a.length-1];}}

@@ -1760,6 +1760,7 @@ button.lvk{cursor:pointer}
 .agv text{fill:var(--muted);font:600 10px/1 var(--num);text-anchor:end}
 .agv polyline{fill:none;stroke:var(--gold);stroke-width:2.2;stroke-linejoin:round;stroke-linecap:round}
 .agv circle{fill:var(--gold);stroke:var(--panel);stroke-width:1.5}.agv .f{fill:var(--gold);stroke:var(--gold);stroke-width:1.2;stroke-linejoin:round}
+.agk{display:flex;flex-wrap:wrap;gap:2px 12px;margin:0;font:500 var(--t-meta)/1.45 var(--mix);color:var(--muted)}.agk span{display:inline-flex;align-items:center;gap:4px;white-space:nowrap}.agk svg{width:9px;height:12px;flex:none;overflow:visible}.agk .f{fill:var(--gold);stroke:var(--gold);stroke-width:1.2;stroke-linejoin:round}.agk .r{stroke:var(--muted);stroke-width:1.4;stroke-dasharray:2 3}
 .agr,.agn,.pfl{margin:4px 0 0;font:500 var(--t-meta)/1.45 var(--mix);color:var(--fg2)}.agn{color:var(--muted)}
 .pfb{display:flex;height:9px;margin:8px 0 2px;border-radius:9px;overflow:hidden;background:var(--track)}.pfb i{display:block;height:100%;min-width:2px}
 .pfl{display:flex;flex-wrap:wrap;gap:2px 10px}.pfl span{display:inline-flex;align-items:center;gap:4px;white-space:nowrap}.pfl i{display:inline-block;width:8px;height:8px;border-radius:2px}
@@ -1767,7 +1768,7 @@ button.lvk{cursor:pointer}
 .ladl{display:flex;align-items:center;gap:10px;width:100%;margin:var(--sp-2) 0 0;padding:10px 12px;border-radius:var(--r-md);background:var(--sheen),var(--panel);border:1px solid var(--hair);box-shadow:var(--sh-panel);color:var(--fg);font:inherit;text-align:left;cursor:pointer;min-height:48px}
 .ladl>i{flex:none;width:30px;height:30px;display:grid;place-items:center;font-style:normal}.ladl>i .ico{width:26px;height:26px;margin:0}
 .ladl>span{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}.ladl b{font:700 var(--t-body)/1.3 var(--ui);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ladl b em{font-style:normal;font-weight:700;color:var(--gold-t);font-family:var(--num)}.ladl b em .ico{width:16px;height:16px;vertical-align:-3px;margin:0 1px 0 0}
-.ladl small{font:500 var(--t-meta)/1.35 var(--mix);color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ladl>.p{flex:none;font-style:normal;color:var(--muted);font:700 var(--t-item)/1 var(--ui)}
+.ladl small{font:500 var(--t-meta)/1.35 var(--mix);color:var(--muted)}.ladl small .lpc{white-space:nowrap}.ladl>.p{flex:none;font-style:normal;color:var(--muted);font:700 var(--t-item)/1 var(--ui)}
 .ldtot{display:flex;flex-wrap:wrap;gap:4px 14px;margin:6px 0 8px;font:500 var(--t-meta)/1.4 var(--mix);color:var(--muted)}.ldtot b{font:800 var(--t-body)/1.2 var(--num);color:var(--fg)}
 .ldl{display:flex;flex-direction:column}
 .ldr{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--hair);min-width:0}.ldr>i{flex:none;width:32px;height:32px;display:grid;place-items:center;font-style:normal}.ldr>i .ico{width:28px;height:28px;margin:0}
@@ -1777,7 +1778,7 @@ button.lvk{cursor:pointer}
 .ldr.lock>i,.ldr.lock .ldm b{opacity:.62}.ldr.done .ldm small{color:var(--gold-t)}
 .ldr>.setbtn.ob{flex:none;white-space:nowrap}
 .lcf .lch{display:flex;align-items:center;justify-content:center;gap:8px;margin:-4px 0 10px}.lcf .lch i{font-style:normal;display:grid;place-items:center}.lcf .lch .ico{width:36px;height:36px;margin:0}.lcf .lch b{font:800 var(--t-title)/1.2 var(--ui)}
-.card .prog .pr.rdl.ams{cursor:default}.card .prog .pr.rdl.ams>b em{color:var(--gold-t)}
+.card .prog .pr.rdl.ams{cursor:default}.card .prog .pr.rdl.ams>b{flex-wrap:wrap;row-gap:0}.card .prog .pr.rdl.ams>b em{color:var(--gold-t)}
 .pxb{margin:8px 0 0;padding:8px 10px;border-radius:var(--r-sm);background:var(--panel2);border:1px solid var(--hair);font:500 var(--t-meta)/1.45 var(--mix);color:var(--fg2)}.pxb b{font-family:var(--num);color:var(--gold-t)}
 .tile.tb{display:block;width:100%;text-align:left;font:inherit;color:inherit;cursor:pointer}
 </style>
@@ -2236,7 +2237,7 @@ function eco(){if(ECO)return ECO;const had=localStorage.getItem('shg_econ')!==nu
   ECO=E;if(!had)ecoSave();return E;}
 function amsTick(){const E=eco(),t=totW(),d=dNo();if(!isFinite(t))return;
   const lg=E.log,tp=Math.max(0,t);if(lg.length&&lg[lg.length-1][0]===d)lg[lg.length-1][1]=Math.max(lg[lg.length-1][1],tp);else{lg.push([d,tp]);if(lg.length>60)lg.splice(0,lg.length-60);}
-  if(t>E.best){E.best=t;const m=t>=1e8?Math.min(47,Math.floor(Math.log10(t)+1e-9)):7;if(m>E.ms){const L=lvlOf(xp).L;AMS_U.filter(e=>e>E.ms&&e<=m).forEach(e=>E.mk.push([d,e,L]));if(E.mk.length>10)E.mk.splice(0,E.mk.length-10);E.ms=m;amsLast={r:rdRound(),e:m};}}
+  if(t>E.best)E.best=t;{const b=E.best,m=b>=1e8?Math.min(47,Math.floor(Math.log10(b)+1e-9)):7;if(m>E.ms){const L=lvlOf(xp).L;AMS_U.filter(e=>e>E.ms&&e<=m).forEach(e=>E.mk.push([d,e,L]));if(E.mk.length>10)E.mk.splice(0,E.mk.length-10);E.ms=m;amsLast={r:rdRound(),e:m};}}
   ecoSave();}
 function amsPend(){const E=eco(),u=AMS_U.filter(e=>e<=E.ms&&e>E.u);return u.length?u[u.length-1]:0;}
 function amsRow(){const a=amsLast;if(!a||a.r!==rdRound())return '';const nx=a.e<47?a.e+1:0;
@@ -2258,17 +2259,17 @@ function agcH(){const E=eco(),t=totW(),nw=netW(),lv=ladVal(),P=E.log.slice(-14),
       '<circle cx="'+X(P.length-1).toFixed(1)+'" cy="'+Y(ys[ys.length-1]).toFixed(1)+'" r="3.5"/></svg>';}
   const rd=[];{const b=E.log.filter(q=>q[0]<=d0-7).pop()||(E.log.length&&E.log[0][0]<d0?E.log[0]:null);if(b&&b[1]>0&&t>0){const n=d0-b[0];rd.push(KE('지난 '+n+'일 ×'+xR(t/b[1])+'배','Last '+n+' days ×'+xR(t/b[1])));}}
   {const ne=Math.max(8,E.ms+1);if(ne<=47&&t>0)rd.push(KE('다음 이정표 '+AMS_NM(ne)+'까지 ×'+xR(Math.pow(10,ne)/t)+'배','Next milestone '+AMS_NM(ne)+' ×'+xR(Math.pow(10,ne)/t)));}
-  rd.push(KE('평생 최고 ','Lifetime best ')+wonS(E.best));
+  rd.push(KE('평생 최고 ','Lifetime best ')+wonS(Math.max(E.best,t)));
   let cash=Math.max(0,balance),lvP=0,bg=0,ch=0,ern=0;const frz=invFrz();PROD.forEach(P=>{const h=invest[P.id];if(!h||!(h.a>0))return;if(P.chance)ch+=h.a;else{if(P.nw)bg+=h.a;else lvP+=h.a;ern+=Math.max(0,Math.min(h.a,P.max)-(frz[P.id]||0));}});
   const S=cash+lvP+bg+ch+lv,seg=[['pf0','예수금',cash],['pf1','레벨 상품',lvP],['pf2','큰손 운용',bg],['pf3','코인·엔젤',ch],['pf4','보유 자산',lv]],pc=x=>{const p=x/S*100;return p>=1?Math.floor(p)+'%':x>0?KE('1% 미만','&lt;1%'):'0%';};
   return '<div class="pan agc" id="secGrw"><div class="agh"><b>'+KE('📈 내 자산','📈 My assets')+'</b><span>'+KE('총자산 ','Total ')+'<b>'+wS0(t)+'</b></span></div>'+
-   (svg||'')+(P.length<2?'<p class="agn">'+KE('하루에 한 점씩 쌓여요 · 판을 하면 오늘 점이 찍혀요','One point a day · play a round to mark today')+'</p>':'')+
+   (svg?svg+'<p class="agk"><span><svg viewBox="0 0 10 14" aria-hidden="true"><path class="f" d="M1.5 13V1l7.5 3-7.5 3"/></svg>'+KE('이정표 넘은 날','milestone day')+'</span><span><svg viewBox="0 0 4 14" aria-hidden="true"><line class="r" x1="2" x2="2" y1="0" y2="14"/></svg>'+KE('은퇴한 날','retirement day')+'</span></p>':'')+(P.length<2?'<p class="agn">'+KE('하루에 한 점씩 쌓여요 · 판을 하면 오늘 점이 찍혀요','One point a day · play a round to mark today')+'</p>':'')+
    '<p class="agr">'+rd.join(' · ')+'</p>'+
    (S>0?'<div class="pfb" aria-hidden="true">'+seg.filter(q=>q[2]>0).map(q=>'<i class="'+q[0]+'" style="width:'+(q[2]/S*100).toFixed(2)+'%"></i>').join('')+'</div><p class="pfl">'+seg.filter(q=>q[2]>0).map(q=>'<span><i class="'+q[0]+'"></i>'+q[1]+' '+pc(q[2])+'</span>').join('')+'</p>':'')+
    (nw>0?'<p class="agn">'+KE('이자 붙는 돈 = 순자산의 ','Money earning interest = ')+(ern/nw*100>=1?Math.floor(ern/nw*100)+'%':ern>0?KE('1% 미만','&lt;1%'):'0%')+KE('',' of net worth')+' · '+KE('순자산 ','Net worth ')+wS0(nw)+' · '+KE('보유 자산 ','Holdings ')+wonS(lv)+'</p>':'')+'</div>';}
 function ladLineH(){const own=LAD.filter(h=>ladStep(h.id)>0),nx=ladNext();
   return '<button type="button" class="ladl" id="ladGo"><i>'+icT('🏛️')+'</i><span><b>'+KE('내 자산 사다리','Asset ladder')+(own.length?' <em>'+own.map(h=>icT(h.e)+'★'+ladStep(h.id)).join(' ')+'</em>':'')+'</b><small>'+
-   (nx?KE('다음 ','Next ')+nx.h.n+' ★'+(ladStep(nx.h.id)+1)+' · '+won(nx.p)+' · '+KE('달성 ','progress ')+Math.min(100,Math.floor(Math.max(0,balance)/nx.p*100))+'%':ladCnt()>=LAD_N*LAD.length?KE('64단계 완성','All 64 steps done'):KE('다음 줄은 레벨이 오르면 열려요','The next line opens with level'))+'</small></span><em class="p">›</em></button>';}
+   (nx?KE('다음 ','Next ')+nx.h.n+' ★'+(ladStep(nx.h.id)+1)+' · '+won(nx.p)+' · '+'<span class="lpc">'+KE('달성 ','progress ')+Math.min(100,Math.floor(Math.max(0,balance)/nx.p*100))+'%</span>':ladCnt()>=LAD_N*LAD.length?KE('64단계 완성','All 64 steps done'):KE('다음 줄은 레벨이 오르면 열려요','The next line opens with level'))+'</small></span><em class="p">›</em></button>';}
 function ladSheetH(){return '<h2>'+KE('🏛️ 내 자산 사다리','🏛️ Asset ladder')+'</h2><p class="note">'+KE('정해진 가격으로 줄마다 한 칸씩 사요 · 예수금으로만 · 은퇴해도 남아요 · 돈·확률·SP는 그대로예요','Fixed prices, one step at a time on each line · cash only · kept when you retire · money, odds and SP stay the same')+'</p>'+
   '<div class="ldtot"><span>'+KE('보유 자산 ','Holdings ')+'<b>'+wonS(ladVal())+'</b></span><span>'+KE('총자산 ','Total ')+'<b>'+wS0(totW())+'</b></span><span>'+ladCnt()+'/'+LAD_N*LAD.length+'</span></div>'+
   '<div class="ldl">'+LAD.map(h=>{const s=ladStep(h.id),c=ladCan(h.id),p=ladPrice(h),lk=c==='lv';
@@ -2280,7 +2281,7 @@ function ladAsk(id){if(ladCan(id)!=='ok'){ladSheet();return;}const h=ladH(id),s=
   openModal('<div class="gcf lcf"><h2>'+KE('구매할까요?','Buy this step?')+'</h2><div class="lch"><i>'+icT(h.e)+'</i><b>'+h.n+' ★'+(s+1)+'</b></div>'+
    '<div class="gkv"><span class="mu">'+KE('가격','Price')+'</span><b class="num gd">'+won(p)+'</b></div><div class="gkv"><span class="mu">'+KE('남는 예수금','Cash left')+'</span><b class="num">'+wonS(balance-p)+'</b></div><div class="gkv"><span class="mu">'+KE('총자산 (그대로)','Total assets (unchanged)')+'</span><b class="num">'+wS0(totW())+'</b></div>'+
    '<p class="gnote1">'+KE('예수금에서 빠지고 되돌릴 수 없어요 · 은퇴해도 남아요 · 돈·확률·SP는 그대로예요','Paid from cash, cannot be undone · kept when you retire · money, odds and SP stay the same')+'</p>'+
-   (fr>=1e4?'<p class="gshare">'+KE('투자 한도에 아직 '+wonS(fr)+' 자리가 있어요 (이자가 붙는 자리)','Your investments still have '+wonS(fr)+' of room that earns interest')+'</p>':'')+
+   (fr>=1e4?'<p class="gshare">'+KE('투자 상품에 넣을 자리가 아직 '+wonS(fr)+' 남았어요 (이자가 붙는 자리)','Your investment products still have room for '+wonS(fr)+' (it earns interest)')+'</p>':'')+
    '<div class="gcb"><button class="setbtn ghost" type="button" id="lNo">'+KE('취소','Cancel')+'</button><button class="setbtn tone" type="button" id="lYes" aria-label="'+h.n+' ★'+(s+1)+' · '+won(p)+'">'+won(p)+' '+KE('구매','Buy')+'</button></div></div>','gcfM');
   $('lNo').onclick=()=>{$('modalClose').click();ladSheet();};
   $('lYes').onclick=()=>{const n=performance.now();if(n-at<350||n-ladAt<500)return;ladAt=n;$('modalClose').click();
@@ -3016,6 +3017,7 @@ function paintTop(){try{checkHome()}catch(e){}
   if(!(balance>=0))balance=0;
   store.set('shg_bal',Math.floor(balance));store.set('shg_streak',streak);
   if(balance>best){best=balance;store.set('shg_best',Math.floor(best));}
+  try{if(ECO){const t=totW();if(isFinite(t)&&t>ECO.best){ECO.best=Math.min(1e60,t);ecoSave();}}}catch(e){}
   if(lowFlag&&netW()>=START&&state!=='holding'){lowFlag=false;stats.low=0;store.set('shg_stats',stats);unlock('comeback');}
   animBal();
   htm($('streak'),icH(streak?(streak>=5?'<span class="gd">'+streak+(LANG==='en'?' 🔥':'연속 🔥')+'</span>':streak+(LANG==='en'?'':'연속')):'0'));

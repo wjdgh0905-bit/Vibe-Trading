@@ -1894,9 +1894,9 @@ const swS=n=>(n>0?'+':n<0?'\u2212':'')+wonS(Math.abs(n));
 const pick=a=>a[Math.floor(Math.random()*a.length)];
 const rnd=(a,b)=>a+Math.random()*(b-a);
 function MemLS(){}MemLS.prototype={getItem(k){return Object.prototype.hasOwnProperty.call(this,k)?this[k]:null},setItem(k,v){this[k]=String(v);if(this._r)try{this._r.setItem(k,v);}catch(e){}},removeItem(k){delete this[k];if(this._r)try{this._r.removeItem(k);}catch(e){}},key(i){const k=Object.keys(this)[i];return k===undefined?null:k},clear(){Object.keys(this).forEach(k=>delete this[k])},get length(){return Object.keys(this).length}};
-const memSnap=()=>{try{if(String(window.name||'').startsWith('shgMem:')){const d=JSON.parse(window.name.slice(7));if(d&&typeof d==='object'){const o={};for(const k in d)if(/^shg_\w+$/.test(k)&&typeof d[k]==='string')o[k]=d[k];return o;}}}catch(e){}return null;};
-const memLS=(src,snap)=>{const m=new MemLS(),d=snap&&memSnap();try{if(d)for(const k in d)m.setItem(k,d[k]);else if(src)for(let i=0;i<src.length;i++){const k=src.key(i);if(k&&k.startsWith('shg_'))m.setItem(k,src.getItem(k));}}catch(e){}if(src)Object.defineProperty(m,'_r',{value:src});return m;};
-let localStorage=(()=>{try{const s=window.localStorage,k='_shgProbe';s.setItem(k,'1');const ok=s.getItem(k)==='1';s.removeItem(k);if(ok)return s;}catch(e){}return null;})(),memSave=0;if(!localStorage){let src=null;try{src=window.localStorage;src.length;}catch(e){src=null;}localStorage=memLS(src,1);memSave=1;memWarn();}else if(String(window.name||'').startsWith('shgMem:')){const d=memSnap();let bad=0;if(d)for(const k in d)try{localStorage.setItem(k,d[k]);}catch(e){bad=1;}if(bad){localStorage=memLS(localStorage,1);memSave=2;memWarn();}else window.name='';}
+const memSnap=strict=>{try{if(String(window.name||'').startsWith('shgMem:')){const d=JSON.parse(window.name.slice(7));let ok=0;try{ok=!!d._n&&sessionStorage.getItem('shgMemN')===String(d._n);}catch(e){}if(strict&&!ok)return null; if(d&&typeof d==='object'){const o={};for(const k in d)if(/^shg_\w+$/.test(k)&&typeof d[k]==='string')o[k]=d[k];return o;}}}catch(e){}return null;};
+const memLS=(src,snap)=>{const m=new MemLS(),d=snap&&memSnap(!!src);try{if(d)for(const k in d)m.setItem(k,d[k]);else if(src)for(let i=0;i<src.length;i++){const k=src.key(i);if(k&&k.startsWith('shg_'))m.setItem(k,src.getItem(k));}}catch(e){}if(src)Object.defineProperty(m,'_r',{value:src});return m;};
+let localStorage=(()=>{try{const s=window.localStorage,k='_shgProbe';s.setItem(k,'1');const ok=s.getItem(k)==='1';s.removeItem(k);if(ok)return s;}catch(e){}return null;})(),memSave=0;if(!localStorage){let src=null;try{src=window.localStorage;src.length;}catch(e){src=null;}localStorage=memLS(src,1);memSave=1;memWarn();}else if(String(window.name||'').startsWith('shgMem:')){const d=memSnap(1);if(!d)window.name='';let bad=0;if(d)for(const k in d)try{localStorage.setItem(k,d[k]);}catch(e){bad=1;}if(bad){localStorage=memLS(localStorage,1);memSave=2;memWarn();}else window.name='';}
 function memWarn(){if(memWarn.on)return;memWarn.on=1;setTimeout(()=>toast('⚠️ 이 브라우저는 저장이 막혀 있어요 · 설정의 백업 코드 복사로 기록을 보관하세요'),2500);}
 function lsSet(k,s){try{localStorage.setItem(k,s);}catch(e){if(memSave)throw e;localStorage=memLS(localStorage);memSave=2;localStorage.setItem(k,s);memWarn();}}
 const store={off:0,seen:{},get(k,d){try{const v=localStorage.getItem(k);store.seen[k]=v;return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){if(store.off)return;try{const s=JSON.stringify(v);if(store.seen[k]===s)return;lsSet(k,s);store.seen[k]=s;}catch(e){}}};
@@ -2536,12 +2536,13 @@ const priceOf=m=>roundTick(offer().p0*eM*m,isUsd());
 /* ---------- audio ---------- */
 let ac=null;
 function au(){if(!ac){try{ac=new(window.AudioContext||window.webkitAudioContext)()}catch(e){}}if(ac&&ac.state!=='running'&&ac.state!=='closed')try{const p=ac.resume();if(p&&p.catch)p.catch(()=>{});}catch(e){}return ac}
+let sndErr=0;
 function beep(f,d=.06,type='square',vol=.035,to){
-  if(muted||cgMute||!touched||document.hidden)return;const a=au();if(!a)return;
+  if(muted||cgMute||!touched||document.hidden||sndErr>=3)return;try{const a=au();if(!a)return;
   const o=a.createOscillator(),g=a.createGain(),n=a.currentTime;
   o.type=type;o.frequency.setValueAtTime(f,n);if(to)o.frequency.exponentialRampToValueAtTime(to,n+d);
   g.gain.setValueAtTime(vol,n);g.gain.exponentialRampToValueAtTime(.0001,n+d);
-  o.connect(g).connect(a.destination);o.start(n);o.stop(n+d+.02);
+  o.connect(g).connect(a.destination);o.start(n);o.stop(n+d+.02);}catch(e){sndErr++;}
 }
 const sfx={
   tick:m=>beep(Math.min(1800,240*Math.pow(m,.75)),.04,'triangle',.025),
@@ -2561,7 +2562,8 @@ const bgm=(()=>{
     const s=a.createBufferSource(),f=a.createBiquadFilter(),e=a.createGain();f.type='highpass';f.frequency.value=7000;e.gain.value=v;s.buffer=b;s.connect(f).connect(e).connect(g);s.start(t);}
   function kick(a,t){const o=a.createOscillator(),e=a.createGain();o.frequency.setValueAtTime(130,t);o.frequency.exponentialRampToValueAtTime(40,t+.12);
     e.gain.setValueAtTime(.5,t);e.gain.exponentialRampToValueAtTime(.001,t+.16);o.connect(e).connect(g);o.start(t);o.stop(t+.2);}
-  function tick(){const a=ac;if(!a||!g)return;const hot=state==='holding',bpm=hot?118:88,sx=60/bpm/4;
+  function tick(){try{tickB();}catch(e){stop();}}
+  function tickB(){const a=ac;if(!a||!g)return;const hot=state==='holding',bpm=hot?118:88,sx=60/bpm/4;
     while(next<a.currentTime+.25){const t=next,i=step%16,c=CH[Math.floor(step/16)%4];
       if(i===0||i===8)note(a,hz(c[0]-24),t,sx*7,'triangle',.22);
       if(i%2===0){const mb=rdBox();note(a,hz(c[(i/2)%3]+(mb?24:12)),t,sx*(mb?3.2:1.6),mb?'triangle':'sine',(hot?.07:.05)*(mb?.8:1));}
@@ -2876,11 +2878,11 @@ const GL={monitor:{k:'p',x1:1,s:'모니터',st:'익절 수익',v:[0.03,0.04,0.05
   chair:{k:'c',x1:1,s:'의자',st:'1배 손절 손실',v:[0,0.05,0.1,0.15,0.2,0.25,0.3],lv:[4,25,45,60,75,95,110],p:[4e8,1.5e9,8e10,1.5e12,3e13,2e15,4e16],n:['게이밍 의자','프로 의자','인체공학 의자','리클라이너','안마 소파','구름 소파','신선놀음 소파'],e:['🪑','🪑','🪑','🛋️','🛋️','🛋️','🛋️']},
   vip:{k:'v',x1:1,s:'카드',st:'1배 세금',v:[0,0.05,0.1,0.15,0.2,0.25,0.3],lv:[6,35,50,70,85,105,120],p:[3e9,1.2e10,2.5e11,1.2e13,2.5e14,1.2e16,2.5e17],n:['증권사 VIP','골드 VIP','플래티넘 VIP','블랙 VIP','프라이빗 뱅킹','패밀리 오피스','신의 회계사'],e:['💳','💳','💳','💳','💳','💼','💼']},
   office:{k:'p',x1:0,s:'집',st:'얻는 XP',v:[0.05,0.055,0.06,0.065,0.07,0.075,0.08],lv:[7,40,60,80,100,120,140],p:[2.5e10,8e10,1.5e12,8e13,5e15,2.5e17,1.5e19],n:['여의도 오피스텔','한강뷰 오피스텔','테라스 하우스','정원 딸린 집','호숫가 별장','숲속 별장','신의 별장'],e:['🏠','🏠','🏠','🏠','🏠','🏠','🏠']},
-  car:{k:'p',x1:0,s:'차',st:'1배 판돈 한도',v:[0.1,0.11,0.12,0.13,0.14,0.15,0.16],lv:[8,45,65,85,110,130,150],p:[2e11,5e11,5e12,2.5e14,4e16,2e18,1e20],n:['슈퍼카','튜닝카','레이싱카','하이퍼카','챔피언카','드림카','신의 슈퍼카'],e:['🏎️','🏎️','🏎️','🏎️','🏎️','🏎️','🏎️']},
-  yacht:{k:'p',x1:0,s:'배',st:'1배 판돈 한도',v:[0.2,0.22,0.24,0.26,0.28,0.3,0.32],lv:[10,55,75,100,120,145,165],p:[1.5e12,4e12,3e13,5e15,2.5e17,4e19,2e21],n:['요트','크루저','스피드 요트','슈퍼 요트','기가 요트','해상 궁전','신의 요트'],e:['🛥️','🛥️','🛥️','🛥️','🛥️','🛥️','🛥️']},
+  car:{k:'p',x1:0,s:'차',st:'1배 투자 한도',v:[0.1,0.11,0.12,0.13,0.14,0.15,0.16],lv:[8,45,65,85,110,130,150],p:[2e11,5e11,5e12,2.5e14,4e16,2e18,1e20],n:['슈퍼카','튜닝카','레이싱카','하이퍼카','챔피언카','드림카','신의 슈퍼카'],e:['🏎️','🏎️','🏎️','🏎️','🏎️','🏎️','🏎️']},
+  yacht:{k:'p',x1:0,s:'배',st:'1배 투자 한도',v:[0.2,0.22,0.24,0.26,0.28,0.3,0.32],lv:[10,55,75,100,120,145,165],p:[1.5e12,4e12,3e13,5e15,2.5e17,4e19,2e21],n:['요트','크루저','스피드 요트','슈퍼 요트','기가 요트','해상 궁전','신의 요트'],e:['🛥️','🛥️','🛥️','🛥️','🛥️','🛥️','🛥️']},
   building:{k:'b',x1:0,s:'빌딩',st:'일일 미션 보너스',v:[0.02,0.03,0.04,0.06,0.08,0.1,0.12],lv:[11,60,85,110,130,155,180],p:[1e13,2.5e13,2.5e14,4e16,2e18,2.5e20,4e22],n:['강남 빌딩','역세권 빌딩','랜드마크 빌딩','초고층 빌딩','스카이 타워','구름 위 타워','신의 타워'],e:['🏢','🏢','🏢','🏢','🏢','🏢','🏢']},
   jet:{k:'p',x1:0,s:'비행기',st:'챌린지 보상',v:[0.1,0.15,0.2,0.25,0.3,0.4,0.5],lv:[12,70,95,120,145,170,195],p:[8e13,2e14,2e15,2.5e17,4e19,5e21,8e23],n:['전용기','비즈니스 제트','장거리 제트','초음속 제트','성층권 제트','우주 관광','신의 은하 여행'],e:['🛩️','🛩️','🛩️','🛩️','🛩️','👨‍🚀','👨‍🚀']},
-  firm:{k:'p',x1:0,s:'회사',st:'1배 판돈 한도',v:[0.5,0.55,0.6,0.65,0.7,0.75,0.8],lv:[14,80,105,135,160,185,210],p:[5e14,1.5e15,1.2e16,5e18,8e20,1e23,1.5e25],n:['증권사 인수','운용사 인수','투자은행 인수','금융지주 인수','거래소 인수','세계 거래소','신의 거래소'],e:['🏦','🏦','🏦','🏦','🏦','🏦','🏦']}};
+  firm:{k:'p',x1:0,s:'회사',st:'1배 투자 한도',v:[0.5,0.55,0.6,0.65,0.7,0.75,0.8],lv:[14,80,105,135,160,185,210],p:[5e14,1.5e15,1.2e16,5e18,8e20,1e23,1.5e25],n:['증권사 인수','운용사 인수','투자은행 인수','금융지주 인수','거래소 인수','세계 거래소','신의 거래소'],e:['🏦','🏦','🏦','🏦','🏦','🏦','🏦']}};
 const T7=[{L:'D',k:'일반',c:'#9aa6ba'},{L:'C',k:'고급',c:'#50c878'},{L:'B',k:'희귀',c:'#7ab8ff'},{L:'A',k:'에픽',c:'#b58cff'},{L:'S',k:'전설',c:'#ffc84a'},{L:'SS',k:'신화',c:'#ff5a8a'},{L:'SSS',k:'신',c:'#fff3d6'}];
 const GSE={monitor:'Screen',chair:'Chair',vip:'Card',office:'Home',car:'Car',yacht:'Boat',building:'Tower',jet:'Plane',firm:'Firm'};
 const gT=id=>Math.max(0,Math.min(7,Math.floor(+gear[id]||0)));
@@ -3117,7 +3119,7 @@ function selectOffer(id){if(state==='holding'||state==='ghost'||state==='over')r
 if(LANG==='en')$('proBtn').lastChild.textContent='PRO';
 function chipFit(){document.querySelectorAll('#items .chip.ic.lk').forEach(c=>{c.classList.remove('two');const m=c.querySelector('small');if(m&&m.clientWidth&&m.scrollWidth>m.clientWidth)c.classList.add('two');});}
 addEventListener('resize',()=>requestAnimationFrame(chipFit));if(document.fonts&&document.fonts.addEventListener)document.fonts.addEventListener('loadingdone',()=>chipFit());
-function itListFill(st,ri){const u=$('shdL');if(!u)return;u.innerHTML=icH(Object.entries(ITEMS).map(([k,it])=>{const c=ri>=it.lv&&st>0?itemCost(k,st):0,p=c>0?Math.max(1,Math.round(c/st*100)):0;return '<li><b>'+it.name+'</b> '+it.desc+(c>0?' · <span class="ipc">'+KE('값 '+wonS(c)+' = 판돈의 '+p+'%','price '+wonS(c)+' = '+p+'% of the stake')+'</span>':'')+'</li>';}).join('')+'<li><b>⚡ 레버리지</b> 수익·손실이 함께 커지고 폭락도 빨리 와요</li><li><b>💯 영끌</b> 전재산을 이번 판에 걸어요</li>');}
+function itListFill(st,ri){const u=$('shdL');if(!u)return;u.innerHTML=icH(Object.entries(ITEMS).map(([k,it])=>{const c=ri>=it.lv&&st>0?itemCost(k,st):0,p=c>0?Math.max(1,Math.round(c/st*100)):0;return '<li><b>'+it.name+'</b> '+it.desc+(c>0?' · <span class="ipc">'+KE('값 '+wonS(c)+' = 투자금의 '+p+'%','price '+wonS(c)+' = '+p+'% of your buy')+'</span>':'')+'</li>';}).join('')+'<li><b>⚡ 레버리지</b> 수익·손실이 함께 커지고 폭락도 빨리 와요</li><li><b>💯 영끌</b> 전재산을 이번 판에 걸어요</li>');}
 const SHT=['종목 고르기','매판 새 종목 8개 · 계급이 오르면 종류가 늘어나요','아이템','켠 아이템은 이번 판에만 · 레버리지는 다음 판에도 그대로'];
 function shMode(it){const sh=$('sheet');sh.classList.toggle('im',!!it);$('shTtl').textContent=SHT[it?2:0];$('shSub').textContent=SHT[it?3:1];}
 $('shIt').insertAdjacentHTML('beforeend','<ul class="shd" id="shdL">'+icH(Object.values(ITEMS).map(it=>'<li><b>'+it.name+'</b> '+it.desc+'</li>').join('')+'<li><b>⚡ 레버리지</b> 수익·손실이 함께 커지고 폭락도 빨리 와요</li><li><b>💯 영끌</b> 전재산을 이번 판에 걸어요</li>')+'</ul>');
@@ -3175,9 +3177,9 @@ function start(){
   if(run||chartStock!==o){run=null;sell=null;crashed=false;eM=1;buildChartIdle();}
   eM=liveM;candles.forEach(c=>{c.o/=eM;c.h/=eM;c.l/=eM;c.c/=eM;});runBase=candles.length;
   const bs=o.k==='boss'&&!tut&&!ch,lv=tut||ch||bs?1:levSel,ai=!bs&&!tut&&!ch&&allin&&rankOf(xp)>=2;
-  const bPull=ai?invBigPull():0;if(bPull>=1)setTimeout(()=>toast(KE('💯 영끌은 진짜 전재산 · 큰손 운용 '+wonS(bPull)+'도 같이 걸었어요','💯 All-in means everything · your big-league funds ('+wonS(bPull)+') are in this round too')),700);
+  const bPull=ai?invBigPull():0;if(bPull>=1)setTimeout(()=>toast(KE('💯 영끌은 진짜 전재산 · 큰손 운용 '+wonS(bPull)+'도 같이 걸었어요','💯 Max Buy means everything · your big-league funds ('+wonS(bPull)+') are in this round too')),700);
   const bet=ch||bs?0:tut?(store.get('shg_tutPaid',0)?0:Math.min(balance,START)):ai?Math.min(balance,maxStake(1)):Math.min(balance,maxStake(0))*betPct;
-  const cry=!bs&&!tut&&!ch&&armed.crystal>0;
+  const cry=!bs&&!tut&&!ch&&!ai&&armed.crystal>0;if(ai&&!bs&&!tut&&!ch&&armed.crystal>0)setTimeout(()=>toast('🔮 영끌 판에는 수정구슬이 안 통해요 · 다음 일반 판에 써요'),bPull>=1?2600:0);
   let cost=0;if(!bs)for(const k of Object.keys(ITEMS))if(useSel[k]&&!(cry&&k==='insider'))cost+=itemCost(k,bet);
   const fee=tut||ch||gear.vip?0:bet*(.003+.002*(lv-1));
   balance-=cost+fee;
@@ -3693,7 +3695,7 @@ function showDefault(quiet){
 const CFG={adClient:'',adTest:false,donateUrl:'',iap:false,iapDev:false};
 if(/^(localhost|127\.0\.0\.1)$/.test(location.hostname)&&/[?&]adsense\b/.test(location.search))CFG.adClient='ca-pub-2213068202184499';
 const CG={on:false,S:null,last:0,noAds:0,done:0},onCG=/crazygames/.test(location.hostname)||(window.top!==window&&/crazygames/.test(document.referrer))||/^(localhost|127\.0\.0\.1)$/.test(location.hostname)&&/[?&]cg\b/.test(location.search);
-const BUILD='v3.1.1 · b261111d · '+LANG+'-'+(onCG?'cg':/(^|\.)itch\.(io|zone)$|hwcdn\.net$/.test(location.hostname)||/itch\.io/.test(document.referrer)?'itch':'web');
+const BUILD='v3.1.2 · b261115a · '+LANG+'-'+(onCG?'cg':/(^|\.)itch\.(io|zone)$|hwcdn\.net$/.test(location.hostname)||/itch\.io/.test(document.referrer)?'itch':'web');
 if(onCG){const sc=document.createElement('script');sc.src='https://sdk.crazygames.com/crazygames-sdk-v3.js';
   sc.onload=async()=>{try{const S=window.CrazyGames.SDK;await S.init();if(S.environment!=='disabled'){CG.S=S;CG.on=true;cgLoad();try{const ms=v=>{v=v&&typeof v==='object'?v:S.game.settings;cgMute=!!(v&&v.muteAudio);document.body.classList.toggle('noChat',!!(v&&v.disableChat));if(touched||cgMute)bgm.sync();};ms();S.game.addSettingsChangeListener(ms);}catch(e){}if(state==='holding'||state==='ghost')cgPlay(true);}}catch(e){}CG.done=1;};sc.onerror=()=>{CG.done=1;};document.head.appendChild(sc);}
 let cgG=false;
@@ -3876,7 +3878,7 @@ const flushRound=()=>{forceSell();if(state!=='ghost'||!run||crashed)return;if(ru
   crash();};
 document.addEventListener('visibilitychange',()=>{if(document.hidden)flushRound();else if(!tabCheck()){ensureDaily();paintTop();if(overRev)overRev();}});
 addEventListener('pagehide',flushRound);
-addEventListener('pagehide',()=>{if(memSave)try{window.name='shgMem:'+JSON.stringify(Object.assign({},localStorage));}catch(e){}});
+addEventListener('pagehide',()=>{if(memSave)try{const n=Math.random().toString(36).slice(2,12);try{sessionStorage.setItem('shgMemN',n);}catch(e){}window.name='shgMem:'+JSON.stringify(Object.assign({_n:n},localStorage));}catch(e){}});
 addEventListener('resize',()=>{if(state==='holding'&&getComputedStyle($('rotate')).display!=='none')forceSell();});
 let tabStale=0,tabRp=0;const adOffer=()=>!card.hidden&&!!card.querySelector('#adWin,#adLoss');
 const TAB_TAKE={shg_lad:v=>{lad=ladFix(v);},shg_econ:v=>{ECO=ecoFix(v);},shg_road:v=>{RD=rdFix(v);try{rdFrame();if(PREM_ON)premApply(1);else rdTheme();}catch(e){}},shg_streak:v=>{streak=Math.max(0,Math.floor(+v||0));app.classList.toggle('fever',streak>=5);$('fever').hidden=streak<5;},shg_season:v=>season=v,shg_daily:v=>{daily=v;ensureDaily();},shg_weekly:v=>{weekly=v;ensureDaily();},shg_inv:v=>inv=v,shg_armed:v=>armed=v,shg_inv2:v=>invest=v,shg_gear:v=>{gear=cntMap(v);for(const k in gear)gear[k]=Math.min(7,gear[k]);},shg_gearMax:v=>{gearMax=cntMap(v);},shg_col:v=>col=Array.isArray(v)?v.filter((id,i)=>COL.some(c=>c.id===id)&&v.indexOf(id)===i):[],shg_ach:v=>ach=v,shg_achc:v=>achC=v,shg_sk:v=>{sk=cntMap(v);fixSk();},shg_league:v=>league=v,shg_nick:v=>nick=v,shg_profile:v=>profile=Object.prototype.hasOwnProperty.call(TYPES,v)?v:null,shg_home:v=>lastHome=v,shg_intPaid:v=>intPaid=!!v,shg_best:v=>best=Math.max(best,+v||0),shg_stats:v=>{Object.assign(stats,v);fixStats();lowFlag=!!stats.low;},shg_decor:v=>Object.assign(decor,v),shg_pet:v=>{const p=petFix(v);if(p)pet=p;petDot();}},
@@ -4852,16 +4854,16 @@ function pageGrow(){
 const CONSUM=[
   {id:'noliq',e:'🧯',n:'청산 방지권',d:'강제청산을 한 번 막아 줍니다 (자동 사용)',p:1.5},
   {id:'rewind',e:'⏪',n:'손실 복구권',d:'크게 물렸을 때 손실을 0원으로 (자동 사용)',p:4},
-  {id:'crystal',e:'🔮',n:'수정구슬',d:'다음 판 폭락 지점을 거의 정확히 표시',p:.5,arm:1},
-  {id:'luck',e:'🍀',n:'행운의 부적',d:'다음 3판 동안 폭락이 12% 늦게 옴',p:.6,arm:3},
+  {id:'crystal',e:'🔮',n:'수정구슬',d:'다음 판 폭락 지점을 거의 정확히 표시 (영끌 판 제외)',p:.5,arm:1},
+  {id:'luck',e:'🍀',n:'안전 부적',d:'다음 3판 동안 폭락이 12% 늦게 옴',p:.6,arm:3},
   {id:'bossT',e:'🎟️',n:'보스 소환권',d:'다음 판에 바로 보스 등장 · 판매 종료',p:.4,arm:1,nobuy:1}
 ];
 const GEAR=[
   {id:'monitor',e:'🖥️',n:'듀얼 모니터',d:'익절 수익 +3%',p:5e7,lv:2},{id:'chair',e:'🪑',n:'게이밍 의자',d:'차트 속도 -3%',p:4e8,lv:4},
   {id:'vip',e:'💳',n:'증권사 VIP',d:'수수료·레버리지 이자 면제',p:3e9,lv:6},{id:'office',e:'🏠',n:'여의도 오피스텔',d:'얻는 XP +5%',p:2.5e10,lv:7},
-  {id:'car',e:'🏎️',n:'슈퍼카',d:'1배 판돈 한도 +10%',p:2e11,lv:8},{id:'yacht',e:'🛥️',n:'요트',d:'1배 판돈 한도 +20%',p:1.5e12,lv:10},
+  {id:'car',e:'🏎️',n:'슈퍼카',d:'1배 투자 한도 +10%',p:2e11,lv:8},{id:'yacht',e:'🛥️',n:'요트',d:'1배 투자 한도 +20%',p:1.5e12,lv:10},
   {id:'building',e:'🏢',n:'강남 빌딩',d:'일일 미션 현금 2배 + 한도의 2%',p:1e13,lv:11},{id:'jet',e:'🛩️',n:'전용기',d:'챌린지 보상 +10%',p:8e13,lv:12},
-  {id:'firm',e:'🏦',n:'증권사 인수',d:'1배 판돈 한도 +50%',p:5e14,lv:14}
+  {id:'firm',e:'🏦',n:'증권사 인수',d:'1배 투자 한도 +50%',p:5e14,lv:14}
 ];
 GEAR.forEach(g=>{g.d=g.d.replace(/(^|\s)-(?=\d)/g,'$1\u2212');});
 const cPrice=c=>Math.max(1e5,Math.round(Math.max(betCap(1)*c.p,(balance+invBigSum())*c.p*.03)*Math.pow(1.6,(inv[c.id]||0)+((armed[c.id]||0)>0?1:0))/1e4)*1e4);
@@ -5362,7 +5364,7 @@ function invSecHtml(){const tot=invTotal(),dep=Math.floor(balance*invPct),frz=in
    (nf>=1?'<button class="setbtn ob" type="button" data-wdi="all">'+(idl-nf>=1?(LANG==='en'?'Take out '+wonS(nf)+' of resting money':'쉬는 돈 중 '+wonS(nf)+' 빼기'):'쉬는 돈 '+wonS(nf)+' 모두 빼기')+' · 수수료 없음</button>':'')+'</div>':'')+
    '<div class="ivtop"><div class="betrow ipct" role="group" aria-label="입출금 비율">'+[.05,.1,.25,.5,1].map(r=>'<button type="button" data-ipct="'+r+'" aria-pressed="'+(invPct===r)+'">'+(r*100)+'%</button>').join('')+'</div><p class="ivn">입금 '+wonS(dep)+' (예수금의 '+(invPct*100)+'%, 한도까지만) · 출금은 잔액의 '+(invPct*100)+'%</p></div>'+invSplitHtml(dep)+
    '<p class="ivno">⏳ 차곡차곡: 넣어 둔 채 판을 할수록 이율과 이자 붙는 한도가 커져요 · 판마다 잔액의 '+INV_FREE*100+'%를 넘게 새로 넣은 돈은 0분부터 · 10배 이상·영끌 판마다 절반 · 한도를 넘는 돈엔 이자가 안 붙어요'+(debt>0?' · 🏦 빚만큼의 투자금은 이자도 손실도 없어요':'')+'</p>'+
-   INV_CAT.map(C=>{const L=PROD.filter(P=>P.c===C.id),u=L.filter(P=>!invLock(P)).length,s=L.reduce((n,P)=>n+((invest[P.id]||{}).a||0),0);return '<details class="gl colcat ivc"'+(C.id===big?' open':'')+'><summary>'+C.e+' '+C.n+'<span class="mu">'+(s>0?wonS(s):u+'/'+L.length+(LANG==='en'?' open':'개 열림'))+'</span></summary><div class="pan iv">'+(C.id==='big'?'<p class="ivno">'+KE('순자산 1,000조부터 · 순자산의 30%·20%·10%까지 이자 · 이율은 낮아요 · 나눠 넣기는 레벨 상품부터 채워요 · 영끌 판에는 큰손 운용 돈도 같이 걸려요','From '+wonS(INV_BIGU)+' net worth · interest on up to 30%, 20% and 10% of net worth · low rates · split deposit fills level products first · an all-in round stakes these funds too')+'</p>':'')+L.map(invRowHtml).join('')+'</div></details>';}).join('')+'</section>';}
+   INV_CAT.map(C=>{const L=PROD.filter(P=>P.c===C.id),u=L.filter(P=>!invLock(P)).length,s=L.reduce((n,P)=>n+((invest[P.id]||{}).a||0),0);return '<details class="gl colcat ivc"'+(C.id===big?' open':'')+'><summary>'+C.e+' '+C.n+'<span class="mu">'+(s>0?wonS(s):u+'/'+L.length+(LANG==='en'?' open':'개 열림'))+'</span></summary><div class="pan iv">'+(C.id==='big'?'<p class="ivno">'+KE('순자산 1,000조부터 · 순자산의 30%·20%·10%까지 이자 · 이율은 낮아요 · 나눠 넣기는 레벨 상품부터 채워요 · 영끌 판에는 큰손 운용 돈도 같이 걸려요','From '+wonS(INV_BIGU)+' net worth · interest on up to 30%, 20% and 10% of net worth · low rates · split deposit fills level products first · a Max Buy round uses these funds too')+'</p>':'')+L.map(invRowHtml).join('')+'</div></details>';}).join('')+'</section>';}
 function invRowLine(P,h,f,cap,idle,c){const nf=invNoFee(P),ix=(c>=1?' · <span class="dn">빚만큼 이자 없는 돈 '+wonS(c)+'</span>':'')+(idle>=1?' · <span class="dn">쉬는 돈 '+wonS(idle)+(P.angel?' (이자 0원 · 파산하면 이 돈도 0원)':'')+'</span>'+(idle-nf>=1&&invFee(P)>0?(P.chance?' (수수료 '+P.fee*100+'%)':' (그중 '+wonS(idle-nf)+'은 10배 이상·영끌 판에 한도가 줄어 넘친 돈: 빼면 수수료)'):''):'')+(invBlk(P)?' · 최대 금액이라 이자 없음':'');
   if(P.angel)return '기대 '+ivP(invMean(P,0))+'/'+INV_U+(c>=1?' (한도 몫) · 4% 확률 파산(빚만큼 멈춘 돈 빼고 전부 0원) · 한도 ':' (한도 몫) · 4% 확률 파산(전부 0원) · 한도 ')+wonS(cap)+invFeeT(P)+ix;
   if(P.chance)return '평균 '+ivP(invMean(P,0))+'/'+INV_U+' · ±'+Math.round(P.v*100)+'% 출렁임 · 한도 '+wonS(cap)+invFeeT(P)+ix;
@@ -5414,7 +5416,7 @@ function glossary(){
     L(LANG==='en'?'🟢':'🔴','매수 → 익절',tw('버튼을 눌러 사고, 다시 눌러 팔아 수익 확정'))+L('🔁','재진입','매도 후 폭락 전이면 한 번 더 같은 금액으로 들어갈 수 있음. 또 팔아야 함')+L('📉','저점 매수 · 추격 매수','매수 전 차트가 기준가보다 4% 아래면 폭락이 조금 늦게, 5% 위면 조금 빨리 옴')+L(LANG==='en'?'🔴':'🔵','물림 · 손절','못 팔고 폭락을 맞거나, 산 값보다 낮게 판 경우')+L('🐣','초반 보호','진짜 판 처음 5판은 +20%를 넘기 전엔 폭락하지 않아요. 다음 5판은 보호가 점점 줄어요')+L('✖','배수 (x2.0)','산 가격 대비 몇 배인지. x2면 +100%')+L('🎯','근접도','폭락 직전 고점에 얼마나 가깝게 팔았는지')+
     L('⚡','레버리지','수익도 손실도 배수로 커짐. 물리면 매수 금액의 몇 배를 잃고, 배율이 높을수록 폭락도 빨리 옴. 청산가에 닿으면 매수 금액만 잃고 끝')+L('💯',LANG==='en'?'Max Buy':'영끌','투자 비율 무시하고 전재산 투자 (한도 없음). 잃으면 크게 잃음')+L('%','투자 비율','투자 한도 중 이번 판에 걸 비율 (예수금이 한도보다 적으면 예수금 기준)')+L('🧾','수수료','매수할 때 떼는 비용. 레버리지가 높을수록 비쌈')+L('🏛️','부자세','예수금 100억부터 수익에 세금. 100억 5% → 1조 25% → 100조 45% → 최대 65%')+L('🌊','유동성 한도','일반 매수는 한 판 최대 1경. 영끌은 예외')+L('📉','자산 리스크','예수금 10억부터 폭락이 빨라지고 즉시 폭락 확률↑. 1조면 약 10%, 최대 30%')+L('💀','고레벨 난이도','Lv.20부터 레벨마다 폭락이 조금씩 빨라짐 (최대 35%)'))+
   G('🏷️ 종목 종류',Object.values(TIERS).filter(T=>!T.hidden).map(T=>L(T.e,T.label,`물리면 −${Math.round(T.loss*100)}% · 상승 폭 ×${T.scale}`)).join('')+L('👹','보스전','10판마다 등장. 돈을 걸지 않는 대결. 보스마다 정해진 신호를 읽고 진짜 공격 직전에 공격'))+
-  G('🧰 아이템 · 성장',Object.values(ITEMS).map(it=>L(it.name.split(' ')[0],it.name.split(' ').slice(1).join(' '),it.desc+KE(' · 판마다 판돈의 '+Math.round(it.cost*100)+'% (예수금이 많으면 최대 3배)',' · each round '+Math.round(it.cost*100)+'% of the stake (up to 3× with a lot of cash)'))).join('')+
+  G('🧰 아이템 · 성장',Object.values(ITEMS).map(it=>L(it.name.split(' ')[0],it.name.split(' ').slice(1).join(' '),it.desc+KE(' · 판마다 투자금의 '+Math.round(it.cost*100)+'% (예수금이 많으면 최대 3배)',' · each round '+Math.round(it.cost*100)+'% of your buy (up to 3× with a lot of cash)'))).join('')+
     L('🌳','SP · 스킬','레벨업·업적·미션으로 얻는 포인트. 성장 탭에서 강화')+L('🎁','선물','하루 한 번 선물, 가끔 보물상자')+L('📋','미션','일일 8개 · 주간 10개 · 커리어 20개')+L('⭐','업적 별','반복 달성하면 ★1→★5, 그 뒤엔 색이 바뀜')+L('🛒','상점','소모품·장비 구매, 은행(대출·상환)'))+
   G('🌡️ 장세 (차트 위 배지)',REGIMES.map(r=>L(r.e,r.n,r.d)).join('')+L('⏱️','N판 남음','장세는 5판마다 바뀜'))+
   G('💼 투자 · 컬렉션',PROD.map(P=>L(P.e,P.n,P.d)).join('')+L('🏆','컬렉션','8개 분류 50종. 살 때마다 SP, 분류를 다 모으면 보너스 SP +3'))+
@@ -5496,7 +5498,10 @@ function bindPage(name){
       for(const k in d){if(!K(k)||k.startsWith('shg_prem'))continue;if(typeof d[k]!=='string')throw 0;const v=JSON.parse(d[k]);
         if(A.includes(k)&&!Array.isArray(v)||O.includes(k)&&!isO(v)||N.includes(k)&&v!==null&&(typeof v==='object'||!isFinite(v))||k==='shg_season'&&!Array.isArray(v.got)||(k==='shg_daily'||k==='shg_weekly')&&v!==null&&!(isO(v)&&Array.isArray(v.ids))||k==='shg_profile'&&v!==null&&!Object.prototype.hasOwnProperty.call(TYPES,v)||k==='shg_league'&&v.me!=null&&!isO(v.me)||k==='shg_pet'&&v!==null&&!petFix(v))throw 0;}
       const sp=x=>{try{return typeof x==='string'?JSON.parse(x):null}catch(e){return null}},pm=premRead(),eb=premEqFix(sp(d.shg_premEq)),eq=eb.th||eb.ttl?JSON.stringify(eb):localStorage.getItem('shg_premEq');
-      store.off=1;Object.keys(localStorage).filter(k=>k.startsWith('shg_')).forEach(k=>localStorage.removeItem(k));for(const k in d)if(K(k)&&!k.startsWith('shg_prem'))localStorage.setItem(k,d[k]);if(pm.length)localStorage.setItem('shg_prem',JSON.stringify(pm));if(eq!==null)localStorage.setItem('shg_premEq',eq);toast('📥 불러오는 중…');setTimeout(()=>location.reload(),500);}
+      const ks=()=>Object.keys(localStorage).filter(k=>k.startsWith('shg_')),bk={};ks().forEach(k=>bk[k]=localStorage.getItem(k));
+      store.off=1;try{ks().forEach(k=>localStorage.removeItem(k));for(const k in d)if(K(k)&&!k.startsWith('shg_prem'))localStorage.setItem(k,d[k]);if(pm.length)localStorage.setItem('shg_prem',JSON.stringify(pm));if(eq!==null)localStorage.setItem('shg_premEq',eq);}
+      catch(e2){try{ks().forEach(k=>localStorage.removeItem(k));for(const k in bk)localStorage.setItem(k,bk[k]);}catch(_){}store.off=0;toast('저장 공간이 부족해서 불러오지 못했어요 · 지금 기록은 그대로예요');return;}
+      toast('📥 불러오는 중…');setTimeout(()=>location.reload(),500);}
     catch(e){toast('백업 코드가 올바르지 않아요');}},'');
   const w=$('wipe');if(w)resetArm=0;
   if(w)w.onclick=()=>{const dt=Date.now()-resetArm;if(dt<700)return;
@@ -5506,14 +5511,15 @@ function bindPage(name){
 }
 /* ---------- loop ---------- */
 let drawT=-1e9,drawW=0,drawH=0;
-function frame(ts){
+let frErr=0;function frame(ts){try{frameB(ts);frErr=0;}catch(e){if(!frErr++)try{const l=JSON.parse(localStorage.getItem('shg_errlog')||'[]');l.push(new Date().toISOString().slice(5,16)+' frame '+String(e&&e.message||e).slice(0,80)+' '+String(e&&e.stack||'').split('\n')[1]);localStorage.setItem('shg_errlog',JSON.stringify(l.slice(-10)));}catch(_){}}finally{requestAnimationFrame(frame);}}
+function frameB(ts){
   const dt=Math.min(.05,(ts-lastTs)/1000||0);lastTs=ts;
   if(adDue&&performance.now()>=adDue)adDecide();
   stepFx(dt);
   const hid=adPause||app.classList.contains('pgopen'),live=state==='holding'||state==='ghost';
   const idle=!live&&!hid&&(ts-drawT>=48||cv.width!==drawW||cv.height!==drawH);
-  if(freezeT>0){freezeT-=dt;draw();requestAnimationFrame(frame);return;}
-  if(adPause&&(state==='holding'||state==='ghost')){draw();requestAnimationFrame(frame);return;}
+  if(freezeT>0){freezeT-=dt;draw();return;}
+  if(adPause&&(state==='holding'||state==='ghost')){draw();return;}
   if(state==='holding'||state==='ghost'){
     const prev=cur;
     t+=dt*(state==='ghost'?3:holdRate());if(state==='holding')run.hold=(run.hold||0)+dt;
@@ -5531,7 +5537,7 @@ function frame(ts){
     else{
       cur=Math.max(run.lev>1?.3:.85,b*(1+(wig(t)-1)*Math.min(1,t/.3)*(run.T.wig||1)*(run.rg.wig||1)*(run.boss&&t>=run.boss.q0?0:1))*newsF(t));peak=Math.max(peak,cur);
       if(xh&&xh.x==null&&cur>=xh.v)xh.x=t+holdRate();
-      if(state==='holding'&&run.liqLine&&cur<=run.liqLine&&!(xh&&t<xh.x)){if(inv.noliq>0){inv.noliq--;store.set('shg_inv',inv);stats.c.items++;store.set('shg_stats',stats);run.liqLine=0;toast('🧯 청산 방지권 발동! 살았다');}else{run.liq=1;crash();draw();requestAnimationFrame(frame);return;}}
+      if(state==='holding'&&run.liqLine&&cur<=run.liqLine&&!(xh&&t<xh.x)){if(inv.noliq>0){inv.noliq--;store.set('shg_inv',inv);stats.c.items++;store.set('shg_stats',stats);run.liqLine=0;toast('🧯 청산 방지권 발동! 살았다');}else{run.liq=1;crash();draw();return;}}
       const idx=runBase+Math.floor(t/CD);
       while(candles.length<=idx){const pc=candles.length?candles[candles.length-1].c:1;candles.push({o:pc,h:pc,l:pc,c:pc,v:0,ghost:state==='ghost',r:1});if(state==='holding'&&!(run.boss&&run.boss.mute))sfx.tick(cur);}
       const c=candles[candles.length-1];c.h=Math.max(c.h,cur);c.l=Math.min(c.l,cur);c.c=cur;
@@ -5550,7 +5556,7 @@ function frame(ts){
   }
   tradeT+=dt;if(tradeT>(state==='holding'?rnd(.04,.16):state==='ghost'?.12:rnd(.4,.9))){tradeT=0;pushTrade(!run?liveM:crashed?(run.liq?cur*.8:Math.min(cur,run.crashAt*.62)):cur);}
   bookT+=dt;if(bookT>(state==='holding'||state==='ghost'?.12:.5)&&!hid){bookT=0;renderBook();}
-  if(!hid&&(live||idle)){drawT=ts;drawW=cv.width;drawH=cv.height;draw();}requestAnimationFrame(frame);
+  if(!hid&&(live||idle)){drawT=ts;drawW=cv.width;drawH=cv.height;draw();}
 }
 
 if(chal&&chal.pend!=null){const pt=chal.pend;delete chal.pend;chal.score+=pt;chal.res.push(pt);chal.i++;if(chal.i<5)store.set('shg_chalRun',chal);else chalFinish(1);}

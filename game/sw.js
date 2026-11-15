@@ -1,6 +1,7 @@
 // 오프라인 지원: 게임 파일은 설치 시 캐시, 그림·글꼴(같은 사이트 fonts/)은 처음 받을 때 캐시
-const CACHE = 'sanghanga-v63';
-const CORE = ['./', 'index.html', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png'];
+const CACHE = 'sanghanga-v64';
+const CORE = ['./', 'index.html', 'en/', 'en/index.html', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png'];
+const EN = new URL('en/', self.location).pathname;
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(CORE)).then(() => self.skipWaiting()));
@@ -13,11 +14,12 @@ self.addEventListener('activate', e => {
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
   const url = new URL(e.request.url);
-  // 게임 페이지: 온라인이면 최신 버전, 오프라인이면 캐시
+  // 게임 페이지: 온라인이면 최신 버전, 오프라인이면 캐시 (영어 페이지는 영어 캐시로만, 언어를 넘어 대신 보여 주지 않음)
   if (e.request.mode === 'navigate') {
+    const en = url.pathname.startsWith(EN);
     e.respondWith(fetch(e.request)
       .then(r => { if (r.ok) { const copy = r.clone(); caches.open(CACHE).then(c => c.put(e.request.url.split('?')[0], copy)); } return r; })
-      .catch(() => caches.match(e.request.url.split('?')[0]).then(h => h || caches.match('./'))));
+      .catch(() => caches.match(e.request.url.split('?')[0]).then(h => h || caches.match(en ? 'en/' : './'))));
     return;
   }
   // 나머지(그림, 글꼴): 캐시 우선

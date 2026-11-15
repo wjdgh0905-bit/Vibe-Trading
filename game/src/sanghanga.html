@@ -1876,9 +1876,9 @@ const pick=a=>a[Math.floor(Math.random()*a.length)];
 const rnd=(a,b)=>a+Math.random()*(b-a);
 // 저장소가 막힌 브라우저(사파리 개인 모드·서드파티 저장소 차단 iframe 등): 메모리에 대신 저장해 이번 세션은 그대로 플레이. 이 아래의 localStorage는 모두 이 이름을 씀 (새로고침·백업 불러오기는 창 이름 window.name에 잠시 맡겨 이어감)
 function MemLS(){}MemLS.prototype={getItem(k){return Object.prototype.hasOwnProperty.call(this,k)?this[k]:null},setItem(k,v){this[k]=String(v);if(this._r)try{this._r.setItem(k,v);}catch(e){}},removeItem(k){delete this[k];if(this._r)try{this._r.removeItem(k);}catch(e){}},key(i){const k=Object.keys(this)[i];return k===undefined?null:k},clear(){Object.keys(this).forEach(k=>delete this[k])},get length(){return Object.keys(this).length}};
-const memSnap=()=>{try{if(String(window.name||'').startsWith('shgMem:')){const d=JSON.parse(window.name.slice(7));if(d&&typeof d==='object'){const o={};for(const k in d)if(/^shg_\w+$/.test(k)&&typeof d[k]==='string')o[k]=d[k];return o;}}}catch(e){}return null;}; // 이 탭이 새로고침 전에 창 이름에 맡긴 기록
-const memLS=(src,snap)=>{const m=new MemLS(),d=snap&&memSnap();try{if(d)for(const k in d)m.setItem(k,d[k]);else if(src)for(let i=0;i<src.length;i++){const k=src.key(i);if(k&&k.startsWith('shg_'))m.setItem(k,src.getItem(k));}}catch(e){}if(src)Object.defineProperty(m,'_r',{value:src});return m;}; // 맡긴 기록이 있으면 그것만 (처음 옮길 때 src를 다 담았음 → 그 뒤 지운 키가 src에서 되살아나지 않게), 없으면 읽기는 되는 진짜 저장소 src(용량 초과 등)의 지금 기록 · _r: 쓰기·지우기는 src에도 해 봄 (들어가는 키는 계속 저장, 지우기는 용량이 없어도 됨)
-let localStorage=(()=>{try{const s=window.localStorage,k='_shgProbe';s.setItem(k,'1');const ok=s.getItem(k)==='1';s.removeItem(k);if(ok)return s;}catch(e){}return null;})(),memSave=0;if(!localStorage){let src=null;try{src=window.localStorage;src.length;}catch(e){src=null;}localStorage=memLS(src,1);memSave=1;memWarn();}else if(String(window.name||'').startsWith('shgMem:')){const d=memSnap();let bad=0;if(d)for(const k in d)try{localStorage.setItem(k,d[k]);}catch(e){bad=1;}if(bad){localStorage=memLS(localStorage,1);memSave=2;memWarn();}else window.name='';} // 시험 키는 shg_로 시작하지 않게 (다른 탭이 새 기록으로 알고 새로고침하지 않게) · memSave: 이번 세션 기록이 메모리에만 있음 · 저장소가 되면 지난번에 맡긴 기록을 다시 써 넣고, 다 들어가야 창 이름을 비움 (하나라도 안 들어가면 맡긴 기록으로 메모리 저장을 이어감)
+const memSnap=strict=>{try{if(String(window.name||'').startsWith('shgMem:')){const d=JSON.parse(window.name.slice(7));let ok=0;try{ok=!!d._n&&sessionStorage.getItem('shgMemN')===String(d._n);}catch(e){}if(strict&&!ok)return null; /* v312: 이 탭이 직접 맡긴 기록(일회용 표식이 맞을 때)만 진짜 저장소에 씀 · 다른 사이트 링크가 창 이름으로 기록을 덮어쓰지 못하게 */if(d&&typeof d==='object'){const o={};for(const k in d)if(/^shg_\w+$/.test(k)&&typeof d[k]==='string')o[k]=d[k];return o;}}}catch(e){}return null;}; // 이 탭이 새로고침 전에 창 이름에 맡긴 기록
+const memLS=(src,snap)=>{const m=new MemLS(),d=snap&&memSnap(!!src);try{if(d)for(const k in d)m.setItem(k,d[k]);else if(src)for(let i=0;i<src.length;i++){const k=src.key(i);if(k&&k.startsWith('shg_'))m.setItem(k,src.getItem(k));}}catch(e){}if(src)Object.defineProperty(m,'_r',{value:src});return m;}; // 맡긴 기록이 있으면 그것만 (처음 옮길 때 src를 다 담았음 → 그 뒤 지운 키가 src에서 되살아나지 않게), 없으면 읽기는 되는 진짜 저장소 src(용량 초과 등)의 지금 기록 · _r: 쓰기·지우기는 src에도 해 봄 (들어가는 키는 계속 저장, 지우기는 용량이 없어도 됨)
+let localStorage=(()=>{try{const s=window.localStorage,k='_shgProbe';s.setItem(k,'1');const ok=s.getItem(k)==='1';s.removeItem(k);if(ok)return s;}catch(e){}return null;})(),memSave=0;if(!localStorage){let src=null;try{src=window.localStorage;src.length;}catch(e){src=null;}localStorage=memLS(src,1);memSave=1;memWarn();}else if(String(window.name||'').startsWith('shgMem:')){const d=memSnap(1);if(!d)window.name='';let bad=0;if(d)for(const k in d)try{localStorage.setItem(k,d[k]);}catch(e){bad=1;}if(bad){localStorage=memLS(localStorage,1);memSave=2;memWarn();}else window.name='';} // 시험 키는 shg_로 시작하지 않게 (다른 탭이 새 기록으로 알고 새로고침하지 않게) · memSave: 이번 세션 기록이 메모리에만 있음 · 저장소가 되면 지난번에 맡긴 기록을 다시 써 넣고, 다 들어가야 창 이름을 비움 (하나라도 안 들어가면 맡긴 기록으로 메모리 저장을 이어감)
 function memWarn(){if(memWarn.on)return;memWarn.on=1;setTimeout(()=>toast('⚠️ 이 브라우저는 저장이 막혀 있어요 · 설정의 백업 코드 복사로 기록을 보관하세요'),2500);} // 한 번만, 첫 화면이 뜬 뒤에 (게임은 막지 않음)
 function lsSet(k,s){try{localStorage.setItem(k,s);}catch(e){if(memSave)throw e;localStorage=memLS(localStorage);memSave=2;localStorage.setItem(k,s);memWarn();}} // 쓰다가 막히면(용량 초과·차단) 지금까지 기록을 메모리로 옮겨 이어서 저장 (하루 횟수 같은 값이 세션 안에서는 지켜지게)
 const store={off:0,seen:{},get(k,d){try{const v=localStorage.getItem(k);store.seen[k]=v;return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){if(store.off)return;try{const s=JSON.stringify(v);if(store.seen[k]===s)return;lsSet(k,s);store.seen[k]=s;}catch(e){}}}; // off: 다른 탭이 더 새 기록을 저장함 → 덮어쓰지 않음, seen: 이 탭이 마지막으로 읽거나 쓴 값
@@ -2521,12 +2521,13 @@ const priceOf=m=>roundTick(offer().p0*eM*m,isUsd());
 /* ---------- audio ---------- */
 let ac=null;
 function au(){if(!ac){try{ac=new(window.AudioContext||window.webkitAudioContext)()}catch(e){}}if(ac&&ac.state!=='running'&&ac.state!=='closed')try{const p=ac.resume();if(p&&p.catch)p.catch(()=>{});}catch(e){}return ac} // 'suspended'만이 아니라 iOS 사파리의 'interrupted'(전화·앱 전환 뒤)도 다시 깨움
+let sndErr=0; // v312: 소리 오류가 3번 나면 이번 세션은 효과음 끔 (오류가 판 진행을 멈추지 않게)
 function beep(f,d=.06,type='square',vol=.035,to){
-  if(muted||cgMute||!touched||document.hidden)return;const a=au();if(!a)return;
+  if(muted||cgMute||!touched||document.hidden||sndErr>=3)return;try{const a=au();if(!a)return;
   const o=a.createOscillator(),g=a.createGain(),n=a.currentTime;
   o.type=type;o.frequency.setValueAtTime(f,n);if(to)o.frequency.exponentialRampToValueAtTime(to,n+d);
   g.gain.setValueAtTime(vol,n);g.gain.exponentialRampToValueAtTime(.0001,n+d);
-  o.connect(g).connect(a.destination);o.start(n);o.stop(n+d+.02);
+  o.connect(g).connect(a.destination);o.start(n);o.stop(n+d+.02);}catch(e){sndErr++;}
 }
 const sfx={
   tick:m=>beep(Math.min(1800,240*Math.pow(m,.75)),.04,'triangle',.025),
@@ -2547,7 +2548,8 @@ const bgm=(()=>{
     const s=a.createBufferSource(),f=a.createBiquadFilter(),e=a.createGain();f.type='highpass';f.frequency.value=7000;e.gain.value=v;s.buffer=b;s.connect(f).connect(e).connect(g);s.start(t);}
   function kick(a,t){const o=a.createOscillator(),e=a.createGain();o.frequency.setValueAtTime(130,t);o.frequency.exponentialRampToValueAtTime(40,t+.12);
     e.gain.setValueAtTime(.5,t);e.gain.exponentialRampToValueAtTime(.001,t+.16);o.connect(e).connect(g);o.start(t);o.stop(t+.2);}
-  function tick(){const a=ac;if(!a||!g)return;const hot=state==='holding',bpm=hot?118:88,sx=60/bpm/4;
+  function tick(){try{tickB();}catch(e){stop();}} // v312: 배경음악 오류는 음악만 멈춤
+  function tickB(){const a=ac;if(!a||!g)return;const hot=state==='holding',bpm=hot?118:88,sx=60/bpm/4;
     while(next<a.currentTime+.25){const t=next,i=step%16,c=CH[Math.floor(step/16)%4];
       if(i===0||i===8)note(a,hz(c[0]-24),t,sx*7,'triangle',.22);
       if(i%2===0){const mb=rdBox();note(a,hz(c[(i/2)%3]+(mb?24:12)),t,sx*(mb?3.2:1.6),mb?'triangle':'sine',(hot?.07:.05)*(mb?.8:1));}
@@ -2865,11 +2867,11 @@ const GL={monitor:{k:'p',x1:1,s:'모니터',st:'익절 수익',v:[0.03,0.04,0.05
   chair:{k:'c',x1:1,s:'의자',st:'1배 손절 손실',v:[0,0.05,0.1,0.15,0.2,0.25,0.3],lv:[4,25,45,60,75,95,110],p:[4e8,1.5e9,8e10,1.5e12,3e13,2e15,4e16],n:['게이밍 의자','프로 의자','인체공학 의자','리클라이너','안마 소파','구름 소파','신선놀음 소파'],e:['🪑','🪑','🪑','🛋️','🛋️','🛋️','🛋️']},
   vip:{k:'v',x1:1,s:'카드',st:'1배 세금',v:[0,0.05,0.1,0.15,0.2,0.25,0.3],lv:[6,35,50,70,85,105,120],p:[3e9,1.2e10,2.5e11,1.2e13,2.5e14,1.2e16,2.5e17],n:['증권사 VIP','골드 VIP','플래티넘 VIP','블랙 VIP','프라이빗 뱅킹','패밀리 오피스','신의 회계사'],e:['💳','💳','💳','💳','💳','💼','💼']},
   office:{k:'p',x1:0,s:'집',st:'얻는 XP',v:[0.05,0.055,0.06,0.065,0.07,0.075,0.08],lv:[7,40,60,80,100,120,140],p:[2.5e10,8e10,1.5e12,8e13,5e15,2.5e17,1.5e19],n:['여의도 오피스텔','한강뷰 오피스텔','테라스 하우스','정원 딸린 집','호숫가 별장','숲속 별장','신의 별장'],e:['🏠','🏠','🏠','🏠','🏠','🏠','🏠']},
-  car:{k:'p',x1:0,s:'차',st:'1배 판돈 한도',v:[0.1,0.11,0.12,0.13,0.14,0.15,0.16],lv:[8,45,65,85,110,130,150],p:[2e11,5e11,5e12,2.5e14,4e16,2e18,1e20],n:['슈퍼카','튜닝카','레이싱카','하이퍼카','챔피언카','드림카','신의 슈퍼카'],e:['🏎️','🏎️','🏎️','🏎️','🏎️','🏎️','🏎️']},
-  yacht:{k:'p',x1:0,s:'배',st:'1배 판돈 한도',v:[0.2,0.22,0.24,0.26,0.28,0.3,0.32],lv:[10,55,75,100,120,145,165],p:[1.5e12,4e12,3e13,5e15,2.5e17,4e19,2e21],n:['요트','크루저','스피드 요트','슈퍼 요트','기가 요트','해상 궁전','신의 요트'],e:['🛥️','🛥️','🛥️','🛥️','🛥️','🛥️','🛥️']},
+  car:{k:'p',x1:0,s:'차',st:'1배 투자 한도',v:[0.1,0.11,0.12,0.13,0.14,0.15,0.16],lv:[8,45,65,85,110,130,150],p:[2e11,5e11,5e12,2.5e14,4e16,2e18,1e20],n:['슈퍼카','튜닝카','레이싱카','하이퍼카','챔피언카','드림카','신의 슈퍼카'],e:['🏎️','🏎️','🏎️','🏎️','🏎️','🏎️','🏎️']},
+  yacht:{k:'p',x1:0,s:'배',st:'1배 투자 한도',v:[0.2,0.22,0.24,0.26,0.28,0.3,0.32],lv:[10,55,75,100,120,145,165],p:[1.5e12,4e12,3e13,5e15,2.5e17,4e19,2e21],n:['요트','크루저','스피드 요트','슈퍼 요트','기가 요트','해상 궁전','신의 요트'],e:['🛥️','🛥️','🛥️','🛥️','🛥️','🛥️','🛥️']},
   building:{k:'b',x1:0,s:'빌딩',st:'일일 미션 보너스',v:[0.02,0.03,0.04,0.06,0.08,0.1,0.12],lv:[11,60,85,110,130,155,180],p:[1e13,2.5e13,2.5e14,4e16,2e18,2.5e20,4e22],n:['강남 빌딩','역세권 빌딩','랜드마크 빌딩','초고층 빌딩','스카이 타워','구름 위 타워','신의 타워'],e:['🏢','🏢','🏢','🏢','🏢','🏢','🏢']},
   jet:{k:'p',x1:0,s:'비행기',st:'챌린지 보상',v:[0.1,0.15,0.2,0.25,0.3,0.4,0.5],lv:[12,70,95,120,145,170,195],p:[8e13,2e14,2e15,2.5e17,4e19,5e21,8e23],n:['전용기','비즈니스 제트','장거리 제트','초음속 제트','성층권 제트','우주 관광','신의 은하 여행'],e:['🛩️','🛩️','🛩️','🛩️','🛩️','👨‍🚀','👨‍🚀']},
-  firm:{k:'p',x1:0,s:'회사',st:'1배 판돈 한도',v:[0.5,0.55,0.6,0.65,0.7,0.75,0.8],lv:[14,80,105,135,160,185,210],p:[5e14,1.5e15,1.2e16,5e18,8e20,1e23,1.5e25],n:['증권사 인수','운용사 인수','투자은행 인수','금융지주 인수','거래소 인수','세계 거래소','신의 거래소'],e:['🏦','🏦','🏦','🏦','🏦','🏦','🏦']}}; // 단계별 효과 v[0..6] · 여는 조건 lv[0]=계급(D), lv[1..6]=레벨 · 가격 p · 이름 n · 그림 e (final/gear/ladder_final.js)
+  firm:{k:'p',x1:0,s:'회사',st:'1배 투자 한도',v:[0.5,0.55,0.6,0.65,0.7,0.75,0.8],lv:[14,80,105,135,160,185,210],p:[5e14,1.5e15,1.2e16,5e18,8e20,1e23,1.5e25],n:['증권사 인수','운용사 인수','투자은행 인수','금융지주 인수','거래소 인수','세계 거래소','신의 거래소'],e:['🏦','🏦','🏦','🏦','🏦','🏦','🏦']}}; // 단계별 효과 v[0..6] · 여는 조건 lv[0]=계급(D), lv[1..6]=레벨 · 가격 p · 이름 n · 그림 e (final/gear/ladder_final.js)
 const T7=[{L:'D',k:'일반',c:'#9aa6ba'},{L:'C',k:'고급',c:'#50c878'},{L:'B',k:'희귀',c:'#7ab8ff'},{L:'A',k:'에픽',c:'#b58cff'},{L:'S',k:'전설',c:'#ffc84a'},{L:'SS',k:'신화',c:'#ff5a8a'},{L:'SSS',k:'신',c:'#fff3d6'}]; // D 일반 … SSS 신: 글자 · 이름 · 테두리 색 (있던 색만)
 const GSE={monitor:'Screen',chair:'Chair',vip:'Card',office:'Home',car:'Car',yacht:'Boat',building:'Tower',jet:'Plane',firm:'Firm'}; // 영어판 칸 이름 (한 글자 '배'는 번역표에서 다른 뜻이라 여기서 고름)
 const gT=id=>Math.max(0,Math.min(7,Math.floor(+gear[id]||0))); // 0 = 없음, 1..7 = D..SSS
@@ -2963,7 +2965,7 @@ function gearUp(id){ // 장비에 돈을 쓰는 유일한 곳: 다음 한 단계
 function gSet(id){const e=document.querySelector('#page .grow[data-g="'+id+'"] .gtile');if(e)e.classList.add('gset');}
 function gearTap(id){if(gearCan(id)==='ok')gearAsk(id);else gearSheet(id);} // 가격 버튼: 살 수 있으면 확인 창, 모자라면 7단계 시트
 const betCap=noRg=>Math.round(1e6*(noRg?1:(regime().cap||1))*Math.pow(1.22,lvlOf(xp).L-1)*gMul()/1e4)*1e4;
-const betCapD=noRg=>Math.round(1e6*(noRg?1:(regime().cap||1))*Math.pow(1.22,lvlOf(xp).L-1)*gMulD()/1e4)*1e4; // v3.0.6: v3.0.5의 betCap 그대로 (레버리지 판돈 한도·대출·빚 한도가 지금보다 1원도 커지지 않게, 반올림 한 번)
+const betCapD=noRg=>Math.round(1e6*(noRg?1:(regime().cap||1))*Math.pow(1.22,lvlOf(xp).L-1)*gMulD()/1e4)*1e4; // v3.0.6: v3.0.5의 betCap 그대로 (레버리지 투자금 한도·대출·빚 한도가 지금보다 1원도 커지지 않게, 반올림 한 번)
 // 실제 베팅 한도: 레벨 한도와 예수금 5% 중 큰 쪽
 // 예수금 구간별 체감: 1,000억까지 5%, 1조까지 2%, 그 위는 0.5%
 const wealthCap=b=>.1*Math.min(b,1e11)+.05*Math.min(Math.max(b-1e11,0),9e11)+.01*Math.min(Math.max(b-1e12,0),999e12)+.002*Math.max(b-1e15,0);
@@ -2971,8 +2973,8 @@ const LIQ=1e16; // 시장 유동성 한도: 한 판 최대 1경 (영끌 포함)
 const stakeCap=(lv=levSel)=>Math.min(LIQ,Math.max(lv>1?betCapD():betCap(),Math.round(wealthCap(balance)*(regime().cap||1)/1e4)*1e4));
 const maxStake=ai=>ai?balance:stakeCap(); // 영끌 = 진짜 전재산 (한도 없음)
 // 부자세: 예수금 100억부터 수익에 세금 (최대 45%)
-// 아이템 가격: 판돈 비례 + 예수금 비례 할증
-const itemCost=(k,bet)=>{const c=ITEMS[k].cost;return (bet*c+Math.min(balance*c*.05,bet*c*2))*(1-.04*skl('discount'));}; // 할증은 판돈 기준 비용의 최대 2배
+// 아이템 가격: 투자금 비례 + 예수금 비례 할증
+const itemCost=(k,bet)=>{const c=ITEMS[k].cost;return (bet*c+Math.min(balance*c*.05,bet*c*2))*(1-.04*skl('discount'));}; // 할증은 투자금 기준 비용의 최대 2배
 // 자산 리스크: 예수금 10억부터 폭락이 빨라지고 즉사 확률 증가 (최대 30%)
 const wealthRisk=b=>b<1e9?0:Math.min(.3,.035*Math.log10(b/1e9));
 const taxRate=b=>b<1e10?0:Math.min(.65,.05+.1*Math.log10(b/1e10));
@@ -3032,8 +3034,8 @@ function paintPickers(){
   const fa=document.activeElement,fk=fa&&fa.closest&&fa.closest('#items,#betrow,#offers')?(fa.id?'#'+fa.id:fa.dataset.i?'#items [data-i="'+fa.dataset.i+'"]':fa.dataset.pct?'#betrow [data-pct="'+fa.dataset.pct+'"]':null):null; // 다시 그려도 누르던 칩에 포커스 유지
   const lock=state==='holding'||state==='ghost'||state==='over'||!!cardTm; // 결과 카드가 곧 뜨는 동안에도 잠금
   const chOn=!tutDone||(chal&&chal.i<5),crL=T=>{let L=T.loss;if(chOn)return Math.round(L*100);if(levSel>1)L*=levSel*.6;const sh=sel.shield&&rankOf(xp)>=ITEMS.shield.lv;if(sh)L=Math.min(L,Math.max(.1,L*.25));if(profile==='turtle'&&!sh)L*=.8;L*=1-.03*skl('risk');return Math.round(L*100);}; // 폭락 손실 % (레버리지·방어권·거북이·리스크 관리 반영, lossFactor와 같은 식, 자동 손절은 운이라 뺌)
-  const crX=T=>crL(T)>100?' (매수 금액 초과 가능)':''; // 레버리지 폭락 손실은 판돈보다 클 수 있음 (예수금까지만)
-  const chP=tutDone&&chal&&chal.i<5,crT=T=>!tutDone?'연습 판 · 물려도 돈은 그대로예요':chP?'폭락에 물리면 −30점 · 내 돈은 안 걸려요':'폭락에 물리면 매수 금액의 '+crL(T)+'%를 잃어요'+crX(T),crS=T=>!tutDone?'연습 판':chP?'물리면 −30점':'물리면 −'+crL(T)+'%'+(crX(T)?'⚠':''); // 챌린지 판은 점수만 걸림 (물리면 -30점). 칩은 좁아서 판돈 초과는 ⚠만, 자세한 말은 툴팁·종목 창에
+  const crX=T=>crL(T)>100?' (매수 금액 초과 가능)':''; // 레버리지 폭락 손실은 투자금보다 클 수 있음 (예수금까지만)
+  const chP=tutDone&&chal&&chal.i<5,crT=T=>!tutDone?'연습 판 · 물려도 돈은 그대로예요':chP?'폭락에 물리면 −30점 · 내 돈은 안 걸려요':'폭락에 물리면 매수 금액의 '+crL(T)+'%를 잃어요'+crX(T),crS=T=>!tutDone?'연습 판':chP?'물리면 −30점':'물리면 −'+crL(T)+'%'+(crX(T)?'⚠':''); // 챌린지 판은 점수만 걸림 (물리면 -30점). 칩은 좁아서 투자금 초과는 ⚠만, 자세한 말은 툴팁·종목 창에
   const co=bossPkO()||curOffer(),CT=TIERS[co.k],spark=(o,w,h)=>{const mn=Math.min(...o.spark),mx=Math.max(...o.spark);return `<svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" aria-hidden="true"><polyline fill="none" stroke="${o.chg>=0?C.up:C.down}" stroke-width="1.6" points="${o.spark.map((v,i)=>(i/(o.spark.length-1)*w).toFixed(1)+','+(h-1-(v-mn)/((mx-mn)||1)*(h-2)).toFixed(1)).join(' ')}"/></svg>`;};
   qLoss=co.k==='boss'?bossQ(co):crS(CT);qK=''; // 시세 줄 둘째 칸 (종목 카드 대신): 물리면 -N% · 보스 목표
   $('offers').innerHTML=icH(co.k==='boss'?`<button class="spill bosschip" type="button" ${lock?'disabled':''} aria-haspopup="dialog">${bossChip(co)}</button>`
@@ -3111,7 +3113,7 @@ function selectOffer(id){if(state==='holding'||state==='ghost'||state==='over')r
 if(LANG==='en')$('proBtn').lastChild.textContent='PRO'; // 영어판 토글 글자 (HTS는 한국 증권 앱 말)
 function chipFit(){document.querySelectorAll('#items .chip.ic.lk').forEach(c=>{c.classList.remove('two');const m=c.querySelector('small');if(m&&m.clientWidth&&m.scrollWidth>m.clientWidth)c.classList.add('two');});} // 잠긴 아이템 칩: 계급 이름이 잘리면(영어 'Day Trader') 이름 줄을 접고 계급을 두 줄로
 addEventListener('resize',()=>requestAnimationFrame(chipFit));if(document.fonts&&document.fonts.addEventListener)document.fonts.addEventListener('loadingdone',()=>chipFit());
-function itListFill(st,ri){const u=$('shdL');if(!u)return;u.innerHTML=icH(Object.entries(ITEMS).map(([k,it])=>{const c=ri>=it.lv&&st>0?itemCost(k,st):0,p=c>0?Math.max(1,Math.round(c/st*100)):0;return '<li><b>'+it.name+'</b> '+it.desc+(c>0?' · <span class="ipc">'+KE('값 '+wonS(c)+' = 판돈의 '+p+'%','price '+wonS(c)+' = '+p+'% of the stake')+'</span>':'')+'</li>';}).join('')+'<li><b>⚡ 레버리지</b> 수익·손실이 함께 커지고 폭락도 빨리 와요</li><li><b>💯 영끌</b> 전재산을 이번 판에 걸어요</li>');} // v3.1.1 아이템 시트: 값 옆에 판돈의 몇 %인지 (아이템 값은 판돈을 따라감 · 예수금이 많으면 최대 3배)
+function itListFill(st,ri){const u=$('shdL');if(!u)return;u.innerHTML=icH(Object.entries(ITEMS).map(([k,it])=>{const c=ri>=it.lv&&st>0?itemCost(k,st):0,p=c>0?Math.max(1,Math.round(c/st*100)):0;return '<li><b>'+it.name+'</b> '+it.desc+(c>0?' · <span class="ipc">'+KE('값 '+wonS(c)+' = 투자금의 '+p+'%','price '+wonS(c)+' = '+p+'% of your buy')+'</span>':'')+'</li>';}).join('')+'<li><b>⚡ 레버리지</b> 수익·손실이 함께 커지고 폭락도 빨리 와요</li><li><b>💯 영끌</b> 전재산을 이번 판에 걸어요</li>');} // v3.1.1 아이템 시트: 값 옆에 투자금의 몇 %인지 (아이템 값은 투자금을 따라감 · 예수금이 많으면 최대 3배)
 const SHT=['종목 고르기','매판 새 종목 8개 · 계급이 오르면 종류가 늘어나요','아이템','켠 아이템은 이번 판에만 · 레버리지는 다음 판에도 그대로']; // 아래 시트 두 모양: 종목 고르기 / 아이템 (간편 모드)
 function shMode(it){const sh=$('sheet');sh.classList.toggle('im',!!it);$('shTtl').textContent=SHT[it?2:0];$('shSub').textContent=SHT[it?3:1];}
 $('shIt').insertAdjacentHTML('beforeend','<ul class="shd" id="shdL">'+icH(Object.values(ITEMS).map(it=>'<li><b>'+it.name+'</b> '+it.desc+'</li>').join('')+'<li><b>⚡ 레버리지</b> 수익·손실이 함께 커지고 폭락도 빨리 와요</li><li><b>💯 영끌</b> 전재산을 이번 판에 걸어요</li>')+'</ul>'); // 아이템 시트 아래 설명 (폰에선 칩 툴팁이 안 보여서)
@@ -3140,7 +3142,7 @@ function exWarn(ex){const k=Math.ceil(debt)+'|'+ex,n=performance.now(),again=k==
 function start(){
   if(TR&&!TR.fold&&curTab==='trade'){const st=tStep();if(st&&st.hold&&!TR.g)tourEnd(true,'hold');else tourFold();} // TOURS: any round start folds the tour (item chips restored first)
   if(presPend||tabNow()||cardTm)return; // 결과 카드가 곧 뜨는 중이면 (판 끝 연출 0.75~0.9초) 기다림
-  const chRound=tutDone&&chal&&chal.i<5&&debt<=debtLimit()||bossPracR(); // 챌린지 판(판돈 0원)은 예수금 검사·이자·투자·신용 등 판 정산을 건너뜀 (바닥이어도 가능, 신용불량은 그대로)
+  const chRound=tutDone&&chal&&chal.i<5&&debt<=debtLimit()||bossPracR(); // 챌린지 판(투자금 0원)은 예수금 검사·이자·투자·신용 등 판 정산을 건너뜀 (바닥이어도 가능, 신용불량은 그대로)
   if(adHold&&adDue&&!onCG&&state==='result'&&!card.querySelector('#adWin,#adLoss,#adRevive'))adDecide(); // 애드센스: 30판째 결과에서 바로 누르면 전면 광고 요청을 지금 보냄 (다음 판을 막는 건 요청부터 1.5초까지, 광고가 실제로 뜨면 그동안만)
   if(adReq||adHold&&state==='result'&&!card.querySelector('#adWin,#adLoss,#adRevive')){toast('📺 광고 준비 중…');return;} // adHold: 30판째 결과 화면에서 바로 다음 판을 누르면 전면 광고가 뜰 때까지 잠깐 막음 (빠르게 이어 하는 플레이어도 광고가 계속 밀리지 않게) · 보상 광고 버튼이 떠 있으면 adDecide가 전면 광고를 다음 판 뒤로 미루니 막지 않음
   if(!profile&&$('qSkip')&&curTab==='trade'&&$('modal').hidden&&$('sheet').hidden){$('qSkip').click();return;} // 첫 화면(테스트·바로 시작 고르기)에서 큰 버튼·스페이스를 누르면 ▶ 바로 시작과 같게
@@ -3169,9 +3171,9 @@ function start(){
   if(run||chartStock!==o){run=null;sell=null;crashed=false;eM=1;buildChartIdle();}
   eM=liveM;candles.forEach(c=>{c.o/=eM;c.h/=eM;c.l/=eM;c.c/=eM;});runBase=candles.length; // 지금 가격에 매수
   const bs=o.k==='boss'&&!tut&&!ch,lv=tut||ch||bs?1:levSel,ai=!bs&&!tut&&!ch&&allin&&rankOf(xp)>=2; // BOSS-V2 bs: boss round = 1x, no 영끌
-  const bPull=ai?invBigPull():0;if(bPull>=1)setTimeout(()=>toast(KE('💯 영끌은 진짜 전재산 · 큰손 운용 '+wonS(bPull)+'도 같이 걸었어요','💯 All-in means everything · your big-league funds ('+wonS(bPull)+') are in this round too')),700);
+  const bPull=ai?invBigPull():0;if(bPull>=1)setTimeout(()=>toast(KE('💯 영끌은 진짜 전재산 · 큰손 운용 '+wonS(bPull)+'도 같이 걸었어요','💯 Max Buy means everything · your big-league funds ('+wonS(bPull)+') are in this round too')),700);
   const bet=ch||bs?0:tut?(store.get('shg_tutPaid',0)?0:Math.min(balance,START)):ai?Math.min(balance,maxStake(1)):Math.min(balance,maxStake(0))*betPct; // 튜토리얼 다시보기는 연습(0원)
-  const cry=!bs&&!tut&&!ch&&armed.crystal>0; // 수정구슬을 쓰는 판엔 찌라시를 사지 않음 (어차피 덮어씀)
+  const cry=!bs&&!tut&&!ch&&!ai&&armed.crystal>0;if(ai&&!bs&&!tut&&!ch&&armed.crystal>0)setTimeout(()=>toast('🔮 영끌 판에는 수정구슬이 안 통해요 · 다음 일반 판에 써요'),bPull>=1?2600:0); // v312: 수정구슬은 영끌 판에서 쓰지 않고 남겨 둠 (보스 판처럼) · 선 보고 전재산 무위험 루프 막기 // 수정구슬을 쓰는 판엔 찌라시를 사지 않음 (어차피 덮어씀)
   let cost=0;if(!bs)for(const k of Object.keys(ITEMS))if(useSel[k]&&!(cry&&k==='insider'))cost+=itemCost(k,bet);
   const fee=tut||ch||gear.vip?0:bet*(.003+.002*(lv-1)); // 수수료·세금·레버리지 이자
   balance-=cost+fee;
@@ -3690,7 +3692,7 @@ const CFG={adClient:'',adTest:false,donateUrl:'',iap:false,iapDev:false}; // adC
 // 크레이지게임즈 포털에서 실행되면 그쪽 SDK 광고 사용
 if(/^(localhost|127\.0\.0\.1)$/.test(location.hostname)&&/[?&]adsense\b/.test(location.search))CFG.adClient='ca-pub-2213068202184499'; // 개발 주소에서만: ?adsense를 붙이면 애드센스 경로를 시험 (광고를 끈 동안에도 실패·무응답 처리를 시험 봇이 확인)
 const CG={on:false,S:null,last:0,noAds:0,done:0},onCG=/crazygames/.test(location.hostname)||(window.top!==window&&/crazygames/.test(document.referrer))||/^(localhost|127\.0\.0\.1)$/.test(location.hostname)&&/[?&]cg\b/.test(location.search); // C07: ?cg 시험 스위치는 개발 주소(localhost)에서만 · noAds: 이번 접속에서 광고 요청이 한 번이라도 실패·시간 초과 → 광고가 꺼진 것으로 보고 📺 버튼을 숨김 (Basic Launch·애드블록에서 효과 없는 버튼 금지), done: SDK 준비가 끝났거나 실패함
-const BUILD='v3.1.1 · b261111d · '+LANG+'-'+(onCG?'cg':/(^|\.)itch\.(io|zone)$|hwcdn\.net$/.test(location.hostname)||/itch\.io/.test(document.referrer)?'itch':'web'); // 설정 맨 아래 버전 줄: 버그 신고에 정확한 빌드가 찍히게 (배포할 때 날짜 bYYMMDD를 갱신, 언어·포털은 실행 환경에서)
+const BUILD='v3.1.2 · b261115a · '+LANG+'-'+(onCG?'cg':/(^|\.)itch\.(io|zone)$|hwcdn\.net$/.test(location.hostname)||/itch\.io/.test(document.referrer)?'itch':'web'); // 설정 맨 아래 버전 줄: 버그 신고에 정확한 빌드가 찍히게 (배포할 때 날짜 bYYMMDD를 갱신, 언어·포털은 실행 환경에서)
 if(onCG){const sc=document.createElement('script');sc.src='https://sdk.crazygames.com/crazygames-sdk-v3.js';
   sc.onload=async()=>{try{const S=window.CrazyGames.SDK;await S.init();if(S.environment!=='disabled'){CG.S=S;CG.on=true;cgLoad();try{const ms=v=>{v=v&&typeof v==='object'?v:S.game.settings;cgMute=!!(v&&v.muteAudio);document.body.classList.toggle('noChat',!!(v&&v.disableChat));if(touched||cgMute)bgm.sync();};ms();S.game.addSettingsChangeListener(ms);}catch(e){}if(state==='holding'||state==='ghost')cgPlay(true);}}catch(e){}CG.done=1;};sc.onerror=()=>{CG.done=1;};document.head.appendChild(sc);}
 let cgG=false; // 마지막으로 보낸 gameplay 상태 (짝 안 맞는 stop·중복 호출 막기)
@@ -3877,7 +3879,7 @@ const flushRound=()=>{forceSell();if(state!=='ghost'||!run||crashed)return;if(ru
   crash();};
 document.addEventListener('visibilitychange',()=>{if(document.hidden)flushRound();else if(!tabCheck()){ensureDaily();paintTop();if(overRev)overRev();}});
 addEventListener('pagehide',flushRound);
-addEventListener('pagehide',()=>{if(memSave)try{window.name='shgMem:'+JSON.stringify(Object.assign({},localStorage));}catch(e){}}); // 저장소가 막힌 세션: 판 기록(flushRound)까지 넣은 뒤 창 이름에 맡김 → 새로고침·백업 불러오기·언어 전환 뒤에도 같은 탭이면 이어서
+addEventListener('pagehide',()=>{if(memSave)try{const n=Math.random().toString(36).slice(2,12);try{sessionStorage.setItem('shgMemN',n);}catch(e){}window.name='shgMem:'+JSON.stringify(Object.assign({_n:n},localStorage));}catch(e){}}); // 저장소가 막힌 세션: 판 기록(flushRound)까지 넣은 뒤 창 이름에 맡김 → 새로고침·백업 불러오기·언어 전환 뒤에도 같은 탭이면 이어서
 addEventListener('resize',()=>{if(state==='holding'&&getComputedStyle($('rotate')).display!=='none')forceSell();}); // 판 도중 가로로 돌려 안내 화면이 덮으면 바로 매도
 // 같은 기기의 다른 탭(한국어·영어 페이지는 저장소를 같이 씀)이 저장하면 이 탭 기록은 낡은 것 → 덮어쓰지 않고 새로고침
 let tabStale=0,tabRp=0;const adOffer=()=>!card.hidden&&!!card.querySelector('#adWin,#adLoss'); // adOffer: 결과·바닥 카드에 아직 안 받은 광고 보상 버튼이 있음 (받거나 닫을 때까지 새로고침 미룸)
@@ -3887,7 +3889,7 @@ const TAB_TAKE={shg_lad:v=>{lad=ladFix(v);},shg_econ:v=>{ECO=ecoFix(v);},shg_roa
 addEventListener('storage',e=>{const k=e.key;if(e.storageArea&&e.storageArea!==localStorage)return;if(k!==null&&(k.slice(0,4)!=='shg_'||k==='shg_errlog'))return;
   if(k==='shg_prem'||k==='shg_premEq'){if(PREM_ON)premTake(k);return;}if(k==='shg_premReset'){if(PREM_ON&&e.newValue)premReset();return;} // 프리미엄 보유·장착: 새로고침 없이 바로 합침 (구매 목록은 합집합이라 어느 탭도 덮어써서 잃지 않음, 꺼져 있으면 무시)
   if(tabStale!==1&&k!==null&&e.newValue!==null&&(adPause||adReq||adOffer()||!document.hidden&&(tabStale===2||state==='holding'||state==='ghost'))&&(TAB_TAKE[k]||TAB_KEEP.includes(k))){store.seen[k]=e.newValue;const d=(+e.newValue||0)-(+e.oldValue||0);
-    if(k==='shg_bal'){const f=d<0&&state==='holding'&&run&&balance+d<(run.re&&!run.re.done?run.re.bet:run.bet)*(run.lev>1?Math.max(1,run.T.loss*run.lev*.6):1);if(f)forceSell();balance+=d;if(f){if(balance<0){if(!debt)credit=Math.min(10,credit+1);debt+=-balance;balance=0;}paintTop();}} // 판 도중 저쪽 탭이 폭락 때 잃을 수 있는 돈(판돈×레버리지 손실 배율)까지 써 버리면 지금 가격에 먼저 매도 (모자라는 손실은 빚으로)
+    if(k==='shg_bal'){const f=d<0&&state==='holding'&&run&&balance+d<(run.re&&!run.re.done?run.re.bet:run.bet)*(run.lev>1?Math.max(1,run.T.loss*run.lev*.6):1);if(f)forceSell();balance+=d;if(f){if(balance<0){if(!debt)credit=Math.min(10,credit+1);debt+=-balance;balance=0;}paintTop();}} // 판 도중 저쪽 탭이 폭락 때 잃을 수 있는 돈(투자금×레버리지 손실 배율)까지 써 버리면 지금 가격에 먼저 매도 (모자라는 손실은 빚으로)
     else if(k==='shg_debt')debt=Math.max(0,debt+d);else if(k==='shg_rdebt')rdebt=Math.max(0,rdebt+d);else if(k==='shg_credit')credit=Math.min(10,Math.max(1,credit+d));else if(k==='shg_xp')xp+=d;
     else if(TAB_TAKE[k])try{const v=JSON.parse(e.newValue);if(v!=null)TAB_TAKE[k](v);}catch(_){}
     if(!document.hidden&&state!=='holding'&&state!=='ghost'){clearTimeout(tabRp);tabRp=setTimeout(()=>{if(!document.hidden&&state!=='holding'&&state!=='ghost'){paintTop();paintPickers();setBtn();}},100);} // 결과·바닥 카드가 떠 있으면 바뀐 돈·빚으로 다시 그림 (바닥 화면은 이어서 하거나 카드 내용 갱신)
@@ -4859,16 +4861,16 @@ function pageGrow(){
 const CONSUM=[
   {id:'noliq',e:'🧯',n:'청산 방지권',d:'강제청산을 한 번 막아 줍니다 (자동 사용)',p:1.5},
   {id:'rewind',e:'⏪',n:'손실 복구권',d:'크게 물렸을 때 손실을 0원으로 (자동 사용)',p:4},
-  {id:'crystal',e:'🔮',n:'수정구슬',d:'다음 판 폭락 지점을 거의 정확히 표시',p:.5,arm:1},
-  {id:'luck',e:'🍀',n:'행운의 부적',d:'다음 3판 동안 폭락이 12% 늦게 옴',p:.6,arm:3},
+  {id:'crystal',e:'🔮',n:'수정구슬',d:'다음 판 폭락 지점을 거의 정확히 표시 (영끌 판 제외)',p:.5,arm:1},
+  {id:'luck',e:'🍀',n:'안전 부적',d:'다음 3판 동안 폭락이 12% 늦게 옴',p:.6,arm:3},
   {id:'bossT',e:'🎟️',n:'보스 소환권',d:'다음 판에 바로 보스 등장 · 판매 종료',p:.4,arm:1,nobuy:1}
 ];
 const GEAR=[ // 비싸고, 계급 제한까지 있음
   {id:'monitor',e:'🖥️',n:'듀얼 모니터',d:'익절 수익 +3%',p:5e7,lv:2},{id:'chair',e:'🪑',n:'게이밍 의자',d:'차트 속도 -3%',p:4e8,lv:4},
   {id:'vip',e:'💳',n:'증권사 VIP',d:'수수료·레버리지 이자 면제',p:3e9,lv:6},{id:'office',e:'🏠',n:'여의도 오피스텔',d:'얻는 XP +5%',p:2.5e10,lv:7},
-  {id:'car',e:'🏎️',n:'슈퍼카',d:'1배 판돈 한도 +10%',p:2e11,lv:8},{id:'yacht',e:'🛥️',n:'요트',d:'1배 판돈 한도 +20%',p:1.5e12,lv:10},
+  {id:'car',e:'🏎️',n:'슈퍼카',d:'1배 투자 한도 +10%',p:2e11,lv:8},{id:'yacht',e:'🛥️',n:'요트',d:'1배 투자 한도 +20%',p:1.5e12,lv:10},
   {id:'building',e:'🏢',n:'강남 빌딩',d:'일일 미션 현금 2배 + 한도의 2%',p:1e13,lv:11},{id:'jet',e:'🛩️',n:'전용기',d:'챌린지 보상 +10%',p:8e13,lv:12},
-  {id:'firm',e:'🏦',n:'증권사 인수',d:'1배 판돈 한도 +50%',p:5e14,lv:14}
+  {id:'firm',e:'🏦',n:'증권사 인수',d:'1배 투자 한도 +50%',p:5e14,lv:14}
 ];
 GEAR.forEach(g=>{g.d=g.d.replace(/(^|\s)-(?=\d)/g,'$1\u2212');}); // 효과 글의 음수는 진짜 빼기 기호 (−3%) · 글자만 바꿈
 // 많이 가질수록 비싸짐: 보유·사용 중 1개당 1.6배
@@ -5146,7 +5148,7 @@ function pageMission(){ensureDaily(); // 미션: 오늘의 미션(안 끝난 3�
 }
 const histName=h=>{if(h.ni==null||h.ni<0)return h.n;if(h.k==='boss'){if(h.bx!=null){const e=bossE_(h.bx);return e.B.e+' '+e.B.n+' '+RN[e.r-1];}const bi=bossInfo(h.ni);return bi.B.e+' '+bi.B.n+' Lv.'+(bi.lv+1);}const n=TIERS[h.k]&&rdNames(h.k)[h.ni];return n?(Array.isArray(n)?n[0]:n):h.n;}; // 저장은 번호로, 표시는 지금 언어로
 /* ---------- 투자 · 컬렉션 ---------- */
-const PROD=[ // 투자 상품 (분류 c) · r 기본 이율(판마다, 보통장, 차곡차곡 0판) · 차곡차곡 mt판을 채우면 r×(1+mx) · v 출렁임(판마다) · br/ur 하락장·불장에 더하는 이율 · fee 출금 수수료(이자 붙는 돈에만, feeM: 만기 전 해지 = fee×남은 비율) · 이자 붙는 한도: 처음 C0 = max(m0, 0×C) → 다 채우면 C = 레벨 기본 판돈×cx (max 2e43) · lv 계급 / lvL 레벨부터 · pay 'cash' = 이자가 판마다 예수금으로 · chance = 코인·엔젤 (숫자·한도 그대로)
+const PROD=[ // 투자 상품 (분류 c) · r 기본 이율(판마다, 보통장, 차곡차곡 0판) · 차곡차곡 mt판을 채우면 r×(1+mx) · v 출렁임(판마다) · br/ur 하락장·불장에 더하는 이율 · fee 출금 수수료(이자 붙는 돈에만, feeM: 만기 전 해지 = fee×남은 비율) · 이자 붙는 한도: 처음 C0 = max(m0, 0×C) → 다 채우면 C = 레벨 기본 투자금×cx (max 2e43) · lv 계급 / lvL 레벨부터 · pay 'cash' = 이자가 판마다 예수금으로 · chance = 코인·엔젤 (숫자·한도 그대로)
   {id:'save',c:'dep',e:'🏦',n:'정기적금',d:'원금 보장 · 수수료 없음 · 언제든 빼기',r:.002,mx:2,mt:100,v:0,br:0,ur:0,fee:0,m0:1e11,cx:10,lv:0,get max(){return invCap(this)}},
   {id:'term',c:'dep',e:'🗓️',n:'정기예금',d:'출렁임 없음 · 오래 둘수록 이율 ↑ · 만기 전 해지 수수료 최대 2%',r:.002,mx:3.5,mt:600,v:0,br:0,ur:0,fee:.02,feeM:1,m0:5e11,cx:20,lv:2,get max(){return invCap(this)}},
   {id:'bond',c:'bond',e:'📜',n:'국채',d:'거의 안전 · 하락장에도 이자',r:.004,mx:1.8,mt:200,v:.003,br:-.002,ur:.003,fee:.005,m0:1e13,cx:30,lv:1,get max(){return invCap(this)}},
@@ -5169,7 +5171,7 @@ const PROD=[ // 투자 상품 (분류 c) · r 기본 이율(판마다, 보통장
 const INV_CAT=[{id:'dep',e:'🏦',n:'예금·적금'},{id:'bond',e:'📜',n:'채권'},{id:'estate',e:'🏢',n:'부동산'},{id:'stock',e:'📊',n:'주식·펀드'},{id:'world',e:'🌐',n:'해외·금'},{id:'alt',e:'💱',n:'대체투자'},{id:'big',e:'🏛️',n:'큰손 운용'}]; // 투자 탭 분류 (접는 칸)
 const INV_BIGU=1e15,INV_RT=6000,INV_K0=0,INV_FREE=.1,INV_CEIL=2e43,INV_HMAX=5e45,INV_U=INV_RT/1000+'초',invV0=!store.get('shg_invV',0);let invLastT=performance.now(),invTk=0,invHalfAt=-99; // RT: 한 판은 최대 RT ms어치 이자 · K0: 차곡차곡 0판일 때 한도 비율 · FREE: 판마다 잔액의 이 비율까지는 더 넣어도 차곡차곡 그대로 · CEIL: 상품 한도 최대 · HMAX: 잔액이 이 위로는 안 커짐 (숫자 표시 안전) · invV0: 이 버전을 처음 연 기기 (예전 기록 옮기기는 이때 한 번만) · invLastT: 마지막 이자 시각 (처음엔 페이지를 연 시각: 새로고침해도 이자는 연 뒤 흐른 시간만큼) · invTk: 연 뒤 이자를 붙인 횟수 · INV_U: 화면의 시간 단위 (이자·출렁임·차곡차곡은 판 수가 아니라 플레이 시간: 한 판 최대 INV_RT)
 function invTm(t){const x=Math.max(0,+t||0)*INV_RT/1000;return x<60?Math.floor(x)+'초':Math.floor(x/60)+'분';} // 차곡차곡(INV_RT 단위)을 플레이 시간으로: 1분 밑은 초, 그 위는 분 (내림)
-function invL1(){return 1e6*Math.pow(1.22,lvlOf(xp).L-1);} // 레벨 기본 판돈 (장비·장세 배수 없이: 장비를 사도 투자 한도는 그대로)
+function invL1(){return 1e6*Math.pow(1.22,lvlOf(xp).L-1);} // 레벨 기본 투자금 (장비·장세 배수 없이: 장비를 사도 투자 한도는 그대로)
 function invF(P,t){if(!P.mt)return 0;if(t==null){const h=invest[P.id];t=h&&h.a>0?h.t||0:0;}return Math.min(1,Math.max(0,t)/P.mt);} // 차곡차곡 진행률 0~1
 function invCapOn(P){if(P.nw)return Math.min(INV_CEIL,P.nw*Math.max(0,netW()));return P.chance?P.m0:Math.min(INV_CEIL,Math.max(P.m0,P.cx*invL1()));} // 차곡차곡을 다 채운 한도
 function invCapAt(P,t){const C=invCapOn(P);if(P.chance||P.nw)return C;const C0=Math.min(C,Math.max(P.m0,INV_K0*C));return C0+(C-C0)*invF(P,t);} // 차곡차곡 따라 C0 → C로 고르게 커짐
@@ -5399,7 +5401,7 @@ function invSecHtml(){const tot=invTotal(),dep=Math.floor(balance*invPct),frz=in
    (nf>=1?'<button class="setbtn ob" type="button" data-wdi="all">'+(idl-nf>=1?(LANG==='en'?'Take out '+wonS(nf)+' of resting money':'쉬는 돈 중 '+wonS(nf)+' 빼기'):'쉬는 돈 '+wonS(nf)+' 모두 빼기')+' · 수수료 없음</button>':'')+'</div>':'')+
    '<div class="ivtop"><div class="betrow ipct" role="group" aria-label="입출금 비율">'+[.05,.1,.25,.5,1].map(r=>'<button type="button" data-ipct="'+r+'" aria-pressed="'+(invPct===r)+'">'+(r*100)+'%</button>').join('')+'</div><p class="ivn">입금 '+wonS(dep)+' (예수금의 '+(invPct*100)+'%, 한도까지만) · 출금은 잔액의 '+(invPct*100)+'%</p></div>'+invSplitHtml(dep)+
    '<p class="ivno">⏳ 차곡차곡: 넣어 둔 채 판을 할수록 이율과 이자 붙는 한도가 커져요 · 판마다 잔액의 '+INV_FREE*100+'%를 넘게 새로 넣은 돈은 0분부터 · 10배 이상·영끌 판마다 절반 · 한도를 넘는 돈엔 이자가 안 붙어요'+(debt>0?' · 🏦 빚만큼의 투자금은 이자도 손실도 없어요':'')+'</p>'+
-   INV_CAT.map(C=>{const L=PROD.filter(P=>P.c===C.id),u=L.filter(P=>!invLock(P)).length,s=L.reduce((n,P)=>n+((invest[P.id]||{}).a||0),0);return '<details class="gl colcat ivc"'+(C.id===big?' open':'')+'><summary>'+C.e+' '+C.n+'<span class="mu">'+(s>0?wonS(s):u+'/'+L.length+(LANG==='en'?' open':'개 열림'))+'</span></summary><div class="pan iv">'+(C.id==='big'?'<p class="ivno">'+KE('순자산 1,000조부터 · 순자산의 30%·20%·10%까지 이자 · 이율은 낮아요 · 나눠 넣기는 레벨 상품부터 채워요 · 영끌 판에는 큰손 운용 돈도 같이 걸려요','From '+wonS(INV_BIGU)+' net worth · interest on up to 30%, 20% and 10% of net worth · low rates · split deposit fills level products first · an all-in round stakes these funds too')+'</p>':'')+L.map(invRowHtml).join('')+'</div></details>';}).join('')+'</section>';}
+   INV_CAT.map(C=>{const L=PROD.filter(P=>P.c===C.id),u=L.filter(P=>!invLock(P)).length,s=L.reduce((n,P)=>n+((invest[P.id]||{}).a||0),0);return '<details class="gl colcat ivc"'+(C.id===big?' open':'')+'><summary>'+C.e+' '+C.n+'<span class="mu">'+(s>0?wonS(s):u+'/'+L.length+(LANG==='en'?' open':'개 열림'))+'</span></summary><div class="pan iv">'+(C.id==='big'?'<p class="ivno">'+KE('순자산 1,000조부터 · 순자산의 30%·20%·10%까지 이자 · 이율은 낮아요 · 나눠 넣기는 레벨 상품부터 채워요 · 영끌 판에는 큰손 운용 돈도 같이 걸려요','From '+wonS(INV_BIGU)+' net worth · interest on up to 30%, 20% and 10% of net worth · low rates · split deposit fills level products first · a Max Buy round uses these funds too')+'</p>':'')+L.map(invRowHtml).join('')+'</div></details>';}).join('')+'</section>';}
 function invRowLine(P,h,f,cap,idle,c){const nf=invNoFee(P),ix=(c>=1?' · <span class="dn">빚만큼 이자 없는 돈 '+wonS(c)+'</span>':'')+(idle>=1?' · <span class="dn">쉬는 돈 '+wonS(idle)+(P.angel?' (이자 0원 · 파산하면 이 돈도 0원)':'')+'</span>'+(idle-nf>=1&&invFee(P)>0?(P.chance?' (수수료 '+P.fee*100+'%)':' (그중 '+wonS(idle-nf)+'은 10배 이상·영끌 판에 한도가 줄어 넘친 돈: 빼면 수수료)'):''):'')+(invBlk(P)?' · 최대 금액이라 이자 없음':''); // 상품 줄 아래 한 줄: 실제 평균 이율 · 차곡차곡 · 이자 붙는 한도 · 빚만큼 멈춘 돈 · 쉬는 돈
   if(P.angel)return '기대 '+ivP(invMean(P,0))+'/'+INV_U+(c>=1?' (한도 몫) · 4% 확률 파산(빚만큼 멈춘 돈 빼고 전부 0원) · 한도 ':' (한도 몫) · 4% 확률 파산(전부 0원) · 한도 ')+wonS(cap)+invFeeT(P)+ix;
   if(P.chance)return '평균 '+ivP(invMean(P,0))+'/'+INV_U+' · ±'+Math.round(P.v*100)+'% 출렁임 · 한도 '+wonS(cap)+invFeeT(P)+ix;
@@ -5451,7 +5453,7 @@ function glossary(){
     L(LANG==='en'?'🟢':'🔴','매수 → 익절',tw('버튼을 눌러 사고, 다시 눌러 팔아 수익 확정'))+L('🔁','재진입','매도 후 폭락 전이면 한 번 더 같은 금액으로 들어갈 수 있음. 또 팔아야 함')+L('📉','저점 매수 · 추격 매수','매수 전 차트가 기준가보다 4% 아래면 폭락이 조금 늦게, 5% 위면 조금 빨리 옴')+L(LANG==='en'?'🔴':'🔵','물림 · 손절','못 팔고 폭락을 맞거나, 산 값보다 낮게 판 경우')+L('🐣','초반 보호','진짜 판 처음 5판은 +20%를 넘기 전엔 폭락하지 않아요. 다음 5판은 보호가 점점 줄어요')+L('✖','배수 (x2.0)','산 가격 대비 몇 배인지. x2면 +100%')+L('🎯','근접도','폭락 직전 고점에 얼마나 가깝게 팔았는지')+
     L('⚡','레버리지','수익도 손실도 배수로 커짐. 물리면 매수 금액의 몇 배를 잃고, 배율이 높을수록 폭락도 빨리 옴. 청산가에 닿으면 매수 금액만 잃고 끝')+L('💯',LANG==='en'?'Max Buy':'영끌','투자 비율 무시하고 전재산 투자 (한도 없음). 잃으면 크게 잃음')+L('%','투자 비율','투자 한도 중 이번 판에 걸 비율 (예수금이 한도보다 적으면 예수금 기준)')+L('🧾','수수료','매수할 때 떼는 비용. 레버리지가 높을수록 비쌈')+L('🏛️','부자세','예수금 100억부터 수익에 세금. 100억 5% → 1조 25% → 100조 45% → 최대 65%')+L('🌊','유동성 한도','일반 매수는 한 판 최대 1경. 영끌은 예외')+L('📉','자산 리스크','예수금 10억부터 폭락이 빨라지고 즉시 폭락 확률↑. 1조면 약 10%, 최대 30%')+L('💀','고레벨 난이도','Lv.20부터 레벨마다 폭락이 조금씩 빨라짐 (최대 35%)'))+
   G('🏷️ 종목 종류',Object.values(TIERS).filter(T=>!T.hidden).map(T=>L(T.e,T.label,`물리면 −${Math.round(T.loss*100)}% · 상승 폭 ×${T.scale}`)).join('')+L('👹','보스전','10판마다 등장. 돈을 걸지 않는 대결. 보스마다 정해진 신호를 읽고 진짜 공격 직전에 공격'))+
-  G('🧰 아이템 · 성장',Object.values(ITEMS).map(it=>L(it.name.split(' ')[0],it.name.split(' ').slice(1).join(' '),it.desc+KE(' · 판마다 판돈의 '+Math.round(it.cost*100)+'% (예수금이 많으면 최대 3배)',' · each round '+Math.round(it.cost*100)+'% of the stake (up to 3× with a lot of cash)'))).join('')+
+  G('🧰 아이템 · 성장',Object.values(ITEMS).map(it=>L(it.name.split(' ')[0],it.name.split(' ').slice(1).join(' '),it.desc+KE(' · 판마다 투자금의 '+Math.round(it.cost*100)+'% (예수금이 많으면 최대 3배)',' · each round '+Math.round(it.cost*100)+'% of your buy (up to 3× with a lot of cash)'))).join('')+
     L('🌳','SP · 스킬','레벨업·업적·미션으로 얻는 포인트. 성장 탭에서 강화')+L('🎁','선물','하루 한 번 선물, 가끔 보물상자')+L('📋','미션','일일 8개 · 주간 10개 · 커리어 20개')+L('⭐','업적 별','반복 달성하면 ★1→★5, 그 뒤엔 색이 바뀜')+L('🛒','상점','소모품·장비 구매, 은행(대출·상환)'))+
   G('🌡️ 장세 (차트 위 배지)',REGIMES.map(r=>L(r.e,r.n,r.d)).join('')+L('⏱️','N판 남음','장세는 5판마다 바뀜'))+
   G('💼 투자 · 컬렉션',PROD.map(P=>L(P.e,P.n,P.d)).join('')+L('🏆','컬렉션','8개 분류 50종. 살 때마다 SP, 분류를 다 모으면 보너스 SP +3'))+
@@ -5533,7 +5535,10 @@ function bindPage(name){
       for(const k in d){if(!K(k)||k.startsWith('shg_prem'))continue;if(typeof d[k]!=='string')throw 0;const v=JSON.parse(d[k]);
         if(A.includes(k)&&!Array.isArray(v)||O.includes(k)&&!isO(v)||N.includes(k)&&v!==null&&(typeof v==='object'||!isFinite(v))||k==='shg_season'&&!Array.isArray(v.got)||(k==='shg_daily'||k==='shg_weekly')&&v!==null&&!(isO(v)&&Array.isArray(v.ids))||k==='shg_profile'&&v!==null&&!Object.prototype.hasOwnProperty.call(TYPES,v)||k==='shg_league'&&v.me!=null&&!isO(v.me)||k==='shg_pet'&&v!==null&&!petFix(v))throw 0;}
       const sp=x=>{try{return typeof x==='string'?JSON.parse(x):null}catch(e){return null}},pm=premRead(),eb=premEqFix(sp(d.shg_premEq)),eq=eb.th||eb.ttl?JSON.stringify(eb):localStorage.getItem('shg_premEq'); // 프리미엄 키는 검사로 거부하지 않음: 구매 영수증은 백업에서 가져오지 않고 이 기기 것 유지 (복사·위조 방지), 장착은 백업 값 (가진 것만 적용)
-      store.off=1;Object.keys(localStorage).filter(k=>k.startsWith('shg_')).forEach(k=>localStorage.removeItem(k));for(const k in d)if(K(k)&&!k.startsWith('shg_prem'))localStorage.setItem(k,d[k]);if(pm.length)localStorage.setItem('shg_prem',JSON.stringify(pm));if(eq!==null)localStorage.setItem('shg_premEq',eq);toast('📥 불러오는 중…');setTimeout(()=>location.reload(),500);}
+      const ks=()=>Object.keys(localStorage).filter(k=>k.startsWith('shg_')),bk={};ks().forEach(k=>bk[k]=localStorage.getItem(k)); // v312: 지우기 전 기록을 메모리에 복사 → 쓰다 실패하면(저장 공간 부족 등) 원래대로 되돌림
+      store.off=1;try{ks().forEach(k=>localStorage.removeItem(k));for(const k in d)if(K(k)&&!k.startsWith('shg_prem'))localStorage.setItem(k,d[k]);if(pm.length)localStorage.setItem('shg_prem',JSON.stringify(pm));if(eq!==null)localStorage.setItem('shg_premEq',eq);}
+      catch(e2){try{ks().forEach(k=>localStorage.removeItem(k));for(const k in bk)localStorage.setItem(k,bk[k]);}catch(_){}store.off=0;toast('저장 공간이 부족해서 불러오지 못했어요 · 지금 기록은 그대로예요');return;}
+      toast('📥 불러오는 중…');setTimeout(()=>location.reload(),500);}
     catch(e){toast('백업 코드가 올바르지 않아요');}},'');
   const w=$('wipe');if(w)resetArm=0; // 설정 화면을 다시 그리면 확인 대기도 풀림 (평범한 버튼 한 번에 지워지지 않게)
   if(w)w.onclick=()=>{const dt=Date.now()-resetArm;if(dt<700)return; // 더블탭의 두 번째 탭은 무시 (확인은 잠깐 뒤에 다시 눌러야)
@@ -5543,14 +5548,15 @@ function bindPage(name){
 }
 /* ---------- loop ---------- */
 let drawT=-1e9,drawW=0,drawH=0; // 마지막으로 차트를 그린 때·캔버스 크기
-function frame(ts){
+let frErr=0;function frame(ts){try{frameB(ts);frErr=0;}catch(e){if(!frErr++)try{const l=JSON.parse(localStorage.getItem('shg_errlog')||'[]');l.push(new Date().toISOString().slice(5,16)+' frame '+String(e&&e.message||e).slice(0,80)+' '+String(e&&e.stack||'').split('\n')[1]);localStorage.setItem('shg_errlog',JSON.stringify(l.slice(-10)));}catch(_){}}finally{requestAnimationFrame(frame);}} // v312: 한 프레임에서 오류가 나도 다음 프레임은 꼭 돎 (루프가 죽어 판이 멈추지 않게)
+function frameB(ts){
   const dt=Math.min(.05,(ts-lastTs)/1000||0);lastTs=ts;
   if(adDue&&performance.now()>=adDue)adDecide();
   stepFx(dt);
   const hid=adPause||app.classList.contains('pgopen'),live=state==='holding'||state==='ghost'; // 페이지가 차트를 다 덮었거나 광고 중이면 차트·호가·시세는 안 그림 (시세 흐름은 계속)
   const idle=!live&&!hid&&(ts-drawT>=48||cv.width!==drawW||cv.height!==drawH); // 판이 없을 땐 차트·시세·매수 버튼을 초당 20번만 그림 (CPU 절약, 실시간 흐름은 그대로) · 캔버스 크기가 바뀌면(지워짐) 바로
-  if(freezeT>0){freezeT-=dt;draw();requestAnimationFrame(frame);return;}
-  if(adPause&&(state==='holding'||state==='ghost')){draw();requestAnimationFrame(frame);return;} // 광고 중엔 차트 멈춤
+  if(freezeT>0){freezeT-=dt;draw();return;}
+  if(adPause&&(state==='holding'||state==='ghost')){draw();return;} // 광고 중엔 차트 멈춤
   if(state==='holding'||state==='ghost'){
     const prev=cur;
     t+=dt*(state==='ghost'?3:holdRate());if(state==='holding')run.hold=(run.hold||0)+dt; // run.hold: 실제로 버틴 시간(초)
@@ -5568,7 +5574,7 @@ function frame(ts){
     else{
       cur=Math.max(run.lev>1?.3:.85,b*(1+(wig(t)-1)*Math.min(1,t/.3)*(run.T.wig||1)*(run.rg.wig||1)*(run.boss&&t>=run.boss.q0?0:1))*newsF(t));peak=Math.max(peak,cur);
       if(xh&&xh.x==null&&cur>=xh.v)xh.x=t+holdRate(); // 선에 처음 닿은 순간부터 실제 1초(이 판 차트 속도)는 출렁임으로 강제청산 안 됨, 그 뒤엔 원래 청산선 그대로
-      if(state==='holding'&&run.liqLine&&cur<=run.liqLine&&!(xh&&t<xh.x)){if(inv.noliq>0){inv.noliq--;store.set('shg_inv',inv);stats.c.items++;store.set('shg_stats',stats);run.liqLine=0;toast('🧯 청산 방지권 발동! 살았다');}else{run.liq=1;crash();draw();requestAnimationFrame(frame);return;}}
+      if(state==='holding'&&run.liqLine&&cur<=run.liqLine&&!(xh&&t<xh.x)){if(inv.noliq>0){inv.noliq--;store.set('shg_inv',inv);stats.c.items++;store.set('shg_stats',stats);run.liqLine=0;toast('🧯 청산 방지권 발동! 살았다');}else{run.liq=1;crash();draw();return;}}
       const idx=runBase+Math.floor(t/CD);
       while(candles.length<=idx){const pc=candles.length?candles[candles.length-1].c:1;candles.push({o:pc,h:pc,l:pc,c:pc,v:0,ghost:state==='ghost',r:1});if(state==='holding'&&!(run.boss&&run.boss.mute))sfx.tick(cur);}
       const c=candles[candles.length-1];c.h=Math.max(c.h,cur);c.l=Math.min(c.l,cur);c.c=cur;
@@ -5587,7 +5593,7 @@ function frame(ts){
   }
   tradeT+=dt;if(tradeT>(state==='holding'?rnd(.04,.16):state==='ghost'?.12:rnd(.4,.9))){tradeT=0;pushTrade(!run?liveM:crashed?(run.liq?cur*.8:Math.min(cur,run.crashAt*.62)):cur);}
   bookT+=dt;if(bookT>(state==='holding'||state==='ghost'?.12:.5)&&!hid){bookT=0;renderBook();}
-  if(!hid&&(live||idle)){drawT=ts;drawW=cv.width;drawH=cv.height;draw();}requestAnimationFrame(frame);
+  if(!hid&&(live||idle)){drawT=ts;drawW=cv.width;drawH=cv.height;draw();}
 }
 
 if(chal&&chal.pend!=null){const pt=chal.pend;delete chal.pend;chal.score+=pt;chal.res.push(pt);chal.i++;if(chal.i<5)store.set('shg_chalRun',chal);else chalFinish(1);} // 하다 만 챌린지 판은 판 기록(팔았으면 그 점수, 아니면 -30)으로 확정

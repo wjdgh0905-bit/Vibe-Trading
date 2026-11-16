@@ -20,7 +20,6 @@
 <meta name="google-adsense-account" content="ca-pub-2213068202184499">
 </head><body>
 <title>Stonks Tycoon</title>
-<meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="../fonts/fonts.css">
 <link rel="preload" as="image" href="../brand/intro_portrait_v3.webp" media="(orientation:portrait)" fetchpriority="high">
 <link rel="preload" as="image" href="../brand/intro_landscape_v3.webp" media="(orientation:landscape)" fetchpriority="high">
@@ -226,7 +225,7 @@ canvas{position:absolute;top:0;right:0;bottom:0;left:0;width:100%;height:100%}
 #betrow .seg{flex:1;min-width:0;display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:3px;padding:3px;background:#070a10;border:1px solid var(--hair);border-radius:var(--r-btn)}
 #betrow .seg button{min-height:36px;height:36px;padding:0;border:0;border-radius:9px;background:transparent;color:var(--muted);font:700 var(--t-body)/1 var(--num);box-shadow:none;white-space:nowrap}
 #betrow .seg button[aria-pressed="true"]{background:var(--panel3);color:var(--fg);font-weight:800;box-shadow:inset 0 0 0 1px rgba(243,246,251,.55),0 2px 6px rgba(0,0,0,.4)}
-@media (max-width:359px){#betrow .seg button{font-size:var(--t-chip)}#betrow{gap:6px}}
+@media (max-width:389px){#betrow .seg button{font-size:var(--t-chip)}#betrow{gap:6px}#betrow .seg{gap:2px;padding:2px}}
 .itb,#betrow .itb{position:relative;flex:none;width:52px;height:44px;min-height:44px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;padding:0;border-radius:var(--r-btn);background:var(--sheen),var(--panel2);border:1px solid var(--hair2);color:var(--fg);font:700 var(--t-micro)/1.1 var(--ui);cursor:pointer;box-shadow:var(--hi);white-space:nowrap}
 .itb .ico{width:22px;height:22px;margin:0;vertical-align:0}
 .itb em{position:absolute;right:-5px;top:-5px;min-width:18px;height:18px;box-sizing:border-box;padding:0 4px;border-radius:var(--r-pill);background:var(--fg);color:var(--ink);font:800 var(--t-micro)/18px var(--num);font-style:normal;text-align:center;box-shadow:0 0 0 2px var(--bg)}
@@ -1191,6 +1190,8 @@ header h1{display:none}
 .scard .pair{display:flex;gap:6px;margin-top:auto}
 .scard .pair .setbtn{flex:1;min-width:0;min-height:38px;padding:0 6px;border-radius:10px;font:800 var(--t-body)/1 var(--mix);white-space:nowrap}
 .scard .pair .setbtn.ghost{flex:none;padding:0 12px;font:700 var(--t-chip)/1 var(--ui)}
+.scard .pair{flex-wrap:wrap}.scard .pair .setbtn[data-buy]{flex:9999 1 0;min-width:max-content}.scard .pair .setbtn.ghost{flex:1 0 auto} 
+@media (max-width:389px){.feat .frow .setbtn[data-buy]{font-size:var(--t-chip)}}
 .scard.lock .sart .ico{filter:brightness(0) invert(.36)}
 
 .page h3.gh3{display:flex;align-items:center;gap:4px}.page h3 .gsum{margin-left:auto;font:600 var(--t-chip)/1 var(--mix);color:var(--muted)}.page h3 .gsum b{color:var(--fg2);font-weight:800}
@@ -1237,6 +1238,7 @@ header h1{display:none}
 .glad li b{flex:1;min-width:0;font:700 var(--t-chip)/1.3 var(--ui);overflow:hidden;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow-wrap:break-word} 
 .glad li .v{flex:none;min-width:44px;text-align:right;color:var(--fg2);font-weight:700;white-space:nowrap}
 .glad li>span:last-child{flex:none;width:66px;text-align:right;font:700 12px/1.2 var(--mix);white-space:nowrap}
+.glad li>span.lk:last-child{min-width:66px;width:auto;max-width:92px;white-space:normal;line-height:1.15;word-break:keep-all;overflow-wrap:break-word} 
 .glad .ok{color:var(--muted)}.glad .now{color:var(--tc)}.glad .pr{color:var(--fg2)}.glad .pr.gd{color:var(--gold-t)}.glad .lk{color:var(--muted2)}
 .glad li.cur{background:rgba(var(--tr),.09);box-shadow:inset 3px 0 0 var(--tc)}
 .glad li.fut b,.glad li.fut .v{color:var(--muted2)}.glad li.fut .ico{filter:brightness(0) invert(.36)}
@@ -1358,6 +1360,7 @@ html[lang=en] .skr{grid-template-columns:32px minmax(0,1fr) 64px;align-items:sta
 .ivr .ivs>.ivx{display:inline;margin:0;white-space:nowrap}.ivr .ivs>.ivx::before{content:'·';margin:0 5px;color:var(--muted2)} 
 .ivr.lock>i .ico{filter:brightness(0) invert(.36)}.ivr.lock b{color:var(--muted2)}
 .ivr>button.ivh{all:unset;grid-area:n;min-width:0;font:700 var(--t-item)/1.3 var(--ui);color:var(--fg);cursor:pointer;overflow-wrap:break-word}.ivr>button.ivh .mu{color:var(--muted2);font-weight:600}.ivr>button.ivh:focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:4px}.ivr.lock>button.ivh{color:var(--muted2)} 
+.ivr>button.ivh{position:relative}.ivr>button.ivh::before{content:'';position:absolute;inset:-11px -4px} 
 .ivsum{padding:10px 14px;margin-top:var(--sp-2)}.ivsum p{margin:0 0 6px;font:500 var(--t-meta)/1.45 var(--mix);color:var(--muted)}.ivsum p b{font-family:var(--num);color:var(--fg)}.ivsum p b.up{color:var(--up-t)}.ivsum p b.dn{color:var(--down-t)}.ivsum .xpbar{margin:2px 0 6px}.ivsum .setbtn{width:100%;margin-top:2px;justify-content:center}
 .page .ivno{margin:2px 0 4px;font:500 var(--t-meta)/1.45 var(--mix);color:var(--muted)}.ivc .pan.iv{padding-top:0;padding-bottom:0}.ivc>summary .mu{font-family:var(--mix)}
 .ivk>span{flex:none;white-space:nowrap;margin-right:var(--sp-3)}.ivk>b{min-width:0} 
@@ -1673,7 +1676,7 @@ button.lvk{cursor:pointer}
 .lrt .tg.now{background:var(--fg);color:var(--ink)}.lrt .tg.nxt{background:var(--gold-tone);color:var(--gold-t);box-shadow:inset 0 0 0 1px var(--gold-line)}
 .lrt>b{font:700 var(--t-body)/1.35 var(--ui);color:var(--fg);overflow-wrap:anywhere}.lrt>b .dn{font-weight:500;color:var(--muted)}
 .lrt>b.lv0,.lrc.lv0 span{color:var(--fg2)}
-.lrx{display:flex;flex-wrap:wrap;gap:4px;margin-top:3px}
+.lrx{display:flex;flex-wrap:wrap;gap:14px 4px;margin-top:3px}.lrc{position:relative;min-height:28px!important}.lrc::before{content:'';position:absolute;inset:-7px 0} 
 .lrc{display:inline-flex;align-items:center;gap:4px;max-width:100%;min-height:26px;padding:2px 8px 2px 4px;border-radius:var(--r-pill);border:1px solid var(--hair);background:var(--panel);color:var(--fg2);font:500 var(--t-meta)/1.25 var(--ui);text-align:left;box-shadow:none;cursor:pointer}
 .lrc span{min-width:0;overflow-wrap:anywhere}.lrc .ico,.lrc .rsw{flex:none;width:18px;height:18px;margin:0;vertical-align:0}.lrc.lk{opacity:.7}
 .lrs{font:600 var(--t-meta)/1.35 var(--ui);color:var(--gold-t)}
@@ -1892,13 +1895,13 @@ const buyB=LANG==='en'?'Buy':'Buy',buyV=p=>LANG==='en'?'Buy '+wonS(p):wonS(p)+' 
 const swS=n=>(n>0?'+':n<0?'\u2212':'')+wonS(Math.abs(n));
 const pick=a=>a[Math.floor(Math.random()*a.length)];
 const rnd=(a,b)=>a+Math.random()*(b-a);
-function MemLS(){}MemLS.prototype={getItem(k){return Object.prototype.hasOwnProperty.call(this,k)?this[k]:null},setItem(k,v){this[k]=String(v);if(this._r)try{this._r.setItem(k,v);}catch(e){}},removeItem(k){delete this[k];if(this._r)try{this._r.removeItem(k);}catch(e){}},key(i){const k=Object.keys(this)[i];return k===undefined?null:k},clear(){Object.keys(this).forEach(k=>delete this[k])},get length(){return Object.keys(this).length}};
+function MemLS(){}MemLS.prototype={getItem(k){return Object.prototype.hasOwnProperty.call(this,k)?this[k]:null},setItem(k,v){this[k]=String(v);if(this._r&&!this._x)try{this._r.setItem(k,v);}catch(e){Object.defineProperty(this,'_x',{value:1});}},removeItem(k){delete this[k];if(this._r)try{this._r.removeItem(k);}catch(e){}},key(i){const k=Object.keys(this)[i];return k===undefined?null:k},clear(){Object.keys(this).forEach(k=>delete this[k])},get length(){return Object.keys(this).length}};
 const memSnap=strict=>{try{if(String(window.name||'').startsWith('shgMem:')){const d=JSON.parse(window.name.slice(7));let ok=0;try{ok=!!d._n&&sessionStorage.getItem('shgMemN')===String(d._n);}catch(e){}if(strict&&!ok)return null; if(d&&typeof d==='object'){const o={};for(const k in d)if(/^shg_\w+$/.test(k)&&typeof d[k]==='string')o[k]=d[k];return o;}}}catch(e){}return null;};
 const memLS=(src,snap)=>{const m=new MemLS(),d=snap&&memSnap(!!src);try{if(d)for(const k in d)m.setItem(k,d[k]);else if(src)for(let i=0;i<src.length;i++){const k=src.key(i);if(k&&k.startsWith('shg_'))m.setItem(k,src.getItem(k));}}catch(e){}if(src)Object.defineProperty(m,'_r',{value:src});return m;};
 let localStorage=(()=>{try{const s=window.localStorage,k='_shgProbe';s.setItem(k,'1');const ok=s.getItem(k)==='1';s.removeItem(k);if(ok)return s;}catch(e){}return null;})(),memSave=0;if(!localStorage){let src=null;try{src=window.localStorage;src.length;}catch(e){src=null;}localStorage=memLS(src,1);memSave=1;memWarn();}else if(String(window.name||'').startsWith('shgMem:')){const d=memSnap(1);if(!d)window.name='';let bad=0;if(d)for(const k in d)try{localStorage.setItem(k,d[k]);}catch(e){bad=1;}if(bad){localStorage=memLS(localStorage,1);memSave=2;memWarn();}else window.name='';}
 function memWarn(){if(memWarn.on)return;memWarn.on=1;setTimeout(()=>toast('⚠️ This browser is blocking saves · Use Copy Backup Code in Settings to keep your progress'),2500);}
 function lsSet(k,s){try{localStorage.setItem(k,s);}catch(e){if(memSave)throw e;localStorage=memLS(localStorage);memSave=2;localStorage.setItem(k,s);memWarn();}}
-const store={off:0,seen:{},get(k,d){try{const v=localStorage.getItem(k);store.seen[k]=v;return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){if(store.off)return;try{const s=JSON.stringify(v);if(store.seen[k]===s)return;lsSet(k,s);store.seen[k]=s;}catch(e){}}};
+const store={off:0,seen:{},keep:{},get(k,d){try{const v=localStorage.getItem(k);store.seen[k]=v;return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){if(store.off)return;try{const x=store.keep[k];if(x&&v&&typeof v==='object'){if(!Array.isArray(v)){if(!Array.isArray(x))v=Object.assign({},x,v);}else if(Array.isArray(x)&&x.length)v=v.concat(x.filter(i=>!v.includes(i)));}const s=JSON.stringify(v);if(store.seen[k]===s)return;lsSet(k,s);store.seen[k]=s;}catch(e){}}};
 const fin=v=>isFinite(v=+v)?v:0;
 const PET_T=[0,50,450];
 const SAVE_V=3,MIG=[()=>{const p=store.get('shg_profile',null);if(p&&p!=='squirrel'){let a=store.get('shg_tips',[]);if(!Array.isArray(a))a=[];if(!a.includes('quiz'))store.set('shg_tips',a.concat('quiz'));}},
@@ -2206,7 +2209,7 @@ function netW(){return balance+invTotal()-debt-rdebt;}
 const LAD=[{id:'hq',e:'🏢',n:'My HQ Tower',p0:1e12,lv:1},{id:'isl',e:'🏝️',n:'My Archipelago',p0:1e16,lv:50},{id:'sat',e:'🛰️',n:'My Satellite Network',p0:1e20,lv:90},{id:'city',e:'🛸',n:'My Space City',p0:1e24,lv:130},
   {id:'pla',e:'🪐',n:'My Planet',p0:1e28,lv:170},{id:'star',e:'☀️',n:'My Star System',p0:1e32,lv:210},{id:'gal',e:'🌌',n:'My Galaxy',p0:1e36,lv:250},{id:'clu',e:'🌠',n:'My Galaxy Cluster',p0:1e40,lv:290}];
 const LAD_N=8;
-function ladFix(v){const o={};if(v&&typeof v==='object'&&!Array.isArray(v))LAD.forEach(h=>{const n=Math.floor(+v[h.id]);if(isFinite(n)&&n>0)o[h.id]=Math.min(LAD_N,n);});return o;}
+function ladFix(v){const o={};if(v&&typeof v==='object'&&!Array.isArray(v)){LAD.forEach(h=>{const n=Math.floor(+v[h.id]);if(isFinite(n)&&n>0)o[h.id]=Math.min(LAD_N,n);});const x={};for(const k of Object.keys(v))if(k!=='__proto__'&&!LAD.some(h=>h.id===k))x[k]=v[k];store.keep.shg_lad=x;}return o;}
 let lad=ladFix(store.get('shg_lad',null)),ladAt=0;
 const ladStep=id=>lad[id]||0,ladH=id=>LAD.find(x=>x.id===id);
 function ladPrice(h){const s=ladStep(h.id);return s>=LAD_N?Infinity:h.p0*Math.pow(10,s);}
@@ -2247,7 +2250,7 @@ function amsCardH(e){const E=eco(),m=E.mk.slice().reverse().find(q=>q[1]===e)||[
     (H||lo.length?'<div class="rdu">'+(H?'<div class="rdr">'+icT('🏠')+'<span>'+KE('New home · '+H.n,'New home · '+H.n)+'</span><em>'+KE('New','New')+'</em></div>':'')+(lo.length?'<div class="rdr">'+icT('🏁')+'<span>'+lo.map(AMS_NM).join(' · ')+'</span><em>'+KE('Also passed','Also passed')+'</em></div>':'')+'</div>':'');}
 const wS0=v=>v<0?swS(v):wonS(v);
 const xR=v=>{if(!(v>0)||!isFinite(v))return '–';if(v<10)return String(Math.floor(v*100+1e-9)/100);if(v<1e3)return String(Math.floor(v*10+1e-9)/10);if(v<1e4)return Math.floor(v).toLocaleString('en-US');if(LANG==='en'){for(const [U,n] of [[1e12,'T'],[1e9,'B'],[1e6,'M'],[1e3,'K']])if(v>=U)return v>=U*1e3&&U===1e12?Math.floor(v/U).toLocaleString('en-US')+'T':String(Math.floor(v/U*10)/10)+n;}return wonX(v);};
-const agLbl=e=>e>=8&&LANG!=='en'?AMS_NM(e):wonX(Math.pow(10,e));
+const agLbl=e=>e>=8&&e<=47&&LANG!=='en'?AMS_NM(e):wonX(Math.pow(10,e));
 function agcH(){const E=eco(),t=totW(),nw=netW(),lv=ladVal(),P=E.log.slice(-14),d0=dNo(),en=LANG==='en';
   let svg='';if(P.length){const ys=P.map(q=>Math.log10(Math.max(1,q[1]))),lo=Math.floor(Math.min(...ys)),hi=Math.max(lo+1,Math.ceil(Math.max(...ys)+1e-9)),W=300,H=112,X0=50,X1=W-10,Y0=8,Y1=H-10,X=i=>P.length<2?(X0+X1)/2:X0+(X1-X0)*i/(P.length-1),Y=v=>Y1-(Y1-Y0)*(v-lo)/(hi-lo);
     let G=[];for(let e=lo;e<=hi;e++)if(e>=8&&e%4===0)G.push(e);if(G.length<2){G=[];const st=Math.max(1,Math.ceil((hi-lo)/3));for(let e=lo;e<=hi;e+=st)G.push(e);if(G[G.length-1]!==hi)G.push(hi);}
@@ -2288,7 +2291,7 @@ function ladAsk(id){if(ladCan(id)!=='ok'){ladSheet();return;}const h=ladH(id),s=
     ladSheet();};}
 const LEVS=[[1,0],[2,1],[3,3],[5,5],[10,7],[20,9]];
 const unlOf=i=>{const u=Object.values(ITEMS).filter(it=>it.lv===i).map(it=>it.name);if(i===2)u.push('💯 Max Buy','📊 Pro View');Object.values(TIERS).filter(T=>!T.hidden&&T.lv===i).forEach(T=>u.push(T.e+' '+T.label));LEVS.filter(l=>l[1]===i&&l[0]>1).forEach(l=>u.push('⚡ Leverage '+l[0]+'×'));return u;};
-let selId='o0',state='ready',balance=store.get('shg_bal',START),streak=Math.max(0,Math.floor(+store.get('shg_streak',0)||0)),round=1,tierSel=store.get('shg_tier','theme'),sel={shield:false,insider:false,slow:false};balance=fin(balance);
+let selId='o0',state='ready',balance=store.get('shg_bal',START),streak=Math.min(1e5,Math.max(0,Math.floor(+store.get('shg_streak',0)||0))),round=1,tierSel=store.get('shg_tier','theme'),sel={shield:false,insider:false,slow:false};balance=fin(balance);
 /* ===== v3.1.0 level road (spine slice A): every level names an unlock, 25 ranks with emblems, dan I-III, star milestones every 5 levels,
    level sheet centred on now, pill naming the next unlock, calm dan stamp, rank-up frame (rank 10+), star reveal, calm leverage reveal, recap card.
    Content only: no cash, XP or SP is paid by anything here, and nothing here calls Math.random (seeded play stays identical). ===== */
@@ -2980,7 +2983,7 @@ const wealthCap=b=>.1*Math.min(b,1e11)+.05*Math.min(Math.max(b-1e11,0),9e11)+.01
 const LIQ=1e16;
 const stakeCap=(lv=levSel)=>Math.min(LIQ,Math.max(lv>1?betCapD():betCap(),Math.round(wealthCap(balance)*(regime().cap||1)/1e4)*1e4));
 const maxStake=ai=>ai?balance:stakeCap();
-const itemCost=(k,bet)=>{const c=ITEMS[k].cost;return (bet*c+Math.min(balance*c*.05,bet*c*2))*(1-.04*skl('discount'));};
+const itemCost=(k,bet)=>{const c=ITEMS[k].cost;return (bet*c+Math.min(Math.max(balance,bet)*c*.05,bet*c*2))*(1-.04*skl('discount'));};
 const wealthRisk=b=>b<1e9?0:Math.min(.3,.035*Math.log10(b/1e9));
 const taxRate=b=>b<1e10?0:Math.min(.65,.05+.1*Math.log10(b/1e10));
 const xpMul=()=>1+.05*skl('xp')+gV('office')+(pet?PET_XP[petBest()]/100:0);
@@ -3650,7 +3653,7 @@ function declareBankrupt(forced){
   const seized=debt>0,taken=seized?seizeList():null;
   stats.bankrupts++;stats.curRun=0;unlock('hangang');if(stats.bankrupts>=5)unlock('bk5');if(stats.bankrupts>=10)unlock('bk10');
   const gotSP=stats.bankrupts<=5;if(gotSP)stats.bonusSP=(stats.bonusSP||0)+1;
-  if(seized){gear={};inv={};armed={};invest={};store.set('shg_inv2',invest);store.set('shg_gear',gear);store.set('shg_inv',inv);store.set('shg_armed',armed);credit=10;stats.cleanRounds=0;if(forced)unlock('default');offers=makeOffers();}
+  if(seized){gear={};inv={};armed={};invest={};delete store.keep.shg_inv2;store.set('shg_inv2',invest);store.set('shg_gear',gear);store.set('shg_inv',inv);store.set('shg_armed',armed);credit=10;stats.cleanRounds=0;if(forced)unlock('default');offers=makeOffers();}
   const g=START*(1+.2*skl('seed')),lv=levSel>1;levSel=1;allin=false;
   debt=0;intPaid=false;overLoss=0;store.set('shg_intPaid',false);balance=g;rdebt+=g;store.set('shg_rdebt',Math.ceil(rdebt));lowFlag=false;stats.low=0;store.set('shg_stats',stats);resetView();sfx.up();
   stamp(seized?'🚨 Seized':'🌱 New start!');if(seized)showReceipt(taken,gotSP,lv);else setTimeout(()=>toast((gotSP?'😤 Grit SP +1':'Start over')+' · 🌱 Restart Fund '+wonS(g)+(lv?' · ⚡ Leverage 1x':'')),400);
@@ -3693,8 +3696,8 @@ function showDefault(quiet){
 
 const CFG={adClient:'',adTest:false,donateUrl:'',iap:false,iapDev:false};
 if(/^(localhost|127\.0\.0\.1)$/.test(location.hostname)&&/[?&]adsense\b/.test(location.search))CFG.adClient='ca-pub-2213068202184499';
-const CG={on:false,S:null,last:0,noAds:0,done:0},onCG=/crazygames/.test(location.hostname)||(window.top!==window&&/crazygames/.test(document.referrer))||/^(localhost|127\.0\.0\.1)$/.test(location.hostname)&&/[?&]cg\b/.test(location.search);
-const BUILD='v3.1.2 · b261115a · '+LANG+'-'+(onCG?'cg':/(^|\.)itch\.(io|zone)$|hwcdn\.net$/.test(location.hostname)||/itch\.io/.test(document.referrer)?'itch':'web');
+const CG={on:false,S:null,last:0,noAds:0,done:0},onCG=/crazygames/.test(location.hostname)||/^(localhost|127\.0\.0\.1)$/.test(location.hostname)&&/[?&]cg\b/.test(location.search);
+const BUILD='v3.1.3 · b261116a · '+LANG+'-'+(onCG?'cg':/(^|\.)itch\.(io|zone)$|hwcdn\.net$/.test(location.hostname)||/itch\.io/.test(document.referrer)?'itch':'web');
 if(onCG){const sc=document.createElement('script');sc.src='https://sdk.crazygames.com/crazygames-sdk-v3.js';
   sc.onload=async()=>{try{const S=window.CrazyGames.SDK;await S.init();if(S.environment!=='disabled'){CG.S=S;CG.on=true;cgLoad();try{const ms=v=>{v=v&&typeof v==='object'?v:S.game.settings;cgMute=!!(v&&v.muteAudio);document.body.classList.toggle('noChat',!!(v&&v.disableChat));if(touched||cgMute)bgm.sync();};ms();S.game.addSettingsChangeListener(ms);}catch(e){}if(state==='holding'||state==='ghost')cgPlay(true);}}catch(e){}CG.done=1;};sc.onerror=()=>{CG.done=1;};document.head.appendChild(sc);}
 let cgG=false;
@@ -3880,7 +3883,7 @@ addEventListener('pagehide',flushRound);
 addEventListener('pagehide',()=>{if(memSave)try{const n=Math.random().toString(36).slice(2,12);try{sessionStorage.setItem('shgMemN',n);}catch(e){}window.name='shgMem:'+JSON.stringify(Object.assign({_n:n},localStorage));}catch(e){}});
 addEventListener('resize',()=>{if(state==='holding'&&getComputedStyle($('rotate')).display!=='none')forceSell();});
 let tabStale=0,tabRp=0;const adOffer=()=>!card.hidden&&!!card.querySelector('#adWin,#adLoss');
-const TAB_TAKE={shg_lad:v=>{lad=ladFix(v);},shg_econ:v=>{ECO=ecoFix(v);},shg_road:v=>{RD=rdFix(v);try{rdFrame();if(PREM_ON)premApply(1);else rdTheme();}catch(e){}},shg_streak:v=>{streak=Math.max(0,Math.floor(+v||0));app.classList.toggle('fever',streak>=5);$('fever').hidden=streak<5;},shg_season:v=>season=v,shg_daily:v=>{daily=v;ensureDaily();},shg_weekly:v=>{weekly=v;ensureDaily();},shg_inv:v=>inv=v,shg_armed:v=>armed=v,shg_inv2:v=>invest=v,shg_gear:v=>{gear=cntMap(v);for(const k in gear)gear[k]=Math.min(7,gear[k]);},shg_gearMax:v=>{gearMax=cntMap(v);},shg_col:v=>col=Array.isArray(v)?v.filter((id,i)=>COL.some(c=>c.id===id)&&v.indexOf(id)===i):[],shg_ach:v=>ach=v,shg_achc:v=>achC=v,shg_sk:v=>{sk=cntMap(v);fixSk();},shg_league:v=>league=v,shg_nick:v=>nick=v,shg_profile:v=>profile=Object.prototype.hasOwnProperty.call(TYPES,v)?v:null,shg_home:v=>lastHome=v,shg_intPaid:v=>intPaid=!!v,shg_best:v=>best=Math.max(best,+v||0),shg_stats:v=>{Object.assign(stats,v);fixStats();lowFlag=!!stats.low;},shg_decor:v=>Object.assign(decor,v),shg_pet:v=>{const p=petFix(v);if(p)pet=p;petDot();}},
+const TAB_TAKE={shg_lad:v=>{lad=ladFix(v);},shg_econ:v=>{ECO=ecoFix(v);},shg_road:v=>{RD=rdFix(v);try{rdFrame();if(PREM_ON)premApply(1);else rdTheme();}catch(e){}},shg_streak:v=>{streak=Math.min(1e5,Math.max(0,Math.floor(+v||0)));app.classList.toggle('fever',streak>=5);$('fever').hidden=streak<5;},shg_season:v=>season=v,shg_daily:v=>{daily=v;ensureDaily();},shg_weekly:v=>{weekly=v;ensureDaily();},shg_inv:v=>inv=v,shg_armed:v=>armed=v,shg_inv2:v=>{if(!v||typeof v!=='object'||Array.isArray(v))return;const x={};for(const k of Object.keys(v))if(!PROD.some(P=>P.id===k)){if(k!=='__proto__')x[k]=v[k];delete v[k];}store.keep.shg_inv2=x;invest=v;},shg_gear:v=>{gear=cntMap(v);for(const k in gear)gear[k]=Math.min(7,gear[k]);},shg_gearMax:v=>{gearMax=cntMap(v);},shg_col:v=>col=colFix(v),shg_ach:v=>ach=v,shg_achc:v=>achC=v,shg_sk:v=>{sk=cntMap(v);fixSk();},shg_league:v=>league=v,shg_nick:v=>nick=v,shg_profile:v=>profile=Object.prototype.hasOwnProperty.call(TYPES,v)?v:null,shg_home:v=>lastHome=v,shg_intPaid:v=>intPaid=!!v,shg_best:v=>best=Math.max(best,+v||0),shg_stats:v=>{Object.assign(stats,v);fixStats();lowFlag=!!stats.low;},shg_decor:v=>Object.assign(decor,v),shg_pet:v=>{const p=petFix(v);if(p)pet=p;petDot();}},
   TAB_KEEP=['shg_bal','shg_debt','shg_rdebt','shg_credit','shg_xp','shg_spin','shg_adSpin','shg_adRevive','shg_adc','shg_chalDay','shg_chalMax','shg_chalRun','shg_chalPaid','shg_tutPaid','shg_tutBonus','shg_tut','shg_set','shg_pct','shg_ipct','shg_tier','shg_levTip','shg_itemTip','shg_tips','shg_pet'];
 addEventListener('storage',e=>{const k=e.key;if(e.storageArea&&e.storageArea!==localStorage)return;if(k!==null&&(k.slice(0,4)!=='shg_'||k==='shg_errlog'))return;
   if(k==='shg_prem'||k==='shg_premEq'){if(PREM_ON)premTake(k);return;}if(k==='shg_premReset'){if(PREM_ON&&e.newValue)premReset();return;}
@@ -3906,6 +3909,13 @@ document.addEventListener('keydown',e=>{if(e.repeat&&(e.key==='Enter'||e.key==='
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!adPause){if(!$('sheet').hidden)$('sheet').hidden=true;else if(!$('modal').hidden)$('modalClose').click();return;}
   if(!(e.code==='Space'||(e.key==='Enter'&&e.target===btn))||e.repeat)return;if(adPause&&(state==='holding'||state==='ghost')){e.preventDefault();return;}if(state!=='holding'){const tg=e.target;if(curTab!=='trade'||!$('modal').hidden||!$('sheet').hidden||(tg&&tg.closest&&(tg.closest('input,textarea,select,summary,[role=switch],#card:not([hidden]) button')||(kbNav&&tg!==btn&&tg.closest('button,[role=button]')))))return;}e.preventDefault();const n=performance.now();if(n-tapAt<300)return;if(tutTapNo())return;tapAt=n;if(state==='holding')release();else if(state==='ghost')reenter();else start();});
 btn.addEventListener('contextmenu',e=>e.preventDefault());
+const APP_MODE=(()=>{try{return !onCG&&(/^android-app:/.test(document.referrer)||matchMedia('(display-mode: standalone)').matches);}catch(e){return false;}})();
+if(APP_MODE){let bkSelf=0;const bkOpen=()=>!$('sheet').hidden||!$('modal').hidden||curTab!=='trade',bkG=()=>!!(history.state&&history.state.shgB);
+  try{if(bkG())history.replaceState(null,'');}catch(e){}
+  const bkSync=()=>{if(bkSelf)return;const o=bkOpen(),g=bkG();try{if(o&&!g)history.pushState({shgB:1},'');else if(!o&&g){bkSelf=1;history.back();}}catch(e){bkSelf=0;}};
+  addEventListener('popstate',()=>{if(bkSelf){bkSelf=0;bkSync();return;}
+    if(!adPause){if(!$('sheet').hidden)$('sheet').hidden=true;else if(!$('modal').hidden)$('modalClose').click();else if(curTab!=='trade')tab('trade');}setTimeout(bkSync,0);});
+  ['sheet','modal','page'].forEach(id=>new MutationObserver(bkSync).observe($(id),{attributes:true,attributeFilter:['hidden']}));}
 
 /* ---------- chart ---------- */
 let W=0,H=0,CK=1,nwY=0,sellBox=null,peakBox=null,chartObs=[],plotRX=0;
@@ -4087,7 +4097,7 @@ function sellJuice(amt,pct){
   else{bump();if(amt>0)ptSay(pick(ptP('win')),1400);else if(amt<0)ptSay(pick(ptP('cut')),1400);}
 }
 let balHold=0;
-function setBal(v){const b=$('bal');let t=v>=1e16?wonS(v):won(v);b.innerHTML=unitU(t);if(b.scrollWidth>b.clientWidth+1){t=wonS(v);b.innerHTML=unitU(t);}}
+function setBal(v){const b=$('bal');if(b.style.fontSize)b.style.fontSize='';let t=v>=1e16?wonS(v):won(v);b.innerHTML=unitU(t);if(b.scrollWidth>b.clientWidth+1){t=wonS(v);b.innerHTML=unitU(t);}for(let i=0;i<3&&b.scrollWidth>b.clientWidth+1;i++){const fs=parseFloat(getComputedStyle(b).fontSize),k=b.clientWidth/b.scrollWidth,n=Math.max(12,Math.floor(fs*k));if(!(n<fs))break;b.style.fontSize=n+'px';b.querySelectorAll('u').forEach(u=>{u.style.fontSize=Math.max(9,Math.floor(parseFloat(getComputedStyle(u).fontSize)*k))+'px';});}}
 function animBal(dur){
   if(performance.now()<balHold)return;
   const from=shownBal,to=balance,t0=performance.now(),D=dur||650;cancelAnimationFrame(balAnim);
@@ -4771,7 +4781,7 @@ let stats=Object.assign({rounds:0,wins:0,bestM:0,bestPct:0,net:0,maxStreak:0,ban
 stats.c=Object.assign({rounds:0,wins:0,x2:0,x3:0,x5:0,x10:0,p90:0,p95:0,fever:0,profit:0,levWin:0,allinWin:0,liq:0,dip:0,daily:0,weekly:0,gear:0,items:0},stats.c||{});
 const fixStats=()=>{const N=fin,obj=o=>o&&typeof o==='object'&&!Array.isArray(o);
   ['rounds','wins','bestM','bestPct','net','maxStreak','bankrupts','bossLv','bossSP','bonusSP','careerSP','cleanRounds','loans','curRun'].forEach(k=>stats[k]=N(stats[k]));
-  stats.hist=(Array.isArray(stats.hist)?stats.hist:[]).filter(h=>obj(h)&&isFinite(h.m)&&isFinite(h.a)).slice(0,20).map(h=>Object.assign(h,{m:+h.m,a:+h.a,l:+h.l||1,i:Array.isArray(h.i)?h.i:[],k:Object.prototype.hasOwnProperty.call(TIERS,h.k)?h.k:'',ni:Number.isInteger(h.ni)?h.ni:-1}));
+  stats.hist=(Array.isArray(stats.hist)?stats.hist:[]).filter(h=>obj(h)&&isFinite(h.m)&&isFinite(h.a)).slice(0,20).map(h=>Object.assign(h,{n:typeof h.n==='string'?h.n:'',m:Math.max(0,Math.min(+h.m,1e4)),a:+h.a,l:+h.l||1,i:Array.isArray(h.i)?h.i:[],k:Object.prototype.hasOwnProperty.call(TIERS,h.k)?h.k:'',ni:Number.isInteger(h.ni)?h.ni:-1}));
   if(!obj(stats.c))stats.c={};for(const k in stats.c)stats.c[k]=Math.max(0,Math.min(k==='profit'?1e300:1e18,N(stats.c[k])));if(!obj(stats.ct))stats.ct={};for(const k in stats.ct)stats.ct[k]=Math.max(0,Math.min(1e3,Math.floor(N(stats.ct[k]))));stats.bossLv=Math.max(0,Math.min(1e6,stats.bossLv));stats.bankrupts=Math.max(0,Math.min(1e6,stats.bankrupts));
   stats.types=(Array.isArray(stats.types)?stats.types:[]).filter(k=>Object.prototype.hasOwnProperty.call(TIERS,k));bossFix();};fixStats();lowFlag=!!stats.low;
 if(!stats.lsp){const g=['debt1','payoff'].reduce((n,id)=>{const x=achStars(id);return n+(x.st>=1?1:0)+(x.st>=5?1:0);},0);stats.lsp=1;if(g>0)stats.bonusSP=(stats.bonusSP||0)+g;store.set('shg_stats',stats);}
@@ -5068,7 +5078,7 @@ const yday=()=>{const n=new Date(),d=new Date(n.getFullYear(),n.getMonth(),n.get
 let chal=store.get('shg_chalRun',null);if(chal&&!(Number.isInteger(chal.day)&&chal.day>=yday()&&chal.day<=dayNum()&&Array.isArray(chal.pts)&&chal.pts.length===5&&chal.pts.every(p=>typeof p==='number'&&isFinite(p))&&Number.isInteger(chal.i)&&chal.i>=0&&chal.i<=5&&typeof chal.score==='number'&&isFinite(chal.score)&&Array.isArray(chal.res)&&(chal.pend==null||typeof chal.pend==='number')))chal=null;
 const esc=v=>String(v).replace(/[&<>"']/g,c=>'&#'+c.charCodeAt(0)+';');
 const nickClean=v=>String(v==null?'':v).replace(/[\s<>&"'`\\]/g,''),nickBad=n=>!n||n==='__proto__'||n==='constructor'||n==='prototype';
-let nick=store.get('shg_nick','');if(typeof nick==='string')nick=nick.replace(/^Retail ?Ant(?=\d{4}$)/,'Ant');
+let nick=store.get('shg_nick','');if(typeof nick!=='string')nick=typeof nick==='number'?String(nick):'';nick=nick.replace(/^Retail ?Ant(?=\d{4}$)/,'Ant');
 nick=nickClean(nick).slice(0,10);if(nickBad(nick)||nick.length<2){nick=(LANG==='en'?'Trader':'Rookie')+Math.floor(1000+Math.random()*9000);}if(nick!==store.get('shg_nick',''))store.set('shg_nick',nick);
 let league=store.get('shg_league',{wk:'',me:{},fr:{}});
 const lgOk=v=>v>=-150&&v<=12500;
@@ -5191,9 +5201,10 @@ const COL=[
   {id:'godkey',cat:'myth',e:'⌨️',n:'Keyboard of the Gods',p:1e40,fic:1},{id:'dim',cat:'myth',e:'♾️',n:'Dimension Itself',p:1e45,fic:1}
 ];
 let invest=store.get('shg_inv2',{}),col=store.get('shg_col',[]);
-if(!invest||typeof invest!=='object'||Array.isArray(invest))invest={};for(const k in invest){const h=invest[k];if(!h||typeof h!=='object'||!PROD.some(P=>P.id===k))delete invest[k];else{const P=PROD.find(Q=>Q.id===k);h.a=Math.max(0,fin(h.a));h.d=fin(h.d);h.p=fin(h.p);h.l=Math.max(0,fin(h.l));h.q=Math.max(0,fin(h.q));h.z=Math.max(0,fin(h.z));h.y=Math.max(0,fin(h.y));h.b=Math.max(0,fin(h.b));if(typeof h.t!=='number'&&h.a>0){if(invV0){h.t=P.mt||0;h.l=h.a;h.m=1;if(P.chance)h.z=Math.max(0,h.a-P.max);}else{h.t=0;h.l=0;h.q=0;}}h.t=h.a>0?Math.min(P.mt||0,Math.max(0,fin(h.t))):0;}}
+if(!invest||typeof invest!=='object'||Array.isArray(invest))invest={};for(const k in invest){const h=invest[k];if(!h||typeof h!=='object'||!PROD.some(P=>P.id===k)){if(h&&typeof h==='object'&&k!=='__proto__')(store.keep.shg_inv2||(store.keep.shg_inv2={}))[k]=h;delete invest[k];}else{const P=PROD.find(Q=>Q.id===k);h.a=Math.max(0,fin(h.a));h.d=fin(h.d);h.p=fin(h.p);h.l=Math.max(0,fin(h.l));h.q=Math.max(0,fin(h.q));h.z=Math.max(0,fin(h.z));h.y=Math.max(0,fin(h.y));h.b=Math.max(0,fin(h.b));if(typeof h.t!=='number'&&h.a>0){if(invV0){h.t=P.mt||0;h.l=h.a;h.m=1;if(P.chance)h.z=Math.max(0,h.a-P.max);}else{h.t=0;h.l=0;h.q=0;}}h.t=h.a>0?Math.min(P.mt||0,Math.max(0,fin(h.t))):0;}}
 {let R=0,M=0;for(const k in invest){const h=invest[k];if(!h.m)continue;delete h.m;M=1;const P=PROD.find(Q=>Q.id===k);R+=Math.max(0,h.a-P.max);}if(M)store.set('shg_inv2',invest);store.set('shg_invV',1);if(R>=1&&!store.get('shg_invMig',0)){store.set('shg_invMig',1);setTimeout(()=>{try{toast('💼 Invest has changed · money resting above the caps with no interest: '+wonS(R)+' · take it out in Invest with no fee');}catch(e){}},1600);}}
-col=Array.isArray(col)?col.filter((id,i)=>COL.some(c=>c.id===id)&&col.indexOf(id)===i):[];
+function colFix(v){if(!Array.isArray(v))return [];store.keep.shg_col=v.filter((id,i)=>typeof id==='string'&&!COL.some(c=>c.id===id)&&v.indexOf(id)===i);return v.filter((id,i)=>COL.some(c=>c.id===id)&&v.indexOf(id)===i);}
+col=colFix(col);
 let invPct=store.get('shg_ipct',.25);if(![.05,.1,.25,.5,1].includes(invPct))invPct=.25;
 const invTotal=()=>Object.values(invest).reduce((n,h)=>n+(h.a||0),0),invNet=()=>Object.keys(invest).reduce((n,id)=>{const h=invest[id],P=PROD.find(Q=>Q.id===id),a=h.a||0;return n+a-(P?invFee(P)*Math.max(0,a-invNoFee(P)):0);},0);
 const catDone=c=>COL.filter(x=>x.cat===c).every(x=>col.includes(x.id));
@@ -5466,7 +5477,7 @@ function bindPage(name){
   const iv=$('invite');if(iv)iv.onclick=()=>shareOut('📈 Stonks Tycoon — sell before the crash to win! My account: '+won(balance)+' (virtual)'+'. Can you beat me?');
   {const lg=$('ladGo');if(lg)lg.onclick=()=>ladSheet();}
   const pz=$('prestige');if(pz)pz.onclick=()=>{if(netW()<PRES_NEED())return;ask(KE('Retire and start a new run? Round XP ','Retire and start a new run?\nMoney, investments, consumables and debt reset (gear, level, skills and the asset ladder stay).\nRound XP ')+xpMS(presXpM())+' → '+xpMS(Math.min(3,Math.pow(1.1,pres+1))),'🔁 Retire',()=>{presPend=1;setTimeout(()=>{presPend=0;if(state==='holding'||state==='ghost'){toast('Finish this round, then retire again');return;}if(tabCheck()||netW()<PRES_NEED())return;
-    pres++;store.set('shg_pres',pres);lowFlag=false;stats.low=0;stats.curRun=0;store.set('shg_stats',stats);streak=0;app.classList.remove('fever');$('fever').hidden=true;balance=START;debt=0;rdebt=0;credit=5;inv={};armed={};invest={};lastHome=0;overLoss=0;
+    pres++;store.set('shg_pres',pres);lowFlag=false;stats.low=0;stats.curRun=0;store.set('shg_stats',stats);streak=0;app.classList.remove('fever');$('fever').hidden=true;balance=START;debt=0;rdebt=0;credit=5;levSel=1;allin=false;inv={};armed={};invest={};delete store.keep.shg_inv2;lastHome=0;overLoss=0;
     ['shg_inv','shg_armed','shg_inv2'].forEach(k=>store.set(k,{}));lastHome=homeIdx();store.set('shg_home',lastHome);{const E=eco(),d=dNo();if(!E.rt.includes(d)){E.rt.push(d);if(E.rt.length>20)E.rt.shift();}ecoSave();}store.set('shg_bal',balance);if(rankOf(xp)>=14)unlock('legend');
     if(card.querySelector('#adWin,#adLoss')){card.hidden=true;card.innerHTML='';}
     if(state!=='holding'&&state!=='ghost'){offers=makeOffers();if(!run){buildChartIdle();paintQuote();renderBook();}}
@@ -5493,9 +5504,9 @@ function bindPage(name){
     delete d.shg_errlog;const code='SHG1:'+btoa(unescape(encodeURIComponent(JSON.stringify(d))));(navigator.clipboard?navigator.clipboard.writeText(code):Promise.reject()).then(()=>toast('💾 Backup code copied. Paste it in Notes to keep it safe'),()=>ask('Copy the code below (long-press, or Ctrl/Cmd+C)',0,0,code));};
   const bi=$('bkIn');if(bi)bi.onclick=()=>ask('Paste your backup code (current progress will be overwritten)','OK',v=>{const code=(v||'').trim();if(!code)return;
     try{if(!code.startsWith('SHG1:'))throw 0;const d=JSON.parse(decodeURIComponent(escape(atob(code.slice(5)))));if(!d||!d.shg_bal)throw 0;
-      const A=['shg_ach','shg_col'],O=['shg_road','shg_lad','shg_econ','shg_inv','shg_armed','shg_gear','shg_gearMax','shg_inv2','shg_sk','shg_achc','shg_decor','shg_adc','shg_set','shg_stats','shg_league','shg_season'],N=['shg_gearV','shg_bal','shg_xp','shg_debt','shg_rdebt','shg_credit','shg_pres','shg_best','shg_streak','shg_pct','shg_ipct'],isO=v=>!!v&&typeof v==='object'&&!Array.isArray(v),K=k=>/^shg_\w+$/.test(k);
+      const A=['shg_ach','shg_col'],O=['shg_road','shg_lad','shg_econ','shg_inv','shg_armed','shg_gear','shg_gearMax','shg_inv2','shg_sk','shg_achc','shg_decor','shg_adc','shg_set','shg_stats','shg_league','shg_season'],N=['shg_gearV','shg_bal','shg_xp','shg_debt','shg_rdebt','shg_credit','shg_pres','shg_best','shg_streak','shg_pct','shg_ipct'],isO=v=>!!v&&typeof v==='object'&&!Array.isArray(v),K=k=>/^shg_\w+$/.test(k),F2=(()=>{const t=new Date(Date.now()+2*864e5);return t.getFullYear()*1e4+(t.getMonth()+1)*100+t.getDate();})();
       for(const k in d){if(!K(k)||k.startsWith('shg_prem'))continue;if(typeof d[k]!=='string')throw 0;const v=JSON.parse(d[k]);
-        if(A.includes(k)&&!Array.isArray(v)||O.includes(k)&&!isO(v)||N.includes(k)&&v!==null&&(typeof v==='object'||!isFinite(v))||k==='shg_season'&&!Array.isArray(v.got)||(k==='shg_daily'||k==='shg_weekly')&&v!==null&&!(isO(v)&&Array.isArray(v.ids))||k==='shg_profile'&&v!==null&&!Object.prototype.hasOwnProperty.call(TYPES,v)||k==='shg_league'&&v.me!=null&&!isO(v.me)||k==='shg_pet'&&v!==null&&!petFix(v))throw 0;}
+        if(A.includes(k)&&!Array.isArray(v)||O.includes(k)&&!isO(v)||N.includes(k)&&v!==null&&(typeof v==='object'||!isFinite(v))||k==='shg_season'&&!Array.isArray(v.got)||(k==='shg_daily'||k==='shg_weekly')&&v!==null&&!(isO(v)&&Array.isArray(v.ids))||k==='shg_profile'&&v!==null&&!Object.prototype.hasOwnProperty.call(TYPES,v)||k==='shg_league'&&v.me!=null&&!isO(v.me)||k==='shg_pet'&&v!==null&&!petFix(v)||/^shg_(spin|adSpin|adRevive|chalDay|chalMax)$/.test(k)&&(typeof v==='number'?v:dayOrd(v))>F2)throw 0;} 
       const sp=x=>{try{return typeof x==='string'?JSON.parse(x):null}catch(e){return null}},pm=premRead(),eb=premEqFix(sp(d.shg_premEq)),eq=eb.th||eb.ttl?JSON.stringify(eb):localStorage.getItem('shg_premEq');
       const ks=()=>Object.keys(localStorage).filter(k=>k.startsWith('shg_')),bk={};ks().forEach(k=>bk[k]=localStorage.getItem(k));
       store.off=1;try{ks().forEach(k=>localStorage.removeItem(k));for(const k in d)if(K(k)&&!k.startsWith('shg_prem'))localStorage.setItem(k,d[k]);if(pm.length)localStorage.setItem('shg_prem',JSON.stringify(pm));if(eq!==null)localStorage.setItem('shg_premEq',eq);}
@@ -5563,6 +5574,8 @@ if(streak>=5){app.classList.add('fever');$('fever').hidden=false;}
 {const tk=$('talk'),u=ASSET+'ui/robot.webp',f=()=>{tk.style.setProperty('--tkic','url("'+u+'")');tk.dataset.l=tk.dataset.l.replace(/^🤖\uFE0F?\s*/,'');tk.classList.add('tkic');};if(imgGet(u,f)===1)f();}
 rdInit();try{eco()}catch(e){}if(PREM_ON)premApply(1);else rdTheme();rdFrame();offers=makeOffers();buildChartIdle();applyView();paintTop();paintPickers();paintQuote();renderBook();setBtn();if(spFree()<0){sk={};store.set('shg_sk',sk);setTimeout(()=>toast('Skill tree updated, so all your SP was refunded'),1500);}paintTop();if(!pet&&profile)petStart(profile);petCheck();petDot();boot();setTimeout(()=>{if(!roadCue())petCue();},600);talk('idle');talk('idle');
 try{navigator.clearAppBadge&&navigator.clearAppBadge()}catch(e){}
+try{const st=navigator.storage;if(APP_MODE&&st&&st.persist&&st.persisted)st.persisted().then(v=>v||st.persist()).catch(()=>{});}catch(e){}
+try{const sw=navigator.serviceWorker;if(sw&&!onCG){const warm=()=>{try{const c=sw.controller;if(c)c.postMessage({warm:performance.getEntriesByType('resource').map(e=>e.name).filter(u=>u.startsWith(location.origin+'/')).slice(0,400)});}catch(e){}};sw.addEventListener('controllerchange',warm);if(document.readyState==='complete')setTimeout(warm,3000);else addEventListener('load',()=>setTimeout(warm,3000));}}catch(e){}
 if(/selftest/.test(location.search)){
   window.__t={start,release,tour:tourT(),reenter,declareBankrupt,takeLoan,repay,tab,news,toast,coachT(t,id,pos){coach(t,$(id)||btn,pos||'above');},hideCoach,
     get s(){return {state,balance,debt,rdebt,nw:netW(),home:homeIdx(),levSel,allin,credit,cur,crashed,re:!!(run&&run.re),inv:invTotal(),xp,pres,tut:tutDone,streak,ready:performance.now()>=readyAt&&!(adHold&&state==='result'&&!card.querySelector('#adWin,#adLoss,#adRevive')),curTab,modal:!$('modal').hidden,card:!card.hidden,col:col.length,net:stats.net,rounds:stats.rounds,hist:stats.hist.length}},

@@ -99,6 +99,9 @@ def main():
             fail(n + '.html must end with </head><body>')
     if HANGUL.search(head_en):
         fail('head_en.html contains Korean')
+    for n, h in (('head_ko', head_ko), ('head_en', head_en)):
+        if 'example.github.io' in h or '게임 이름' in h or 'Game Title' in h:
+            print('  WARN %s.html still has template placeholders (title / og:url) - fill them before deploying' % n)
     local_refs(head_ko, gd, 'head_ko.html')
     local_refs(head_en, os.path.join(gd, 'en'), 'head_en.html')
     has_sw = os.path.exists(os.path.join(gd, 'sw.js'))

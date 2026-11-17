@@ -22,6 +22,15 @@ xvfb-run -a node test/smoke.cjs dist/Ddeoksang-linux-x64/Ddeoksang
 ```
 확인하는 것: KO 첫 실행·저장 생성, 외부 이동·경로 밖 파일 막힘, 서비스워커 없음, F11·F5·확대 키,
 판 도중 창 닫기 → 다시 열면 1번만 정산, 저장 유지, Ctrl+Shift+L 언어 전환과 기억, 콘솔 오류 0.
+```
+xvfb-run -a node test/wording.cjs dist/Ddeoksang-linux-x64/Ddeoksang
+```
+PC판 문구 점검: 12개 탭 화면(KO·EN)에 광고·브라우저·폰·AdSense·CrazyGames·웹 주소가 없는지, 빌드 꼬리표가 `-pc`인지.
+
+## PC판 문구 (게임 원본)
+게임은 `app://` 주소에서 `ON_PC`가 켜져요 (`game/src/sanghanga.html`). 그러면 광고·후원·결제 설정을 끄고,
+개인정보·백업·초기화·복귀 지원금·공유 문구를 PC용으로 바꿔요(웹 주소 없이 결과만 복사). 웹판 문구는 그대로예요.
+게임 원본을 고친 뒤에는 `bash game/tools/build.sh`로 KO·EN 빌드를 다시 만들어요.
 
 ## 다음 단계 (Steam App ID 받은 뒤)
 - steamworks.js로 업적·Steam 언어·클라우드 저장 연결

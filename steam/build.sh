@@ -23,8 +23,10 @@ pack(){ npx --no-install electron-packager "$ST" Ddeoksang --platform=$1 --arch=
   find "$OUT/Ddeoksang-$1-x64/locales" -type f ! -name 'en-US.pak' ! -name 'ko.pak' -delete; }   # 한국어·영어 외 크롬 언어팩 빼기
 mkdir -p "$OUT"
 if [ "$WHICH" = all ] || [ "$WHICH" = win32 ]; then
-  pack win32; node "$HERE/patch_exe.js" "$OUT/Ddeoksang-win32-x64/Ddeoksang.exe" "$HERE/stage/icon.ico" "$VER"
+  pack win32; rm -f "$OUT/Ddeoksang-win32-x64/dxcompiler.dll" "$OUT/Ddeoksang-win32-x64/dxil.dll"   # WebGPU용 셰이더 컴파일러(게임은 2D 캔버스만 씀) · 25MB 절약
+  node "$HERE/patch_exe.js" "$OUT/Ddeoksang-win32-x64/Ddeoksang.exe" "$HERE/stage/icon.ico" "$VER"
   (cd "$OUT" && rm -f "Ddeoksang-$VER-win64.zip" && zip -qr9 "Ddeoksang-$VER-win64.zip" Ddeoksang-win32-x64)
+  if command -v 7z >/dev/null; then (cd "$OUT" && rm -f "Ddeoksang-$VER-win64.7z" && 7z a -t7z -mx=9 -m0=lzma2 -md=256m -ms=on "Ddeoksang-$VER-win64.7z" Ddeoksang-win32-x64 >/dev/null); fi   # 테스트 전달용(더 작음)
 fi
 if [ "$WHICH" = all ] || [ "$WHICH" = linux ]; then
   pack linux; (cd "$OUT" && rm -f "Ddeoksang-$VER-linux64.tar.gz" && tar czf "Ddeoksang-$VER-linux64.tar.gz" Ddeoksang-linux-x64)

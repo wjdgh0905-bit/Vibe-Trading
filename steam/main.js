@@ -54,7 +54,8 @@ function lockDown(ses) {
 }
 
 function fitBounds(b) {
-  const def = { width: 1280, height: 800 };
+  const wa = screen.getPrimaryDisplay().workAreaSize;   // 첫 창: 1280x800, 화면이 더 작으면(노트북 125%·150% 배율 등) 화면 안에 맞춤
+  const def = { width: Math.min(1280, Math.max(400, wa.width - 40)), height: Math.min(800, Math.max(600, wa.height - 40)) };
   if (!b || !b.width) return def;
   const d = screen.getDisplayMatching(b).workArea;
   const vis = b.x < d.x + d.width - 80 && b.x + b.width > d.x + 80 && b.y >= d.y - 20 && b.y < d.y + d.height - 80;

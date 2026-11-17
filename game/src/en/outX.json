@@ -1,3 +1,16 @@
 {
- "🧾 지난 판은 창이 닫혀 마지막 가격으로 정산했어요 ·": "🧾 Your last round was closed early, so it was settled at the last price ·"
+ "🧾 지난 판은 창이 닫혀 마지막 가격으로 정산했어요 ·": "🧾 Your last round was closed early, so it was settled at the last price ·",
+ "화": "Tue",
+ "수": "Wed",
+ "목": "Thu",
+ "토": "Sat",
+ "광고 보고": "Watch an ad:",
+ "1개 받기": "×1 free",
+ "🟡 현금": "🟡 Cash",
+ "📚 경험치": "📚 XP",
+ "💎 보물상자: 익절": "💎 Treasure chest: every",
+ "번마다 · 다음은": " take-profits · next in",
+ "번 뒤 ·": " ·",
+ "요일마다 정해진 선물 · 하루 한 번": "A set gift for each day of the week · once a day",
+ "판을 해서 경험치를 모으면 칸이 열려요": "Play rounds and earn XP to unlock tiers"
 }

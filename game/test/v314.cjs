@@ -3,6 +3,7 @@
 //  2) 판 도중 강제 종료(정산 없이 꺼짐) → 다음 실행 때 마지막 가격으로 정산 (손실 판을 꺼서 피하기 불가)
 //  3) 시계를 미래로 돌렸다 되돌려도 선물·미션이 그 날짜까지 잠기지 않음 (오늘 받음으로 바뀜)
 //  4) 화면을 떠나도 앱 아이콘 배지를 붙이지 않음
+//  5) 랜덤 보상 → 고정: 매일 선물(요일표·같은 날 같은 보상), 보물상자(익절 14번째), 시즌 패스 잠금 없음
 'use strict';
 const { chromium } = require('playwright');
 const http = require('http'), fs = require('fs'), path = require('path');
@@ -72,8 +73,39 @@ const ok = (k, v, why) => { R[k] = v; if (!v) fail.push(k + (why ? ' — ' + why
     const calls = await p.evaluate(async () => { Object.defineProperty(document, 'hidden', { configurable: true, get: () => true }); document.dispatchEvent(new Event('visibilitychange')); await new Promise(r => setTimeout(r, 300)); return window.__badge; });
     ok('4.noBadgeSet', !calls.some(c => typeof c === 'number'), JSON.stringify(calls)); await ctx.close(); }
 
+  // 5a) 매일 선물: 같은 날이면 몇 번을 새로 해도 같은 보상 (뽑기 없음) · 요일표 7칸 · '여는 중' 없음
+  { const deltas = [];
+    for (let i = 0; i < 2; i++) {
+      const { ctx, p } = await open({ ...PRE, shg_bal: '5000000', shg_stats: JSON.stringify({ rounds: 12, wins: 3, bestM: 1, bestPct: 0, net: 0, hist: [], c: { items: 0 }, cleanRounds: 0 }) });
+      const r = await p.evaluate(async () => { const s0 = { ...window.__t.s }, inv0 = localStorage.getItem('shg_inv'); document.getElementById('giftBtn').click(); await new Promise(r => setTimeout(r, 900));
+        const m = document.getElementById('modal'), s1 = window.__t.s;
+        return { days: m.querySelectorAll('.gwk span').length, on: m.querySelectorAll('.gwk span.on').length, opening: /여는 중/.test(m.innerText), d: { bal: Math.round(s1.balance - s0.balance), xp: s1.xp - s0.xp, inv: localStorage.getItem('shg_inv') !== inv0 ? localStorage.getItem('shg_inv') : '' } }; });
+      deltas.push(JSON.stringify(r.d));
+      if (i === 0) { ok('5a.weekStrip', r.days === 7 && r.on === 1, JSON.stringify(r)); ok('5a.noSuspense', !r.opening); }
+      await ctx.close();
+    }
+    ok('5a.sameGiftSameDay', deltas[0] === deltas[1] && deltas[0] !== JSON.stringify({ bal: 0, xp: 0, inv: '' }), deltas.join(' | ')); }
+
+  // 5b) 보물상자: 익절 14번째에 정해진 순서로 (첫 상자 = 현금 0.5배)
+  for (let attempt = 0; attempt < 4; attempt++) {
+    const { ctx, p } = await open({ ...PRE, shg_bal: '10000000', shg_stats: JSON.stringify({ rounds: 2, wins: 1, bestM: 1, bestPct: 0, net: 0, hist: [], c: { items: 0 }, cleanRounds: 0, chestN: 13, chestK: 0 }) });
+    const r = await p.evaluate(async () => { const t = window.__t; t.lev = 1; t.pct = 1;
+      for (let i = 0; i < 4 && t.s.state !== 'holding'; i++) { t.start(); await new Promise(r => setTimeout(r, 600)); }
+      for (let i = 0; i < 40 && t.s.state === 'holding' && t.s.cur < 1.03; i++) await new Promise(r => setTimeout(r, 100));
+      const held = t.s.state === 'holding'; t.release(); await new Promise(r => setTimeout(r, 300));
+      const st = JSON.parse(localStorage.getItem('shg_stats')); return { held, chestN: st.chestN, chestK: st.chestK }; });
+    await ctx.close();
+    if (!r.held && attempt < 3) continue;
+    ok('5b.chestOn14th', r.chestK === 1 && r.chestN === 0, JSON.stringify(r)); break;
+  }
+
+  // 5c) 시즌 패스: 요일 잠금·'N일 남음' 없음
+  { const { ctx, p } = await open({ ...PRE, shg_stats: JSON.stringify({ rounds: 12, wins: 3, bestM: 1, bestPct: 0, net: 0, hist: [], c: { items: 0 }, cleanRounds: 0 }) });
+    const r = await p.evaluate(async () => { window.__t.tab('mission'); await new Promise(r => setTimeout(r, 700)); const tx = document.body.innerText; return { left: /일 남음/.test(tx), daily: /단계씩 열려요/.test(tx), note: /경험치를 모으면 칸이 열려요/.test(tx), locked: document.querySelectorAll('.spass .lk').length }; });
+    ok('5c.seasonUnlocked', !r.left && !r.daily && r.note && r.locked === 0, JSON.stringify(r)); await ctx.close(); }
+
   await b.close(); srv.close();
   console.log(JSON.stringify(R));
-  console.log(fail.length ? 'FAIL\n' + fail.join('\n') : 'PASS v3.1.4 fixes 1–4');
+  console.log(fail.length ? 'FAIL\n' + fail.join('\n') : 'PASS v3.1.4 fixes 1–5');
   process.exit(fail.length ? 1 : 0);
 })().catch(e => { console.error('ERR', e); process.exit(2); });

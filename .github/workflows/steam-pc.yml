@@ -33,7 +33,7 @@ jobs:
         run: npm ci --no-audit --no-fund && bash build.sh
       - name: Smoke test (Linux build)
         working-directory: steam
-        run: xvfb-run -a node test/smoke.cjs dist/Ddeoksang-linux-x64/Ddeoksang
+        run: xvfb-run -a node test/smoke.cjs dist/Ddeoksang-linux-x64/Ddeoksang && xvfb-run -a node test/wording.cjs dist/Ddeoksang-linux-x64/Ddeoksang
       - name: Upload Windows build
         uses: actions/upload-artifact@v6
         with:

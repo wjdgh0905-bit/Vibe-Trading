@@ -1,0 +1,43 @@
+{
+  "name": "my-game-pc",
+  "productName": "MyGame",
+  "version": "0.1.0",
+  "description": "PC (Steam) build of the web game in gameDir",
+  "author": "melange lab",
+  "main": "main.js",
+  "private": true,
+  "license": "UNLICENSED",
+  "titles": {
+    "ko": "게임 한국어 제목",
+    "en": "English Title"
+  },
+  "gameDir": "../game",
+  "gameFiles": [
+    "index.html",
+    "en/index.html",
+    "icon-192.png",
+    "icon-512.png",
+    "apple-touch-icon.png"
+  ],
+  "test": {
+    "presetStorage": {},
+    "roundCounter": "rounds",
+    "runningStates": [
+      "running",
+      "holding"
+    ],
+    "keyPrefix": "",
+    "extraTabs": []
+  },
+  "scripts": {
+    "start": "electron .",
+    "build": "bash build.sh"
+  },
+  "devDependencies": {
+    "@electron/packager": "20.3.0",
+    "electron": "45.2.1",
+    "pe-library": "2.0.3",
+    "playwright": "1.63.0",
+    "resedit": "3.1.1"
+  }
+}

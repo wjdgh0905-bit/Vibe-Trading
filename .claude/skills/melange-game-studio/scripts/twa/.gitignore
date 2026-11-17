@@ -1,0 +1,6 @@
+keys/
+out/
+project/
+node_modules/
+*.keystore
+*password*

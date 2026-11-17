@@ -1,0 +1,126 @@
+<title>타이밍 탭</title>
+<style>
+/* 디자인 토큰: 새 화면은 아래 :root 값만 씀 (색·면·글자 크기) */
+:root{--bg:#090c13;--panel:#111723;--panel2:#192131;--hair:rgba(160,180,215,.16);--fg:#f3f6fb;--muted:#9aa6ba;
+  --gold:#f5c542;--good:#16c784;--bad:#f2313f;--r:14px;--t1:28px;--t2:18px;--t3:14px;--t4:12px}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--fg);font:var(--t3)/1.45 Inter,"Noto Sans KR",system-ui,sans-serif;overscroll-behavior:none;-webkit-tap-highlight-color:transparent;user-select:none}
+[hidden]{display:none!important}
+#app{max-width:520px;margin:0 auto;min-height:100%;display:flex;flex-direction:column;padding:12px 16px calc(12px + env(safe-area-inset-bottom))}
+header{display:flex;justify-content:space-between;align-items:center;gap:8px}
+#bal{font-size:var(--t1);font-weight:800;color:var(--gold);white-space:nowrap}
+.page{flex:1;display:flex;flex-direction:column;gap:12px;padding-top:12px}
+.card{background:var(--panel);border:1px solid var(--hair);border-radius:var(--r);padding:14px}
+#bar{height:28px;border-radius:999px;background:var(--panel2);position:relative;overflow:hidden}
+#fill{position:absolute;inset:0 auto 0 0;width:0;background:var(--good)}
+#zone{position:absolute;top:0;bottom:0;border:2px solid var(--gold);border-radius:8px}
+button{font:inherit;color:inherit;cursor:pointer;border:0}
+.big{width:100%;min-height:64px;border-radius:var(--r);background:#fff;color:#0b0f17;font-size:var(--t2);font-weight:800}
+.ghost{width:100%;min-height:44px;border-radius:12px;background:var(--panel2);border:1px solid var(--hair)}
+nav{display:flex;gap:8px;padding-top:10px}nav button{flex:1;min-height:48px;border-radius:12px;background:var(--panel2)}nav button[aria-current]{background:var(--panel);outline:2px solid var(--hair)}
+.note{color:var(--muted);font-size:var(--t4)}
+#toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:#000c;padding:10px 14px;border-radius:12px;max-width:90vw;text-align:center;z-index:30}
+#sheet{position:fixed;inset:auto 0 0 0;background:var(--panel);border-radius:18px 18px 0 0;padding:18px 16px 28px;z-index:20;max-width:520px;margin:0 auto}
+#modal{position:fixed;inset:0;display:grid;place-items:center;background:#0009;z-index:25}#modal>div{background:var(--panel);border-radius:var(--r);padding:18px;width:min(420px,92vw)}
+textarea{width:100%;min-height:90px;background:var(--panel2);color:var(--fg);border:1px solid var(--hair);border-radius:10px;padding:8px;user-select:text}
+/* PC·태블릿 가로 화면(700px 이상): 가운데 정렬 + 넓은 카드 */
+@media (min-width:700px) and (orientation:landscape){#app{max-width:760px}.big{min-height:72px}}
+</style>
+<div id="app">
+  <header><div><div class="note" id="balL">내 돈</div><div id="bal">0원</div></div><div class="note" id="lvl"></div></header>
+  <section class="page" id="pgPlay">
+    <div class="card"><div id="bar"><div id="zone"></div><div id="fill"></div></div><p class="note" id="hint">금색 칸 안에서 멈추면 보상! (스페이스바도 돼요)</p></div>
+    <button class="big" id="go" type="button">▶ 시작</button>
+    <div class="card note" id="last">아직 기록이 없어요</div>
+  </section>
+  <section class="page" id="pgSet" hidden>
+    <div class="card"><h3>저장</h3><button class="ghost" id="bkOut" type="button">💾 백업 코드 복사</button><p></p><button class="ghost" id="bkIn" type="button">📥 백업 불러오기</button><p class="note" id="saveNote"></p></div>
+    <div class="card"><h3>개인정보</h3><p class="note" id="privacy"></p></div>
+    <div class="card"><button class="ghost" id="quit" type="button" hidden>🚪 게임 종료</button><p></p><button class="ghost" id="wipe" type="button">모든 기록 초기화</button><p class="note" id="build"></p></div>
+  </section>
+  <nav><button type="button" data-tab="play" aria-current="true">🎯 게임</button><button type="button" data-tab="set">⚙️ 설정</button></nav>
+</div>
+<div id="toast" hidden></div>
+<div id="sheet" hidden></div>
+<div id="modal" hidden><div id="modalBox"></div></div>
+<script>
+(()=>{'use strict';
+const $=id=>document.getElementById(id);
+const LANG='ko';            // 영어판 빌드가 'en'으로 바꿈
+const ASSET='';             // 영어판은 /en/ 안이라 '../'
+/* ---------- 플랫폼: 웹 · 크레이지게임즈 · 안드로이드 앱(TWA) · PC(스팀, Electron app://) ---------- */
+const ON_PC=location.protocol==='app:';
+const onCG=/crazygames/.test(location.hostname);
+const APP_MODE=!onCG&&!ON_PC&&(/^android-app:/.test(document.referrer)||matchMedia('(display-mode: standalone)').matches);
+const CFG={adClient:'',donateUrl:'',iap:false};   // 광고·후원·결제는 기본 끔 (승인 전) · PC판은 항상 끔
+if(ON_PC){CFG.adClient='';CFG.donateUrl='';CFG.iap=false;}
+const BUILD='v0.1.0 · b000000a · '+LANG+'-'+(ON_PC?'pc':onCG?'cg':APP_MODE?'app':'web');
+/* ---------- 저장: localStorage가 막히면 메모리로 (경고 + 백업 코드) · 키 앞머리는 게임마다 다르게 ---------- */
+const KP='tt_';
+let memMode=false;const mem={};
+function lsGet(k){try{return localStorage.getItem(k)}catch(e){memMode=true;return k in mem?mem[k]:null}}
+function lsSet(k,v){try{localStorage.setItem(k,v)}catch(e){memMode=true;mem[k]=v;warnOnce()}}
+let warned=0;function warnOnce(){if(warned++)return;setTimeout(()=>toast(T.saveBlocked),1500)}
+const store={get(k,d){try{const v=lsGet(KP+k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){lsSet(KP+k,JSON.stringify(v))}};
+/* 저장 버전: 모양을 바꿀 땐 SAVE_V를 올리고 migrate에 단계 추가 (옛 저장은 절대 지우지 않음) */
+const SAVE_V=2;
+function migrate(s){if(!s||typeof s!=='object')return{v:SAVE_V,bal:0,best:0,plays:0};
+  if(!s.v||s.v<2){s.best=s.best||0;s.plays=s.plays||0;s.v=2;}   // v1 → v2: 최고 기록·판 수 추가
+  if(!(s.bal>=0))s.bal=0;return s;}
+let S=migrate(store.get('save',null));store.set('save',S);
+/* ---------- 문구: 플랫폼마다 두 문장을 통째로 (번역 지도와 맞추기 쉬움) ---------- */
+const T={saveBlocked:'⚠️ 저장이 막혀 있어요 · 설정에서 백업 코드를 복사해 두세요',
+  saveNote:ON_PC?'기록은 이 PC에만 저장돼요. 다른 PC로 옮길 때는 백업 코드를 쓰세요.':'기록은 이 기기 브라우저에만 저장돼요. 가끔 백업 코드를 복사해 두세요.',
+  privacy:ON_PC?'회원가입이 없고, 기록은 이 PC에만 저장되며 서버로 보내지 않아요.':'회원가입이 없고, 기록은 이 기기에만 저장되며 서버로 보내지 않아요.',
+  win:'완벽해요!',ok:'좋아요',miss:'아쉬워요',copied:'💾 백업 코드를 복사했어요',loaded:'📥 불러왔어요',bad:'코드가 올바르지 않아요 · 지금 기록은 그대로예요',
+  wipeQ:'정말 모든 기록을 지울까요?',yes:'지우기',no:'취소',wiped:'초기화했어요',start:'▶ 시작',stop:'⏹ 멈춤',plays:'판',best:'최고'};
+/* ---------- 숫자: 화면엔 소수 2자리까지만 ---------- */
+const nf=new Intl.NumberFormat(LANG==='ko'?'ko-KR':'en-US',{maximumFractionDigits:2});
+const fmt=n=>nf.format(Math.round(n*100)/100);
+const money=n=>LANG==='ko'?fmt(n)+'원':'$'+fmt(n);
+/* ---------- 알림 · 창 ---------- */
+let tT=0;function toast(m){const e=$('toast');e.textContent=m;e.hidden=false;clearTimeout(tT);tT=setTimeout(()=>e.hidden=true,2200)}
+function openModal(html){$('modalBox').innerHTML=html;$('modal').hidden=false}
+function closeTop(){if(!$('sheet').hidden){$('sheet').hidden=true;return true}if(!$('modal').hidden){$('modal').hidden=true;return true}if(tabNow!=='play'){tab('play');return true}return false}
+addEventListener('keydown',e=>{if(e.key==='Escape'){if(closeTop())e.stopPropagation();}},true);
+/* 안드로이드 앱의 뒤로가기: 열린 창이 있을 때만 기록 한 칸을 잡아 두고, 뒤로가기면 맨 위 창부터 닫음 */
+if(APP_MODE){let selfPop=0;const sync=()=>{if(selfPop)return;const open=!$('sheet').hidden||!$('modal').hidden||tabNow!=='play';const g=history.state&&history.state.g;
+    if(open&&!g)history.pushState({g:1},'');else if(!open&&g){selfPop=1;history.back();}};   // 버튼으로 닫으면 잡아 둔 한 칸도 되돌림
+  addEventListener('popstate',()=>{if(selfPop){selfPop=0;return;}closeTop();setTimeout(sync,0)});new MutationObserver(sync).observe(document.body,{subtree:true,attributes:true,attributeFilter:['hidden']});}
+/* ---------- 탭 ---------- */
+let tabNow='play';
+function tab(t){tabNow=t;$('pgPlay').hidden=t!=='play';$('pgSet').hidden=t!=='set';document.querySelectorAll('nav button').forEach(b=>b.toggleAttribute('aria-current',b.dataset.tab===t));if(t==='set')paintSet();}
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>tab(b.dataset.tab));
+/* ---------- 게임: 막대가 차오름 → 금색 칸 안에서 멈추면 보상 (고정 보상, 랜덤 상자 없음) ---------- */
+let state='ready',p=0,v=0,z0=.6,z1=.75,runT=0;
+function newZone(){const w=.12+Math.min(.1,S.plays*.002);z0=.35+((S.plays*37)%40)/100;z1=Math.min(.98,z0+w);$('zone').style.left=z0*100+'%';$('zone').style.width=(z1-z0)*100+'%';}
+function start(){if(state==='running')return;state='running';p=0;v=.45+Math.min(.6,S.plays*.01);runT=performance.now();$('go').textContent=T.stop;}
+function stopRun(){if(state!=='running')return;state='ready';$('go').textContent=T.start;
+  const mid=(z0+z1)/2,in_=p>=z0&&p<=z1,perfect=Math.abs(p-mid)<(z1-z0)*.15;
+  const gain=perfect?1000:in_?500:0;S.bal+=gain;S.plays++;S.best=Math.max(S.best,gain);store.set('save',S);
+  $('last').textContent=(perfect?T.win:in_?T.ok:T.miss)+' · +'+money(gain);paint();newZone();}
+function settleOnLeave(){if(state==='running')stopRun();}   // 창을 닫거나 숨기면 지금 위치로 한 번만 정산
+addEventListener('pagehide',settleOnLeave);document.addEventListener('visibilitychange',()=>{if(document.hidden)settleOnLeave()});
+$('go').onclick=()=>state==='running'?stopRun():start();
+addEventListener('keydown',e=>{if(e.code==='Space'&&!e.repeat&&tabNow==='play'&&$('modal').hidden&&!(document.activeElement&&document.activeElement.closest&&document.activeElement.closest('#board'))){e.preventDefault();state==='running'?stopRun():start();}});   // 스페이스 = 주 동작 (게임판 안 버튼에 초점이 있으면 그 버튼에 양보)
+/* ---------- 프레임: 한 번 오류가 나도 다음 프레임은 계속 (오류는 한 번만 기록) ---------- */
+let last=0,frErr=0;
+function frameB(ts){const dt=Math.min(.05,(ts-(last||ts))/1000);last=ts;if(state==='running'){p+=v*dt;if(p>=1){p=1;stopRun();}}$('fill').style.width=(p*100)+'%';}
+function frame(ts){try{frameB(ts);frErr=0;}catch(e){if(!frErr++)try{store.set('errlog',String(e&&e.stack||e).slice(0,500))}catch(_){}}finally{requestAnimationFrame(frame);}}
+/* ---------- 화면 칠하기 ---------- */
+function paint(){$('bal').textContent=money(S.bal);$('lvl').textContent=T.plays+' '+fmt(S.plays)+' · '+T.best+' '+money(S.best);}
+function paintSet(){$('saveNote').textContent=T.saveNote;$('privacy').textContent=T.privacy;$('build').textContent=BUILD;}
+/* ---------- 백업 코드 (불러오기는 통째로: 실패하면 지금 기록 유지) ---------- */
+$('bkOut').onclick=()=>{const code=btoa(unescape(encodeURIComponent(JSON.stringify(S))));(navigator.clipboard?navigator.clipboard.writeText(code):Promise.reject()).then(()=>toast(T.copied),()=>openModal('<textarea readonly>'+code+'</textarea>'));};
+$('bkIn').onclick=()=>{openModal('<textarea id="bkTxt"></textarea><p></p><button class="ghost" id="bkGo" type="button">📥</button>');$('bkGo').onclick=()=>{try{const raw=JSON.parse(decodeURIComponent(escape(atob($('bkTxt').value.trim()))));if(!raw||typeof raw!=='object'||Array.isArray(raw)||typeof raw.bal!=='number')throw 0;const s=migrate(raw);S=s;store.set('save',S);$('modal').hidden=true;paint();toast(T.loaded);}catch(e){toast(T.bad);}};};
+$('wipe').onclick=()=>{openModal('<p>'+T.wipeQ+'</p><button class="ghost" id="wy" type="button">'+T.yes+'</button><p></p><button class="ghost" id="wn" type="button">'+T.no+'</button>');$('wn').onclick=()=>$('modal').hidden=true;$('wy').onclick=()=>{S=migrate(null);store.set('save',S);$('modal').hidden=true;paint();toast(T.wiped);};};
+$('modal').onclick=e=>{if(e.target===$('modal'))$('modal').hidden=true;};
+if(ON_PC){$('quit').hidden=false;$('quit').onclick=()=>{settleOnLeave();window.close();};}   // PC(스팀)판은 게임 안에서 끌 수 있어야 함
+/* ---------- 시험 훅: ?selftest 일 때만 (자동 테스트가 씀) ---------- */
+if(/[?&]selftest\b/.test(location.search))window.__t={start,stop:stopRun,tab,toast,get s(){return{state,rounds:S.plays,p,bal:S.bal,plays:S.plays,best:S.best,tab:tabNow,mem:memMode}},   // 시험 약속: s.state · s.rounds(끝난 판 수)
+  set p(x){p=x},zone:()=>[z0,z1],BUILD};
+/* 오프라인 대비: 이번 접속에서 받은 파일을 서비스워커 캐시에 채워 둠 (웹·앱만) */
+if(!ON_PC&&!onCG&&'serviceWorker' in navigator){const warm=()=>navigator.serviceWorker.ready.then(r=>r.active&&r.active.postMessage({warm:performance.getEntriesByType('resource').map(e=>e.name).filter(u=>u.startsWith(location.origin))})).catch(()=>{});addEventListener('load',()=>setTimeout(warm,3000));navigator.serviceWorker.addEventListener('controllerchange',warm);}
+newZone();paint();requestAnimationFrame(frame);
+})();
+</script>

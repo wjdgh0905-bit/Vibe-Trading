@@ -1885,6 +1885,7 @@ let localStorage=(()=>{try{const s=window.localStorage,k='_shgProbe';s.setItem(k
 function memWarn(){if(memWarn.on)return;memWarn.on=1;setTimeout(()=>toast(ON_PC?'⚠️ 이 PC에 저장이 안 되고 있어요 · 설정의 백업 코드 복사로 기록을 보관하세요':'⚠️ 이 브라우저는 저장이 막혀 있어요 · 설정의 백업 코드 복사로 기록을 보관하세요'),2500);} // 한 번만, 첫 화면이 뜬 뒤에 (게임은 막지 않음)
 function lsSet(k,s){try{localStorage.setItem(k,s);}catch(e){if(memSave)throw e;localStorage=memLS(localStorage);memSave=2;localStorage.setItem(k,s);memWarn();}} // 쓰다가 막히면(용량 초과·차단) 지금까지 기록을 메모리로 옮겨 이어서 저장 (하루 횟수 같은 값이 세션 안에서는 지켜지게)
 const store={off:0,seen:{},keep:{},get(k,d){try{const v=localStorage.getItem(k);store.seen[k]=v;return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){if(store.off)return;try{const x=store.keep[k];if(x&&v&&typeof v==='object'){if(!Array.isArray(v)){if(!Array.isArray(x))v=Object.assign({},x,v);}else if(Array.isArray(x)&&x.length)v=v.concat(x.filter(i=>!v.includes(i)));}const s=JSON.stringify(v);if(store.seen[k]===s)return;lsSet(k,s);store.seen[k]=s;}catch(e){}}}; /* v313: keep = 이 페이지가 모르는 항목(더 새 버전이 쓴 상품·줄·컬렉션) · 저장할 때 다시 합쳐서 되돌린 배포가 새 기록을 지우지 않게 */ // off: 다른 탭이 더 새 기록을 저장함 → 덮어쓰지 않음, seen: 이 탭이 마지막으로 읽거나 쓴 값
+const LIVE0=store.get('shg_live',null); // v314: 지난 실행에서 정산 못 한 판 (부팅 중 paintTop이 지우기 전에 먼저 읽어 둠)
 const fin=v=>isFinite(v=+v)?v:0; // 숫자가 아니거나 무한대면 0
 // 저장 형식 버전: 저장 모양을 바꿀 때 SAVE_V를 올리고 MIG에 '옛 버전 → 다음 버전' 변환을 추가 (기록에 없으면 0 = v2.1까지의 저장). 백업 코드에도 shg_ver가 같이 들어가고, 옛 코드는 불러온 뒤 새로고침 때 여기서 변환됨
 const PET_T=[0,50,450]; // 캐릭터 키우기 단계 경계 (친밀도): 아기 0 → 어른 50 → 전설 450 · 한 판 +1, 익절 +1, 보스 처치 +2 (보통 30~40판에 어른, 250~350판에 전설)
@@ -2174,6 +2175,10 @@ const wkOrd=k=>{const m=String(k||'').match(/^(\d+)-W(\d+)$/);return m?+m[1]*100
 let weekly=store.get('shg_weekly',null);
 function ensureDaily(){
   const today=dayKey();
+  // v314: 기기 시계를 미래로 돌렸다 되돌리면 선물·광고 보상·미션이 그 날짜까지 잠기던 문제 → 미래 날짜는 '오늘 받음'으로 바꿈 (내일 정상으로 열림, 되돌려서 두 번 받기는 안 됨)
+  ['shg_spin','shg_adSpin','shg_adRevive'].forEach(k=>{if(dayOrd(store.get(k,''))>dayOrd(today))store.set(k,today);});
+  if(daily&&dayOrd(daily.date)>dayOrd(today)){daily.date=today;store.set('shg_daily',daily);}
+  {const w=weekKey();if(weekly&&wkOrd(weekly.date)>wkOrd(w)){weekly.date=w;store.set('shg_weekly',weekly);}}
   const okD=(o,v)=>o&&o.v===v&&Array.isArray(o.ids)&&Array.isArray(o.done)&&o.prog&&typeof o.prog==='object'; // 모양이 이상한 기록은 새로 뽑음
   if(!(okD(daily,4)&&dayOrd(daily.date)>=dayOrd(today))){const ri=rankOf(xp);
     daily={date:today,v:4,ids:pickSeeded(today,MISSIONS.filter(m=>(m.lv||0)<=ri).map(m=>m.id),8),prog:{},done:[]};store.set('shg_daily',daily);}
@@ -3011,6 +3016,7 @@ let avaK='',avaW=0;function avaPaint(){try{const i=$('avaI'),id=petSel(),st=petS
   if(ic){i.style.backgroundPosition='';return;}const m=PTM[id],tb=st===1&&m?m[1]/288:st===0?.1:.02;i.style.backgroundPosition='50% '+(-tb*w*2.1+1).toFixed(1)+'px,0 0';}catch(e){}} // 그림 위쪽 빈칸만큼 올려 얼굴이 동그라미 안에
 if(window.ResizeObserver)new ResizeObserver(()=>{const w=$('avaI').clientWidth;if(w&&w!==avaW){avaW=w;avaPaint();}}).observe($('avaI'));else addEventListener('resize',()=>{avaW=0;avaPaint();}); // 얼굴 동그라미 폭은 크기가 바뀔 때만 잼 (판 끝 시트가 뜰 때마다 clientWidth로 강제 배치 계산하지 않게)
 function paintTop(){try{checkHome()}catch(e){}
+  if(state!=='holding')store.set('shg_live',null); // v314: 판이 정산되면 '진행 중인 판' 기록을 지움 (잔고 저장과 같은 자리)
   store.set('shg_debt',Math.ceil(debt));store.set('shg_credit',credit);store.set('shg_rdebt',Math.ceil(rdebt));
   {const d=$('debtTag');d.hidden=debt<=0;if(debt>0)d.textContent='빚 '+wonS(debt)+' · 신용 '+crS(credit);}
   if(!(balance>=0))balance=0;
@@ -3209,7 +3215,7 @@ function start(){
   card.hidden=true;newsIdle();
   t=0;cur=1;peak=1;sell=null;crashed=false;events=[];warned=!!(hint&&hint.crystal);volTotal=0;talkT=0;hbT=0;vigA=0;run.mi=0;if(run.boss){events=run.boss.sc.ev.map(x=>({...x}));bossPaint(run.boss);} /* BOSS-V2: scripted events after the reset */
   if(run.lev>1&&!tut&&Math.random()<Math.min(.75,.08*run.lev))events.push({t0:rnd(.15,.8),amp:-rnd(.05,.18)*(T.amp||1),shake:1}); // 레버리지 개미털기
-  state='holding';vib(HAP.buy);paintTop();paintPickers();setBtn();ptK='still';ptB=0;ptHot=0;clearTimeout(ptTm);ptSync();ptKick('ptHop .5s ease-out'); // 파트너: 산 순간 깡충 · 매수 진동
+  state='holding';if(!tut&&!ch&&!bs)liveSave();vib(HAP.buy);paintTop();paintPickers();setBtn();ptK='still';ptB=0;ptHot=0;clearTimeout(ptTm);ptSync();ptKick('ptHop .5s ease-out'); // 파트너: 산 순간 깡충 · 매수 진동
   $('pnl').hidden=false;pbShow(true);pbLive();ptSay(pick(run.boss?ptP('bossGo'):ptP('buy')),1800);proSync(); // 다음 목표 줄 자리에 평가손익 바 · 파트너 한마디
   if(hint&&hint.crystal)news('🔮 수정구슬: "'+fmtP(priceOf(hint.v))+(isUsd()?'':'원')+' 부근에서 폭락"','rumor');
   else if(hint)news('🔍 찌라시: "'+fmtP(priceOf(hint.v))+(isUsd()?'':'원')+' 근처에서 세력 턴다"','rumor');
@@ -3635,7 +3641,8 @@ const loanAmt=(c=credit)=>Math.max(START,Math.round(betCapD(1)*LOAN_X[c]/1e4)*1e
 const loanRate=()=>LOAN_R[credit];
 const debtLimit=()=>Math.max(START*30,betCapD(1)*25);
 const canLoan=(D=debt,c=credit)=>{if(c>=10)return false;const d=D+loanAmt(c);return d+Math.ceil(d*LOAN_R[Math.min(10,c+1)])<=debtLimit();}; // 다음 판 이자(대출 후 등급)까지 붙어도 한도 안이어야
-function takeLoan(){if(!canLoan())return false;const a=loanAmt();debt+=a;balance+=a;credit=Math.min(10,credit+1);stats.loans=(stats.loans||0)+1;const nl=stats.loanAt!==stats.rounds;stats.loanAt=stats.rounds;store.set('shg_stats',stats);if(nl)unlock('debt1');
+function takeLoan(){if(!canLoan())return false;const a=loanAmt();debt+=a;balance+=a;intPaid=false;store.set('shg_intPaid',false); // v314: 새로 빌리면 다음 판 이자를 규칙대로 (갚다 만 빚 + 새 대출에 이자가 한 번 빠지던 문제)
+  credit=Math.min(10,credit+1);stats.loans=(stats.loans||0)+1;const nl=stats.loanAt!==stats.rounds;stats.loanAt=stats.rounds;store.set('shg_stats',stats);if(nl)unlock('debt1');
   vib(HAP.warn);toast('💳 대출 '+won(a)+' · 신용 '+crS(credit)+(credit>=8?' (사채)':''));return true;}
 function repay(a){a=Math.min(a,debt,balance);if(a<=0)return;balance-=a;debt-=a;if(debt<1){debt=0;intPaid=false;store.set('shg_intPaid',false);credit=Math.max(1,credit-1);if(state==='holding'||!(stats.loanAt>=stats.rounds))unlock('payoff');toast('🙌 빚 청산! 신용 '+crS(credit));sfx.up();}}
 function rdRepay(a){a=Math.min(a,rdebt,balance);if(!(a>0))return 0;balance-=a;rdebt-=a;if(rdebt<1){rdebt=0;setTimeout(()=>toast('🌱 재기 자금 다 갚았어요!'),300);}store.set('shg_rdebt',Math.ceil(rdebt));return a;} // 재기 자금 갚기 (자동·은행 공통): 신용등급·업적 변화 없음, 다 갚으면 작은 알림 하나
@@ -3697,7 +3704,7 @@ if(/^(localhost|127\.0\.0\.1)$/.test(location.hostname)&&/[?&]adsense\b/.test(lo
 const CG={on:false,S:null,last:0,noAds:0,done:0},onCG=/crazygames/.test(location.hostname)||/^(localhost|127\.0\.0\.1)$/.test(location.hostname)&&/[?&]cg\b/.test(location.search); // C07: ?cg 시험 스위치는 개발 주소(localhost)에서만 · noAds: 이번 접속에서 광고 요청이 한 번이라도 실패·시간 초과 → 광고가 꺼진 것으로 보고 📺 버튼을 숨김 (Basic Launch·애드블록에서 효과 없는 버튼 금지), done: SDK 준비가 끝났거나 실패함
 const ON_PC=location.protocol==='app:'; // 스팀(PC)판: Electron 창이 app://game/ 으로 띄움 → 광고·후원·결제 없음, 웹·폰 안내 대신 PC 문구
 if(ON_PC){CFG.adClient='';CFG.donateUrl='';CFG.iap=false;}
-const BUILD='v3.1.3 · b261117a · '+LANG+'-'+(ON_PC?'pc':onCG?'cg':/(^|\.)itch\.(io|zone)$|hwcdn\.net$/.test(location.hostname)||/itch\.io/.test(document.referrer)?'itch':'web'); // 설정 맨 아래 버전 줄: 버그 신고에 정확한 빌드가 찍히게 (배포할 때 날짜 bYYMMDD를 갱신, 언어·포털은 실행 환경에서)
+const BUILD='v3.1.4 · b261117b · '+LANG+'-'+(ON_PC?'pc':onCG?'cg':/(^|\.)itch\.(io|zone)$|hwcdn\.net$/.test(location.hostname)||/itch\.io/.test(document.referrer)?'itch':'web'); // 설정 맨 아래 버전 줄: 버그 신고에 정확한 빌드가 찍히게 (배포할 때 날짜 bYYMMDD를 갱신, 언어·포털은 실행 환경에서)
 if(onCG){const sc=document.createElement('script');sc.src='https://sdk.crazygames.com/crazygames-sdk-v3.js';
   sc.onload=async()=>{try{const S=window.CrazyGames.SDK;await S.init();if(S.environment!=='disabled'){CG.S=S;CG.on=true;cgLoad();try{const ms=v=>{v=v&&typeof v==='object'?v:S.game.settings;cgMute=!!(v&&v.muteAudio);document.body.classList.toggle('noChat',!!(v&&v.disableChat));if(touched||cgMute)bgm.sync();};ms();S.game.addSettingsChangeListener(ms);}catch(e){}if(state==='holding'||state==='ghost')cgPlay(true);}}catch(e){}CG.done=1;};sc.onerror=()=>{CG.done=1;};document.head.appendChild(sc);}
 let cgG=false; // 마지막으로 보낸 gameplay 상태 (짝 안 맞는 stop·중복 호출 막기)
@@ -3729,9 +3736,8 @@ if(CFG.adClient&&!onCG){const adFail=()=>adsOff(),old=document.querySelector('sc
 function rewardAd(name,onReward){if(store.off&&tabNow())return;if(bossTW()){toast('⚔️ 보스전 중에는 광고를 열지 않아요');return;} /* BOSS-V2: no rewarded ad (adPause) during a boss fight */if(!adsOn()){toast('광고를 불러올 수 없어요');return;}if(adReq||adPause){toast('📺 광고 준비 중…');return;}adReq=1;adReqT=setTimeout(()=>{bossAdLate(adReqT);reqEnd();adsOff(1);},CG.on?45000:6000);const tk=adReqT,end=()=>{if(adReqT===tk)reqEnd();};let ok=false,dis=false,skip=false; // end: 제한 시간(크레이지게임즈 45초 · 애드센스 6초, 넘으면 둘 다 이번 접속은 광고 끔)이 지나 새 요청이 나간 뒤 늦게 온 응답은 그 요청을 풀지 않게. SDK가 끝내 응답이 없어도 제한 시간 뒤엔 다시 플레이 가능 (크레이지게임즈 SDK는 늦어도 adFinished/adError로 꼭 끝나니 길게)
   if(CG.on){CG.last=performance.now();try{CG.S.ad.requestAd('rewarded',{adStarted:()=>{end();adStart(tk);},adFinished:()=>{end();adEnd(tk);onReward();},adError:()=>{end();adEnd(tk);adsOff(!adPause);}});}catch(e){reqEnd();adEnd(tk);adsOff(1);}return;}
   try{window.adBreak({type:'reward',name,beforeAd:()=>{end();adStart(tk);},afterAd:()=>adEnd(tk),beforeReward:show=>{if(state==='holding'||state==='ghost'){skip=true;end();return;}show();},adViewed:()=>{ok=true;onReward();},adDismissed:()=>{dis=true;toast('끝까지 봐야 보상을 받아요');},adBreakDone:i=>{end();adEnd(tk);const st=i&&i.breakStatus;if(!ok&&!dis&&!skip&&st!=='viewed'&&st!=='dismissed')adsOff(1);}});}catch(e){reqEnd();adEnd(tk);adsOff(1);}} // 웹: 광고가 안 나오면(채울 광고 없음·준비 안 됨·오류) 다시 눌러도 같은 실패라 바로 광고 끔 (끝까지 안 보고 닫은 것만 그대로)
-// 앱 아이콘 배지: 오늘 룰렛 안 돌렸으면 1
-const badge=()=>{try{if(!navigator.setAppBadge)return;if(!usedToday('shg_spin'))navigator.setAppBadge(1);else navigator.clearAppBadge();}catch(e){}};
-document.addEventListener('visibilitychange',()=>{if(document.hidden)badge();});
+// v314: 앱 아이콘 배지('1')는 복귀를 재촉하는 장치라 뺌 · 예전 버전이 붙여 둔 배지도 지움
+try{if(navigator.clearAppBadge)navigator.clearAppBadge().catch(()=>{});}catch(e){}
 const optH=(id,cls,ic,t,sm)=>'<button type="button" id="'+id+'" class="opt'+(cls?' '+cls:'')+'"><i>'+ic+'</i><b>'+t+(/\brec\b/.test(cls)?'<em>추천</em>':'')+'</b><small>'+sm+'</small></button>'; // 64px 선택지 줄 [아이콘 32 | 제목 15 굵게 | 결과 12 회색 | >] · 추천은 테두리 + '추천' 태그
 let overRev=null; // 바닥 화면이 떠 있는 동안 광고 복구 버튼을 다시 확인하는 함수
 // 바닥·신용불량 카드 공통 (v3.0.1): 하루 1번 지원금 줄 · 대출이 막힌 이유 · 빚이 있을 때 바닥나면 압류라는 안내
@@ -3878,6 +3884,9 @@ const forceSell=()=>{if(run&&run.boss&&state==='holding')run.boss.forced=1; /* B
       const idx=runBase+Math.floor(t/CD);while(candles.length<=idx){const pc=candles.length?candles[candles.length-1].c:1;candles.push({o:pc,h:pc,l:pc,c:pc,v:0,r:1});}const c=candles[candles.length-1];c.h=Math.max(c.h,cur);c.l=Math.min(c.l,cur);c.c=cur;}
     if(base(t)>=run.crashAt){crash();return;}}
   release();};
+// v314: 진행 중인 판을 0.5초마다 기록 → 창이 정상으로 닫히지 않고 강제 종료돼도 다음 실행 때 마지막 가격으로 정산 (지는 판을 꺼서 피하는 것 막기)
+function liveSave(){try{if(state!=='holding'||!run||run.tut||run.chal||run.boss)return;const re=run.re&&!run.re.done;store.set('shg_live',{b:re?run.re.bet:run.bet,l:run.lev,q:re?0:run.liqLine,c:re?cur/run.re.entry:cur,r:stats.rounds||0});}catch(e){}}
+setInterval(liveSave,500);
 const flushRound=()=>{forceSell();if(state!=='ghost'||!run||crashed)return;if(run.boss){run.crashAt=cur;crash();return;} /* BOSS-V2: outcome already fixed by the strike; no 1e5-step loop with crashAt=Infinity */ // 화면을 떠나면 남은 고스트 차트를 바로 끝내고 판을 기록 (새로고침·종료로 판이 사라지지 않게)
   for(let i=0;i<1e5&&base(t)<run.crashAt;i++){t+=.05;cur=Math.max(run.lev>1?.3:.85,base(t)*(1+(wig(t)-1)*Math.min(1,t/.3)*(run.T.wig||1)*(run.rg.wig||1))*newsF(t));peak=Math.max(peak,cur);
     const idx=runBase+Math.floor(t/CD);while(candles.length<=idx){const pc=candles.length?candles[candles.length-1].c:1;candles.push({o:pc,h:pc,l:pc,c:pc,v:0,ghost:true,r:1});}const c=candles[candles.length-1];c.h=Math.max(c.h,cur);c.l=Math.min(c.l,cur);c.c=cur;}
@@ -5637,6 +5646,9 @@ if(/selftest/.test(location.search)){ // 자동 테스트 전용 (일반 플레�
   if(/fast/.test(location.search)){draw=()=>{};}
 }
 setTimeout(()=>{try{if(tutDone&&profile&&state==='ready'&&balance+invNet()<100000&&!(chal&&chal.i<5&&debt<=debtLimit())){state='over';$('sheet').hidden=true;if(debt>debtLimit())showDefault(1);else showOver(0,1);paintPickers();setBtn();}}catch(e){}},900);
+{const lv=LIVE0;store.set('shg_live',null);if(lv&&typeof lv.b==='number'&&lv.b>0&&lv.r===(stats.rounds||0)){ // v314: 판 도중 강제 종료로 정산이 안 된 판 → 마지막 가격으로 정산 (청산선 아래면 청산 손실)
+  const c=Math.max(0,+lv.c||1),q=+lv.q||0,g0=q&&c<=q?-lv.b*.85:lv.b*(c-1)*(lv.l||1),g=g0>0?g0*(1-taxRate(balance)):Math.max(g0,-balance);
+  balance+=g;paintTop();setTimeout(()=>toast('🧾 지난 판은 창이 닫혀 마지막 가격으로 정산했어요 · '+sw(g)),1500);}}
 requestAnimationFrame(frame);
 })();
 </script>

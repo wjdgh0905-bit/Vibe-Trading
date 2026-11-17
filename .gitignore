@@ -23,6 +23,7 @@ agent/.env
 .claude/skills/*
 !.claude/skills/melange-game-studio/
 CLAUDE.md
+!CLAUDE.md
 .vscode/
 learn-claude-code-main/
 agent/sessions/

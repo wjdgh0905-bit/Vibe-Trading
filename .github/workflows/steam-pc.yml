@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - "steam/**"
+      - "game/**"
       - ".github/workflows/steam-pc.yml"
   push:
     branches: [main]
@@ -57,7 +58,7 @@ jobs:
       - name: Smoke test (real Windows exe)
         working-directory: steam
         shell: bash
-        run: npm ci --no-audit --no-fund --ignore-scripts && node test/smoke.cjs ../win/Ddeoksang.exe dist/smoke-win
+        run: npm ci --no-audit --no-fund --ignore-scripts && node test/smoke.cjs ../win/Ddeoksang.exe dist/smoke-win && node test/wording.cjs ../win/Ddeoksang.exe
       - name: Upload screenshots
         if: always()
         uses: actions/upload-artifact@v6

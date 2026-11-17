@@ -32,10 +32,14 @@ async function launch(extra = []) {
   await page.screenshot({ path: path.join(out, 'ko_1280.png') });
   const keys1 = await page.evaluate(() => Object.keys(localStorage).filter(k => /^shg/.test(k)).length);
   ok('ko.saves', keys1 > 0, 'keys ' + keys1);
-  // 외부 이동 막힘
+  // 외부 이동 막힘 + https 링크는 기본 브라우저로 넘김.
+  // 실제 브라우저(xdg-open)는 띄우지 않고 가로채서 기록만 함: 띄우면 그 프로세스가 앱의 출력 통로를 물고 있어 app.close()가 끝나지 않음 (CI에서 17분 멈춤)
+  await app.evaluate(({ shell }) => { global.__opened = []; shell.openExternal = async u => { global.__opened.push(u); }; });
   await page.evaluate(() => { try { location.href = 'https://example.com/'; } catch (e) {} });
   await page.waitForTimeout(800);
   ok('nav.blocked', page.url().startsWith('app://game/'), page.url());
+  const opened = await app.evaluate(() => global.__opened);
+  ok('nav.external', opened.length === 1 && opened[0] === 'https://example.com/', JSON.stringify(opened));
   // 경로 밖 파일 막힘
   const trav = await page.evaluate(async () => { try { const r = await fetch('app://game/..%2f..%2fmain.js'); return r.status; } catch (e) { return 'err'; } });
   ok('traversal.blocked', trav !== 200, String(trav));

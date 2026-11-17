@@ -1,0 +1,67 @@
+name: Steam PC build
+
+on:
+  pull_request:
+    paths:
+      - "steam/**"
+      - ".github/workflows/steam-pc.yml"
+  push:
+    branches: [main]
+    paths:
+      - "steam/**"
+      - "game/index.html"
+      - "game/en/index.html"
+      - ".github/workflows/steam-pc.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+      - name: Tools
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq zip xvfb python3-pil
+      - name: Build (win64 + linux64)
+        working-directory: steam
+        run: npm ci --no-audit --no-fund && bash build.sh
+      - name: Smoke test (Linux build)
+        working-directory: steam
+        run: xvfb-run -a node test/smoke.cjs dist/Ddeoksang-linux-x64/Ddeoksang
+      - name: Upload Windows build
+        uses: actions/upload-artifact@v6
+        with:
+          name: Ddeoksang-win64
+          path: steam/dist/Ddeoksang-win32-x64
+          retention-days: 14
+
+  windows-smoke:
+    needs: build
+    runs-on: windows-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+      - uses: actions/download-artifact@v6
+        with:
+          name: Ddeoksang-win64
+          path: win
+      - name: Smoke test (real Windows exe)
+        working-directory: steam
+        shell: bash
+        run: npm ci --no-audit --no-fund --ignore-scripts && node test/smoke.cjs ../win/Ddeoksang.exe dist/smoke-win
+      - name: Upload screenshots
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: smoke-win-screens
+          path: steam/dist/smoke-win
+          retention-days: 7

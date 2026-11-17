@@ -19,6 +19,9 @@ agent/.env
 
 .claude/*
 !.claude/hooks.json
+!.claude/skills/
+.claude/skills/*
+!.claude/skills/melange-game-studio/
 CLAUDE.md
 .vscode/
 learn-claude-code-main/

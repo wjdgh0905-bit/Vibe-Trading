@@ -11,7 +11,7 @@
 
 플레이 주소: https://melange-lab.github.io/
 
-`main`에 푸시하면 `.github/workflows/game-pages.yml`이 GitHub Pages로 배포합니다.
+실제 사이트는 별도 저장소 `melange-lab/melange-lab.github.io`에 빌드 결과를 복사해 배포합니다 (이 저장소 main에 합쳐도 사이트는 바뀌지 않음).
 
 ## 크레딧 · 라이선스
 

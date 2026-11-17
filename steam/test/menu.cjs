@@ -1,4 +1,4 @@
-// PC 메뉴 테스트: Esc → 메뉴(계속하기·설정·게임 종료), 판 도중엔 메뉴 안 열림, 설정의 게임 종료, 종료 버튼으로 창이 닫힘, 첫 창이 화면 안에 맞음
+// PC 메뉴 테스트: Esc → 메뉴(계속하기·설정·게임 종료), 판 도중엔 메뉴 안 열림, 창 포커스를 잃으면 판 멈춤, 설정의 게임 종료, 종료 버튼으로 창이 닫힘, 첫 창이 화면 안에 맞음
 // 실행: xvfb-run -a -s "-screen 0 1280x720x24" node test/menu.cjs dist/Ddeoksang-linux-x64/Ddeoksang
 'use strict';
 const { _electron } = require('playwright');
@@ -32,6 +32,9 @@ const ok = (k, v, why) => { R[k] = v; if (!v) fail.push(k + (why ? ' — ' + why
   if (held === 'holding') {
     await page.keyboard.press('Escape'); await page.waitForTimeout(300);
     ok('esc.noMenuMidRound', await page.evaluate(() => document.getElementById('modal').hidden || !document.getElementById('pmQuit')));
+    // 창 포커스를 잃으면 차트 멈춤 → 돌아오면 이어짐
+    const pz = await page.evaluate(async () => { const t = window.__t; dispatchEvent(new Event('blur')); await new Promise(r => setTimeout(r, 150)); const a = t.s.cur; await new Promise(r => setTimeout(r, 1000)); const b = t.s.cur, st = t.s.state; dispatchEvent(new Event('focus')); await new Promise(r => setTimeout(r, 800)); return { frozen: a === b, st, moved: t.s.cur !== b }; });
+    ok('blur.pausesRound', pz.frozen && pz.st === 'holding' && pz.moved, JSON.stringify(pz));
     await page.evaluate(() => window.__t.release()); await page.waitForTimeout(2500);
   } else R.midRound = 'skipped (round did not start: ' + held + ')';
   // 종료 버튼 → 창이 닫힘

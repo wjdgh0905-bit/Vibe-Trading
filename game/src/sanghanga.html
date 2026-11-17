@@ -2158,7 +2158,7 @@ const dayN=()=>{const d=new Date();return d.getFullYear()*1e4+(d.getMonth()+1)*1
 let best=fin(store.get('shg_best',0)),ach=store.get('shg_ach',[]),xp=Math.min(1e9,Math.max(0,fin(store.get('shg_xp',0))));if(!Array.isArray(ach))ach=[];ach=ach.filter(id=>typeof id==='string');
 const SET=Object.assign({sound:true,bgm:true,vib:true,heart:true,fx:true,slow:false,chars:true},store.get('shg_set',{}));for(const k in SET)SET[k]=!!SET[k];document.documentElement.classList.toggle('nofx',!SET.fx); // 화려한 효과 끄기: CSS 꾸밈 움직임도 멈춤
 {const st=store.get('shg_set',null);if(!st||typeof st!=='object'||!('pro' in st)){SET.pro=rankOf(xp)>=2;store.set('shg_set',SET);}} // 프로 HTS(호가창): 새 플레이어는 간편 모드, 이미 단타충을 지난 기존 플레이어는 예전 모습(프로) 그대로 · 처음 정한 값을 저장 (그 뒤엔 설정·차트 토글로만 바뀜)
-let muted=!SET.sound,adPause=false,cgMute=false; // adPause: 광고가 화면을 덮고 있는 동안
+let muted=!SET.sound,adPause=false,cgMute=false,pcPause=false; // pcPause: PC판에서 창이 포커스를 잃으면(다른 창·스팀 오버레이) 판 차트를 멈춤 // adPause: 광고가 화면을 덮고 있는 동안
 const PD=window.PointerEvent?'pointerdown':'touchstart'; // 옛 iOS(12 이하)는 포인터 이벤트가 없음
 document.addEventListener(PD,e=>{const b=e.target&&e.target.closest&&e.target.closest('button,.chip,[role=button],summary,a.setbtn');if(b&&b!==btn&&!b.disabled&&!b.closest('[inert]'))vib(HAP.tap);},true); // 누르면 아주 짧게 '톡' (진동되는 기기만, 매수 버튼은 매수 진동)
 let tkK=null;const tkKey=b=>b.id?'#'+CSS.escape(b.id):b.dataset.i?'[data-i="'+b.dataset.i+'"]':b.dataset.pct?'[data-pct="'+b.dataset.pct+'"]':b.dataset.ipct?'[data-ipct="'+b.dataset.ipct+'"]':'';
@@ -3929,6 +3929,7 @@ addEventListener('keydown',e=>{const d=KD[e.key];if(!d||e.defaultPrevented||e.al
 addEventListener('wheel',e=>{if(e.ctrlKey)return;if(!canScroll(e.target,Math.sign(e.deltaX),Math.sign(e.deltaY)))e.preventDefault();},{passive:false});}
 document.addEventListener('keydown',e=>{if(e.repeat&&(e.key==='Enter'||e.key===' ')&&e.target.closest&&e.target.closest('button,[role=button],summary'))e.preventDefault();},true); // 엔터를 꾹 누르고 있어도 버튼은 한 번만 (자동 반복으로 대출·구매·초기화가 여러 번 눌리지 않게)
 // v315: PC(스팀)판 메뉴 — 아무 창도 없을 때 Esc → 계속하기 · 설정 · 게임 종료 (판 도중엔 열지 않음: 판은 스페이스로 매도)
+if(ON_PC){addEventListener('blur',()=>{if(state==='holding'||state==='ghost'){pcPause=true;toast('⏸ 창에서 벗어나 판을 멈췄어요 · 돌아오면 이어져요');}});addEventListener('focus',()=>{if(pcPause){pcPause=false;lastTs=performance.now();}});} // v315: 자리 비운 사이 폭락하지 않게 (최소화는 예전처럼 자동 매도)
 function pcQuit(){try{flushRound();}catch(e){}try{paintTop();}catch(e){}setTimeout(()=>window.close(),60);} // 진행 중인 판을 먼저 정산하고 끔
 function pcMenu(){if(state==='holding'||state==='ghost'||tabNow())return;openModal('<h2>⏸ 메뉴</h2><button class="setbtn" type="button" id="pmGo" style="width:100%">▶ 계속하기</button><button class="setbtn ghost" type="button" id="pmSet" style="width:100%;margin-top:8px">⚙️ 설정</button><button class="setbtn ghost" type="button" id="pmQuit" style="width:100%;margin-top:8px">🚪 게임 종료</button>');$('pmGo').onclick=()=>$('modalClose').click();$('pmSet').onclick=()=>{$('modalClose').click();tab('set');};$('pmQuit').onclick=pcQuit;setTimeout(()=>{const b=$('pmGo');if(b)b.focus();},30);}
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!adPause){if(!$('sheet').hidden)$('sheet').hidden=true;else if(!$('modal').hidden)$('modalClose').click();else if(ON_PC)pcMenu();return;} // Esc: 종목 창·안내 창 닫기 (닫기 버튼과 같음)
@@ -5590,7 +5591,7 @@ function frameB(ts){
   const hid=adPause||app.classList.contains('pgopen'),live=state==='holding'||state==='ghost'; // 페이지가 차트를 다 덮었거나 광고 중이면 차트·호가·시세는 안 그림 (시세 흐름은 계속)
   const idle=!live&&!hid&&(ts-drawT>=48||cv.width!==drawW||cv.height!==drawH); // 판이 없을 땐 차트·시세·매수 버튼을 초당 20번만 그림 (CPU 절약, 실시간 흐름은 그대로) · 캔버스 크기가 바뀌면(지워짐) 바로
   if(freezeT>0){freezeT-=dt;draw();return;}
-  if(adPause&&(state==='holding'||state==='ghost')){draw();return;} // 광고 중엔 차트 멈춤
+  if((adPause||pcPause)&&(state==='holding'||state==='ghost')){draw();return;} // 광고 중엔 차트 멈춤
   if(state==='holding'||state==='ghost'){
     const prev=cur;
     t+=dt*(state==='ghost'?3:holdRate());if(state==='holding')run.hold=(run.hold||0)+dt; // run.hold: 실제로 버틴 시간(초)

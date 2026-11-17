@@ -3,5 +3,6 @@
  "게임": "Game",
  "Esc를 누르면 메뉴가 열려요": "Press Esc to open the menu",
  "⏸ 메뉴": "⏸ Menu",
- "🚪 게임 종료": "🚪 Quit game"
+ "🚪 게임 종료": "🚪 Quit game",
+ "⏸ 창에서 벗어나 판을 멈췄어요 · 돌아오면 이어져요": "⏸ Round paused while the window is in the background · it resumes when you come back"
 }

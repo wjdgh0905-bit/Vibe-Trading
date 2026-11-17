@@ -16,7 +16,8 @@ python3 -c "
 from PIL import Image
 im=Image.open('$GAME/icon-512.png').convert('RGBA')
 im.save('$HERE/stage/icon.ico',sizes=[(16,16),(24,24),(32,32),(48,48),(64,64),(128,128),(256,256)])"
-export ELECTRON_GET_USE_PROXY=1 GLOBAL_AGENT_HTTPS_PROXY="${HTTPS_PROXY:-}"; [ -f /root/.ccr/ca-bundle.crt ] && export NODE_EXTRA_CA_CERTS=/root/.ccr/ca-bundle.crt
+if [ -n "${HTTPS_PROXY:-}" ]; then export ELECTRON_GET_USE_PROXY=1 GLOBAL_AGENT_HTTPS_PROXY="$HTTPS_PROXY"; fi   # 프록시 뒤에서만
+[ -f /root/.ccr/ca-bundle.crt ] && export NODE_EXTRA_CA_CERTS=/root/.ccr/ca-bundle.crt || true
 pack(){ npx --no-install electron-packager "$ST" Ddeoksang --platform=$1 --arch=x64 --out "$OUT" --overwrite --asar \
   --electron-version="$EV" --app-version="$VER" --executable-name=Ddeoksang --quiet
   find "$OUT/Ddeoksang-$1-x64/locales" -type f ! -name 'en-US.pak' ! -name 'ko.pak' -delete; }   # 한국어·영어 외 크롬 언어팩 빼기

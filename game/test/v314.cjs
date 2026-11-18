@@ -48,6 +48,7 @@ const ok = (k, v, why) => { R[k] = v; if (!v) fail.push(k + (why ? ' — ' + why
     ok('2.liveRecorded', !!r0.live && r0.s.state === 'holding', JSON.stringify({ st: r0.s.state, live: r0.live }));
     const live = JSON.parse(r0.live || '{}') || {};
     const { ctx: c2, p: p2 } = await open(snap);
+    await p2.waitForFunction(() => { const v = localStorage.getItem('shg_live'); return v === null || v === 'null'; }, null, { timeout: 8000 }).catch(() => {});   // v314b: 방금 꺼진 판은 기록이 3초 멈춘 걸 확인한 뒤 정산
     const r1 = await p2.evaluate(() => ({ bal: window.__t.s.balance, live: localStorage.getItem('shg_live'), toast: document.getElementById('toast') && document.getElementById('toast').textContent }));
     const before = +snap.shg_bal, expect = before + (live.b || 0) * ((live.c || 1) - 1) * (live.l || 1);
     ok('2.settledAtLastPrice', Math.abs(r1.bal - expect) <= Math.max(2, Math.abs(expect) * 0.001) && (r1.live === null || r1.live === "null"), JSON.stringify({ before, after: r1.bal, expect: Math.round(expect), live }));
@@ -56,6 +57,25 @@ const ok = (k, v, why) => { R[k] = v; if (!v) fail.push(k + (why ? ' — ' + why
     const { ctx: c3, p: p3 } = await open(snap2);
     const b3 = await p3.evaluate(() => window.__t.s.balance);
     ok('2.settledOnce', Math.abs(b3 - r1.bal) < 1, `${r1.bal} -> ${b3}`); await c3.close(); break; }
+
+  // 2b) 두 탭: 한 탭이 판 도중일 때 새 탭을 열어도 (가) 새 탭이 그 판을 대신 정산하지 않고 (나) 판 하는 탭이 새로고침되지 않음
+  { const ctx = await b.newContext({ viewport: { width: 390, height: 844 } });
+    await ctx.addInitScript(st => { if (!sessionStorage.getItem('__seeded') && !localStorage.getItem('shg_tut')) { for (const [k, v] of Object.entries(st)) localStorage.setItem(k, v); } sessionStorage.setItem('__seeded', '1');
+      window.__toasts = []; setInterval(() => { const t = document.getElementById('toast'); const v = t && t.textContent; if (v && window.__toasts[window.__toasts.length - 1] !== v) window.__toasts.push(v); }, 100); },
+      { ...PRE, shg_bal: '10000000', shg_stats: JSON.stringify({ rounds: 2, wins: 1, bestM: 1, bestPct: 0, net: 0, hist: [], c: { items: 0 }, cleanRounds: 0 }) });
+    const A = await ctx.newPage(); await A.goto(base + '?selftest'); await A.waitForTimeout(2500);
+    const a0 = await A.evaluate(async () => { window.__mark = 1; const t = window.__t; t.lev = 1; t.pct = 1; for (let i = 0; i < 4 && t.s.state !== 'holding'; i++) { t.start(); await new Promise(r => setTimeout(r, 600)); } return { st: t.s.state, bal: t.s.balance }; });
+    const B = await ctx.newPage(); await B.goto(base + '?selftest'); await B.waitForTimeout(1000);
+    const b0 = await B.evaluate(() => window.__t.s.balance);
+    await B.waitForTimeout(4500);
+    const b1 = await B.evaluate(() => ({ bal: window.__t.s.balance, toasts: window.__toasts }));
+    const a1 = await A.evaluate(() => ({ mark: window.__mark, st: window.__t.s.state, live: localStorage.getItem('shg_live') }));
+    ok('2b.newTabDoesNotSettleOthersRound', a0.st === 'holding' ? !b1.toasts.some(t => /지난 판은 창이 닫혀/.test(t)) : true, JSON.stringify({ a0, b0, b1 }));
+    ok('2b.liveRecordKept', a0.st !== 'holding' || a1.st !== 'holding' || (a1.live && a1.live !== 'null'), JSON.stringify(a1));
+    await A.evaluate(() => { try { window.__t.release(); } catch (e) {} }); await A.waitForTimeout(4000);   // 판이 끝난 뒤에도 판 하던 탭이 새로고침되지 않아야 함
+    const a2 = await A.evaluate(() => ({ mark: window.__mark, st: window.__t.s.state })).catch(e => ({ err: String(e) }));
+    ok('2b.playingTabNotReloaded', a1.mark === 1 && a2.mark === 1, JSON.stringify({ a1, a2 }));
+    await ctx.close(); }
 
   // 3) 미래 날짜 잠금
   { const fut = '2027-12-21';

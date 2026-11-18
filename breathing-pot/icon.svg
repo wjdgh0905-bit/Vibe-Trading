@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- 숨결 화분 · pot with a two-leaf sprout. Content stays inside the inner 80% (maskable-safe). -->
+  <rect width="512" height="512" fill="#F6EFE6"/>
+  <circle cx="256" cy="256" r="236" fill="#FBF6EE"/>
+  <!-- pot body + rim -->
+  <path d="M196 310h120l-13 78q-2 12-14 12h-66q-12 0-14-12z" fill="#D9A08A"/>
+  <path d="M196 310h40l-9 90h-17q-12 0-14-12z" fill="#C08A76"/>
+  <rect x="178" y="282" width="156" height="34" rx="12" fill="#D9A08A"/>
+  <rect x="178" y="282" width="46" height="34" rx="12" fill="#C08A76"/>
+  <rect x="200" y="282" width="24" height="34" fill="#D9A08A"/>
+  <!-- soil -->
+  <ellipse cx="256" cy="284" rx="66" ry="9" fill="#6B5546"/>
+  <!-- stem -->
+  <path d="M256 284c1-30-4-56 0-92" fill="none" stroke="#6FA37A" stroke-width="10" stroke-linecap="round"/>
+  <!-- two round leaves -->
+  <ellipse cx="212" cy="184" rx="44" ry="28" transform="rotate(-32 212 184)" fill="#9CC5A1"/>
+  <ellipse cx="300" cy="172" rx="44" ry="28" transform="rotate(30 300 172)" fill="#6FA37A"/>
+  <path d="M250 196l-52-26M262 186l52-30" fill="none" stroke="#F6EFE6" stroke-width="4" stroke-linecap="round" opacity=".55"/>
+</svg>

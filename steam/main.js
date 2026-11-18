@@ -55,17 +55,17 @@ function lockDown(ses) {
 
 function fitBounds(b) {
   const wa = screen.getPrimaryDisplay().workAreaSize;   // 첫 창: 1280x800, 화면이 더 작으면(노트북 125%·150% 배율 등) 화면 안에 맞춤
-  const def = { width: Math.min(1280, Math.max(400, wa.width - 40)), height: Math.min(800, Math.max(600, wa.height - 40)) };
+  const def = { width: Math.min(1280, Math.max(400, wa.width - 40)), height: Math.min(800, Math.max(300, wa.height - 40)) };   // G-014: 높이 하한 600을 없앰 (1366x768 노트북·배율 125%면 600보다 작음)
   if (!b || !b.width) return def;
   const d = screen.getDisplayMatching(b).workArea;
   const vis = b.x < d.x + d.width - 80 && b.x + b.width > d.x + 80 && b.y >= d.y - 20 && b.y < d.y + d.height - 80;
-  return vis ? b : { width: Math.min(b.width, d.width), height: Math.min(b.height, d.height) };
+  return vis ? Object.assign({}, b, { width: Math.min(b.width, d.width), height: Math.min(b.height, d.height) }) : { width: Math.min(b.width, d.width), height: Math.min(b.height, d.height) };   // G-014: 저장된 크기도 지금 화면보다 크면 줄임 (큰 모니터 → 노트북)
 }
 
 function createWindow() {
   const lang = curLang = pickLang();
   win = new BrowserWindow(Object.assign({
-    minWidth: 400, minHeight: 600, backgroundColor: '#090c13', show: false, autoHideMenuBar: true,
+    minWidth: Math.min(400, Math.max(300, screen.getPrimaryDisplay().workAreaSize.width - 40)), minHeight: Math.min(600, Math.max(300, screen.getPrimaryDisplay().workAreaSize.height - 40)), backgroundColor: '#090c13', show: false, autoHideMenuBar: true,
     title: lang === 'ko' ? '떡상 계좌 키우기' : 'Stonks Tycoon',
     icon: path.join(__dirname, 'icon.png'),
     webPreferences: { contextIsolation: true, sandbox: true, nodeIntegration: false, spellcheck: false, devTools: !app.isPackaged }

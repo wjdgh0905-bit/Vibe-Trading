@@ -22,8 +22,8 @@ import re as _re
 K=open('/home/user/Vibe-Trading/game/index.html').read().split('\n')[:22]
 H='\n'.join(K)+'\n'
 H=H.replace(',user-scalable=no','') # 확대 허용 (접근성)
-H,n=_re.subn(r'og\.png\?v=\d+"','og.png?v=60"',H);assert n==1,'og:image line missing in the deploy head' # mk.sh와 같은 OG 주소 꼬리표
-H=_re.sub(r'<meta property="og:image:alt" content="[^"]*">','',H);H=H.replace('og.png?v=60">','og.png?v=60"><meta property="og:image:alt" content="Peakopia · free stock-timing game · virtual money">',1)
+H,n=_re.subn(r'og\.png\?v=\d+"','og.png?v=61"',H);assert n==1,'og:image line missing in the deploy head' # mk.sh와 같은 OG 주소 꼬리표
+H=_re.sub(r'<meta property="og:image:alt" content="[^"]*">','',H);H=H.replace('og.png?v=61">','og.png?v=61"><meta property="og:image:alt" content="Peakopia · free stock-timing game · virtual money">',1)
 assert 'user-scalable=no' not in H
 for a,b in [('lang="ko"','lang="en"'),('content="떡상계좌"','content="Peakopia"'),
  ('<link rel="manifest" href="manifest.webmanifest">\n',''),('href="apple-touch-icon.png"','href="../apple-touch-icon.png"'),('href="icon-192.png"','href="../icon-192.png"')]:H=H.replace(a,b)

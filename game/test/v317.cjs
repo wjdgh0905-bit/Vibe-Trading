@@ -15,7 +15,7 @@ const srv = http.createServer((q, r) => {
 });
 const fail = [], R = {};
 const ok = (k, v, why) => { R[k] = v; if (!v) fail.push(k + (why ? ' — ' + why : '')); };
-const REAL = /진바이오텍|메디포스|젠큐어|셀메디|한빛전자|대한중공업|삼진화학|국민통신|동방제철|미래금융지주|태평양건설|한국그리드|신화테크|코리아스타|에이스홀딩스|세종인더|태양바이오|대박전자|국일테크|삼영물산|미래씨앤씨|동아에너지|한성피앤씨|대성로보틱스|도지킹|스페이스원|퀀텀랩스|노바 다이내믹스|아틀라스 칩스|블루오션 EV|퀀텀 클라우드|메가 소셜|NASDAQ|NASA|FDA |코스피|F1 레이싱|올림픽|월드컵|월가|맨해튼|강남|여의도|돌진하는 황소상|GeneBiotech|MediForce|GenCure|DogeKing|Wall St|Manhattan|Charging Bull|Stonks/;
+const REAL = /진바이오텍|메디포스|젠큐어|셀메디|한빛전자|대한중공업|삼진화학|국민통신|동방제철|미래금융지주|태평양건설|한국그리드|신화테크|코리아스타|에이스홀딩스|세종인더|태양바이오|대박전자|국일테크|삼영물산|미래씨앤씨|동아에너지|한성피앤씨|대성로보틱스|도지킹|스페이스원|퀀텀랩스|노바 다이내믹스|아틀라스 칩스|블루오션 EV|퀀텀 클라우드|메가 소셜|NASDAQ|NASA|FDA |코스피|F1 레이싱|올림픽|월드컵|월가|맨해튼|강남|여의도|돌진하는 황소상|한강|Zoom-Zoom|\bFed\b|GeneBiotech|MediForce|GenCure|DogeKing|Wall St|Manhattan|Charging Bull|Stonks/;
 (async () => {
   for (const [f, lang] of [['index.html', 'ko'], ['en/index.html', 'en']]) {
     const s = fs.readFileSync(path.join(root, f), 'utf8');

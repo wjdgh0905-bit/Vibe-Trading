@@ -1,0 +1,1657 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Melange Inbox</title>
+<meta name="description" content="손님 DM 스크린샷을 끌어다 놓으면 대화를 읽고, 한국어로 번역·요약하고, 예약 정보와 답장 초안까지 정리해 주는 Melange Tattoo 작업 도구." />
+<meta name="theme-color" content="#141412" />
+<link rel="icon" href="./icon.svg" type="image/svg+xml" />
+<link rel="apple-touch-icon" href="./icon-180.png" />
+<meta name="apple-mobile-web-app-title" content="Inbox" />
+<link rel="manifest" href="./site.webmanifest" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" />
+<style>
+/* ---------- tokens: dark is the studio default; light follows an explicit choice ---------- */
+:root {
+  color-scheme: dark;
+  --bg: #141412;
+  --bg-soft: #1b1a17;
+  --card: #1e1d19;
+  --card-2: #24221d;
+  --ink: #f2efe6;
+  --muted: #a7a49a;
+  --muted-2: #7d7a71;
+  --line: #322f28;
+  --line-strong: #46423a;
+  --blue: #4f68e3;
+  --blue-hover: #3452c4;
+  --blue-text: #a9b6ff;
+  --blue-soft: #1c2143;
+  --good: #7cc29a;
+  --good-soft: #17301f;
+  --warn: #d9a441;
+  --warn-soft: #3a2c10;
+  --danger: #e2776a;
+  --danger-soft: #3d1d18;
+  --shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+  --font: "Inter", "Noto Sans KR", system-ui, -apple-system, "Apple SD Gothic Neo", sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --radius: 4px;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    color-scheme: light;
+    --bg: #faf9f6;
+    --bg-soft: #f2efe7;
+    --card: #ffffff;
+    --card-2: #f6f4ee;
+    --ink: #16181c;
+    --muted: #5f6068;
+    --muted-2: #8a8b92;
+    --line: #e4e1d8;
+    --line-strong: #cfcbc0;
+    --blue: #3452c4;
+    --blue-hover: #2a43a3;
+    --blue-text: #2e47b8;
+    --blue-soft: #e7ebff;
+    --good: #2f8a55;
+    --good-soft: #e3f3e8;
+    --warn: #9a6b0f;
+    --warn-soft: #fbf0d6;
+    --danger: #c2483a;
+    --danger-soft: #fbe3df;
+    --shadow: 0 18px 40px rgba(20, 20, 18, 0.14);
+  }
+}
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg: #faf9f6;
+  --bg-soft: #f2efe7;
+  --card: #ffffff;
+  --card-2: #f6f4ee;
+  --ink: #16181c;
+  --muted: #5f6068;
+  --muted-2: #8a8b92;
+  --line: #e4e1d8;
+  --line-strong: #cfcbc0;
+  --blue: #3452c4;
+  --blue-hover: #2a43a3;
+  --blue-text: #2e47b8;
+  --blue-soft: #e7ebff;
+  --good: #2f8a55;
+  --good-soft: #e3f3e8;
+  --warn: #9a6b0f;
+  --warn-soft: #fbf0d6;
+  --danger: #c2483a;
+  --danger-soft: #fbe3df;
+  --shadow: 0 18px 40px rgba(20, 20, 18, 0.14);
+}
+
+/* ---------- base ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: 14px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+button, input, textarea, select { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+[hidden] { display: none !important; }
+a { color: var(--blue-text); }
+h1, h2, h3, h4 { margin: 0; font-weight: 600; text-wrap: balance; }
+p { margin: 0; }
+ul { margin: 0; padding: 0; list-style: none; }
+textarea { resize: vertical; }
+.mono { font-family: var(--mono); font-size: 12.5px; }
+.eyebrow {
+  font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--muted); font-weight: 600;
+}
+
+/* ---------- shell ---------- */
+.top {
+  height: 52px; display: flex; align-items: center; justify-content: space-between;
+  padding: 0 16px; border-bottom: 1px solid var(--line); background: var(--bg);
+  position: sticky; top: 0; z-index: 5; gap: 12px;
+}
+.brand { font-weight: 700; letter-spacing: 0.16em; font-size: 13px; white-space: nowrap; }
+.brand span { color: var(--blue-text); margin-left: 6px; }
+.top-actions { display: flex; align-items: center; gap: 8px; }
+.app {
+  display: grid; grid-template-columns: 380px minmax(0, 1fr);
+  height: calc(100vh - 52px); height: calc(100dvh - 52px);
+}
+.rail {
+  border-right: 1px solid var(--line); display: flex; flex-direction: column; min-height: 0;
+  background: var(--bg-soft);
+}
+.detail { min-width: 0; overflow: auto; }
+
+/* ---------- buttons & chips ---------- */
+.btn {
+  border: 1px solid var(--line-strong); background: var(--card); color: var(--ink);
+  border-radius: var(--radius); padding: 7px 12px; font-size: 13px; font-weight: 500;
+  display: inline-flex; align-items: center; gap: 6px; line-height: 1.2; white-space: nowrap;
+  transition: background 0.15s var(--ease), border-color 0.15s var(--ease);
+}
+.btn:hover { border-color: var(--muted-2); background: var(--card-2); }
+.btn.primary { background: var(--blue); border-color: var(--blue); color: #fff; }
+.btn.primary:hover { background: var(--blue-hover); border-color: var(--blue-hover); }
+.btn.danger { color: var(--danger); }
+.btn.danger:hover { border-color: var(--danger); }
+.btn.small { padding: 5px 9px; font-size: 12px; }
+.btn.ghost { background: transparent; border-color: transparent; color: var(--muted); }
+.btn.ghost:hover { color: var(--ink); background: var(--card-2); border-color: transparent; }
+.btn:disabled { opacity: 0.5; cursor: default; }
+.linkbtn { background: none; border: 0; padding: 0; color: var(--blue-text); text-decoration: underline; text-underline-offset: 3px; }
+.chip {
+  display: inline-flex; align-items: center; gap: 5px; padding: 2px 8px; border-radius: 999px;
+  font-size: 11.5px; font-weight: 500; border: 1px solid var(--line-strong); color: var(--muted);
+  white-space: nowrap; line-height: 1.5;
+}
+.chip.blue { background: var(--blue-soft); color: var(--blue-text); border-color: transparent; }
+.chip.good { background: var(--good-soft); color: var(--good); border-color: transparent; }
+.chip.warn { background: var(--warn-soft); color: var(--warn); border-color: transparent; }
+.chip.danger { background: var(--danger-soft); color: var(--danger); border-color: transparent; }
+.chip .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.chip.filter { cursor: pointer; }
+.chip.filter[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+
+/* ---------- drop zone ---------- */
+.drop {
+  margin: 14px 14px 10px; border: 1.5px dashed var(--line-strong); border-radius: 6px;
+  background: var(--card); padding: 18px 16px; text-align: center;
+  transition: border-color 0.15s var(--ease), background 0.15s var(--ease);
+}
+.drop.over { border-color: var(--blue); background: var(--blue-soft); }
+.drop svg { width: 26px; height: 26px; color: var(--blue-text); margin-bottom: 6px; }
+.drop p { color: var(--muted); font-size: 13px; }
+.drop p b { color: var(--ink); font-weight: 600; }
+.drop .check { display: inline-flex; align-items: center; gap: 6px; margin-top: 10px; font-size: 12px; color: var(--muted); cursor: pointer; }
+.drop .check input { accent-color: var(--blue); }
+.drop.disabled { opacity: 0.55; }
+.drop .touch { display: none; }
+@media (hover: none) and (pointer: coarse) {
+  .drop .pointer { display: none; }
+  .drop .touch { display: block; }
+  .drop { padding: 22px 16px; }
+}
+
+/* ---------- list ---------- */
+.list-tools { padding: 0 14px 10px; display: flex; flex-direction: column; gap: 8px; }
+.search {
+  width: 100%; border: 1px solid var(--line); background: var(--card); border-radius: var(--radius);
+  padding: 8px 10px; font-size: 13px;
+}
+.search::placeholder { color: var(--muted-2); }
+.filters { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.filters .count { margin-left: auto; font-size: 12px; color: var(--muted-2); font-variant-numeric: tabular-nums; }
+.list { overflow: auto; flex: 1; min-height: 0; border-top: 1px solid var(--line); }
+.item {
+  display: grid; grid-template-columns: 4px 56px minmax(0, 1fr); gap: 0 12px; align-items: stretch;
+  padding: 0 14px 0 0; border-bottom: 1px solid var(--line); cursor: pointer;
+  background: transparent; transition: background 0.12s var(--ease);
+}
+.item:hover { background: var(--card); }
+.item[aria-current="true"] { background: var(--card); box-shadow: inset 3px 0 0 var(--blue); }
+.item .stripe { background: transparent; }
+.item.urg-high .stripe { background: var(--danger); }
+.item.urg-normal .stripe { background: transparent; }
+.item .thumb {
+  width: 56px; height: 72px; margin: 12px 0; border-radius: 3px; overflow: hidden;
+  background: var(--card-2); border: 1px solid var(--line); display: grid; place-items: center;
+  color: var(--muted-2); font-family: var(--mono); font-size: 11px;
+}
+.item .thumb img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; }
+.item .body { padding: 12px 0; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.item .row { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.item .name { font-weight: 600; font-size: 13.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.item .time { margin-left: auto; color: var(--muted-2); font-size: 11.5px; font-family: var(--mono); white-space: nowrap; }
+.item .sum {
+  color: var(--muted); font-size: 12.5px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.item.done .name { color: var(--muted); text-decoration: line-through; text-decoration-color: var(--muted-2); }
+.item.done .thumb img { opacity: 0.55; }
+.item .chips { display: flex; gap: 5px; flex-wrap: wrap; }
+.empty { padding: 40px 24px; color: var(--muted); text-align: center; font-size: 13px; }
+.empty b { color: var(--ink); display: block; margin-bottom: 4px; }
+
+/* ---------- detail ---------- */
+.d-wrap { max-width: 980px; padding: 22px 28px 60px; display: flex; flex-direction: column; gap: 22px; }
+.d-head { display: flex; flex-direction: column; gap: 10px; }
+.d-head .title { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.d-head h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.01em; }
+.d-head h1 .handle { font-family: var(--mono); font-size: 13px; font-weight: 400; color: var(--muted); margin-left: 6px; }
+.chat .sep { align-self: center; font-size: 11px; color: var(--muted-2); font-family: var(--mono); padding: 4px 0; }
+.d-head .meta { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.d-head .acts { display: flex; gap: 8px; margin-left: auto; }
+.d-thumbs { display: flex; gap: 8px; flex-wrap: wrap; }
+.d-thumbs .hint-drop { align-self: center; color: var(--muted-2); font-size: 12px; margin-left: 4px; }
+.status-line { display: flex; gap: 10px; align-items: baseline; font-size: 14px; color: var(--ink); }
+.d-grid.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.bul.chg li::before { background: var(--warn); border-radius: 1px; width: 8px; height: 3px; margin-top: 10px; }
+.bul.ok li::before { background: var(--good); }
+.d-thumbs button { border: 1px solid var(--line); background: var(--card-2); padding: 0; border-radius: 3px; overflow: hidden; width: 64px; height: 92px; }
+.d-thumbs img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; }
+.d-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 22px; align-items: start; }
+.sec { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.sec > header { display: flex; align-items: baseline; gap: 10px; }
+.sec > header h2 { font-size: 13px; font-weight: 600; }
+.sec > header .hint { color: var(--muted-2); font-size: 12px; }
+.sec > header .right { margin-left: auto; display: flex; gap: 6px; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 6px; padding: 14px 16px; }
+.summary { font-size: 15px; line-height: 1.65; max-width: 62ch; overflow-wrap: anywhere; }
+.note, .out, .reply .ko, .status-line { overflow-wrap: anywhere; }
+.picklist { display: flex; flex-direction: column; gap: 6px; max-height: 50vh; overflow: auto; }
+.picklist .pick { display: grid; grid-template-columns: auto auto auto; gap: 4px 10px; align-items: center; justify-content: start; text-align: left; border: 1px solid var(--line); background: var(--bg-soft); border-radius: var(--radius); padding: 10px 12px; }
+.picklist .pick:hover { border-color: var(--blue); }
+.picklist .pick .sub { grid-column: 1 / -1; color: var(--muted); font-size: 12px; }
+.note { border-left: 3px solid var(--warn); background: var(--warn-soft); color: var(--ink); padding: 8px 12px; border-radius: 0 4px 4px 0; font-size: 12.5px; }
+.kv { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 8px 16px; }
+.kv dt { color: var(--muted); font-size: 12.5px; padding-top: 1px; }
+.kv dd { margin: 0; font-size: 13.5px; overflow-wrap: anywhere; }
+.kv dd.mono { font-family: var(--mono); font-size: 12.5px; }
+.kv dd.blank { color: var(--muted-2); }
+.bul li { display: flex; gap: 10px; padding: 6px 0; border-top: 1px solid var(--line); font-size: 13.5px; }
+.bul li:first-child { border-top: 0; padding-top: 0; }
+.bul li::before { content: ""; flex: none; width: 6px; height: 6px; border-radius: 50%; background: var(--blue); margin-top: 8px; }
+.bul.q li::before { background: var(--warn); }
+.bul li.none::before { display: none; }
+.bul li.none { color: var(--muted-2); }
+
+.reply textarea {
+  width: 100%; min-height: 128px; border: 1px solid var(--line); background: var(--bg-soft);
+  border-radius: var(--radius); padding: 10px 12px; font-size: 14px; line-height: 1.6;
+}
+.reply textarea:focus { border-color: var(--blue); outline: none; }
+.reply .ko { color: var(--muted); font-size: 13px; line-height: 1.6; white-space: pre-wrap; padding: 10px 12px; border-left: 2px solid var(--line-strong); }
+.reply .bar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.reply .bar .status { color: var(--muted-2); font-size: 12px; }
+.out { background: var(--bg-soft); border: 1px solid var(--line); border-radius: var(--radius); padding: 10px 12px; white-space: pre-wrap; font-size: 14px; line-height: 1.6; min-height: 44px; }
+.out.empty { color: var(--muted-2); }
+
+.chat { display: flex; flex-direction: column; gap: 10px; }
+.msg { display: flex; flex-direction: column; gap: 4px; max-width: 78%; }
+.msg.customer { align-self: flex-start; }
+.msg.artist { align-self: flex-end; align-items: flex-end; }
+.msg.unknown { align-self: center; }
+.msg .who { font-size: 11px; color: var(--muted-2); letter-spacing: 0.06em; text-transform: uppercase; }
+.msg .bub { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; font-size: 13.5px; white-space: pre-wrap; overflow-wrap: anywhere; }
+.msg.artist .bub { background: var(--blue-soft); border-color: transparent; }
+.msg .tr { font-size: 12.5px; color: var(--muted); white-space: pre-wrap; padding: 0 4px; overflow-wrap: anywhere; }
+.msg .tr.same { display: none; }
+.toggle { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); cursor: pointer; }
+.toggle input { accent-color: var(--blue); }
+.memo { width: 100%; min-height: 64px; border: 1px solid var(--line); background: var(--bg-soft); border-radius: var(--radius); padding: 8px 10px; font-size: 13px; }
+
+.state { padding: 60px 28px; color: var(--muted); display: flex; flex-direction: column; gap: 12px; align-items: flex-start; max-width: 60ch; }
+.state h2 { font-size: 18px; color: var(--ink); font-weight: 600; }
+.state .thumbs { display: flex; gap: 8px; }
+.state .thumbs img { width: 72px; height: 104px; object-fit: cover; object-position: top; border-radius: 3px; border: 1px solid var(--line); }
+.spin { width: 16px; height: 16px; border: 2px solid var(--line-strong); border-top-color: var(--blue); border-radius: 50%; animation: spin 0.9s linear infinite; display: inline-block; vertical-align: -3px; margin-right: 6px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.steps { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-top: 8px; width: 100%; }
+.steps div { border: 1px solid var(--line); border-radius: 6px; padding: 12px; font-size: 12.5px; color: var(--muted); background: var(--card); }
+.steps b { display: block; color: var(--ink); margin-bottom: 4px; font-size: 13px; }
+.err { border-left: 3px solid var(--danger); background: var(--danger-soft); padding: 10px 12px; border-radius: 0 4px 4px 0; font-size: 13px; white-space: pre-wrap; }
+.err.banner { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+.err.banner .row { display: flex; gap: 6px; }
+
+/* ---------- dialogs ---------- */
+dialog {
+  border: 1px solid var(--line-strong); background: var(--card); color: var(--ink); border-radius: 8px;
+  padding: 0; width: min(560px, calc(100vw - 32px)); box-shadow: var(--shadow);
+}
+dialog::backdrop { background: rgba(0, 0, 0, 0.55); }
+.dlg { padding: 20px 22px 22px; display: flex; flex-direction: column; gap: 16px; }
+.dlg h2 { font-size: 16px; }
+.dlg .f { display: flex; flex-direction: column; gap: 5px; }
+.dlg label { font-size: 12.5px; color: var(--muted); font-weight: 500; }
+.dlg input[type="text"], .dlg input[type="password"], .dlg select, .dlg textarea {
+  width: 100%; border: 1px solid var(--line-strong); background: var(--bg-soft); border-radius: var(--radius); padding: 8px 10px; font-size: 13.5px;
+}
+.dlg .help { font-size: 12px; color: var(--muted-2); line-height: 1.5; }
+.dlg .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.dlg .row.end { justify-content: flex-end; }
+.dlg .two { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.conn { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-radius: var(--radius); background: var(--bg-soft); border: 1px solid var(--line); font-size: 13px; }
+.conn .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted-2); flex: none; }
+.conn.on .dot { background: var(--good); }
+.conn.off .dot { background: var(--danger); }
+#lightbox { width: auto; max-width: calc(100vw - 32px); max-height: none; overflow: visible; background: transparent; border: 0; box-shadow: none; }
+#lightbox img { max-width: calc(100vw - 32px); max-height: calc(100vh - 48px); display: block; border-radius: 6px; }
+
+/* ---------- toast ---------- */
+#toast {
+  position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%) translateY(12px);
+  background: var(--ink); color: var(--bg); padding: 9px 14px; border-radius: 999px; font-size: 13px;
+  opacity: 0; pointer-events: none; transition: opacity 0.2s var(--ease), transform 0.2s var(--ease); z-index: 50;
+}
+#toast.show { opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: auto; }
+.toast-act { margin-left: 10px; background: transparent; border: 0; color: var(--blue-text); font-weight: 600; padding: 0; text-decoration: underline; text-underline-offset: 3px; }
+:root[data-theme="light"] .toast-act, :root:not([data-theme="dark"]) .toast-act { color: inherit; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .toast-act { color: var(--blue); } }
+:root[data-theme="dark"] .toast-act { color: var(--blue); }
+
+/* ---------- responsive ---------- */
+.back { display: none; }
+@media (max-width: 900px) {
+  .app { grid-template-columns: 1fr; }
+  .rail { border-right: 0; }
+  body[data-view="detail"] .rail { display: none; }
+  body[data-view="list"] .detail { display: none; }
+  .d-wrap { padding: 16px 16px 60px; }
+  .d-grid, .d-grid.three { grid-template-columns: 1fr; }
+  .msg { max-width: 92%; }
+  .steps { grid-template-columns: 1fr; }
+  .back { display: inline-flex; }
+}
+@media (max-width: 600px) {
+  .top { padding: 0 12px; }
+  textarea, input.search, .dlg input, .dlg select, .dlg textarea, .memo { font-size: 16px; } /* keeps iOS from zooming into fields */
+  .d-head .title { flex-wrap: wrap; }
+  .d-head .acts { margin-left: 0; width: 100%; flex-wrap: wrap; }
+  .d-head h1 { font-size: 20px; }
+  #backendLabel { display: none; }
+  #backendChip { padding: 2px 5px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
+}
+</style>
+</head>
+<body data-view="list">
+
+<header class="top">
+  <div class="brand">MELANGE <span>INBOX</span></div>
+  <div class="top-actions">
+    <span id="backendChip" class="chip"><span class="dot"></span><span id="backendLabel">연결 확인 중</span></span>
+    <button class="btn small" id="exportBtn" title="전체 내보내기">내보내기</button>
+    <button class="btn small" id="settingsBtn">설정</button>
+  </div>
+</header>
+
+<main class="app">
+  <aside class="rail">
+    <div id="drop" class="drop">
+      <input type="file" id="fileInput" multiple accept="image/*" hidden />
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 15l5-5 4 4 3-3 6 6"/><circle cx="16" cy="9" r="1.6"/></svg>
+      <p class="pointer"><b>스크린샷을 여기에 끌어다 놓기</b><br />붙여넣기 (Ctrl / ⌘ + V) 또는 <button class="linkbtn" id="pickBtn" type="button">파일 선택</button></p>
+      <p class="touch"><b>탭해서 스크린샷 선택</b><br />사진 앱에서 여러 장을 한 번에 골라도 돼요</p>
+      <label class="check"><input type="checkbox" id="splitEach" /> 여러 장을 각각 따로 분석</label>
+    </div>
+    <div class="list-tools">
+      <input class="search" id="search" type="search" placeholder="이름, 내용, 디자인 검색" aria-label="대화 검색" autocomplete="off" />
+      <div class="filters">
+        <button class="chip filter" data-f="all" aria-pressed="true">전체</button>
+        <button class="chip filter" data-f="open" aria-pressed="false">미처리</button>
+        <button class="chip filter" data-f="high" aria-pressed="false">급함</button>
+        <button class="chip filter" data-f="confirmed" aria-pressed="false">예약 확정</button>
+        <button class="chip filter" data-f="lost" aria-pressed="false">미성사</button>
+        <button class="chip filter" data-f="done" aria-pressed="false">완료</button>
+        <span class="count" id="count"></span>
+      </div>
+    </div>
+    <ul id="list" class="list"></ul>
+  </aside>
+  <section id="detail" class="detail"></section>
+</main>
+
+<dialog id="settings">
+  <form method="dialog" class="dlg" id="settingsForm">
+    <h2>설정</h2>
+    <div class="conn" id="connBox"><span class="dot"></span><span id="connText"></span></div>
+    <div class="f" id="keyField">
+      <label for="apiKey">Anthropic API 키</label>
+      <input type="password" id="apiKey" autocomplete="off" placeholder="sk-ant-..." />
+      <p class="help">이 브라우저에만 저장되고 Anthropic API로만 전송됩니다. 콘솔에서 발급: console.anthropic.com</p>
+    </div>
+    <div class="two" id="modelFields">
+      <div class="f">
+        <label for="model">모델</label>
+        <select id="model">
+          <option value="claude-opus-5">Claude Opus 5 (기본)</option>
+          <option value="claude-sonnet-5">Claude Sonnet 5</option>
+          <option value="claude-haiku-4-5">Claude Haiku 4.5</option>
+        </select>
+      </div>
+      <div class="f">
+        <label for="effort">정밀도</label>
+        <select id="effort">
+          <option value="low">낮음 (빠름)</option>
+          <option value="medium">보통</option>
+          <option value="high" selected>높음 (기본)</option>
+        </select>
+      </div>
+    </div>
+    <div class="f">
+      <label for="myName">내 이름 / 계정 (스크린샷에서 내 메시지 구분용)</label>
+      <input type="text" id="myName" placeholder="예: melange, Melange Tattoo" />
+    </div>
+    <div class="f">
+      <label for="inquiryTemplate">첫 문의 안내 문구 (예약 절차 · 필요한 정보 요청)</label>
+      <textarea id="inquiryTemplate" rows="4" spellcheck="false"></textarea>
+      <p class="help">디자인·크기·부위·도시·날짜가 아직 없는 첫 문의에는 이 문구를 바탕으로 답장 초안을 만들어요.</p>
+    </div>
+    <div class="f">
+      <label for="bookingTemplate">예약 상세 안내 양식 (내가 손님에게 보내는 그대로 붙여넣기)</label>
+      <textarea id="bookingTemplate" rows="8" spellcheck="false"></textarea>
+      <p class="help">기본값은 실제로 보내던 Price &amp; Deposit + Notes 문구예요. 채워 넣을 자리는 <span class="mono">{총액}</span> <span class="mono">{예약금}</span> <span class="mono">{날짜}</span>처럼 중괄호로 적어 두면 대화에서 찾아 채워요. 못 찾은 항목은 <span class="mono">[확인 필요]</span>로 남겨요. 한국어로 써도 손님 언어로 옮겨 보내요.</p>
+    </div>
+    <div class="f">
+      <label for="context">답장 참고 메모 (예약금 정책, 게스트 일정, 자주 하는 안내)</label>
+      <textarea id="context" rows="4" placeholder="예: 예약금 100,000원 (환불 불가), 도안은 시술 전날 공유, 10월 시드니 게스트"></textarea>
+    </div>
+    <div class="row">
+      <button type="button" class="btn danger small" id="wipeBtn">저장된 데이터 전부 삭제</button>
+      <span class="row end" style="margin-left:auto">
+        <button type="button" class="btn" id="cancelSettings">닫기</button>
+        <button type="submit" class="btn primary">저장</button>
+      </span>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="lightbox"><img id="lightboxImg" alt="스크린샷 원본" /></dialog>
+<div id="toast" role="status"></div>
+
+<script>
+(() => {
+"use strict";
+
+/* ====================== constants ====================== */
+const STORE_KEY = "melange.inbox.v1";
+const KEY_KEY = "melange.inbox.apikey";
+const API_URL = "https://api.anthropic.com/v1/messages";
+const API_VERSION = "2023-06-01";
+const FALLBACK_BETA = "server-side-fallback-2026-07-01";
+
+const PLATFORMS = { instagram: "인스타그램", whatsapp: "왓츠앱", kakao: "카카오톡", line: "라인", email: "이메일", sms: "문자", telegram: "텔레그램", other: "기타" };
+const INTENTS = {
+  booking_inquiry: ["예약 문의", "blue"], quote: ["견적", "blue"], schedule_change: ["일정 변경", "warn"],
+  cancellation: ["취소", "danger"], design_consult: ["디자인 상담", "blue"], aftercare: ["애프터케어", "good"],
+  followup: ["후속 연락", ""], general: ["일반", ""], other: ["기타", ""],
+};
+const STAGES = {
+  inquiry: ["문의", ""], consulting: ["상담 중", "blue"], scheduling: ["일정 조율", "blue"], deposit_pending: ["예약금 대기", "warn"],
+  confirmed: ["예약 확정", "good"], completed: ["시술 완료", ""], lost: ["미성사", ""], cancelled: ["취소", "danger"],
+};
+const URGENCY = { high: ["급함", "danger"], normal: ["보통", ""], low: ["여유", "good"] };
+const DETAIL_LABELS = [
+  ["design", "디자인"], ["placement", "부위"], ["size", "크기"], ["style", "스타일"], ["dates", "희망 일정"],
+  ["location", "지역 / 게스트"], ["budget", "손님 예산"], ["price", "가격 / 예약금"], ["references", "레퍼런스"], ["contact", "연락처 / 나이"], ["other", "기타"],
+];
+const MONO_FIELDS = new Set(["size", "dates", "budget", "price", "contact"]);
+
+const ANALYSIS_SCHEMA = {
+  type: "object", additionalProperties: false,
+  required: ["platform", "customer_name", "customer_handle", "customer_language", "customer_language_ko", "intent", "stage", "urgency", "summary_ko", "status_ko", "details", "changes_ko", "confirmed_ko", "pending_ko", "questions_ko", "action_items_ko", "transcript", "reply_draft", "confidence_note_ko"],
+  properties: {
+    platform: { type: "string", enum: Object.keys(PLATFORMS) },
+    customer_name: { type: "string" },
+    customer_handle: { type: "string" },
+    customer_language: { type: "string" },
+    customer_language_ko: { type: "string" },
+    intent: { type: "string", enum: Object.keys(INTENTS) },
+    stage: { type: "string", enum: Object.keys(STAGES) },
+    urgency: { type: "string", enum: Object.keys(URGENCY) },
+    summary_ko: { type: "string" },
+    status_ko: { type: "string" },
+    details: {
+      type: "object", additionalProperties: false,
+      required: DETAIL_LABELS.map(d => d[0]),
+      properties: Object.fromEntries(DETAIL_LABELS.map(d => [d[0], { type: "string" }])),
+    },
+    changes_ko: { type: "array", items: { type: "string" } },
+    confirmed_ko: { type: "array", items: { type: "string" } },
+    pending_ko: { type: "array", items: { type: "string" } },
+    questions_ko: { type: "array", items: { type: "string" } },
+    action_items_ko: { type: "array", items: { type: "string" } },
+    transcript: {
+      type: "array",
+      items: {
+        type: "object", additionalProperties: false, required: ["sender", "when", "original", "ko"],
+        properties: { sender: { type: "string", enum: ["customer", "artist", "unknown"] }, when: { type: "string" }, original: { type: "string" }, ko: { type: "string" } },
+      },
+    },
+    reply_draft: {
+      type: "object", additionalProperties: false, required: ["in_customer_language", "ko"],
+      properties: { in_customer_language: { type: "string" }, ko: { type: "string" } },
+    },
+    confidence_note_ko: { type: "string" },
+  },
+};
+// The artist's own booking message (Price & Deposit + Notes), with the amounts as placeholders. Editable in 설정 > 예약 상세 안내 양식.
+const DEFAULT_TEMPLATE = `💰 Price & Deposit
+•Total price: {총액}
+•Deposit: {예약금} via PayPal
+→ If the "Friends & Family" option is not available, please send {예약금 (수수료 포함)}
+•The deposit is non-refundable and will be deducted from the final total
+•The remaining balance can be paid in cash or via PayPal on the day of the session
+📧 PayPal address: melange.tattoo@gmail.com
+
+———
+
+📌 Notes
+•Design work begins after the deposit is received
+•Final custom designs are usually sent about 1 week before your appointment
+•Please bring a valid photo ID on the day
+•If you have a maximum budget, feel free to let me know — I can adjust the design accordingly
+•Make sure you're in good condition for the session
+* The remaining balance can be paid either in cash or via PayPal. However, PayPal sometimes doesn't work properly, so I kindly ask you to bring cash if possible.`;
+// The artist's standard first-inquiry message (what to send when a customer asks how to book).
+const DEFAULT_INQUIRY = `To proceed, could you please share the following
+1. The design or reference image (if available)
+2. Desired size in centimeters (cm)
+3. Placement (body part)
+4. Preferred city
+5. Preferred date and time`;
+// Pre-filled from the artist's real threads; editable in 설정 > 답장 참고 메모.
+const DEFAULT_CONTEXT = "예약금: 미국 게스트 USD 300 (Friends & Family 불가 시 USD 330), 호주 게스트 AUD 200 (불가 시 AUD 220). 예약금은 환불 불가, 총액에서 차감. 잔금은 시술 당일 현금 또는 PayPal (현금 선호). 예약 확정 순서는 예약금 입금 순. 도안은 시술 약 1주 전에 전달.";
+const BOOKING_SCHEMA = {
+  type: "object", additionalProperties: false, required: ["message", "ko", "missing_ko"],
+  properties: { message: { type: "string" }, ko: { type: "string" }, missing_ko: { type: "array", items: { type: "string" } } },
+};
+const TRANSLATE_SCHEMA = {
+  type: "object", additionalProperties: false, required: ["out", "back_ko"],
+  properties: { out: { type: "string" }, back_ko: { type: "string" } },
+};
+
+/* ====================== state ====================== */
+const S = load();
+let currentId = S.items[0] ? S.items[0].id : null;
+let filter = "all";
+let query = "";
+let showOriginal = true;
+const backend = { kind: "none", sample: null, caps: null, reason: "" };
+const memImages = new Map(); // id -> Blob (session cache; IndexedDB is the durable copy)
+const objectUrls = new Map(); // id -> object URL
+const queue = [];
+let running = false;
+
+function load() {
+  let data = null;
+  try { data = JSON.parse(localStorage.getItem(STORE_KEY) || "null"); } catch (e) {}
+  if (!data || !Array.isArray(data.items)) data = { items: [], settings: {} };
+  data.settings = Object.assign({ model: "claude-opus-5", effort: "high", myName: "", context: DEFAULT_CONTEXT, bookingTemplate: DEFAULT_TEMPLATE, inquiryTemplate: DEFAULT_INQUIRY }, data.settings || {});
+  if (data.items.length === 0 && !data.seenExample) {
+    data.items.push(exampleItem());
+    data.seenExample = true;
+  }
+  // an analysis interrupted by a reload is shown as an error with a retry
+  for (const it of data.items) {
+    if (it.status === "analyzing" || it.status === "queued") { it.status = it.analysis ? "done" : "error"; it.error = "페이지가 새로고침되어 분석이 중단됐어요. 다시 시도해 주세요."; }
+    if (it.status === "done") delete it.fresh;
+    delete it.lastMerge; delete it.translating; delete it.bookingBusy;
+    it.imageIds = Array.isArray(it.imageIds) ? it.imageIds : [];
+    const times = Array.isArray(it.imageTimes) ? it.imageTimes : [];
+    it.imageTimes = it.imageIds.map((id, i) => times[i] || it.createdAt || Date.now());
+    if (it.analysis) it.analysis = normalize(it.analysis);
+    if (it.prevAnalysis) it.prevAnalysis = normalize(it.prevAnalysis);
+    if (!Array.isArray(it.replies)) it.replies = [];
+  }
+  return data;
+}
+function save() {
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(S)); }
+  catch (e) { toast("저장 공간이 부족해요. 오래된 항목을 삭제해 주세요."); }
+}
+function saveSoon() { clearTimeout(saveSoon._t); saveSoon._t = setTimeout(save, 300); }
+function getKey() { try { return localStorage.getItem(KEY_KEY) || ""; } catch (e) { return ""; } }
+function setKey(v) { try { v ? localStorage.setItem(KEY_KEY, v) : localStorage.removeItem(KEY_KEY); } catch (e) {} }
+
+function exampleItem() {
+  return {
+    id: "example", example: true, createdAt: Date.now() - 1000 * 60 * 47, status: "done", done: false, note: "", replies: [], imageIds: [],
+    analysis: {
+      platform: "instagram", customer_name: "Hannah M.", customer_handle: "hannah.m.ink", customer_language: "en", customer_language_ko: "영어",
+      intent: "booking_inquiry", stage: "scheduling", urgency: "normal",
+      summary_ko: "10월 시드니 게스트 기간에 팔 안쪽으로 파도 모티프 블루 타투를 받고 싶어 하는 손님. 처음엔 손목 8cm를 생각했다가 대화 중 팔 안쪽 약 12cm로 바꿨고, 예산은 AUD 600~800이에요. 지금은 10월 10일 또는 11일 오후 가능 여부와 예약금 안내를 기다리는 상태예요.",
+      status_ko: "날짜(10/10 또는 10/11 오후)와 예약금 안내를 내가 답해야 하는 차례",
+      changes_ko: ["부위: 손목 → 왼팔 안쪽 (손님이 두 번째 메시지에서 변경)", "크기: 8cm → 약 12cm (부위를 바꾸면서 함께 변경)"],
+      confirmed_ko: ["시드니 게스트 기간(10/8-15) 중 진행", "파도 모티프, 블루 스타일"],
+      pending_ko: ["정확한 날짜 (10일 vs 11일)", "예약금 금액과 송금 방법", "레퍼런스 이미지 수령"],
+      details: { design: "파도 모티프, 블루 톤 라인+그라데이션", placement: "왼팔 안쪽 (forearm)", size: "약 12cm", style: "파인라인 + 블루 워시", dates: "10월 둘째 주 주말 (10/10-10/11)", location: "시드니 게스트", budget: "AUD 600-800", price: "", references: "인스타 게시물 2개 언급 (dragon-01, custom-041)", contact: "", other: "" },
+      questions_ko: ["10월 10일이나 11일 오후에 자리가 있는지", "예약금은 얼마이고 어떻게 보내면 되는지"],
+      action_items_ko: ["시드니 게스트 일정표에서 10/10-11 오후 가능 여부 확인", "예약금 금액과 송금 방법 안내", "레퍼런스 이미지 받은 뒤 도안 방향 확인"],
+      transcript: [
+        { sender: "customer", when: "9월 1일 오후 3:12", original: "Hi! I saw you're doing a guest spot in Sydney in October. Would love to get a small wave piece on my wrist, maybe 8cm, in your blue style.", ko: "안녕하세요! 10월에 시드니에서 게스트 작업하신다는 걸 봤어요. 손목에 8cm 정도 작은 파도 타투를 블루 스타일로 받고 싶어요." },
+        { sender: "artist", when: "", original: "Hi Hannah, thank you! Yes, I'll be in Sydney Oct 8-15. Wrist works, though the wave flows better a bit bigger. Do you have dates in mind?", ko: "안녕하세요 Hannah, 감사해요! 네, 10월 8일부터 15일까지 시드니에 있어요. 손목도 되지만 파도는 조금 더 크게 하면 흐름이 더 예뻐요. 생각하시는 날짜가 있나요?" },
+        { sender: "customer", when: "", original: "Oh good point. Let's do inner forearm instead then, around 12cm.", ko: "아 좋은 지적이에요. 그럼 팔 안쪽으로 할게요, 12cm 정도로요." },
+        { sender: "customer", when: "9월 2일 오전 9:40", original: "Either the 10th or 11th afternoon would be perfect. Budget is around 600-800 AUD. How does the deposit work?", ko: "10일이나 11일 오후면 딱 좋아요. 예산은 600~800 호주달러 정도예요. 예약금은 어떻게 진행되나요?" },
+      ],
+      reply_draft: {
+        in_customer_language: "Hi Hannah! Both the 10th and 11th afternoon are open right now, so just let me know which you prefer. A 12cm wave on the inner forearm fits well within your budget. To lock in the slot I take a deposit, which comes off the final price. I'll send the payment details once you confirm the date. Could you also send the two reference posts you mentioned?",
+        ko: "안녕하세요 Hannah! 지금 10일과 11일 오후 모두 비어 있으니 편한 날을 알려주세요. 팔 안쪽 12cm 파도 작업은 말씀하신 예산 안에서 충분히 가능해요. 자리를 확정하려면 예약금을 받고 있고, 최종 금액에서 차감돼요. 날짜 확정해 주시면 송금 정보를 보내드릴게요. 말씀하신 레퍼런스 게시물 두 개도 보내주실 수 있을까요?",
+      },
+      confidence_note_ko: "",
+    },
+  };
+}
+
+/* ====================== IndexedDB (screenshots) ====================== */
+const idb = {
+  db: null,
+  open() {
+    if (this.db) return Promise.resolve(this.db);
+    return new Promise((res, rej) => {
+      let req;
+      try { req = indexedDB.open("melange-inbox", 1); } catch (e) { return rej(e); }
+      req.onupgradeneeded = () => req.result.createObjectStore("images", { keyPath: "id" });
+      req.onsuccess = () => { this.db = req.result; res(this.db); };
+      req.onerror = () => rej(req.error);
+    });
+  },
+  async put(id, blob) {
+    try { const db = await this.open(); await tx(db, "readwrite", st => st.put({ id, blob })); return true; } catch (e) { return false; }
+  },
+  async get(id) {
+    try { const db = await this.open(); const r = await tx(db, "readonly", st => st.get(id)); return r ? r.blob : null; } catch (e) { return null; }
+  },
+  async del(id) {
+    try { const db = await this.open(); await tx(db, "readwrite", st => st.delete(id)); } catch (e) {}
+  },
+  async clear() {
+    try { const db = await this.open(); await tx(db, "readwrite", st => st.clear()); } catch (e) {}
+  },
+};
+function tx(db, mode, fn) {
+  return new Promise((res, rej) => {
+    const t = db.transaction("images", mode);
+    const req = fn(t.objectStore("images"));
+    req.onsuccess = () => res(req.result);
+    req.onerror = () => rej(req.error);
+  });
+}
+async function imageUrl(id) {
+  if (objectUrls.has(id)) return objectUrls.get(id);
+  let blob = memImages.get(id) || (await idb.get(id));
+  if (!blob) return null;
+  memImages.set(id, blob);
+  const url = URL.createObjectURL(blob);
+  objectUrls.set(id, url);
+  return url;
+}
+async function getBlobs(item) {
+  const out = [];
+  for (const id of item.imageIds) {
+    const b = memImages.get(id) || (await idb.get(id));
+    if (b) { memImages.set(id, b); out.push({ id, blob: b }); }
+  }
+  return out;
+}
+
+/* ====================== image prep ====================== */
+function loadImage(blob) {
+  return new Promise((res, rej) => {
+    const url = URL.createObjectURL(blob);
+    const img = new Image();
+    img.onload = () => { URL.revokeObjectURL(url); res(img); };
+    img.onerror = () => { URL.revokeObjectURL(url); rej(new Error("이미지를 읽을 수 없어요")); };
+    img.src = url;
+  });
+}
+async function resize(blob, maxEdge, quality) {
+  const img = await loadImage(blob);
+  const scale = Math.min(1, maxEdge / Math.max(img.naturalWidth, img.naturalHeight));
+  const w = Math.max(1, Math.round(img.naturalWidth * scale));
+  const h = Math.max(1, Math.round(img.naturalHeight * scale));
+  const c = document.createElement("canvas");
+  c.width = w; c.height = h;
+  c.getContext("2d").drawImage(img, 0, 0, w, h);
+  return new Promise(res => c.toBlob(b => res(b), "image/jpeg", quality));
+}
+function blobToBase64(blob) {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = () => res(String(r.result).split(",")[1]);
+    r.onerror = () => rej(r.error);
+    r.readAsDataURL(blob);
+  });
+}
+
+/* ====================== backend detection ====================== */
+async function detectBackend() {
+  if (window.claude && typeof window.claude.use === "function") {
+    // Published as a claude.ai artifact: the viewer's own Claude answers, no key needed.
+    let sample = null;
+    try { sample = await window.claude.use("sample"); } catch (e) {}
+    if (sample) {
+      let caps = null;
+      try { caps = await sample.limits(); } catch (e) {}
+      if (caps && caps.images) {
+        Object.assign(backend, { kind: "sample", sample, caps, reason: "" });
+      } else {
+        Object.assign(backend, { kind: "none", reason: "폰의 claude.ai 화면에서는 아직 Claude에 이미지를 보낼 수 없어요. PC 브라우저의 claude.ai에서 열거나, 직접 호스팅한 주소(README 참고)에서 API 키로 사용해 주세요." });
+      }
+    } else {
+      Object.assign(backend, { kind: "none", reason: "이 아티팩트에 Claude 사용 권한이 없어요. 페이지 상단의 권한 요청을 허용해 주세요." });
+    }
+  } else if (getKey()) {
+    Object.assign(backend, { kind: "api", reason: "" });
+  } else {
+    Object.assign(backend, { kind: "none", reason: "설정에서 Anthropic API 키를 넣어 주세요." });
+  }
+  renderBackend();
+}
+function renderBackend() {
+  const chip = $("#backendChip"), label = $("#backendLabel");
+  chip.className = "chip " + (backend.kind === "none" ? "danger" : "good");
+  chip.title = backend.kind === "none" ? (backend.reason || "Claude 연결 안 됨") : "Claude 연결됨";
+  label.textContent = backend.kind === "sample" ? "Claude 연결됨 (claude.ai)" : backend.kind === "api" ? "Claude 연결됨 (API 키)" : "Claude 연결 안 됨";
+  $("#drop").classList.toggle("disabled", backend.kind === "none");
+}
+
+/* ====================== prompts ====================== */
+function todayStr() {
+  const d = new Date(); const days = ["일", "월", "화", "수", "목", "금", "토"];
+  return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0") + " (" + days[d.getDay()] + ")";
+}
+function dateOnly(ms) { const d = new Date(ms); return isNaN(d) ? "" : d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); }
+function analysisPrompt({ earlierText = "", note = "", captured = [] } = {}) {
+  const s = S.settings;
+  const capLine = captured.length ? "The screenshots in this request were captured on: " + [...new Set(captured.filter(Boolean))].join(", ") + " (relative separators like \"(화)\" or \"어제\" are relative to that capture date)." : "";
+  return [
+    "You help a Korean tattoo artist (studio: Melange Tattoo, based in Korea with guest spots in Australia, the US, the UK and Europe) handle customer messages. The artist reads Korean; customers write in many languages.",
+    "The attached screenshots are consecutive scrolls of ONE chat thread (Instagram DM, WhatsApp, KakaoTalk, LINE, email or SMS), given in chronological order. Consecutive screenshots usually overlap at the boundary: the last one or two items of a screenshot (often cut off by the input bar) reappear at the top of the next (often faded under the header). Treat such a pair as ONE message and transcribe the fully visible copy. Merge only at boundaries: the same image or post sent again later with different neighbouring messages is a new message. If a date separator or the overlap shows the given order is wrong, reorder by the separators and say so in confidence_note_ko.",
+    "How to read a chat screenshot:",
+    "- Sender: on Instagram, right-aligned bubbles in the purple/blue gradient with no avatar are the artist" + (s.myName ? " (" + s.myName + ")" : "") + "; left-aligned grey bubbles are the customer. The customer's avatar is shown only next to the LAST bubble of a run, so grey bubbles above it are still the customer. The gradient shade drifts down the screen; different shades are not different senders. A shared post or photo belongs to whichever side it sits on, even when the post is from the artist's own account. Use \"unknown\" only when neither the side nor the colour of a bubble can be seen.",
+    "- The header shows the customer's display name and handle (e.g. \"Ivanna\" / i.vxnna). Ignore app chrome: status bar, header buttons, the \"↓\" button, the input bar, read receipts (…에 읽음), activity status (…전에 활동), ad banners (광고 응답 · 보기), system lines like \"… replied to an ad\", 프로필 보기, and the \"Liked by … and others\" line or like/comment counts on a shared post (those accounts are not the poster).",
+    "- Small emoji bubbles (❤️ 💙 👍) overlapping the edge of a bubble are reactions by the other party, not messages: never add them to the transcript and never treat one as agreement on its own. An emoji inside the bubble text is part of the message.",
+    "- Date separators (absolute like \"8월 14일 오후 2:29\" or relative like \"(화) 오전 7:30\", \"어제 오전 3:24\") apply to the messages below them. Copy them as written into transcript[].when of the first message under each; never convert a relative date into an absolute one anywhere in the output, including confidence_note_ko — say only that it is relative to the capture date. A blurred or unreadable separator always yields when \"\"; put a tentative reading only in confidence_note_ko.",
+    "- Non-text messages are messages too, one transcript entry per image even when Instagram stacks them. In original write a bracketed English tag with the text printed on the card exactly as shown — only the poster handle, location, date, caption fragment and a badge like \"1/3\" when it is actually printed (never invent numbering; never copy like/comment/share counts); for stacked photos write [Photo] / [사진] and tell them apart in ko by content (도안 합성본 / 원본). In ko state the medium first, then what the artist needs to see: a drawing on white paper is a design mock-up ([Design on paper] / 종이 위 도안) and a body photo only when skin, hair or body contour is visible; subject, style and colours, body part and side (a mirror selfie is left-right reversed, so give one side with (거울 셀카 기준) rather than a hedge), existing tattoos, and whether it is the customer's own photo, a design mock-up, or someone else's tattoo. When the customer forwards the artist's own flash sheet or post, label it 멜랑주 본인 플래시/게시물 consistently in ko, details.references and details.design. Cover: a shared post or reel, a photo, a story reply (회원님의 스토리에 답장을 보냈습니다), a story highlight (@…님의 스토리 하이라이트를 보냈습니다), a contact card (전화번호 + WhatsApp/전화 걸기: transcribe the number), a location card (place name · rating · goo.gl), a voice message. A view-once photo (a \"▶ 사진\" pill) is not visible: write [Photo (view once, not visible)] / [사진 (한 번 보기, 내용 확인 불가)]. When the poster is the artist's own account, say so (멜랑주 본인 게시물).",
+    "- \"수정됨\" = the message was edited; the label is printed directly BELOW the edited bubble, so when a shared post or photo sits between a text bubble and the label, the label belongs to the text bubble above it. \"자신에게 답장을 보냈습니다\" / \"…에게 답장\" with a preview = a quoted reply. Mark them inside ko as [수정됨] or [↩ …에 답장]. Append [표준 문의 양식] to the ko of the artist's own numbered inquiry message when it appears. When a message says \"this\" / \"like this\", add what it points to as a separate bracket after the translation, e.g. [→ 바로 위 게시물], never inside the translated words themselves.",
+    "- Translate only the words in the bubble. Do not insert reference names, handles or explanations into the ko translation; clarifications go in a bracket after it.",
+    "- A bubble cut off at the very top or bottom of a screenshot with no complete copy elsewhere: transcribe only the readable lines, end its ko with \"(이하 잘림)\", and say so in confidence_note_ko; if nothing in it is readable, do not create a transcript entry at all. If the last screenshot ends on a cut-off bubble or shows the \"↓\" button, note that later messages may exist.",
+    "Working out the CURRENT state: walk the thread in order and let each later message overwrite the earlier value of the same item. The customer decides design, placement, size and colour; the artist decides price, availability and deposit terms. A question-phrased proposal (\"12pm is okay?\", \"how about the 9th?\") sets nothing until the other side accepts it in words; a ❤️ reaction is not acceptance. The artist's price & deposit message is authoritative at the moment it is sent, but any later message by either side that changes a date, time or price supersedes it (an artist-initiated move is intent schedule_change). A customer's \"Just sent!!\" / \"Sent it\" means the deposit was reported sent, not received; only an artist message like \"I got it\" / \"I checked\" means received. When a message is ambiguous (\"Could we do 1?\" = October 1 or 1 PM), use the later clarification if there is one; otherwise record both readings in confidence_note_ko and put nothing in details.dates. Typos in dates/times stay verbatim in original and are normalised in ko and details (\"11st\" → 11일). Base everything strictly on what is visible: never invent prices, dates, addresses or names, and never compute amounts (remaining balance, totals, fees) — use only figures typed in the thread; if a balance matters write \"잔금: 총액에서 예약금 차감 (금액 미기재)\".",
+    "Today is " + todayStr() + ".",
+    capLine,
+    note ? "The artist's private notes on this thread (facts not visible in the screenshots; treat them as true): " + note : "",
+    earlierText ? "Earlier part of this same conversation, already read (the screenshots show the later part). Treat it as messages that came before the screenshots and include those messages in the transcript. The first new screenshot may overlap the end of this earlier text: de-duplicate. Carry the earlier details, changes, confirmed and pending items forward unless the new screenshots change them:\n" + earlierText : "",
+    "",
+    "Tasks:",
+    "1. transcript: every message in order, de-duplicated, with sender, when (the date separator text in force, \"\" if none is shown right above), original (the exact text as written, typos included; a bracketed description for non-text), ko (a natural Korean translation in 해요체; if the original is already Korean, repeat it).",
+    "2. platform; customer_name (the display name as shown, without decorative emoji); customer_handle (the account handle without '@', \"\" if not shown); customer_language (BCP-47 code) and customer_language_ko (Korean language name, e.g. \"영어\").",
+    "3. summary_ko: 3-5 short Korean sentences, hard cap 5, each carrying exactly one event in at most ~25 어절 (split a sentence that would chain two events with -고/-며; price negotiation, the booking message, contact info and studio location are separate events) in this order: what the customer first asked for and when; what changed along the way; where it stands now; what happens next and by whom. Relative-date glosses go only to confidence_note_ko. If the start of the thread is not visible (the first bubble answers something off-screen), say so instead of stating who reached out first. status_ko: one short line: \"[현재 단계] — 내 차례 / 손님 차례 / 둘 다 아님: [무엇]\" (e.g. \"예약금 대기 — 내 차례: 입금 확인하고 12시 시간 확정 답하기\").",
+    "4. details, CURRENT state only, in Korean (keep names, prices, currencies, dates, units and handles exactly as written): design (the accumulated spec of what will be tattooed, including decided style points like 흑백/블루 포인트 and excluded colours), placement (with the side 왼쪽/오른쪽 when a photo shows it, and existing tattoos nearby), size (relative if no cm was given, e.g. \"레퍼런스보다 작게\"), style, dates (the agreed date and time marked 확정, or candidates/window marked 희망 with the guest window), location (city / guest spot / studio), budget (the customer's own stated budget, \"\" if none), price (the artist's quote or the agreed total plus the deposit, e.g. \"총 USD 2,000 · 예약금 USD 300 (F&F 불가 시 330)\"; a superseded quote goes to changes_ko, not here), references (every shared post and photo in thread order as \"@handle/설명 — 참고 용도\" stating which aspect the customer wants from each: 스타일 / 위치·크기 / 포즈 / 배경 / 색감, including exclusions like \"스타일은 원하지 않음\"; include the customer's own body photo), contact (the customer's full name, age and phone/email exactly as given, including remarks like 생일), other. Use \"\" when not mentioned. Keep each field under ~60 Korean words; provenance notes go to other or confidence_note_ko; never record read receipts, activity status or ad banners. When the artist's quote names a placement for a design, record it per design (\"디자인 1: 허벅지 (내 견적 기준) / 디자인 2: 미정\").",
+    "5. changes_ko: every change of plan, one per line as \"항목: 이전 → 현재 (누가, 언제)\", including a proposal that was declined (\"제안 → 거절/유지\"), explicit deviations from a reference (\"레퍼런스 → 손님 요청: 더 작게\"), an either/or question the customer answered (\"항목: A vs B? → B (손님)\") and a deposit reported and then confirmed (\"예약금: 미입금 → 입금 완료 (손님 송금 → 내가 확인, 언제)\"); exclude first-time specs, mere restatements and the closure of a thread; empty if nothing changed. confirmed_ko: stated facts only, no hedges like 보임/추정 — things both sides clearly agreed plus the artist's own final terms; if the deposit is only inferred from an artist message like \"I got it\", write \"예약금 수령 (내 'I got it' 기준, 입금 메시지 없음)\" or move it to pending_ko. pending_ko: only things someone was actually asked to do or that are objectively required to proceed, each prefixed \"손님:\" or \"나:\"; stage-implied items not yet mentioned get \"(대화에 아직 없음)\"; never anything already answered, never invented acknowledgements. For a lost or cancelled thread, confirmed_ko holds at most the artist's final quote, pending_ko is empty, and changes_ko lists the declined proposal once.",
+    "6. questions_ko: the customer's questions that are still unanswered at the end (empty if all were answered; the artist's own numbered inquiry message is not a customer question). action_items_ko: the artist's concrete next steps that follow from a message in the thread (never steps already done, no generic admin steps like calendar entries, no speculative offers); when nothing is needed write exactly one line like \"없음 — 손님 재문의 대기\".",
+    "7. stage (where this customer stands right now): inquiry (first contact, key info still missing) | consulting (design/size/placement/price being discussed) | scheduling (date/time being settled) | deposit_pending (booking message sent, deposit not yet confirmed by the artist) | confirmed (the artist confirmed the deposit or the booking) | completed (the session happened) | lost (customer declined or went silent after a quote) | cancelled. intent: booking_inquiry | quote | schedule_change | cancellation | design_consult | aftercare | followup | general | other — quote whenever the customer asks about price or availability for specific dates, booking_inquiry only for a first contact that does not ask for a price, schedule_change only while a date/time move is still being negotiated (once the new date is accepted and the thread ends on thanks, followup). urgency: high (must act today: appointment within days judged from the separators and today's date, a cancellation, an upset or long-waiting customer), normal (a reply is expected from the artist), low (nothing needed, the ball is with the customer, or the thread ended).",
+    "8. reply_draft.in_customer_language: the artist's next message in the customer's language, first person, matching the artist's own register visible in the thread (short, upbeat, light emoji when the artist uses them). Answer only what is open; never re-ask what was already answered, never state a different price or date than the agreed one, never promise availability or prices the artist did not state, and never thank the customer again for things the artist already replied to. Never leave [확인 필요] or Korean text inside this reply: if a value is unknown, drop that line and list the gap in pending_ko / action_items_ko instead. If the customer declined, the thread ended on thanks, or the ball is with the customer, write one short optional line and start reply_draft.ko with \"(답장 필수 아님) \" — never re-quote or re-offer dates; such an optional line must contain no new request (missing info like name, age or contact goes to pending_ko / action_items_ko), and if you do need to ask for something, omit the prefix. After a date or time change in the thread, restate the final date and time once. Proofread the reply as a native speaker would send it. reply_draft.ko: the same message in Korean.",
+    s.inquiryTemplate ? "For a first inquiry that still lacks design/size/placement/city/date, base reply_draft on the artist's standard inquiry message below (keep its numbered list, adapt the greeting):\n" + s.inquiryTemplate : "",
+    s.bookingTemplate ? "Booking message rule: when the customer has just accepted the price (or date and price are settled) AND the artist has not yet sent a price/deposit/booking message in this thread, reply_draft = a one-line lead-in plus the artist's booking message below with the amounts filled in from the artist's own messages or notes (never from the customer's budget), then one line asking for the customer's name, age and contact number, and a time proposal if the time is not set. Keep the template's structure and wording. If the artist ALREADY sent such a message in the thread, do not repeat it: write a short follow-up (slot held once the deposit arrives, design and studio details will follow).\nTemplate:\n" + s.bookingTemplate : "",
+    s.context ? "Artist notes to respect when drafting: " + s.context : "",
+    "9. confidence_note_ko: at most two sentences of about 30 words each, only about what is unreadable, cut off or ambiguous (a message that could mean two things, relative dates) — not things the thread states; state each uncertainty once here and do not repeat it in other, pending_ko or action_items_ko; \"\" if everything was clear.",
+    "",
+    "Everything except transcript[].original, transcript[].when and reply_draft.in_customer_language must be in Korean: 해요체 for sentences, 개조식 noun phrases for lists and details, refer to the artist as 나/내 and the customer as 손님, and use the terms Korean tattoo artists use (도안, 시술, 부위, 예약금, 잔금, 게스트, 레퍼런스, 블랙앤그레이, 윗팔). Keep names and handles in their original script and amounts as typed.",
+  ].filter(Boolean).join("\n");
+}
+function translatePrompt(item, ko) {
+  const a = item.analysis || {};
+  const lang = a.customer_language_ko || a.customer_language || "the customer's language";
+  const recent = (a.transcript || []).slice(-6).map(m => (m.sender === "artist" ? "Artist" : "Customer") + ": " + m.original).join("\n");
+  return [
+    "You translate a Korean tattoo artist's reply into " + lang + " (" + (a.customer_language || "") + ") for a customer chat. Keep the artist's tone: warm, concise, professional, first person. Keep names, prices, dates and units exactly. Do not add information.",
+    S.settings.context ? "Artist notes: " + S.settings.context : "",
+    item.note ? "Artist's private notes on this thread: " + item.note : "",
+    recent ? "Recent conversation for context:\n" + recent : "",
+    "",
+    "Korean reply to translate:\n" + ko,
+    "",
+    "Return out (the translated reply) and back_ko (a faithful Korean back-translation of out, so the artist can check it).",
+  ].filter(Boolean).join("\n");
+}
+
+function bookingPrompt(item) {
+  const a = item.analysis || {};
+  const lang = a.customer_language_ko || a.customer_language || "the customer's language";
+  const keep = ["design", "placement", "size", "style", "dates", "location", "price", "contact"];
+  const det = DETAIL_LABELS.filter(([k]) => keep.includes(k) && a.details && a.details[k]).map(([k, l]) => l + ": " + a.details[k]).join("\n");
+  const alreadySent = (a.transcript || []).some(m => m.sender === "artist" && (/price\s*&\s*deposit/i.test(m.original) || (/deposit|예약금/i.test(m.original) && /(usd|aud|eur|gbp|krw|\$|€|£|₩)\s*[\d,]+|[\d,]+\s*(usd|aud|eur|gbp|krw|원|달러)/i.test(m.original))));
+  return [
+    "Fill in a Korean tattoo artist's booking-details message for a customer, using the artist's own template. Keep the template's structure, order, line breaks and wording exactly; replace each {placeholder} with the value from the ARTIST's own messages, the extracted current-state details or the artist's notes. Never use the customer's stated budget as the price. Never compute or invent anything: no fee gross-up, no balance, no street address, no clock time, no prices from other customers. Where a value is unknown write [확인 필요] in its place and list that item in missing_ko (short Korean).",
+    "Write message in " + lang + " (" + (a.customer_language || "") + "); if the template is in another language translate it naturally, keeping the tone. ko: the same message in Korean so the artist can check it.",
+    alreadySent ? "An artist message in the conversation below looks like a price/deposit message. If it is the full booking message with amounts and nothing changed since, do not produce the template again: write a short follow-up instead (slot held once the deposit arrives, design and studio details will follow) and put \"이미 보낸 안내 메시지가 대화에 있음\" in missing_ko. If it only mentions the deposit in passing, or the price changed after it, fill the template normally." : "",
+    "",
+    "Template:\n" + S.settings.bookingTemplate,
+    "",
+    S.settings.context ? "Artist notes:\n" + S.settings.context : "",
+    item.note ? "Artist's private notes on this thread (treat as true):\n" + item.note : "",
+    "Customer: " + (a.customer_name || "") + (a.customer_handle ? " (@" + a.customer_handle + ")" : ""),
+    det ? "Extracted details (current state):\n" + det : "",
+    (a.confirmed_ko || []).length ? "Confirmed:\n" + a.confirmed_ko.join("\n") : "",
+    "Conversation:\n" + transcriptText(a),
+  ].filter(Boolean).join("\n");
+}
+async function makeBooking() {
+  const it = current(); if (!it || !it.analysis) return;
+  if (it.bookingBusy) return;
+  if (!S.settings.bookingTemplate) { toast("설정에서 예약 상세 안내 양식을 먼저 넣어 주세요"); openSettings(); return; }
+  const btn = $("#bookingBtn"), st = $("#bookingStatus");
+  it.bookingBusy = true; btn.disabled = true; st.innerHTML = `<span class="spin"></span>양식 채우는 중`;
+  try {
+    const r = await askJSON({ prompt: bookingPrompt(it), images: null, schema: BOOKING_SCHEMA, tier: "default" });
+    it.booking = { message: String(r.message || "").trim(), ko: String(r.ko || "").trim(), missing_ko: Array.isArray(r.missing_ko) ? r.missing_ko.map(String) : [], at: Date.now() };
+    delete it.bookingBusy;
+    save(); if (currentId === it.id) renderDetail();
+  } catch (e) {
+    delete it.bookingBusy;
+    if (currentId === it.id) { const st2 = $("#bookingStatus"), b2 = $("#bookingBtn"); if (st2) st2.textContent = (e && e.message) || "실패"; if (b2) b2.disabled = false; }
+  }
+}
+async function shareText(text) {
+  if (!text) return;
+  try { await navigator.share({ text }); } catch (e) { if (!e || e.name !== "AbortError") copyText(text); }
+}
+
+/* ====================== Claude calls ====================== */
+async function askJSON({ prompt, images, schema, tier }) {
+  if (backend.kind === "sample") {
+    const maxN = backend.caps.images.maxCount || 1;
+    const opts = { modelTier: tier || "default", cache: false };
+    if (images && images.length) opts.images = images.slice(0, maxN);
+    let text = prompt + "\n\nReply with only one JSON object that matches this JSON Schema exactly (all keys required, no extra keys):\n" + JSON.stringify(schema);
+    const maxBytes = (backend.caps && backend.caps.maxPromptBytes) || 65536;
+    if (utf8Bytes(text) > maxBytes - 512) throw new Error("보낼 내용이 너무 길어요. 대화 앞부분을 정리하거나 스크린샷 수를 줄여 주세요.");
+    try {
+      return await backend.sample.json(text, opts);
+    } catch (e) {
+      throw new Error(sampleErrorText(e));
+    }
+  }
+  if (backend.kind === "api") return callApi({ prompt, images, schema });
+  throw new Error(backend.reason || "Claude에 연결되지 않았어요.");
+}
+function utf8Bytes(str) { try { return new TextEncoder().encode(str).length; } catch (e) { return str.length * 3; } }
+function sampleErrorText(e) {
+  const code = e && e.code;
+  const map = {
+    not_granted: "이 아티팩트에 Claude 사용 권한이 없어요. 권한을 허용한 뒤 다시 시도해 주세요.",
+    rate_limited: "지금은 사용량 한도에 걸렸어요. 잠시 후 다시 시도해 주세요.",
+    session_expired: "claude.ai 로그인이 만료됐어요. 다시 로그인해 주세요.",
+    image_rejected: "이미지를 보낼 수 없었어요. 다른 파일(JPEG/PNG)로 시도해 주세요.",
+    images_unavailable: "이 화면에서는 이미지를 보낼 수 없어요.",
+    refused: "Claude가 이 내용의 처리를 거절했어요. 다른 스크린샷으로 시도해 주세요.",
+    invalid_json: "응답을 정리하는 데 실패했어요. 다시 시도해 주세요.",
+    prompt_too_large: "내용이 너무 길어요. 스크린샷 수를 줄여 주세요.",
+    cancelled: "취소됐어요.",
+    sampling_disabled: "이 계정에서는 Claude를 쓸 수 없어요.",
+    not_declared: "이 페이지 설정에 Claude 권한이 빠져 있어요. 다시 게시해야 해요.",
+    capability_disabled: "이 화면에서는 Claude를 쓸 수 없어요. claude.ai 앱에서 열어 주세요.",
+    capability_removed: "앱 버전이 오래됐어요. 페이지를 새로고침해 주세요.",
+    upstream_error: "잠시 연결 문제가 있었어요. 다시 시도해 주세요.",
+  };
+  return map[code] || ("Claude 호출에 실패했어요" + (code ? " (" + code + ")" : "") + ". 잠시 후 다시 시도해 주세요.");
+}
+async function callApi({ prompt, images, schema }) {
+  const key = getKey();
+  if (!key) throw new Error("설정에서 Anthropic API 키를 넣어 주세요.");
+  const content = [];
+  for (const blob of images || []) {
+    const small = await resize(blob, 1568, 0.85);
+    content.push({ type: "image", source: { type: "base64", media_type: "image/jpeg", data: await blobToBase64(small) } });
+  }
+  content.push({ type: "text", text: prompt });
+  const body = {
+    model: S.settings.model || "claude-opus-5",
+    max_tokens: 32000,
+    output_config: /haiku/i.test(S.settings.model || "") ? { format: { type: "json_schema", schema } } : { effort: S.settings.effort || "high", format: { type: "json_schema", schema } },
+    messages: [{ role: "user", content }],
+  };
+  const headers = {
+    "content-type": "application/json",
+    "x-api-key": key,
+    "anthropic-version": API_VERSION,
+    "anthropic-dangerous-direct-browser-access": "true",
+  };
+  // Server-side refusal fallback: if the primary model declines, the API re-runs on a fallback model.
+  let res = await post(headers, Object.assign({ fallbacks: "default" }, body), FALLBACK_BETA);
+  if (res.status === 400 && /fallback|beta/i.test(res.text)) res = await post(headers, body, null);
+  if (!res.ok) {
+    let msg = res.text;
+    try { msg = apiErrorText(JSON.parse(res.text).error); } catch (e) {}
+    if (res.status === 401) msg = "API 키가 올바르지 않아요. 설정에서 확인해 주세요.";
+    if (res.status === 429) msg = "요청이 너무 많아요. 잠시 후 다시 시도해 주세요.";
+    if (res.status === 529 || res.status === 503) msg = "지금 Claude 서버가 붐벼요. 잠시 후 다시 시도해 주세요.";
+    throw new Error(msg);
+  }
+  const data = JSON.parse(res.text);
+  if (data.stop_reason === "refusal") throw new Error("Claude가 이 내용의 처리를 거절했어요." + (data.stop_details && data.stop_details.explanation ? " " + data.stop_details.explanation : ""));
+  if (data.stop_reason === "max_tokens") throw new Error("응답이 너무 길어 잘렸어요. 스크린샷 수를 줄여 주세요.");
+  const textBlock = (data.content || []).find(b => b.type === "text" && b.text);
+  if (!textBlock) throw new Error("응답에 내용이 없어요. 다시 시도해 주세요.");
+  try { return JSON.parse(textBlock.text); } catch (e) { throw new Error("응답을 정리하는 데 실패했어요. 다시 시도해 주세요."); }
+}
+const NET_ERR = "네트워크 오류로 Anthropic API에 연결하지 못했어요. 분석 중에는 앱을 열어 둔 채 기다려 주세요.";
+async function post(headers, body, beta) {
+  const h = Object.assign({}, headers);
+  if (beta) h["anthropic-beta"] = beta;
+  // Always stream: Safari (iPhone) drops a request whose reply has not started within about a minute,
+  // and a full analysis on Opus takes longer than that. SSE sends headers at once and keeps the line alive.
+  const payload = JSON.stringify(Object.assign({ stream: true }, body));
+  let r;
+  for (let attempt = 0; ; attempt++) {
+    try { r = await fetch(API_URL, { method: "POST", headers: h, body: payload }); break; }
+    catch (e) { if (attempt >= 1) throw new Error(NET_ERR); await new Promise(res => setTimeout(res, 1500)); }
+  }
+  if (!r.ok) return { ok: false, status: r.status, text: await r.text() };
+  const ct = (r.headers && r.headers.get && r.headers.get("content-type")) || "";
+  if (!r.body || !/event-stream/i.test(ct)) return { ok: true, status: r.status, text: await r.text() };
+  let msg;
+  try { msg = await readStream(r.body); }
+  catch (e) { throw new Error((e && e.message) || "응답을 받는 중 연결이 끊겼어요. 다시 시도해 주세요."); }
+  return { ok: true, status: 200, text: JSON.stringify(msg) };
+}
+async function readStream(stream) {
+  const reader = stream.getReader(), dec = new TextDecoder();
+  let buf = "", text = "", stop = null, details = null, evName = "";
+  for (;;) {
+    let chunk;
+    try { chunk = await reader.read(); } catch (e) { throw new Error("응답을 받는 중 연결이 끊겼어요. 다시 시도해 주세요."); }
+    if (chunk.done) break;
+    buf += dec.decode(chunk.value, { stream: true });
+    let i;
+    while ((i = buf.indexOf("\n")) >= 0) {
+      const line = buf.slice(0, i).replace(/\r$/, ""); buf = buf.slice(i + 1);
+      if (line.startsWith("event:")) { evName = line.slice(6).trim(); continue; }
+      if (!line.startsWith("data:")) continue;
+      let d; try { d = JSON.parse(line.slice(5).trim()); } catch (e) { continue; }
+      const t = d.type || evName;
+      if (t === "content_block_delta") { if (d.delta && typeof d.delta.text === "string") text += d.delta.text; }
+      else if (t === "message_delta" && d.delta) { stop = d.delta.stop_reason || stop; details = d.delta.stop_details || details; }
+      else if (t === "error") throw new Error(apiErrorText(d.error));
+    }
+  }
+  if (!stop) throw new Error("응답을 받는 중 연결이 끊겼어요. 다시 시도해 주세요."); // a complete stream always carries message_delta
+  return { stop_reason: stop, stop_details: details, content: [{ type: "text", text }] };
+}
+function apiErrorText(err) {
+  const type = err && err.type, msg = err && err.message;
+  if (type === "overloaded_error") return "지금 Claude 서버가 붐벼요. 잠시 후 다시 시도해 주세요.";
+  if (type === "rate_limit_error") return "요청이 너무 많아요. 잠시 후 다시 시도해 주세요.";
+  if (type === "authentication_error") return "API 키가 올바르지 않아요. 설정에서 확인해 주세요.";
+  return msg || "Claude 호출 중 오류가 났어요. 다시 시도해 주세요.";
+}
+
+/* ====================== intake ====================== */
+async function storeFiles(item, files) {
+  let failed = 0;
+  const ids = [];
+  for (const f of files) {
+    const id = uid();
+    let stored = f;
+    try { stored = await resize(f, 1400, 0.82); } catch (e) {}
+    memImages.set(id, stored);
+    if (!(await idb.put(id, stored))) failed++;
+    item.imageIds.push(id);
+    item.imageTimes = item.imageTimes || [];
+    item.imageTimes.push(f.lastModified || Date.now());
+    ids.push(id);
+  }
+  if (failed) toast("스크린샷 " + failed + "장을 브라우저에 저장하지 못했어요 (저장 공간). 이번 분석에는 쓰이지만 새로고침 후에는 사라져요.");
+  return ids;
+}
+function intakeFiles(fileList) {
+  const files = Array.from(fileList || []).filter(f => f && f.type && f.type.startsWith("image/"));
+  if (!files.length) { toast("이미지 파일만 넣을 수 있어요"); return null; }
+  if (backend.kind === "none") { toast(backend.reason || "Claude 연결이 필요해요"); openSettings(); return null; }
+  files.sort((a, b) => (a.lastModified - b.lastModified) || a.name.localeCompare(b.name));
+  return files;
+}
+async function addFiles(fileList) {
+  const files = intakeFiles(fileList); if (!files) return;
+  const groups = $("#splitEach").checked ? files.map(f => [f]) : [files];
+  if (S.items.length === 1 && S.items[0].example) removeItem("example", true);
+  for (const group of groups) {
+    const item = { id: uid(), createdAt: Date.now(), status: "queued", done: false, note: "", replies: [], imageIds: [], imageTimes: [], analysis: null, error: "", fresh: true };
+    await storeFiles(item, group);
+    S.items.unshift(item);
+    enqueue(item.id);
+  }
+  currentId = S.items[0].id;
+  save();
+  render();
+  setView("detail");
+  pump();
+}
+function enqueue(id) { if (!queue.includes(id)) queue.push(id); }
+async function pump() {
+  if (running) return;
+  running = true;
+  try {
+    while (queue.length) {
+      const id = queue.shift();
+      const item = S.items.find(i => i.id === id);
+      if (!item) continue;
+      await analyze(item);
+    }
+  } finally { running = false; }
+}
+function renderFor(item) { if (item.id === currentId) render(); else renderList(); }
+const MAX_IMAGES_API = 20;
+// Reads the screenshots (all of them, or only the new ones when a digest of the earlier part exists),
+// in chunks of at most `cap` images, carrying a text digest of what was already read into the next call.
+async function analyze(item) {
+  item.status = "analyzing"; item.error = "";
+  const gen = item.gen = (item.gen || 0) + 1;
+  const newIds = item.newImageIds ? item.newImageIds.slice() : null;
+  renderFor(item);
+  try {
+    const all = await getBlobs(item);
+    if (!S.items.includes(item)) return; // deleted while loading
+    if (!all.length) throw new Error("스크린샷을 찾을 수 없어요. 다시 넣어 주세요.");
+    if (all.length < item.imageIds.length) {
+      // a screenshot that never made it into browser storage (quota) is left out so the rest can still be read
+      const have = new Set(all.map(x => x.id));
+      const missing = item.imageIds.filter(id => !have.has(id));
+      item.imageTimes = (item.imageTimes || []).filter((t, i) => have.has(item.imageIds[i]));
+      item.imageIds = item.imageIds.filter(id => have.has(id));
+      if (item.newImageIds) item.newImageIds = item.newImageIds.filter(id => have.has(id));
+      if (newIds) for (const id of missing) { const k = newIds.indexOf(id); if (k >= 0) newIds.splice(k, 1); }
+      save();
+      toast("스크린샷 " + missing.length + "장을 브라우저 저장소에서 찾을 수 없어 빼고 읽어요. 필요하면 다시 넣어 주세요.");
+    }
+    const cap = backend.kind === "sample" ? (backend.caps.images.maxCount || 1) : MAX_IMAGES_API;
+    let prev = item.prevAnalysis || null;
+    let todo = all;
+    if (prev && newIds && newIds.length) todo = all.filter(x => newIds.includes(x.id)); // incremental append
+    else prev = null; // full read
+    if (!todo.length) todo = all;
+    for (let i = 0; i < todo.length; i += cap) {
+      const chunk = todo.slice(i, i + cap);
+      const captured = chunk.map(x => dateOnly((item.imageTimes || [])[item.imageIds.indexOf(x.id)]));
+      const prompt = analysisPrompt({ earlierText: prev ? digestText(prev) : "", note: item.note, captured });
+      const raw = await askJSON({ prompt, images: chunk.map(x => x.blob), schema: ANALYSIS_SCHEMA, tier: "default" });
+      if (item.gen !== gen || !S.items.includes(item)) return; // superseded (merge undone) or deleted while running
+      prev = normalize(raw);
+    }
+    item.analysis = prev;
+    item.status = "done";
+    delete item.prevAnalysis;
+    if (newIds) item.newImageIds = (item.newImageIds || []).filter(id => !newIds.includes(id));
+    if (!item.newImageIds || !item.newImageIds.length) delete item.newImageIds;
+  } catch (e) {
+    if (item.gen !== gen || !S.items.includes(item)) return;
+    item.error = (e && e.message) || String(e);
+    item.status = item.analysis ? "done" : "error"; // an already-read conversation stays readable; the failure shows as a banner
+  }
+  const wasFresh = item.fresh; if (item.status === "done") delete item.fresh; // an errored first read may still auto-merge on retry
+  save();
+  if (item.status === "done" && wasFresh && !item.noMerge) { if (await autoMerge(item)) return; }
+  renderFor(item);
+}
+function transcriptText(a) {
+  return (a.transcript || []).map(m => (m.when ? "[" + m.when + "] " : "") + (m.sender === "artist" ? "Artist" : m.sender === "customer" ? "Customer" : "Unknown") + ": " + m.original).join("\n");
+}
+function digestText(a) {
+  const det = DETAIL_LABELS.filter(([k]) => a.details && a.details[k]).map(([k, l]) => l + ": " + a.details[k]).join("\n");
+  return [
+    "Customer: " + (a.customer_name || "") + (a.customer_handle ? " (@" + a.customer_handle + ")" : "") + " · platform: " + (a.platform || "") + " · stage so far: " + (a.stage || ""),
+    "Transcript so far:\n" + transcriptText(a),
+    det ? "Details so far (current state):\n" + det : "",
+    (a.changes_ko || []).length ? "Changes so far:\n" + a.changes_ko.join("\n") : "",
+    (a.confirmed_ko || []).length ? "Confirmed so far:\n" + a.confirmed_ko.join("\n") : "",
+    (a.pending_ko || []).length ? "Pending so far:\n" + a.pending_ko.join("\n") : "",
+  ].filter(Boolean).join("\n");
+}
+const normName = n => String(n || "").toLowerCase().replace(/[^\p{L}\p{N}]/gu, "");
+function namesMatch(a, b) {
+  if (!a || !b || a.length < 2 || b.length < 2) return false;
+  return a === b || a.includes(b) || b.includes(a);
+}
+// Exact handle match → merge without asking. Name-only match → ask first. No name → nothing.
+function findMatch(item) {
+  const a = item.analysis; if (!a) return null;
+  const n = normName(a.customer_name);
+  const h = normName(a.customer_handle);
+  const others = S.items.filter(o => o !== item && !o.example && o.analysis && (o.status === "done" || o.status === "queued") && o.analysis.platform === a.platform);
+  if (h) { const byHandle = others.find(o => normName(o.analysis.customer_handle) === h); if (byHandle) return { target: byHandle, sure: true }; }
+  if (!n || a.customer_name === "이름 없음") return null;
+  const byName = others.filter(o => namesMatch(normName(o.analysis.customer_name), n) && (!h || !normName(o.analysis.customer_handle)));
+  byName.sort((x, y) => (x.noMerge ? 1 : 0) - (y.noMerge ? 1 : 0));
+  return byName.length ? { target: byName[0], sure: false } : null;
+}
+// A new screenshot of a chat we already track: append it to that conversation and read on from where we left off.
+async function autoMerge(item) {
+  const m = findMatch(item);
+  if (!m) return false;
+  if (!m.sure) {
+    renderFor(item);
+    const who = m.target.analysis.customer_name + (m.target.analysis.customer_handle ? " (@" + m.target.analysis.customer_handle + ")" : "");
+    if (!(await ask("같은 손님 같아요: " + who + "\n기존 대화에 이어 붙일까요?\n(취소하면 따로 둡니다)", "이어 붙이기"))) { item.noMerge = true; save(); return false; }
+  }
+  mergeInto(m.target, item);
+  return true;
+}
+function mergeInto(target, item) {
+  const undo = { id: item.id, imageIds: item.imageIds.slice(), imageTimes: (item.imageTimes || []).slice(), analysis: item.analysis, createdAt: item.createdAt, replies: item.replies, note: item.note, booking: item.booking, koDraft: item.koDraft, done: item.done, targetAnalysis: target.analysis, targetDone: target.done, targetPrevAnalysis: target.prevAnalysis || null, targetNewImageIds: target.newImageIds ? target.newImageIds.slice() : null };
+  target.prevAnalysis = target.prevAnalysis || target.analysis;
+  target.newImageIds = (target.newImageIds || []).concat(item.imageIds);
+  target.imageIds = target.imageIds.concat(item.imageIds);
+  target.imageTimes = (target.imageTimes || []).concat(item.imageTimes || []);
+  target.done = false;
+  if (target.status === "done") target.status = "queued";
+  target.lastMerge = undo;
+  removeItem(item.id, true, true);
+  currentId = target.id;
+  save();
+  render();
+  enqueue(target.id); pump();
+  toast((target.analysis ? target.analysis.customer_name : "기존") + " 대화에 이어 붙였어요", "따로 두기", () => unmerge(target));
+  setTimeout(() => { if (target.lastMerge === undo) delete target.lastMerge; }, 7500);
+}
+function unmerge(target) {
+  const u = target.lastMerge; if (!u) return;
+  delete target.lastMerge;
+  target.gen = (target.gen || 0) + 1; // cancel a running re-analysis
+  const keep = target.imageIds.map((id, i) => !u.imageIds.includes(id));
+  target.imageIds = target.imageIds.filter((id, i) => keep[i]);
+  target.imageTimes = (target.imageTimes || []).filter((t, i) => keep[i]);
+  target.analysis = u.targetAnalysis; target.done = u.targetDone;
+  const idx = queue.indexOf(target.id); if (idx >= 0) queue.splice(idx, 1);
+  if (u.targetNewImageIds && u.targetNewImageIds.length) {
+    // screenshots appended before the merge were still waiting to be read: read them now
+    target.newImageIds = u.targetNewImageIds;
+    target.prevAnalysis = u.targetPrevAnalysis || u.targetAnalysis;
+    target.status = "queued";
+    enqueue(target.id);
+  } else {
+    delete target.newImageIds; delete target.prevAnalysis;
+    target.status = target.analysis ? "done" : "error";
+  }
+  const item = { id: u.id, createdAt: u.createdAt, status: "done", done: !!u.done, note: u.note || "", replies: u.replies || [], imageIds: u.imageIds, imageTimes: u.imageTimes, analysis: u.analysis, error: "", noMerge: true };
+  if (u.booking) item.booking = u.booking;
+  if (u.koDraft != null) item.koDraft = u.koDraft;
+  S.items.unshift(item);
+  currentId = item.id;
+  save(); render();
+  if (target.status === "queued") pump();
+  toast("따로 두었어요");
+}
+async function appendTo(item, fileList) {
+  if (item.example) { toast("예시 항목에는 붙일 수 없어요. 위 상자에 새로 넣어 주세요."); return; }
+  const files = intakeFiles(fileList); if (!files) return;
+  const ids = await storeFiles(item, files);
+  if (item.analysis) { item.prevAnalysis = item.prevAnalysis || item.analysis; item.newImageIds = (item.newImageIds || []).concat(ids); }
+  item.done = false; delete item.lastMerge;
+  if (item.status === "done" || item.status === "error") item.status = "queued";
+  currentId = item.id;
+  save(); render(); setView("detail");
+  enqueue(item.id); pump();
+}
+// Full re-read of every screenshot (no digest carried in).
+function reanalyze(item) {
+  delete item.prevAnalysis; delete item.newImageIds;
+  item.status = "queued"; item.error = "";
+  renderFor(item);
+  enqueue(item.id); pump();
+}
+// Manual "붙이기": move this item's screenshots into another conversation.
+function openMergePicker(item) {
+  const others = S.items.filter(o => o !== item && !o.example && o.analysis && o.status === "done");
+  if (!others.length) { toast("붙일 수 있는 다른 대화가 없어요"); return; }
+  const dlg = $("#mergeDlg");
+  $("#mergeList").innerHTML = others.map(o => `<button type="button" class="pick" data-id="${o.id}"><b>${esc(o.analysis.customer_name)}</b>${o.analysis.customer_handle ? ` <span class="mono">@${esc(o.analysis.customer_handle)}</span>` : ""}<span class="chip ${(STAGES[o.analysis.stage] || STAGES.inquiry)[1]}">${esc((STAGES[o.analysis.stage] || STAGES.inquiry)[0])}</span><span class="sub">${esc(o.analysis.summary_ko.slice(0, 60))}</span></button>`).join("");
+  dlg.dataset.source = item.id;
+  dlg.showModal();
+}
+function normalize(a) {
+  a = a && typeof a === "object" ? a : {};
+  const str = v => (v == null ? "" : String(v)).trim();
+  const arr = v => Array.isArray(v) ? v.map(str).filter(Boolean) : [];
+  const d = a.details && typeof a.details === "object" ? a.details : {};
+  return {
+    platform: PLATFORMS[a.platform] ? a.platform : "other",
+    customer_name: str(a.customer_name) || "이름 없음",
+    customer_handle: str(a.customer_handle).replace(/^@/, ""),
+    customer_language: str(a.customer_language),
+    customer_language_ko: str(a.customer_language_ko),
+    intent: INTENTS[a.intent] ? a.intent : "other",
+    stage: STAGES[a.stage] ? a.stage : "inquiry",
+    urgency: URGENCY[a.urgency] ? a.urgency : "normal",
+    summary_ko: str(a.summary_ko),
+    status_ko: str(a.status_ko),
+    details: Object.fromEntries(DETAIL_LABELS.map(([k]) => [k, str(d[k])])),
+    changes_ko: arr(a.changes_ko),
+    confirmed_ko: arr(a.confirmed_ko),
+    pending_ko: arr(a.pending_ko),
+    questions_ko: arr(a.questions_ko),
+    action_items_ko: arr(a.action_items_ko),
+    transcript: Array.isArray(a.transcript) ? a.transcript.map(m => ({ sender: ["customer", "artist"].includes(m && m.sender) ? m.sender : "unknown", when: str(m && m.when), original: str(m && m.original), ko: str(m && m.ko) })).filter(m => m.original || m.ko) : [],
+    reply_draft: { in_customer_language: str(a.reply_draft && a.reply_draft.in_customer_language), ko: str(a.reply_draft && a.reply_draft.ko) },
+    confidence_note_ko: str(a.confidence_note_ko),
+  };
+}
+function removeItem(id, silent, keepImages) {
+  const idx = S.items.findIndex(i => i.id === id);
+  if (idx < 0) return;
+  const [it] = S.items.splice(idx, 1);
+  if (!keepImages) for (const img of it.imageIds || []) { idb.del(img); memImages.delete(img); const u = objectUrls.get(img); if (u) { URL.revokeObjectURL(u); objectUrls.delete(img); } }
+  if (currentId === id) currentId = S.items[0] ? S.items[0].id : null;
+  save();
+  if (!silent) { render(); toast("삭제했어요"); }
+}
+
+/* ====================== rendering ====================== */
+const $ = s => document.querySelector(s);
+const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+function fmtTime(t) {
+  const d = new Date(t), now = new Date();
+  const same = d.toDateString() === now.toDateString();
+  const hh = String(d.getHours()).padStart(2, "0") + ":" + String(d.getMinutes()).padStart(2, "0");
+  return same ? hh : (d.getMonth() + 1) + "/" + d.getDate() + " " + hh;
+}
+function chip(label, tone, extra) { return `<span class="chip ${tone || ""} ${extra || ""}">${esc(label)}</span>`; }
+function intentChip(a) { const [l, t] = INTENTS[a.intent] || INTENTS.other; return chip(l, t); }
+function stageChip(a) { const [l, t] = STAGES[a.stage] || STAGES.inquiry; return chip(l, t); }
+function urgencyChip(a) { const [l, t] = URGENCY[a.urgency] || URGENCY.normal; return a.urgency === "normal" ? "" : chip(l, t); }
+
+function visibleItems() {
+  const q = query.trim().toLowerCase();
+  return S.items.filter(it => {
+    if (filter === "open" && it.done) return false;
+    if (filter === "done" && !it.done) return false;
+    if (filter === "high" && !(it.analysis && it.analysis.urgency === "high")) return false;
+    if (filter === "confirmed" && !(it.analysis && (it.analysis.stage === "confirmed" || it.analysis.stage === "deposit_pending"))) return false;
+    if (filter === "lost" && !(it.analysis && (it.analysis.stage === "lost" || it.analysis.stage === "cancelled"))) return false;
+    if (!q) return true;
+    const a = it.analysis;
+    const hay = [a && a.customer_name, a && a.customer_handle, a && a.summary_ko, it.note, a && Object.values(a.details || {}).join(" "), a && (a.transcript || []).map(m => m.original + " " + m.ko).join(" ")].join(" ").toLowerCase();
+    return hay.includes(q);
+  });
+}
+function render() { renderList(); renderDetail(); }
+function renderList() {
+  const items = visibleItems();
+  const list = $("#list");
+  $("#count").textContent = items.length + " / " + S.items.length;
+  if (!items.length) {
+    list.innerHTML = `<li class="empty"><b>${S.items.length ? "검색 결과가 없어요" : "아직 항목이 없어요"}</b>${S.items.length ? "다른 검색어나 필터를 써 보세요." : "손님 대화 스크린샷을 위 상자에 끌어다 놓으면 시작돼요."}</li>`;
+    return;
+  }
+  list.innerHTML = items.map(it => {
+    const a = it.analysis;
+    const name = a ? a.customer_name : (it.status === "analyzing" ? "분석 중" : it.status === "error" ? "분석 실패" : "대기 중");
+    const sum = a ? a.summary_ko : (it.status === "error" ? it.error : "스크린샷을 읽고 있어요");
+    const chips = a ? `${stageChip(a)}${chip(PLATFORMS[a.platform] || "기타", "")}${intentChip(a)}${urgencyChip(a)}${it.imageIds.length > 1 ? chip(it.imageIds.length + "장", "") : ""}${it.error ? chip("읽기 실패", "danger") : ""}${it.example ? chip("예시", "warn") : ""}` : (it.status === "analyzing" ? `<span class="chip"><span class="spin" style="margin:0"></span></span>` : it.status === "error" ? chip("오류", "danger") : chip("대기", ""));
+    const thumb = it.imageIds.length ? `<div class="thumb" data-img="${it.imageIds[0]}"><img alt="" /></div>` : `<div class="thumb">${it.imageIds.length ? "" : "IG"}</div>`;
+    return `<li class="item ${it.done ? "done" : ""} urg-${a ? a.urgency : "normal"}" data-id="${it.id}" aria-current="${it.id === currentId}" tabindex="0" role="button">
+      <div class="stripe"></div>${thumb}
+      <div class="body">
+        <div class="row"><span class="name">${esc(name)}</span><span class="time">${fmtTime(it.createdAt)}</span></div>
+        <div class="chips">${chips}</div>
+        <div class="sum">${esc(sum)}</div>
+      </div></li>`;
+  }).join("");
+  hydrateImages(list);
+}
+function hydrateImages(root) {
+  root.querySelectorAll("[data-img]").forEach(async el => {
+    const url = await imageUrl(el.dataset.img);
+    const img = el.querySelector("img");
+    if (url && img) img.src = url; else if (img) el.textContent = "IMG";
+  });
+}
+function renderDetail() {
+  const box = $("#detail");
+  const it = S.items.find(i => i.id === currentId);
+  const back = `<button class="btn ghost small back" id="backBtn">← 목록</button>`;
+  if (!it) {
+    box.innerHTML = `<div class="state">${back}
+      <h2>스크린샷을 넣으면 여기서 정리돼요</h2>
+      <p>인스타그램 DM, 왓츠앱, 카카오톡, 라인, 이메일 화면을 캡처해서 왼쪽 상자에 끌어다 놓거나 붙여넣으세요. 대화가 길면 여러 장을 한 번에 넣어도 하나로 묶어 읽어요.</p>
+      <div class="steps">
+        <div><b>1. 읽기</b>메시지를 순서대로 옮겨 적고 손님 / 나를 구분해요.</div>
+        <div><b>2. 번역 · 요약</b>한국어 번역과 2~4문장 요약, 예약 정보(디자인, 부위, 크기, 일정, 예산)를 뽑아요.</div>
+        <div><b>3. 답장</b>손님 언어로 답장 초안을 만들고, 내가 쓴 한국어 답장도 번역해 줘요.</div>
+      </div>
+    </div>`;
+    return;
+  }
+  if (it.status !== "done" || !it.analysis) {
+    const thumbs = it.imageIds.map(id => `<span data-img="${id}"><img alt="" /></span>`).join("");
+    box.innerHTML = `<div class="state">${back}
+      ${it.status === "analyzing" ? `<h2><span class="spin"></span>스크린샷을 읽고 있어요</h2><p>메시지 옮겨 적기, 번역, 요약, 답장 초안까지 한 번에 만들어요. 보통 20~60초 걸려요.</p>` : ""}
+      ${it.status === "queued" ? `<h2>대기 중</h2><p>앞 항목 분석이 끝나면 바로 시작돼요.</p>` : ""}
+      ${it.status === "error" ? `<h2>분석하지 못했어요</h2><div class="err">${esc(it.error)}</div><div style="display:flex;gap:8px"><button class="btn primary" id="retryBtn">다시 시도</button><button class="btn danger" id="delBtn">삭제</button></div>` : ""}
+      <div class="thumbs">${thumbs}</div>
+    </div>`;
+    hydrateImages(box);
+    return;
+  }
+  const a = it.analysis;
+  const details = DETAIL_LABELS.map(([k, label]) => {
+    const v = a.details[k];
+    return `<dt>${label}</dt><dd class="${MONO_FIELDS.has(k) && v ? "mono" : ""} ${v ? "" : "blank"}">${v ? esc(v) : "언급 없음"}</dd>`;
+  }).join("");
+  const li = (arr, cls) => arr.length ? arr.map(x => `<li>${esc(x)}</li>`).join("") : `<li class="none">없음</li>`;
+  const transcript = a.transcript.map(m => `${m.when ? `<div class="sep">${esc(m.when)}</div>` : ""}<div class="msg ${m.sender}">
+      <span class="who">${m.sender === "artist" ? "나" : m.sender === "customer" ? "손님" : "?"}</span>
+      <div class="bub">${esc(showOriginal ? m.original || m.ko : m.ko || m.original)}</div>
+      ${showOriginal && m.ko && m.ko !== m.original ? `<div class="tr">${esc(m.ko)}</div>` : ""}
+    </div>`).join("");
+  const lastReply = it.replies[it.replies.length - 1];
+  const canShare = typeof navigator.share === "function";
+  box.innerHTML = `<div class="d-wrap">
+    ${it.error ? `<div class="err banner"><span>${esc(it.error)}</span><span class="row"><button class="btn small primary" id="retryBtn">다시 시도</button><button class="btn ghost small" id="dismissErrBtn">닫기</button></span></div>` : ""}
+    <div class="d-head">
+      ${back}
+      <div class="title">
+        <h1>${esc(a.customer_name)}${a.customer_handle ? ` <span class="handle">@${esc(a.customer_handle)}</span>` : ""}</h1>
+        <div class="meta">${stageChip(a)}${chip(PLATFORMS[a.platform] || "기타")}${a.customer_language_ko ? chip(a.customer_language_ko) : ""}${intentChip(a)}${urgencyChip(a)}${it.example ? chip("예시 데이터", "warn") : ""}<span class="chip mono" style="font-family:var(--mono)">${esc(fmtTime(it.createdAt))}</span></div>
+        <div class="acts">
+          <button class="btn small ${it.done ? "" : "primary"}" id="doneBtn">${it.done ? "미처리로 되돌리기" : "처리 완료"}</button>
+          ${it.example ? "" : `<button class="btn small" id="addShotBtn" title="이 대화의 이어지는 스크린샷 추가">스크린샷 추가</button><button class="btn small" id="mergeBtn" title="이 대화를 다른 손님 대화에 이어 붙이기">다른 대화에 붙이기</button>`}
+          <button class="btn small" id="reanalyzeBtn" ${it.imageIds.length ? "" : "disabled"}>다시 분석</button>
+          <button class="btn small danger" id="delBtn">삭제</button>
+        </div>
+      </div>
+      ${it.imageIds.length ? `<div class="d-thumbs">${it.imageIds.map(id => `<button type="button" data-open="${id}" title="원본 보기"><span data-img="${id}"><img alt="스크린샷" /></span></button>`).join("")}<span class="hint-drop">이어지는 스크린샷은 이 화면에 바로 끌어다 놓아도 돼요</span></div>` : ""}
+    </div>
+
+    <section class="sec">
+      <header><h2>요약</h2><div class="right"><button class="btn ghost small" data-copy="summary">복사</button></div></header>
+      <p class="summary">${esc(a.summary_ko)}</p>
+      ${a.status_ko ? `<div class="status-line"><span class="eyebrow">지금</span>${esc(a.status_ko)}</div>` : ""}
+      ${a.confidence_note_ko ? `<div class="note">${esc(a.confidence_note_ko)}</div>` : ""}
+    </section>
+
+    ${(a.changes_ko.length || a.confirmed_ko.length || a.pending_ko.length) ? `<div class="d-grid three">
+      <section class="sec"><header><h2>바뀐 내용</h2><span class="hint">이전 → 현재</span></header><div class="card"><ul class="bul chg">${li(a.changes_ko)}</ul></div></section>
+      <section class="sec"><header><h2>확정</h2></header><div class="card"><ul class="bul ok">${li(a.confirmed_ko)}</ul></div></section>
+      <section class="sec"><header><h2>아직 미정</h2></header><div class="card"><ul class="bul q">${li(a.pending_ko)}</ul></div></section>
+    </div>` : ""}
+
+    <div class="d-grid">
+      <section class="sec">
+        <header><h2>예약 정보</h2></header>
+        <div class="card"><dl class="kv">${details}</dl></div>
+      </section>
+      <section class="sec">
+        <header><h2>손님 질문</h2></header>
+        <div class="card"><ul class="bul q">${li(a.questions_ko)}</ul></div>
+        <header><h2>내가 할 일</h2></header>
+        <div class="card"><ul class="bul">${li(a.action_items_ko)}</ul></div>
+      </section>
+    </div>
+
+    <div class="d-grid">
+      <section class="sec reply">
+        <header><h2>답장 초안</h2><span class="hint">${esc(a.customer_language_ko || "손님 언어")} · 고쳐 쓴 뒤 복사</span><div class="right"><button class="btn ghost small" data-copy="draft">복사</button>${canShare ? `<button class="btn ghost small" data-share="draft">공유</button>` : ""}</div></header>
+        <textarea id="draft" aria-label="답장 초안" spellcheck="false">${esc(a.reply_draft.in_customer_language)}</textarea>
+        <div class="ko">${esc(a.reply_draft.ko)}</div>
+      </section>
+      <section class="sec reply">
+        <header><h2>내 답장 번역</h2><span class="hint">한국어로 쓰면 ${esc(a.customer_language_ko || "손님 언어")}로</span></header>
+        <textarea id="koReply" aria-label="한국어 답장" placeholder="예: 10일 오후 2시 가능해요. 예약금 10만원 보내주시면 확정할게요.">${esc(it.koDraft != null ? it.koDraft : (lastReply ? lastReply.ko : ""))}</textarea>
+        <div class="bar"><button class="btn primary small" id="translateBtn" ${it.translating ? "disabled" : ""}>번역하기</button><span class="status" id="trStatus"></span><span style="margin-left:auto"><button class="btn ghost small" data-copy="translated" ${lastReply ? "" : "disabled"}>복사</button>${canShare && lastReply ? `<button class="btn ghost small" data-share="translated">공유</button>` : ""}</span></div>
+        <div class="out ${lastReply ? "" : "empty"}" id="translated">${lastReply ? esc(lastReply.out) : "번역 결과가 여기에 나와요"}</div>
+        ${lastReply && lastReply.back_ko ? `<div class="ko">확인용 역번역: ${esc(lastReply.back_ko)}</div>` : ""}
+      </section>
+    </div>
+
+    <section class="sec reply">
+      <header><h2>예약 상세 안내</h2><span class="hint">내 양식에 대화 내용을 채워서</span><div class="right">${it.booking ? `<button class="btn ghost small" data-copy="booking">복사</button>${canShare ? `<button class="btn ghost small" data-share="booking">공유</button>` : ""}` : ""}</div></header>
+      ${it.booking ? `<textarea id="bookingMsg" aria-label="예약 상세 안내" spellcheck="false">${esc(it.booking.message)}</textarea>
+      ${it.booking.missing_ko.length ? `<div class="note">아직 못 채운 항목: ${it.booking.missing_ko.map(esc).join(" · ")}</div>` : ""}
+      <div class="ko">${esc(it.booking.ko)}</div>` : ""}
+      <div class="bar"><button class="btn ${it.booking ? "" : "primary"} small" id="bookingBtn" ${it.bookingBusy ? "disabled" : ""}>${it.booking ? "다시 만들기" : "양식으로 만들기"}</button><span class="status" id="bookingStatus"></span></div>
+    </section>
+
+    <section class="sec">
+      <header><h2>대화 원문</h2><span class="hint">${a.transcript.length}개 메시지</span><div class="right"><label class="toggle"><input type="checkbox" id="origToggle" ${showOriginal ? "checked" : ""} /> 원문과 번역 함께 보기</label></div></header>
+      <div class="card chat">${transcript || `<p class="empty" style="padding:8px">읽어낸 메시지가 없어요</p>`}</div>
+    </section>
+
+    <section class="sec">
+      <header><h2>메모</h2><span class="hint">나만 보는 기록</span></header>
+      <textarea class="memo" id="memo" aria-label="메모" placeholder="예: 도안 보냄, 예약금 확인 대기">${esc(it.note)}</textarea>
+    </section>
+  </div>`;
+  hydrateImages(box);
+}
+
+/* ====================== actions ====================== */
+function setView(v) { document.body.dataset.view = v; }
+function select(id) { currentId = id; render(); setView("detail"); }
+function current() { return S.items.find(i => i.id === currentId); }
+function toast(msg, actionLabel, action) {
+  const t = $("#toast");
+  t.textContent = msg;
+  if (actionLabel) {
+    const b = document.createElement("button"); b.type = "button"; b.className = "toast-act"; b.textContent = actionLabel;
+    b.addEventListener("click", () => { t.classList.remove("show"); action(); });
+    t.append(b);
+  }
+  t.classList.add("show");
+  clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.remove("show"), actionLabel ? 7000 : 2200);
+}
+async function copyText(text) {
+  try { await navigator.clipboard.writeText(text); toast("복사했어요"); }
+  catch (e) {
+    const ta = document.createElement("textarea"); ta.value = text; document.body.appendChild(ta); ta.select();
+    try { document.execCommand("copy"); toast("복사했어요"); } catch (e2) { toast("복사하지 못했어요"); }
+    ta.remove();
+  }
+}
+async function translateReply() {
+  const it = current(); if (!it || !it.analysis) return;
+  const ko = $("#koReply").value.trim();
+  if (!ko) { toast("먼저 한국어 답장을 써 주세요"); return; }
+  if (it.translating) return;
+  const btn = $("#translateBtn"), st = $("#trStatus");
+  it.translating = true; btn.disabled = true; st.innerHTML = `<span class="spin"></span>번역 중`;
+  try {
+    const r = await askJSON({ prompt: translatePrompt(it, ko), images: null, schema: TRANSLATE_SCHEMA, tier: "default" });
+    it.replies.push({ ko, out: String(r.out || "").trim(), back_ko: String(r.back_ko || "").trim(), at: Date.now() });
+    if (it.replies.length > 10) it.replies.shift();
+    if (it.koDraft == null || it.koDraft.trim() === ko) delete it.koDraft; // keep text typed while translating
+    delete it.translating;
+    save(); if (currentId === it.id) renderDetail();
+  } catch (e) {
+    delete it.translating;
+    if (currentId === it.id) { const st2 = $("#trStatus"), b2 = $("#translateBtn"); if (st2) st2.textContent = (e && e.message) || "번역 실패"; if (b2) b2.disabled = false; }
+  }
+}
+function exportAll() {
+  const items = visibleItems().filter(i => i.analysis);
+  if (!items.length) { toast("내보낼 항목이 없어요"); return; }
+  const md = items.map(it => {
+    const a = it.analysis;
+    const d = DETAIL_LABELS.filter(([k]) => a.details[k]).map(([k, l]) => `- ${l}: ${a.details[k]}`).join("\n");
+    return `## ${a.customer_name} · ${PLATFORMS[a.platform] || "기타"} · ${(STAGES[a.stage] || STAGES.inquiry)[0]} · ${(INTENTS[a.intent] || INTENTS.other)[0]}${it.done ? " · 완료" : ""}\n${new Date(it.createdAt).toLocaleString("ko-KR")}\n\n${a.summary_ko}${a.status_ko ? "\n\n지금: " + a.status_ko : ""}\n\n${(a.changes_ko || []).length ? "### 바뀐 내용\n" + a.changes_ko.map(q => "- " + q).join("\n") + "\n\n" : ""}${(a.confirmed_ko || []).length ? "### 확정\n" + a.confirmed_ko.map(q => "- " + q).join("\n") + "\n\n" : ""}${(a.pending_ko || []).length ? "### 미정\n" + a.pending_ko.map(q => "- " + q).join("\n") + "\n\n" : ""}${d ? "### 예약 정보\n" + d + "\n\n" : ""}${a.questions_ko.length ? "### 손님 질문\n" + a.questions_ko.map(q => "- " + q).join("\n") + "\n\n" : ""}${a.action_items_ko.length ? "### 할 일\n" + a.action_items_ko.map(q => "- [ ] " + q).join("\n") + "\n\n" : ""}### 답장 초안\n${a.reply_draft.in_customer_language}\n\n> ${a.reply_draft.ko}\n\n### 대화\n${a.transcript.map(m => `- ${m.when ? "*" + m.when + "* " : ""}**${m.sender === "artist" ? "나" : "손님"}**: ${m.original}${m.ko && m.ko !== m.original ? `\n  - ${m.ko}` : ""}`).join("\n")}${it.note ? "\n\n### 메모\n" + it.note : ""}\n`;
+  }).join("\n---\n\n");
+  const text = `# Melange Inbox 내보내기 (${new Date().toLocaleString("ko-KR")})\n\n` + md;
+  const name = "melange-inbox-" + new Date().toISOString().slice(0, 10) + ".md";
+  saveFile(name, text);
+}
+async function saveFile(name, text) {
+  if (window.claude && typeof window.claude.use === "function") {
+    let dl = null;
+    try { dl = await window.claude.use("downloads"); } catch (e) {}
+    if (dl) {
+      try { await dl.save({ filename: name, data: text }); toast("저장했어요"); } catch (e) { if (!e || (e.code !== "cancelled" && e.code !== "declined")) await copyText(text); }
+      return;
+    }
+    await copyText(text); return;
+  }
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([text], { type: "text/markdown" }));
+  a.download = name; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+  toast("내보냈어요");
+}
+
+/* ====================== settings ====================== */
+function openSettings() {
+  const dlg = $("#settings"), s = S.settings;
+  $("#apiKey").value = getKey();
+  $("#model").value = s.model; $("#effort").value = s.effort;
+  $("#myName").value = s.myName; $("#context").value = s.context; $("#bookingTemplate").value = s.bookingTemplate || ""; $("#inquiryTemplate").value = s.inquiryTemplate || "";
+  const inArtifact = !!(window.claude && typeof window.claude.use === "function");
+  $("#keyField").hidden = inArtifact; $("#modelFields").hidden = inArtifact;
+  const box = $("#connBox");
+  box.className = "conn " + (backend.kind === "none" ? "off" : "on");
+  $("#connText").textContent = backend.kind === "sample" ? "claude.ai에 로그인된 계정으로 Claude를 사용해요. API 키가 필요 없어요." : backend.kind === "api" ? "API 키로 Anthropic에 직접 연결돼 있어요." : backend.reason;
+  dlg.showModal();
+}
+function saveSettings() {
+  const s = S.settings;
+  s.model = $("#model").value; s.effort = $("#effort").value;
+  s.myName = $("#myName").value.trim(); s.context = $("#context").value.trim(); s.bookingTemplate = $("#bookingTemplate").value.trim(); s.inquiryTemplate = $("#inquiryTemplate").value.trim();
+  setKey($("#apiKey").value.trim());
+  save();
+  detectBackend();
+  toast("저장했어요");
+}
+async function wipeAll() {
+  if (!(await ask("저장된 항목과 스크린샷을 모두 삭제할까요? 되돌릴 수 없어요.", "모두 삭제"))) return;
+  S.items = []; S.seenExample = true; currentId = null; setView("list");
+  await idb.clear(); memImages.clear();
+  for (const u of objectUrls.values()) URL.revokeObjectURL(u);
+  objectUrls.clear();
+  save(); render(); $("#settings").close(); toast("모두 삭제했어요");
+}
+
+/* ====================== events ====================== */
+const drop = $("#drop");
+["dragenter", "dragover"].forEach(ev => document.addEventListener(ev, e => { e.preventDefault(); drop.classList.add("over"); }));
+["dragleave", "drop"].forEach(ev => document.addEventListener(ev, e => { if (ev === "drop" || e.target === document.documentElement || !e.relatedTarget) drop.classList.remove("over"); }));
+document.addEventListener("drop", e => {
+  e.preventDefault();
+  if (!(e.dataTransfer && e.dataTransfer.files.length)) return;
+  const it = current();
+  // Dropped onto an open conversation: it's the next part of that chat.
+  if (e.target.closest && e.target.closest("#detail") && it && it.status === "done" && !it.example) appendTo(it, e.dataTransfer.files);
+  else addFiles(e.dataTransfer.files);
+});
+document.body.insertAdjacentHTML("beforeend", '<input type="file" id="addInput" multiple accept="image/*" hidden />');
+$("#addInput").addEventListener("change", e => { const it = current(); if (it && it.status === "done" && !it.example) appendTo(it, e.target.files); else toast("분석이 끝난 대화에만 붙일 수 있어요"); e.target.value = ""; });
+document.body.insertAdjacentHTML("beforeend", `<dialog id="mergeDlg"><div class="dlg"><h2>어느 대화에 붙일까요?</h2><div id="mergeList" class="picklist"></div><div class="row end"><button type="button" class="btn" id="mergeCancel">닫기</button></div></div></dialog>`);
+$("#mergeCancel").addEventListener("click", () => $("#mergeDlg").close());
+document.body.insertAdjacentHTML("beforeend", `<dialog id="askDlg"><div class="dlg"><p id="askMsg" style="white-space:pre-line;line-height:1.5"></p><div class="row end"><button type="button" class="btn" id="askNo">취소</button><button type="button" class="btn primary" id="askOk">확인</button></div></div></dialog>`);
+function ask(msg, okLabel) {
+  return new Promise(res => {
+    const d = $("#askDlg"); $("#askMsg").textContent = msg; $("#askOk").textContent = okLabel || "확인";
+    let answered = false;
+    const finish = v => { if (answered) return; answered = true; res(v); };
+    $("#askOk").onclick = () => { finish(true); d.close(); };
+    $("#askNo").onclick = () => { finish(false); d.close(); };
+    d.addEventListener("close", () => finish(false), { once: true });
+    d.showModal();
+  });
+}
+$("#mergeList").addEventListener("click", e => {
+  const b = e.target.closest(".pick"); if (!b) return;
+  const dlg = $("#mergeDlg"); const src = S.items.find(i => i.id === dlg.dataset.source); const target = S.items.find(i => i.id === b.dataset.id);
+  dlg.close();
+  if (src && target && src !== target) mergeInto(target, src);
+});
+$("#list").addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { const li = e.target.closest(".item"); if (li) { e.preventDefault(); select(li.dataset.id); } } });
+document.addEventListener("paste", e => {
+  if (e.target && (e.target.tagName === "TEXTAREA" || e.target.tagName === "INPUT")) return;
+  const files = Array.from((e.clipboardData && e.clipboardData.files) || []);
+  if (files.length) { e.preventDefault(); addFiles(files); }
+});
+drop.addEventListener("click", e => { if (e.target.closest("label,input,button")) return; $("#fileInput").click(); });
+$("#pickBtn").addEventListener("click", () => $("#fileInput").click());
+$("#fileInput").addEventListener("change", e => { addFiles(e.target.files); e.target.value = ""; });
+
+$("#search").addEventListener("input", e => { query = e.target.value; renderList(); });
+document.querySelectorAll(".chip.filter").forEach(b => b.addEventListener("click", () => {
+  filter = b.dataset.f;
+  document.querySelectorAll(".chip.filter").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+  renderList();
+}));
+$("#list").addEventListener("click", e => { const li = e.target.closest(".item"); if (li) select(li.dataset.id); });
+
+$("#detail").addEventListener("click", async e => {
+  const t = e.target.closest("button"); if (!t) return;
+  const it = current();
+  if (t.id === "backBtn") return setView("list");
+  if (!it) return;
+  if (t.id === "delBtn") { if (await ask("이 대화를 삭제할까요? 되돌릴 수 없어요.", "삭제")) { removeItem(it.id); setView("list"); } return; }
+  if (t.id === "retryBtn") { it.status = "queued"; it.error = ""; renderFor(it); enqueue(it.id); pump(); return; }
+  if (t.id === "dismissErrBtn") { it.error = ""; save(); renderDetail(); return; }
+  if (t.id === "reanalyzeBtn") { reanalyze(it); return; }
+  if (t.id === "addShotBtn") { $("#addInput").click(); return; }
+  if (t.id === "mergeBtn") { openMergePicker(it); return; }
+  if (t.id === "doneBtn") { it.done = !it.done; save(); render(); toast(it.done ? "처리 완료" : "미처리로 되돌렸어요"); return; }
+  if (t.id === "translateBtn") return translateReply();
+  if (t.id === "bookingBtn") return makeBooking();
+  if (t.dataset.share) {
+    const a = it.analysis;
+    const map = { draft: $("#draft") ? $("#draft").value : "", translated: (it.replies[it.replies.length - 1] || {}).out || "", booking: $("#bookingMsg") ? $("#bookingMsg").value : "" };
+    return shareText(map[t.dataset.share] || "");
+  }
+  if (t.dataset.open) { const url = await imageUrl(t.dataset.open); if (url) { $("#lightboxImg").src = url; $("#lightbox").showModal(); } return; }
+  if (t.dataset.copy) {
+    const a = it.analysis;
+    const map = { summary: a.summary_ko, draft: $("#draft") ? $("#draft").value : "", translated: (it.replies[it.replies.length - 1] || {}).out || "", booking: $("#bookingMsg") ? $("#bookingMsg").value : "" };
+    return copyText(map[t.dataset.copy] || "");
+  }
+});
+$("#detail").addEventListener("change", e => {
+  if (e.target.id === "origToggle") { showOriginal = e.target.checked; renderDetail(); }
+});
+$("#detail").addEventListener("input", e => {
+  const it = current(); if (!it) return;
+  if (e.target.id === "memo") { it.note = e.target.value; saveSoon(); }
+  if (e.target.id === "draft" && it.analysis) { it.analysis.reply_draft.in_customer_language = e.target.value; saveSoon(); }
+  if (e.target.id === "bookingMsg" && it.booking) { it.booking.message = e.target.value; saveSoon(); }
+  if (e.target.id === "koReply") { it.koDraft = e.target.value; saveSoon(); }
+});
+$("#lightbox").addEventListener("click", () => $("#lightbox").close());
+
+$("#settingsBtn").addEventListener("click", openSettings);
+$("#exportBtn").addEventListener("click", exportAll);
+$("#cancelSettings").addEventListener("click", () => $("#settings").close());
+$("#settingsForm").addEventListener("submit", saveSettings);
+$("#wipeBtn").addEventListener("click", wipeAll);
+
+/* ====================== boot ====================== */
+// Android "share to app": the service worker parks shared screenshots in a cache and redirects here with ?share=1.
+async function pickupShared() {
+  if (!("caches" in window)) return;
+  const flagged = new URLSearchParams(location.search).has("share");
+  try {
+    if (!flagged && !(await caches.has("melange-inbox-share"))) return;
+    const cache = await caches.open("melange-inbox-share");
+    const keys = await cache.keys();
+    if (!flagged && !keys.length) return;
+    const files = [];
+    for (const k of keys) {
+      const r = await cache.match(k);
+      if (!r) continue;
+      const blob = await r.blob();
+      if (blob.type.startsWith("image/")) files.push(new File([blob], safeDecode(r.headers.get("x-name")) || "screenshot.jpg", { type: blob.type, lastModified: Number(r.headers.get("x-time")) || Date.now() }));
+    }
+    await waitForBackend();
+    if (backend.kind === "none" && files.length) { toast("Claude 연결 뒤 이 페이지를 다시 열면 공유한 스크린샷을 이어서 넣어요"); return; } // keep them parked
+    for (const k of keys) await cache.delete(k);
+    if (flagged) history.replaceState(null, "", location.pathname);
+    if (files.length) await addFiles(files);
+  } catch (e) {}
+}
+function safeDecode(v) { try { return decodeURIComponent(v || ""); } catch (e) { return v || ""; } }
+function waitForBackend() { return new Promise(res => { const t = setInterval(() => { if (backend.kind !== "none" || backend.reason) { clearInterval(t); res(); } }, 100); setTimeout(() => { clearInterval(t); res(); }, 5000); }); }
+render();
+detectBackend().then(pickupShared);
+if ("serviceWorker" in navigator && location.protocol.startsWith("http") && !window.claude) {
+  navigator.serviceWorker.register("./sw.js").catch(() => {});
+}
+})();
+</script>
+</body>
+</html>

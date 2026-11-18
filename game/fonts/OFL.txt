@@ -1,4 +1,7 @@
 Fonts: Noto Sans KR, Inter, Gasoek One (SIL Open Font License 1.1)
+The files in this folder are unicode-range subsets of the Google Fonts builds of these fonts (OFL Modified Versions).
+Source is a trademark of Adobe in the United States and/or other countries.
+Inter UI and Inter is a trademark of rsms.
 
 ===== notosanskr =====
 Copyright 2014-2021 Adobe (http://www.adobe.com/), with Reserved Font Name 'Source'
@@ -96,7 +99,7 @@ FROM, OUT OF THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM
 OTHER DEALINGS IN THE FONT SOFTWARE.
 
 ===== inter =====
-Copyright 2020 The Inter Project Authors (https://github.com/rsms/inter)
+Copyright (c) 2016 The Inter Project Authors (https://github.com/rsms/inter)
 
 This Font Software is licensed under the SIL Open Font License, Version 1.1.
 This license is copied below, and is also available with a FAQ at:

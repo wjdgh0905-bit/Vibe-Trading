@@ -15,7 +15,7 @@
 
 ## 크레딧 · 라이선스
 
-- 캐릭터·아이콘·배경 그림: 제작자가 Higgsfield(Nano Banana Pro, Seedance)로 생성
+- 캐릭터·아이콘·배경 그림: 제작자가 Higgsfield(Nano Banana 2, Seedance 2.0)로 생성
 - 글꼴: Noto Sans KR, Inter, Gasoek One (모두 SIL Open Font License 1.1, 게임 파일에 포함 · `fonts/OFL.txt`)
 - 효과음·배경음악: 게임 안에서 직접 합성 (외부 음원 없음)
 - 게임 속 회사·종목·뉴스·채팅은 모두 가상이며 실제와 관계없습니다.

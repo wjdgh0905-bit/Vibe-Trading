@@ -1764,6 +1764,7 @@ button.lvk{cursor:pointer}
 .card .prog .pr.rdl.ams{cursor:default}.card .prog .pr.rdl.ams>b{flex-wrap:wrap;row-gap:0}.card .prog .pr.rdl.ams>b em{color:var(--gold-t)}
 .pxb{margin:8px 0 0;padding:8px 10px;border-radius:var(--r-sm);background:var(--panel2);border:1px solid var(--hair);font:500 var(--t-meta)/1.45 var(--mix);color:var(--fg2)}.pxb b{font-family:var(--num);color:var(--gold-t)}
 .tile.tb{display:block;width:100%;text-align:left;font:inherit;color:inherit;cursor:pointer}
+.gwk{display:flex;gap:4px;justify-content:center;margin:10px 0 2px}.gwk span{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:34px;padding:4px 2px;border-radius:8px;font-size:12px;color:var(--muted)}.gwk span.on{background:var(--panel3);color:var(--fg);outline:1px solid var(--hair2)}.gwk .ico{width:18px;height:18px} /* v314: 매일 선물 요일표 */
 </style>
 
 <div class="app" id="app">
@@ -1885,6 +1886,8 @@ let localStorage=(()=>{try{const s=window.localStorage,k='_shgProbe';s.setItem(k
 function memWarn(){if(memWarn.on)return;memWarn.on=1;setTimeout(()=>toast(ON_PC?'⚠️ 이 PC에 저장이 안 되고 있어요 · 설정의 백업 코드 복사로 기록을 보관하세요':'⚠️ 이 브라우저는 저장이 막혀 있어요 · 설정의 백업 코드 복사로 기록을 보관하세요'),2500);} // 한 번만, 첫 화면이 뜬 뒤에 (게임은 막지 않음)
 function lsSet(k,s){try{localStorage.setItem(k,s);}catch(e){if(memSave)throw e;localStorage=memLS(localStorage);memSave=2;localStorage.setItem(k,s);memWarn();}} // 쓰다가 막히면(용량 초과·차단) 지금까지 기록을 메모리로 옮겨 이어서 저장 (하루 횟수 같은 값이 세션 안에서는 지켜지게)
 const store={off:0,seen:{},keep:{},get(k,d){try{const v=localStorage.getItem(k);store.seen[k]=v;return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){if(store.off)return;try{const x=store.keep[k];if(x&&v&&typeof v==='object'){if(!Array.isArray(v)){if(!Array.isArray(x))v=Object.assign({},x,v);}else if(Array.isArray(x)&&x.length)v=v.concat(x.filter(i=>!v.includes(i)));}const s=JSON.stringify(v);if(store.seen[k]===s)return;lsSet(k,s);store.seen[k]=s;}catch(e){}}}; /* v313: keep = 이 페이지가 모르는 항목(더 새 버전이 쓴 상품·줄·컬렉션) · 저장할 때 다시 합쳐서 되돌린 배포가 새 기록을 지우지 않게 */ // off: 다른 탭이 더 새 기록을 저장함 → 덮어쓰지 않음, seen: 이 탭이 마지막으로 읽거나 쓴 값
+const TABID=Math.random().toString(36).slice(2),liveGet=()=>{try{return JSON.parse(localStorage.getItem('shg_live'))}catch(e){return null}},liveSet=v=>{if(!store.off)try{lsSet('shg_live',JSON.stringify(v))}catch(e){}};let liveMine=0; // v314b: 진행 중인 판 기록은 store를 안 거침 (다른 탭이 0.5초마다 바꿔도 이 탭을 '낡은 탭'으로 보지 않게) · id = 이 탭
+const LIVE0=liveGet(); // v314: 지난 실행에서 정산 못 한 판 (부팅 중 paintTop이 지우기 전에 먼저 읽어 둠)
 const fin=v=>isFinite(v=+v)?v:0; // 숫자가 아니거나 무한대면 0
 // 저장 형식 버전: 저장 모양을 바꿀 때 SAVE_V를 올리고 MIG에 '옛 버전 → 다음 버전' 변환을 추가 (기록에 없으면 0 = v2.1까지의 저장). 백업 코드에도 shg_ver가 같이 들어가고, 옛 코드는 불러온 뒤 새로고침 때 여기서 변환됨
 const PET_T=[0,50,450]; // 캐릭터 키우기 단계 경계 (친밀도): 아기 0 → 어른 50 → 전설 450 · 한 판 +1, 익절 +1, 보스 처치 +2 (보통 30~40판에 어른, 250~350판에 전설)
@@ -2174,6 +2177,10 @@ const wkOrd=k=>{const m=String(k||'').match(/^(\d+)-W(\d+)$/);return m?+m[1]*100
 let weekly=store.get('shg_weekly',null);
 function ensureDaily(){
   const today=dayKey();
+  // v314: 기기 시계를 미래로 돌렸다 되돌리면 선물·광고 보상·미션이 그 날짜까지 잠기던 문제 → 미래 날짜는 '오늘 받음'으로 바꿈 (내일 정상으로 열림, 되돌려서 두 번 받기는 안 됨)
+  ['shg_spin','shg_adSpin','shg_adRevive'].forEach(k=>{if(dayOrd(store.get(k,''))>dayOrd(today))store.set(k,today);});
+  if(daily&&dayOrd(daily.date)>dayOrd(today)){daily.date=today;store.set('shg_daily',daily);}
+  {const w=weekKey();if(weekly&&wkOrd(weekly.date)>wkOrd(w)){weekly.date=w;store.set('shg_weekly',weekly);}}
   const okD=(o,v)=>o&&o.v===v&&Array.isArray(o.ids)&&Array.isArray(o.done)&&o.prog&&typeof o.prog==='object'; // 모양이 이상한 기록은 새로 뽑음
   if(!(okD(daily,4)&&dayOrd(daily.date)>=dayOrd(today))){const ri=rankOf(xp);
     daily={date:today,v:4,ids:pickSeeded(today,MISSIONS.filter(m=>(m.lv||0)<=ri).map(m=>m.id),8),prog:{},done:[]};store.set('shg_daily',daily);}
@@ -3011,6 +3018,7 @@ let avaK='',avaW=0;function avaPaint(){try{const i=$('avaI'),id=petSel(),st=petS
   if(ic){i.style.backgroundPosition='';return;}const m=PTM[id],tb=st===1&&m?m[1]/288:st===0?.1:.02;i.style.backgroundPosition='50% '+(-tb*w*2.1+1).toFixed(1)+'px,0 0';}catch(e){}} // 그림 위쪽 빈칸만큼 올려 얼굴이 동그라미 안에
 if(window.ResizeObserver)new ResizeObserver(()=>{const w=$('avaI').clientWidth;if(w&&w!==avaW){avaW=w;avaPaint();}}).observe($('avaI'));else addEventListener('resize',()=>{avaW=0;avaPaint();}); // 얼굴 동그라미 폭은 크기가 바뀔 때만 잼 (판 끝 시트가 뜰 때마다 clientWidth로 강제 배치 계산하지 않게)
 function paintTop(){try{checkHome()}catch(e){}
+  if(state!=='holding'&&liveMine){liveMine=0;liveSet(null);} // v314: 판이 정산되면 '진행 중인 판' 기록을 지움 (잔고 저장과 같은 자리) · v314b: 이 탭이 쓴 기록일 때만 (다른 탭의 판을 지우지 않게)
   store.set('shg_debt',Math.ceil(debt));store.set('shg_credit',credit);store.set('shg_rdebt',Math.ceil(rdebt));
   {const d=$('debtTag');d.hidden=debt<=0;if(debt>0)d.textContent='빚 '+wonS(debt)+' · 신용 '+crS(credit);}
   if(!(balance>=0))balance=0;
@@ -3209,7 +3217,7 @@ function start(){
   card.hidden=true;newsIdle();
   t=0;cur=1;peak=1;sell=null;crashed=false;events=[];warned=!!(hint&&hint.crystal);volTotal=0;talkT=0;hbT=0;vigA=0;run.mi=0;if(run.boss){events=run.boss.sc.ev.map(x=>({...x}));bossPaint(run.boss);} /* BOSS-V2: scripted events after the reset */
   if(run.lev>1&&!tut&&Math.random()<Math.min(.75,.08*run.lev))events.push({t0:rnd(.15,.8),amp:-rnd(.05,.18)*(T.amp||1),shake:1}); // 레버리지 개미털기
-  state='holding';vib(HAP.buy);paintTop();paintPickers();setBtn();ptK='still';ptB=0;ptHot=0;clearTimeout(ptTm);ptSync();ptKick('ptHop .5s ease-out'); // 파트너: 산 순간 깡충 · 매수 진동
+  state='holding';if(!tut&&!ch&&!bs)liveSave();vib(HAP.buy);paintTop();paintPickers();setBtn();ptK='still';ptB=0;ptHot=0;clearTimeout(ptTm);ptSync();ptKick('ptHop .5s ease-out'); // 파트너: 산 순간 깡충 · 매수 진동
   $('pnl').hidden=false;pbShow(true);pbLive();ptSay(pick(run.boss?ptP('bossGo'):ptP('buy')),1800);proSync(); // 다음 목표 줄 자리에 평가손익 바 · 파트너 한마디
   if(hint&&hint.crystal)news('🔮 수정구슬: "'+fmtP(priceOf(hint.v))+(isUsd()?'':'원')+' 부근에서 폭락"','rumor');
   else if(hint)news('🔍 찌라시: "'+fmtP(priceOf(hint.v))+(isUsd()?'':'원')+' 근처에서 세력 턴다"','rumor');
@@ -3258,7 +3266,7 @@ function release(){
   if(run.hint&&run.hint.real&&!run.hint.crystal&&cur>=3)unlock('insider');
   if(!run.tut&&gain<0&&netW()<300000){lowFlag=true;stats.low=1;store.set('shg_stats',stats);} // 손절로 30만 밑이 돼도 기사회생 대상 (폭락과 똑같이)
   if(lowFlag&&netW()>=START){lowFlag=false;stats.low=0;store.set('shg_stats',stats);unlock('comeback');}
-  if(!run.tut&&gain>0&&Math.random()<.07){const pz=rollPrize(true),txt=pz.f();store.set('shg_bal',Math.floor(balance));setTimeout(()=>{stamp('💎 보물상자!');toast('💎 보물상자 · '+(pz.e==='🧪'?'':pz.e+' ')+txt);paintTop();paintPickers();},1300);}
+  if(!run.tut&&gain>0&&(stats.chestN=(stats.chestN||0)+1)>=CHEST_EVERY){stats.chestN=0;const ck=stats.chestK||0;stats.chestK=ck+1;const pz=chestOf(ck),txt=pz.f();store.set('shg_stats',stats);store.set('shg_bal',Math.floor(balance));setTimeout(()=>{stamp('💎 보물상자!');toast('💎 보물상자 · '+(pz.e==='🧪'?'':pz.e+' ')+txt);paintTop();paintPickers();},1300);}
 }
 let pendBust=null;
 function lossFactor(){ // 폭락 손실 비율 (본 포지션·재진입분 공통: 방어권·거북이·리스크 관리·자동 손절)
@@ -3635,7 +3643,8 @@ const loanAmt=(c=credit)=>Math.max(START,Math.round(betCapD(1)*LOAN_X[c]/1e4)*1e
 const loanRate=()=>LOAN_R[credit];
 const debtLimit=()=>Math.max(START*30,betCapD(1)*25);
 const canLoan=(D=debt,c=credit)=>{if(c>=10)return false;const d=D+loanAmt(c);return d+Math.ceil(d*LOAN_R[Math.min(10,c+1)])<=debtLimit();}; // 다음 판 이자(대출 후 등급)까지 붙어도 한도 안이어야
-function takeLoan(){if(!canLoan())return false;const a=loanAmt();debt+=a;balance+=a;credit=Math.min(10,credit+1);stats.loans=(stats.loans||0)+1;const nl=stats.loanAt!==stats.rounds;stats.loanAt=stats.rounds;store.set('shg_stats',stats);if(nl)unlock('debt1');
+function takeLoan(){if(!canLoan())return false;const a=loanAmt();debt+=a;balance+=a;intPaid=false;store.set('shg_intPaid',false); // v314: 새로 빌리면 다음 판 이자를 규칙대로 (갚다 만 빚 + 새 대출에 이자가 한 번 빠지던 문제)
+  credit=Math.min(10,credit+1);stats.loans=(stats.loans||0)+1;const nl=stats.loanAt!==stats.rounds;stats.loanAt=stats.rounds;store.set('shg_stats',stats);if(nl)unlock('debt1');
   vib(HAP.warn);toast('💳 대출 '+won(a)+' · 신용 '+crS(credit)+(credit>=8?' (사채)':''));return true;}
 function repay(a){a=Math.min(a,debt,balance);if(a<=0)return;balance-=a;debt-=a;if(debt<1){debt=0;intPaid=false;store.set('shg_intPaid',false);credit=Math.max(1,credit-1);if(state==='holding'||!(stats.loanAt>=stats.rounds))unlock('payoff');toast('🙌 빚 청산! 신용 '+crS(credit));sfx.up();}}
 function rdRepay(a){a=Math.min(a,rdebt,balance);if(!(a>0))return 0;balance-=a;rdebt-=a;if(rdebt<1){rdebt=0;setTimeout(()=>toast('🌱 재기 자금 다 갚았어요!'),300);}store.set('shg_rdebt',Math.ceil(rdebt));return a;} // 재기 자금 갚기 (자동·은행 공통): 신용등급·업적 변화 없음, 다 갚으면 작은 알림 하나
@@ -3697,7 +3706,7 @@ if(/^(localhost|127\.0\.0\.1)$/.test(location.hostname)&&/[?&]adsense\b/.test(lo
 const CG={on:false,S:null,last:0,noAds:0,done:0},onCG=/crazygames/.test(location.hostname)||/^(localhost|127\.0\.0\.1)$/.test(location.hostname)&&/[?&]cg\b/.test(location.search); // C07: ?cg 시험 스위치는 개발 주소(localhost)에서만 · noAds: 이번 접속에서 광고 요청이 한 번이라도 실패·시간 초과 → 광고가 꺼진 것으로 보고 📺 버튼을 숨김 (Basic Launch·애드블록에서 효과 없는 버튼 금지), done: SDK 준비가 끝났거나 실패함
 const ON_PC=location.protocol==='app:'; // 스팀(PC)판: Electron 창이 app://game/ 으로 띄움 → 광고·후원·결제 없음, 웹·폰 안내 대신 PC 문구
 if(ON_PC){CFG.adClient='';CFG.donateUrl='';CFG.iap=false;}
-const BUILD='v3.1.3 · b261117a · '+LANG+'-'+(ON_PC?'pc':onCG?'cg':/(^|\.)itch\.(io|zone)$|hwcdn\.net$/.test(location.hostname)||/itch\.io/.test(document.referrer)?'itch':'web'); // 설정 맨 아래 버전 줄: 버그 신고에 정확한 빌드가 찍히게 (배포할 때 날짜 bYYMMDD를 갱신, 언어·포털은 실행 환경에서)
+const BUILD='v3.1.4 · b261118a · '+LANG+'-'+(ON_PC?'pc':onCG?'cg':/(^|\.)itch\.(io|zone)$|hwcdn\.net$/.test(location.hostname)||/itch\.io/.test(document.referrer)?'itch':'web'); // 설정 맨 아래 버전 줄: 버그 신고에 정확한 빌드가 찍히게 (배포할 때 날짜 bYYMMDD를 갱신, 언어·포털은 실행 환경에서)
 if(onCG){const sc=document.createElement('script');sc.src='https://sdk.crazygames.com/crazygames-sdk-v3.js';
   sc.onload=async()=>{try{const S=window.CrazyGames.SDK;await S.init();if(S.environment!=='disabled'){CG.S=S;CG.on=true;cgLoad();try{const ms=v=>{v=v&&typeof v==='object'?v:S.game.settings;cgMute=!!(v&&v.muteAudio);document.body.classList.toggle('noChat',!!(v&&v.disableChat));if(touched||cgMute)bgm.sync();};ms();S.game.addSettingsChangeListener(ms);}catch(e){}if(state==='holding'||state==='ghost')cgPlay(true);}}catch(e){}CG.done=1;};sc.onerror=()=>{CG.done=1;};document.head.appendChild(sc);}
 let cgG=false; // 마지막으로 보낸 gameplay 상태 (짝 안 맞는 stop·중복 호출 막기)
@@ -3729,9 +3738,8 @@ if(CFG.adClient&&!onCG){const adFail=()=>adsOff(),old=document.querySelector('sc
 function rewardAd(name,onReward){if(store.off&&tabNow())return;if(bossTW()){toast('⚔️ 보스전 중에는 광고를 열지 않아요');return;} /* BOSS-V2: no rewarded ad (adPause) during a boss fight */if(!adsOn()){toast('광고를 불러올 수 없어요');return;}if(adReq||adPause){toast('📺 광고 준비 중…');return;}adReq=1;adReqT=setTimeout(()=>{bossAdLate(adReqT);reqEnd();adsOff(1);},CG.on?45000:6000);const tk=adReqT,end=()=>{if(adReqT===tk)reqEnd();};let ok=false,dis=false,skip=false; // end: 제한 시간(크레이지게임즈 45초 · 애드센스 6초, 넘으면 둘 다 이번 접속은 광고 끔)이 지나 새 요청이 나간 뒤 늦게 온 응답은 그 요청을 풀지 않게. SDK가 끝내 응답이 없어도 제한 시간 뒤엔 다시 플레이 가능 (크레이지게임즈 SDK는 늦어도 adFinished/adError로 꼭 끝나니 길게)
   if(CG.on){CG.last=performance.now();try{CG.S.ad.requestAd('rewarded',{adStarted:()=>{end();adStart(tk);},adFinished:()=>{end();adEnd(tk);onReward();},adError:()=>{end();adEnd(tk);adsOff(!adPause);}});}catch(e){reqEnd();adEnd(tk);adsOff(1);}return;}
   try{window.adBreak({type:'reward',name,beforeAd:()=>{end();adStart(tk);},afterAd:()=>adEnd(tk),beforeReward:show=>{if(state==='holding'||state==='ghost'){skip=true;end();return;}show();},adViewed:()=>{ok=true;onReward();},adDismissed:()=>{dis=true;toast('끝까지 봐야 보상을 받아요');},adBreakDone:i=>{end();adEnd(tk);const st=i&&i.breakStatus;if(!ok&&!dis&&!skip&&st!=='viewed'&&st!=='dismissed')adsOff(1);}});}catch(e){reqEnd();adEnd(tk);adsOff(1);}} // 웹: 광고가 안 나오면(채울 광고 없음·준비 안 됨·오류) 다시 눌러도 같은 실패라 바로 광고 끔 (끝까지 안 보고 닫은 것만 그대로)
-// 앱 아이콘 배지: 오늘 룰렛 안 돌렸으면 1
-const badge=()=>{try{if(!navigator.setAppBadge)return;if(!usedToday('shg_spin'))navigator.setAppBadge(1);else navigator.clearAppBadge();}catch(e){}};
-document.addEventListener('visibilitychange',()=>{if(document.hidden)badge();});
+// v314: 앱 아이콘 배지('1')는 복귀를 재촉하는 장치라 뺌 · 예전 버전이 붙여 둔 배지도 지움
+try{if(navigator.clearAppBadge)navigator.clearAppBadge().catch(()=>{});}catch(e){}
 const optH=(id,cls,ic,t,sm)=>'<button type="button" id="'+id+'" class="opt'+(cls?' '+cls:'')+'"><i>'+ic+'</i><b>'+t+(/\brec\b/.test(cls)?'<em>추천</em>':'')+'</b><small>'+sm+'</small></button>'; // 64px 선택지 줄 [아이콘 32 | 제목 15 굵게 | 결과 12 회색 | >] · 추천은 테두리 + '추천' 태그
 let overRev=null; // 바닥 화면이 떠 있는 동안 광고 복구 버튼을 다시 확인하는 함수
 // 바닥·신용불량 카드 공통 (v3.0.1): 하루 1번 지원금 줄 · 대출이 막힌 이유 · 빚이 있을 때 바닥나면 압류라는 안내
@@ -3783,28 +3791,34 @@ function showIntro(){
 }
 
 /* ---------- 매일 선물 · 보물상자 ---------- */
-const PRIZES=[
-  {w:30,e:'🟡',t:'현금',f:()=>{const v=betCap(1)*.5;balance+=v;return won(v);}},
-  {w:8,e:'🟡',t:'현금 보너스',f:()=>{const v=betCap(1)*2;balance+=v;return won(v);}},
-  {w:30,e:'🧪',t:'소모품',f:()=>{const c=pick(CONSUM);inv[c.id]=(inv[c.id]||0)+1;store.set('shg_inv',inv);return c.e+' '+c.n+' +1';}},
-  {w:24,e:'📚',t:'경험치',s:1,f:()=>gainXp(100)+' XP'},
-  {w:5,e:'🌳',t:'SP',f:()=>{stats.bonusSP=(stats.bonusSP||0)+1;store.set('shg_stats',stats);return 'SP +1';}},
-  {w:3,e:'🎟️',t:'보스 소환권',f:()=>{inv.bossT=(inv.bossT||0)+1;store.set('shg_inv',inv);return '보스 소환권 +1';}}
-];
-function rollPrize(noSP){const pool=PRIZES.filter(p=>!(noSP&&p.t==='SP'));let r=Math.random()*pool.reduce((a,p)=>a+p.w,0);for(const p of pool){r-=p.w;if(r<=0)return p;}return pool[0];}
+// v314: 랜덤 선물표(PRIZES)·뽑기(rollPrize)는 고정 보상(giftOf·chestOf)으로 바뀌어 지움
+// v314: 랜덤 보상 → 고정 보상 (미리 공개 · 뽑기 없음). 주간·상자당 합계는 예전 랜덤 기댓값과 비슷하게 맞춤
+const GIFT_CON=()=>CONSUM.filter(c=>!c.nobuy); // 고정 보상에 나오는 소모품 (판매 종료된 보스 소환권 제외)
+const giftDay=()=>(new Date().getDay()+6)%7; // 월=0 … 일=6
+const giftWeekN=()=>{const m=String(weekKey()).match(/^(\d+)-W(\d+)$/);return m?+m[1]*53+ +m[2]:0;};
+const GIFT_PLAN=[['cash',.5],['con',0],['xp'],['cash',.5],['con',1],['xp'],['cash',1.2,1]]; // 월 현금 · 화 소모품 · 수 경험치 · 목 현금 · 금 소모품 · 토 경험치 · 일 현금(격주로 SP +1)
+const GIFT_DAYS=LANG==='en'?['Mon','Tue','Wed','Thu','Fri','Sat','Sun']:['월','화','수','목','금','토','일'];
+function rwCash(m,sp){return {e:'🟡',t:'현금',f:()=>{const v=betCap(1)*m;balance+=v;if(sp){stats.bonusSP=(stats.bonusSP||0)+1;store.set('shg_stats',stats);}return won(v)+(sp?' · SP +1':'');}};}
+function rwCon(c){return {e:c.e,t:'소모품',f:()=>{inv[c.id]=(inv[c.id]||0)+1;store.set('shg_inv',inv);return c.e+' '+c.n+' +1';}};}
+const rwXp=()=>({e:'📚',t:'경험치',s:1,f:()=>gainXp(100)+' XP'});
+function giftOf(d){const [k,a,b]=GIFT_PLAN[d],L=GIFT_CON();return k==='cash'?rwCash(a,b&&giftWeekN()%2===0):k==='con'?rwCon(L[(giftWeekN()*2+a)%L.length]):rwXp();}
+const adItemCon=()=>{const L=GIFT_CON();return L[(stats.adItemK||0)%L.length];}; // 광고 소모품: 정해진 순서 (버튼에 미리 표시)
+const CHEST_EVERY=14,CHEST_SEQ=[['cash',.5],['con'],['xp'],['cash',.5],['con'],['xp'],['cash',1.2]]; // 익절 14번마다 보물상자 (예전 7% 확률과 같은 빈도), 내용은 정해진 순서
+function chestOf(k){const [t,m]=CHEST_SEQ[k%CHEST_SEQ.length],L=GIFT_CON();return t==='cash'?rwCash(m):t==='con'?rwCon(L[Math.floor(k/3)%L.length]):rwXp();}
+const chestNext=()=>{const k=stats.chestK||0,t=CHEST_SEQ[k%CHEST_SEQ.length][0];return {left:Math.max(1,CHEST_EVERY-(stats.chestN||0)),lab:t==='cash'?'🟡 현금':t==='con'?'🧪 소모품':'📚 경험치'};};
 const rvPtH=()=>{const pid=petSel(),ps=petSt(pid),fw=ps===1&&BDW[pid]?Math.round(112*BDW[pid][0]/200):0;return !SET.chars||!profile?'':fw?'<span class="rv-pt rvf" style="width:'+fw+'px"><img src="'+ASSET+'chars/'+pid+'_happy.webp" alt="" draggable="false" style="width:'+12*fw+'px;margin-left:-'+5*fw+'px" onerror="this.parentNode.remove()"></span>':'<img class="rv-pt" src="'+chS(pid,ps)+'" alt="" draggable="false" onerror="this.remove()">';}; // 보상 공개 화면의 파트너 (동물 친구를 끄면 없음) · 어른은 기쁨 띠의 한 장(6번째: 두 팔 번쩍)을 멈춘 그림으로, 띠가 없는 아기·전설은 정지 그림
 let spinning=false; // 선물 상자 애니메이션 중 (연타·닫고 다시 열기 막기)
 $('giftBtn').onclick=()=>{
   if(spinning||state==='holding'||state==='ghost')return;
   if(usedToday('shg_spin')){if(adsOn()&&!usedToday('shg_adSpin')&&dayOrd(store.get('shg_spin',''))<=dayN()){openModal('<h2>🎁 오늘 선물 받음!</h2><p class="note">광고를 보면 보너스 선물 · 📚 경험치 +'+Math.round(100*xpMul())+' XP (하루 1번)</p><button class="setbtn ghost" type="button" id="adSpin" style="width:100%">📺 광고 보고 보너스 선물</button>');$('adSpin').onclick=()=>rewardAd('spin',()=>{$('modal').hidden=true;if(!usedToday('shg_spin')){setTimeout(()=>$('giftBtn').click(),300);return;}if(usedToday('shg_adSpin')||dayOrd(store.get('shg_spin',''))>dayN())return;store.set('shg_adSpin',dayKey());const lb='📚 +'+gainXp(100)+' XP';toast('📺 보너스 선물 · '+lb);say(lb);beep(440,.14,'sine',.06,880);burst(innerWidth/2,innerHeight*.45,30);paintTop();paintPickers();});return;}toast('🎁 오늘 선물은 받았어요! 내일 또 만나요');return;} // 광고 보너스는 다시 뽑기가 아니라 정해진 선물 (뽑기처럼 안 보이게)
-  spinning=true;const pz=rollPrize(false),txt=pz.f(),pu=icU(pz.e);if(pu)imgGet(pu);store.set('shg_spin',dayKey());store.set('shg_bal',Math.floor(balance)); // 누르는 순간 결과 확정·저장, 애니메이션은 보여주기만
+  spinning=true;const gd=giftDay(),pz=giftOf(gd),txt=pz.f(),pu=icU(pz.e);if(pu)imgGet(pu);store.set('shg_spin',dayKey());store.set('shg_bal',Math.floor(balance)); // 누르는 순간 결과 확정·저장, 애니메이션은 보여주기만
   const mo=SET.fx&&!RM.matches,ptI=rvPtH(); // 옆에서 파트너가 건네주는 모습
-  openModal('<div class="rv"><div class="rv-st">'+ptI+'<div class="rv-art" id="wheel"><span class="gbx">🎁</span></div></div><h2 class="rv-t">매일 선물</h2><div class="rv-amt" id="wheelTxt">'+(mo?'여는 중…':'')+'</div><p class="note">하루 한 번 · 현금, 소모품, 경험치, 낮은 확률로 SP</p></div>','rv');
+  openModal('<div class="rv"><div class="rv-st">'+ptI+'<div class="rv-art" id="wheel"><span class="gbx">🎁</span></div></div><h2 class="rv-t">매일 선물</h2><div class="rv-amt" id="wheelTxt"></div><div class="gwk">'+GIFT_DAYS.map((n,i)=>'<span'+(i===gd?' class="on"':'')+'><b>'+n+'</b>'+icH(giftOf(i).e)+'</span>').join('')+'</div><p class="note">요일마다 정해진 선물 · 하루 한 번</p><p class="note">💎 보물상자: 익절 '+CHEST_EVERY+'번마다 · 다음은 '+chestNext().left+'번 뒤 · '+icH(chestNext().lab)+'</p></div>','rv');
   au(); // 그림을 돌리거나 삑삑대지 않고 상자를 꾹 눌렀다가 펑 (도박처럼 안 보이게)
   if(mo)setTimeout(()=>{const g=document.querySelector('#wheel .gbx');if(g)g.classList.add('press');},90);
   setTimeout(()=>{spinning=false;const w=$('wheel'),wt=$('wheelTxt'),lb=pz.s||txt.indexOf(pz.t)===0?txt:pz.t+' · '+txt,done=()=>{const m=$('modal');if(m.classList.contains('rv')&&!m.hidden){m.classList.add('done');$('modalClose').textContent='받기';}}; // 다 열리면 금색 '받기' 하나
     if(w){const t=document.createElement('span');t.className='rwi';t.innerHTML=icT(pz.e);const im=t.querySelector('img');let sh=0;const pv=()=>{if(sh)return;sh=1;if(!w.isConnected)return;w.innerHTML='';w.appendChild(t);if(mo)w.insertAdjacentHTML('beforeend',spkH(pz.e==='🟡'?10:16));if(wt)wt.innerHTML=icH(lb);done();};if(im&&im.decode){im.decode().then(pv,pv);setTimeout(pv,1200);}else pv();} // 상품 그림을 다 받아 그릴 수 있을 때 상자 → 그림 (0.4→1.12→1로 튀어나옴 · 못 받으면 이모지)
-    if(!wt||$('modal').hidden)toast('🎁 '+lb);else say(lb);beep(440,.14,'sine',.06,880);paintTop();paintPickers();},mo?470:0);
+    if(!wt||$('modal').hidden)toast('🎁 '+lb);else say(lb);beep(440,.14,'sine',.06,880);paintTop();paintPickers();},0); // v314: 정해진 선물이라 '여는 중' 기다림 없이 바로
 };
 /* ---------- card close ---------- */
 function scrimSync(){const m=$('scrim');if(m)m.hidden=!(!card.hidden&&(card.classList.contains('rs')||card.classList.contains('rvm'))&&$('page').hidden&&!app.classList.contains('pgopen'));} // 시트·보상 공개 뒤 화면은 어둡고 살짝 흐리게 (누름은 통과)
@@ -3878,6 +3892,9 @@ const forceSell=()=>{if(run&&run.boss&&state==='holding')run.boss.forced=1; /* B
       const idx=runBase+Math.floor(t/CD);while(candles.length<=idx){const pc=candles.length?candles[candles.length-1].c:1;candles.push({o:pc,h:pc,l:pc,c:pc,v:0,r:1});}const c=candles[candles.length-1];c.h=Math.max(c.h,cur);c.l=Math.min(c.l,cur);c.c=cur;}
     if(base(t)>=run.crashAt){crash();return;}}
   release();};
+// v314: 진행 중인 판을 0.5초마다 기록 → 창이 정상으로 닫히지 않고 강제 종료돼도 다음 실행 때 마지막 가격으로 정산 (지는 판을 꺼서 피하는 것 막기)
+function liveSave(){try{if(state!=='holding'||!run||run.tut||run.chal||run.boss)return;const re=run.re&&!run.re.done;liveSet({b:re?run.re.bet:run.bet,l:run.lev,q:re?0:run.liqLine,c:re?cur/run.re.entry:cur,r:stats.rounds||0,t:Date.now(),id:TABID});liveMine=1;}catch(e){}}
+setInterval(liveSave,500);
 const flushRound=()=>{forceSell();if(state!=='ghost'||!run||crashed)return;if(run.boss){run.crashAt=cur;crash();return;} /* BOSS-V2: outcome already fixed by the strike; no 1e5-step loop with crashAt=Infinity */ // 화면을 떠나면 남은 고스트 차트를 바로 끝내고 판을 기록 (새로고침·종료로 판이 사라지지 않게)
   for(let i=0;i<1e5&&base(t)<run.crashAt;i++){t+=.05;cur=Math.max(run.lev>1?.3:.85,base(t)*(1+(wig(t)-1)*Math.min(1,t/.3)*(run.T.wig||1)*(run.rg.wig||1))*newsF(t));peak=Math.max(peak,cur);
     const idx=runBase+Math.floor(t/CD);while(candles.length<=idx){const pc=candles.length?candles[candles.length-1].c:1;candles.push({o:pc,h:pc,l:pc,c:pc,v:0,ghost:true,r:1});}const c=candles[candles.length-1];c.h=Math.max(c.h,cur);c.l=Math.min(c.l,cur);c.c=cur;}
@@ -3891,7 +3908,7 @@ let tabStale=0,tabRp=0;const adOffer=()=>!card.hidden&&!!card.querySelector('#ad
 // tabStale 2: 보고 있던 판은 마저 끝냄 (돈·빚·신용·XP는 차액만, 나머지는 저쪽 새 값을 이어받아 그 위에 저장), 1: 저장 멈춤
 const TAB_TAKE={shg_lad:v=>{lad=ladFix(v);},shg_econ:v=>{ECO=ecoFix(v);},shg_road:v=>{RD=rdFix(v);try{rdFrame();if(PREM_ON)premApply(1);else rdTheme();}catch(e){}},shg_streak:v=>{streak=Math.min(1e5,Math.max(0,Math.floor(+v||0)));app.classList.toggle('fever',streak>=5);$('fever').hidden=streak<5;},shg_season:v=>season=v,shg_daily:v=>{daily=v;ensureDaily();},shg_weekly:v=>{weekly=v;ensureDaily();},shg_inv:v=>inv=v,shg_armed:v=>armed=v,shg_inv2:v=>{if(!v||typeof v!=='object'||Array.isArray(v))return;const x={};for(const k of Object.keys(v))if(!PROD.some(P=>P.id===k)){if(k!=='__proto__')x[k]=v[k];delete v[k];}store.keep.shg_inv2=x;invest=v;},shg_gear:v=>{gear=cntMap(v);for(const k in gear)gear[k]=Math.min(7,gear[k]);},shg_gearMax:v=>{gearMax=cntMap(v);},shg_col:v=>col=colFix(v),shg_ach:v=>ach=v,shg_achc:v=>achC=v,shg_sk:v=>{sk=cntMap(v);fixSk();},shg_league:v=>league=v,shg_nick:v=>nick=v,shg_profile:v=>profile=Object.prototype.hasOwnProperty.call(TYPES,v)?v:null,shg_home:v=>lastHome=v,shg_intPaid:v=>intPaid=!!v,shg_best:v=>best=Math.max(best,+v||0),shg_stats:v=>{Object.assign(stats,v);fixStats();lowFlag=!!stats.low;},shg_decor:v=>Object.assign(decor,v),shg_pet:v=>{const p=petFix(v);if(p)pet=p;petDot();}},
   TAB_KEEP=['shg_bal','shg_debt','shg_rdebt','shg_credit','shg_xp','shg_spin','shg_adSpin','shg_adRevive','shg_adc','shg_chalDay','shg_chalMax','shg_chalRun','shg_chalPaid','shg_tutPaid','shg_tutBonus','shg_tut','shg_set','shg_pct','shg_ipct','shg_tier','shg_levTip','shg_itemTip','shg_tips','shg_pet']; // 차액 반영 키, 쓸 때마다 저장소에서 다시 읽는 키·설정. 이 밖의 키(환생·불러오기·초기화 등)가 바뀌면 이 판은 저장하지 않음 (shg_prem·shg_premEq는 이 목록 대신 위 storage 처리 맨 앞에서 합집합으로 따로 받음)
-addEventListener('storage',e=>{const k=e.key;if(e.storageArea&&e.storageArea!==localStorage)return;if(k!==null&&(k.slice(0,4)!=='shg_'||k==='shg_errlog'))return;
+addEventListener('storage',e=>{const k=e.key;if(e.storageArea&&e.storageArea!==localStorage)return;if(k!==null&&(k.slice(0,4)!=='shg_'||k==='shg_errlog'||k==='shg_live'))return; // v314b: shg_live = 다른 탭이 판 도중 0.5초마다 쓰는 기록 → 이 탭과 무관
   if(k==='shg_prem'||k==='shg_premEq'){if(PREM_ON)premTake(k);return;}if(k==='shg_premReset'){if(PREM_ON&&e.newValue)premReset();return;} // 프리미엄 보유·장착: 새로고침 없이 바로 합침 (구매 목록은 합집합이라 어느 탭도 덮어써서 잃지 않음, 꺼져 있으면 무시)
   if(tabStale!==1&&k!==null&&e.newValue!==null&&(adPause||adReq||adOffer()||!document.hidden&&(tabStale===2||state==='holding'||state==='ghost'))&&(TAB_TAKE[k]||TAB_KEEP.includes(k))){store.seen[k]=e.newValue;const d=(+e.newValue||0)-(+e.oldValue||0);
     if(k==='shg_bal'){const f=d<0&&state==='holding'&&run&&balance+d<(run.re&&!run.re.done?run.re.bet:run.bet)*(run.lev>1?Math.max(1,run.T.loss*run.lev*.6):1);if(f)forceSell();balance+=d;if(f){if(balance<0){if(!debt)credit=Math.min(10,credit+1);debt+=-balance;balance=0;}paintTop();}} // 판 도중 저쪽 탭이 폭락 때 잃을 수 있는 돈(투자금×레버리지 손실 배율)까지 써 버리면 지금 가격에 먼저 매도 (모자라는 손실은 빚으로)
@@ -5046,7 +5063,7 @@ function premBind(pg){if(!PREM_ON)return;
 
 /* ---------- 주간 시즌 패스 ---------- */
 const SEASON_T=30,SEASON_XP=100,SEASON_DAY=5;
-const seasonGate=(d=0)=>Math.min(SEASON_T,SEASON_DAY*(1+d+(new Date().getDay()+6)%7)); // 하루 5단계씩 열림 (월 5·화 10…토 30, 못 한 날 몫은 다음 날 이어서) → 첫날에 다 끝나지 않고 며칠 다시 오게
+const seasonGate=(d=0)=>SEASON_T; // v314: 요일 잠금 없음 · 경험치로만 진행 (예전: 하루 5단계씩 열림) // 하루 5단계씩 열림 (월 5·화 10…토 30, 못 한 날 몫은 다음 날 이어서) → 첫날에 다 끝나지 않고 며칠 다시 오게
 const seasonCapMsg=()=>{seasonFix();const t=Math.floor(season.xp/SEASON_XP);if(t>=SEASON_T||season.xp<seasonGate()*SEASON_XP)return '';let d=1;while(d<6&&seasonGate(d)<=t)d++;return d===1?'🎫 다음 단계는 내일 열려요':'🎫 다음 단계는 '+d+'일 뒤 열려요';}; // 오늘 열린 단계를 다 채웠을 때 안내 (예전 저장으로 이미 앞서 있으면 며칠 뒤)
 let season=store.get('shg_season',{wk:'',xp:0,got:[]});if(!season||typeof season!=='object'||!Array.isArray(season.got))season={wk:'',xp:0,got:[]};season.xp=Math.max(0,fin(season.xp));
 const seasonFix=()=>{const wk=weekKey();if(wkOrd(season.wk)<wkOrd(wk)){const reach=Math.min(SEASON_T,Math.floor(season.xp/SEASON_XP)),old=season.got;season={wk,xp:0,got:[]};store.set('shg_season',season); // 지난 시즌에 도달만 하고 안 받은 단계는 자동 지급 (시즌을 먼저 바꿔 저장해 두 번 받지 않음)
@@ -5060,10 +5077,10 @@ const seasonReward=t=>{const own=id=>decor.own.includes(id),cash=m=>{const v=Mat
   t%5===0?sp1:cash(1+t%5*.5);};
 function seasonXp(n){seasonFix();const before=Math.floor(season.xp/SEASON_XP);season.xp=Math.max(season.xp,Math.min(seasonGate()*SEASON_XP,season.xp+n));store.set('shg_season',season);const after=Math.floor(season.xp/SEASON_XP),cm=seasonCapMsg();if(after>before&&before<SEASON_T)setTimeout(()=>toast('🎫 시즌 패스 '+Math.min(after,SEASON_T)+'단계! 미션 탭에서 보상 받기'+(cm?' · '+cm.slice(3):'')),1200);} // 오늘 열린 단계까지만 쌓임 (예전 저장이 이미 넘었으면 그대로 두고 더 안 쌓음)
 function seasonHtml(){seasonFix();const tier=Math.min(SEASON_T,Math.floor(season.xp/SEASON_XP)),gt=seasonGate(),cm=seasonCapMsg(),d=new Date(),left=(8-(d.getDay()||7)),cur=tier+1; // 시즌 패스: 6px 진행 바 + 가로로 넘기는 한 줄 (칸 62×76, 지금 단계로 자동 이동, 5단계마다 큰 보상 칸)
-  return '<h3>🎫 주간 시즌 패스 <b class="cnt">'+tier+'/'+SEASON_T+'</b>'+(left>1||tier>=3?'<span class="mu rt">'+left+(LANG==='en'&&left===1?' day left':'일 남음')+'</span>':'')+'</h3>'+
+  return '<h3>🎫 주간 시즌 패스 <b class="cnt">'+tier+'/'+SEASON_T+'</b>'+''+'</h3>'+
    '<div class="spbar"><u style="width:'+Math.min(100,season.xp/(SEASON_T*SEASON_XP)*100)+'%"></u></div>'+
    '<div class="spw"><button type="button" class="spa l" aria-label="이전 단계">‹</button><div class="spass" style="overflow-x:auto" role="group" aria-label="시즌 패스 보상">'+Array.from({length:SEASON_T},(_,i)=>{const t=i+1,r=seasonReward(t),ok=tier>=t,got=season.got.includes(t);return '<button type="button" class="sp'+(got?' got':ok?' ok':t>gt?' lk':'')+(t%5?'':' big')+(t===cur?' cur':'')+'" data-stier="'+t+'" aria-label="'+tierLbl(t)+' · 시즌 패스 보상 · '+r.n+(got?' · 받음':'')+'"'+(ok&&!got?'':' disabled')+'><small>'+t+'</small><i>'+(got?'✅':r.e)+'</i><em>'+(got?'받음':r.s)+'</em></button>';}).join('')+'</div><button type="button" class="spa r" aria-label="다음 단계">›</button></div>'+
-   '<p class="spnote">'+(cm?'<b class="gd">'+cm+'</b>':'하루 '+SEASON_DAY+'단계씩 열려요'+(gt<SEASON_T?' (오늘 '+tierLbl(gt)+'까지)':''))+'</p>';}
+   '<p class="spnote">'+(cm?'<b class="gd">'+cm+'</b>':'판을 해서 경험치를 모으면 칸이 열려요')+'</p>';}
 function seasonBind(pg){pg.querySelectorAll('[data-stier]').forEach(b=>b.onclick=()=>{const t=+b.dataset.stier,wk0=season.wk;seasonFix();
   if(season.wk!==wk0){toast('🎫 새 시즌이 시작됐어요');rerender('mission');return;} // 화면을 켜 둔 채 월요일이 지나면 낡은 단계 버튼 대신 새 시즌을 보여 줌
   if(season.got.includes(t)||Math.floor(season.xp/SEASON_XP)<t){rerender('mission');return;}const r=seasonReward(t);r.f();season.got.push(t);store.set('shg_season',season);sfx.up();toast('🎫 '+tierLbl(t)+' 보상: '+r.e+' '+r.n);paintTop();rerender('mission');});
@@ -5081,7 +5098,7 @@ function pageShop(){const CB=CONSUM.filter(c=>!c.nobuy),wc=CB[wkOrd(weekKey())%C
    '<div class="seg sseg" role="group" aria-label="상점">'+[['item','아이템'],['decor','꾸미기'],['bank','은행']].map(([k,t])=>'<button type="button" data-sseg="'+k+'" aria-pressed="'+(shopSeg===k)+'">'+t+'</button>').join('')+'</div>'+
    '<div class="secs shop" data-seg="'+shopSeg+'">'+
    '<section class="sec full" id="secItem">'+
-   (adOk('item')&&!bossTW()?'<div class="free"><i>📺</i><div><b>광고 보고 소모품 1개 받기</b><small>오늘 '+(AD_LIM.item-adCnt('item'))+'번 남음</small></div><button class="setbtn rw" id="adItem" type="button">받기</button></div>':'')+
+   (adOk('item')&&!bossTW()?'<div class="free"><i>📺</i><div><b>광고 보고 '+adItemCon().e+' '+adItemCon().n+' 1개 받기</b><small>오늘 '+(AD_LIM.item-adCnt('item'))+'번 남음</small></div><button class="setbtn rw" id="adItem" type="button">받기</button></div>':'')+
    '<h3>✨ 소모품 <span class="mu">· 가질수록 1.6배씩 비싸져요</span></h3>'+
    '<div class="feat pan" style="--g:'+CGL[wc.id]+'"><div class="fart">'+icI(wc.e,wc.n)+'</div><div class="ftx"><h4>'+wc.n+' <span class="rtag">추천</span></h4><p>'+wc.d+'</p>'+own(wc)+'</div><div class="frow">'+ub(wc)+pb(wc,fp,1)+'</div></div>'+
    '<div class="scards">'+CONSUM.filter(c=>c!==wc&&(!c.nobuy||inv[c.id]>0||armed[c.id]>0)).map(c=>'<div class="scard" style="--g:'+CGL[c.id]+'">'+own(c)+'<div class="sart">'+icI(c.e,c.n)+'</div><b>'+c.n+'</b><p>'+c.d+'</p><div class="pair">'+ub(c)+(c.nobuy?'':pb(c,cPrice(c)))+'</div></div>').join('')+'</div>'+
@@ -5501,7 +5518,7 @@ function bindPage(name){
   pg.querySelectorAll('[data-pet]').forEach(b=>b.onclick=()=>{const id=b.dataset.pet;if(!pet||!pet.own[id]||pet.sel===id)return;petMod(p=>{if(p.own[id])p.sel=id;});petLoad(id);toast('🐾 새 파트너 · '+CHARS[id]+(state==='holding'||state==='ghost'?' · 다음 판부터':''));rerender('grow');}); // 파트너 바꾸기 (친밀도는 동물마다 따로 남음)
   pg.querySelectorAll('[data-up]').forEach(b=>b.onclick=()=>{const id=b.dataset.up;if(spFree()>=costOf(skl(id))&&skOnce()){sk[id]=skl(id)+1;store.set('shg_sk',sk);sfx.up();toast('🌳 '+SKILLS.find(x=>x.id===id).n+' Lv.'+sk[id]);paintTop();rerender('skill');}});
   pg.querySelectorAll('[data-buy]').forEach(b=>b.onclick=()=>{const c=CONSUM.find(x=>x.id===b.dataset.buy),pr=c?cPrice(c):0;if(!c||c.nobuy||balance<pr||!once())return;balance-=pr;inv[c.id]=(inv[c.id]||0)+1;store.set('shg_inv',inv);sfx.sell();toast(c.e+' '+c.n+' 구매 완료');paintTop();rerender('shop');});
-  {const ai=pg.querySelector('#adItem');if(ai)ai.onclick=()=>{if(adFull('item'))return ai.remove();ai.disabled=true;rewardAd('freeitem',()=>{if(ai.dataset.paid)return;if(adFull('item'))return ai.remove();ai.dataset.paid=1;adUse('item');const c=pick(CONSUM);inv[c.id]=(inv[c.id]||0)+1;store.set('shg_inv',inv);toast('📺 '+c.e+' '+c.n+' 1개 받았어요');sfx.up();if(curTab==='shop')rerender('shop');else paintTop();});setTimeout(()=>{if(ai.isConnected)ai.disabled=false;},3000);};}
+  {const ai=pg.querySelector('#adItem');if(ai)ai.onclick=()=>{if(adFull('item'))return ai.remove();ai.disabled=true;rewardAd('freeitem',()=>{if(ai.dataset.paid)return;if(adFull('item'))return ai.remove();ai.dataset.paid=1;adUse('item');const c=adItemCon();stats.adItemK=(stats.adItemK||0)+1;store.set('shg_stats',stats);inv[c.id]=(inv[c.id]||0)+1;store.set('shg_inv',inv);toast('📺 '+c.e+' '+c.n+' 1개 받았어요');sfx.up();if(curTab==='shop')rerender('shop');else paintTop();});setTimeout(()=>{if(ai.isConnected)ai.disabled=false;},3000);};}
   pg.querySelectorAll('[data-use]').forEach(b=>b.onclick=()=>{const c=CONSUM.find(x=>x.id===b.dataset.use);if(!(inv[c.id]>0)||armed[c.id]>0)return;b.disabled=true;inv[c.id]--;armed[c.id]=(armed[c.id]||0)+c.arm;stats.c.items++;store.set('shg_inv',inv);store.set('shg_armed',armed);store.set('shg_stats',stats);
     if(c.id==='bossT'&&state!=='holding'&&state!=='ghost'){offers=makeOffers();paintPickers();}toast(c.e+' '+c.n+' 사용 · 다음 판부터 적용');sfx.up();rerender('shop');});
   pg.querySelectorAll('[data-gear]').forEach(b=>b.onclick=()=>gearTap(b.dataset.gear));pg.querySelectorAll('[data-gsheet]').forEach(b=>b.onclick=()=>gearSheet(b.dataset.gsheet)); // 장비: 가격 버튼 → 확인 창(모자라면 7단계 시트) · 줄·자물쇠 → 7단계 시트
@@ -5637,6 +5654,12 @@ if(/selftest/.test(location.search)){ // 자동 테스트 전용 (일반 플레�
   if(/fast/.test(location.search)){draw=()=>{};}
 }
 setTimeout(()=>{try{if(tutDone&&profile&&state==='ready'&&balance+invNet()<100000&&!(chal&&chal.i<5&&debt<=debtLimit())){state='over';$('sheet').hidden=true;if(debt>debtLimit())showDefault(1);else showOver(0,1);paintPickers();setBtn();}}catch(e){}},900);
+const liveBoot=lv=>{if(!lv||lv.id===TABID)return;const age=Date.now()-(+lv.t||0);
+  if(lv.t&&age>-1000&&age<3000||state==='holding'){setTimeout(()=>liveBoot(liveGet()),3200);return;} // v314b: 3초 안에 갱신된 기록 = 다른 탭이 아직 그 판을 하는 중 → 대신 정산하지 않고, 기록이 멈추면(그 탭이 꺼지면) 그때 정산
+  liveSet(null);if(typeof lv.b==='number'&&lv.b>0&&lv.r===(stats.rounds||0)){ // v314: 판 도중 강제 종료로 정산이 안 된 판 → 마지막 가격으로 정산 (청산선 아래면 청산 손실)
+  const c=Math.max(0,+lv.c||1),q=+lv.q||0,g0=q&&c<=q?-lv.b*.85:lv.b*(c-1)*(lv.l||1),g=g0>0?g0*(1-taxRate(balance)):Math.max(g0,-balance);
+  balance+=g;paintTop();setTimeout(()=>toast('🧾 지난 판은 창이 닫혀 마지막 가격으로 정산했어요 · '+sw(g)),1500);}};
+liveBoot(LIVE0);
 requestAnimationFrame(frame);
 })();
 </script>

@@ -23,12 +23,12 @@ K=open('/home/user/Vibe-Trading/game/index.html').read().split('\n')[:22]
 H='\n'.join(K)+'\n'
 H=H.replace(',user-scalable=no','') # 확대 허용 (접근성)
 H,n=_re.subn(r'og\.png\?v=\d+"','og.png?v=60"',H);assert n==1,'og:image line missing in the deploy head' # mk.sh와 같은 OG 주소 꼬리표
-H=_re.sub(r'<meta property="og:image:alt" content="[^"]*">','',H);H=H.replace('og.png?v=60">','og.png?v=60"><meta property="og:image:alt" content="Stonks Tycoon · free stock-timing game · virtual money">',1)
+H=_re.sub(r'<meta property="og:image:alt" content="[^"]*">','',H);H=H.replace('og.png?v=60">','og.png?v=60"><meta property="og:image:alt" content="Peakopia · free stock-timing game · virtual money">',1)
 assert 'user-scalable=no' not in H
-for a,b in [('lang="ko"','lang="en"'),('content="떡상계좌"','content="Stonks"'),
+for a,b in [('lang="ko"','lang="en"'),('content="떡상계좌"','content="Peakopia"'),
  ('<link rel="manifest" href="manifest.webmanifest">\n',''),('href="apple-touch-icon.png"','href="../apple-touch-icon.png"'),('href="icon-192.png"','href="../icon-192.png"')]:H=H.replace(a,b)
 H=_re.sub(r'<meta name="description" content="[^"]*">','<meta name="description" content="Sell before the crash. Grow your account from a tiny room to a moon base. Free stock-timing game with virtual money.">',H)
-H=_re.sub(r'<meta property="og:title" content="[^"]*">','<meta property="og:title" content="Stonks Tycoon 📈 Sell before the crash">',H)
+H=_re.sub(r'<meta property="og:title" content="[^"]*">','<meta property="og:title" content="Peakopia 📈 Sell before the crash">',H)
 H=_re.sub(r'<meta property="og:description" content="[^"]*">','<meta property="og:description" content="Sell before the crash and grow your account. Free · No install · Virtual money">',H)
 H=H.replace('<meta property="og:url" content="https://melange-lab.github.io/">','<meta property="og:url" content="https://melange-lab.github.io/en/">')
 assert not _re.search('[가-힣]',H),'korean left in head'

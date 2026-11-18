@@ -66,7 +66,7 @@ function createWindow() {
   const lang = curLang = pickLang();
   win = new BrowserWindow(Object.assign({
     minWidth: Math.min(400, Math.max(300, screen.getPrimaryDisplay().workAreaSize.width - 40)), minHeight: Math.min(600, Math.max(300, screen.getPrimaryDisplay().workAreaSize.height - 40)), backgroundColor: '#090c13', show: false, autoHideMenuBar: true,
-    title: lang === 'ko' ? '떡상 계좌 키우기' : 'Stonks Tycoon',
+    title: lang === 'ko' ? '떡상 계좌 키우기' : 'Peakopia',
     icon: path.join(__dirname, 'icon.png'),
     webPreferences: { contextIsolation: true, sandbox: true, nodeIntegration: false, spellcheck: false, devTools: !app.isPackaged }
   }, fitBounds(cfg.bounds)));

@@ -5,21 +5,21 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Stonks">
+<meta name="apple-mobile-web-app-title" content="Peakopia">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
 <link rel="icon" href="../icon-192.png">
 <meta name="description" content="Sell before the crash. Grow your account from a tiny room to a moon base. Free stock-timing game with virtual money.">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Stonks Tycoon 📈 Sell before the crash">
+<meta property="og:title" content="Peakopia 📈 Sell before the crash">
 <meta property="og:description" content="Sell before the crash and grow your account. Free · No install · Virtual money">
-<meta property="og:image" content="https://melange-lab.github.io/og.png?v=60"><meta property="og:image:alt" content="Stonks Tycoon · free stock-timing game · virtual money">
+<meta property="og:image" content="https://melange-lab.github.io/og.png?v=60"><meta property="og:image:alt" content="Peakopia · free stock-timing game · virtual money">
 <meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
 <meta property="og:url" content="https://melange-lab.github.io/en/">
 <meta name="twitter:card" content="summary_large_image">
 <style>*,*::before,*::after{box-sizing:border-box}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);height:100%}body{margin:0;font-size:14px;overscroll-behavior:none}[hidden]{display:none!important}</style>
 <meta name="google-adsense-account" content="ca-pub-2213068202184499">
 </head><body>
-<title>Stonks Tycoon</title>
+<title>Peakopia</title>
 <link rel="stylesheet" href="../fonts/fonts.css">
 <link rel="preload" as="image" href="../brand/intro_portrait_v3.webp" media="(orientation:portrait)" fetchpriority="high">
 <link rel="preload" as="image" href="../brand/intro_landscape_v3.webp" media="(orientation:landscape)" fetchpriority="high">
@@ -1789,7 +1789,7 @@ button.lvk{cursor:pointer}
 <div class="app" id="app">
   <div class="top" id="top">
   <header>
-    <h1><b>Stonks</b> Tycoon</h1>
+    <h1><b>Peakopia</b> </h1>
     <div class="rank" id="rankBtn" role="button" tabindex="0" aria-label="View level & XP"><span class="pav" id="ava" aria-hidden="true"><i id="avaI"></i><b id="avaLv">Lv.1</b></span><span class="rkt"><span id="rankName">Newbie Lv.1</span><i><b id="rankBar" style="width:0"></b></i></span></div>
     <button class="ib gd" id="giftBtn" type="button" aria-label="Daily Gift"><img class="ico" src="../ui/gift.webp" alt="" draggable="false" data-e="🎁" onerror="this.replaceWith(this.dataset.e)"></button>
     <button class="ib gd" id="spBtn" type="button" aria-label="SP 0"><img class="ico" src="../ui/skill_tree.webp" alt="" draggable="false" data-e="🌳" onerror="this.replaceWith(this.dataset.e)"><em class="spn" hidden>0</em></button>
@@ -1920,24 +1920,25 @@ const NF={},nf=d=>NF[d]||(NF[d]=new Intl.NumberFormat('en-US',{minimumFractionDi
 const fmtP=(p,ref=p)=>{if(isUsd())return '$'+nf(2).format(p);if(LANG!=='en')return Math.round(p).toLocaleString('en-US');return '$'+nf(ref>=500000?0:2).format(p/1000);};
 
 const tkOf=s=>{const w=String(s).replace(/\(.*?\)/g,'').match(/[A-Za-z0-9]+/g)||['STK'];return (w.length<2?w[0].slice(0,4):w[0].length<3?(w[0]+w[1]).slice(0,4):w[0].slice(0,3)+w[1][0]).toUpperCase();};
+const fk=t=>/\d/.test(t=String(t))?t:t.slice(0,3)+(1+[...t].reduce((a,c)=>a+c.charCodeAt(0),0)%9);
 const crS=c=>LANG==='en'?['AAA','AA','A','BBB','BB','B','CCC','CC','C','D'][Math.min(10,Math.max(1,c|0))-1]:c+'';
 const TIERS={
   blue:{e:'🏛️',label:'Blue Chip',rate:.7,scale:.6,loss:.45,instant:.01,limit:true,p:[30000,180000],lv:0,unit:40,news:.6,amp:.7,wig:.6,
-    names:['Brightwave Electronics','Grand Heavy Industries','Tri-Peak Chemical','Nation Telecom','Eastern Steel','Future Financial','Pacific Builders','GridCore Power']},
+    names:['Steady Electronics','Stalwart Heavy Industries','Puffball Chemical','Whisper Telecom','Ironpot Steel','Thrifty Financial','Brickstack Builders','Firefly Grid']},
   theme:{e:'🔥',label:'Hype Stocks',rate:1,scale:1,loss:.7,instant:.04,limit:true,p:[1500,25000],lv:0,unit:180,
-    names:['Superconductor Lab','Greatstar Robotics','K-Battery Tech','AstroAero Tech','AI Chip Solutions','Quantum Computing','SlimRx Labs','Nuke Energy']},
+    names:['Superconductor Lab','TinCan Robotics','K-Battery Tech','AstroAero Tech','AI Chip Solutions','Quantum Computing','SlimRx Labs','Nuke Energy']},
   meme:{e:'🐸',label:'Meme Stocks',rate:1.5,scale:1.8,loss:.92,instant:.1,limit:false,p:[200,3000],lv:0,unit:900,
-    names:[['DogeKing Pets','DOGK'],['FrogMart','FROGK'],['Kimchi Foods','KIMCH'],['Moonshot Inc','MOON'],['Meow Media',LANG==='en'?'MEOW':'NYANG'],['GoGo Motors',LANG==='en'?'GOGO':'GAZUA'],['Rocketry Co','RCKT']]},
+    names:[['WoofKing Pets','WOF1'],['FrogMart','FROGK'],['Kimchi Foods','KIMCH'],['Moonshot Inc','MOON'],['Meow Media',LANG==='en'?'MEOW':'NYANG'],['GoGo Motors',LANG==='en'?'GOGO':'GAZUA'],['Rocketry Co','RCKT']]},
   bio:{e:'🧬',label:'Biotech',rate:.8,scale:1.4,loss:.8,instant:.05,limit:true,p:[3000,60000],lv:1,unit:120,news:2.2,amp:1.8,wig:1.2,
-    desc:'One trial headline sends it wild',names:['Brightwave Pharma','CellMedi','GeneBiotech','MediForce','BioNext','GenCure','NeuroCell']},
+    desc:'One trial headline sends it wild',names:['Yawn Pharma','Squishy Cell','Beansprout Bio','Bandage Medi','Droplet Bio','Quickfix Pharma','Zap Neuro']},
   penny:{e:'🟡',label:'Penny Stocks',rate:1.2,scale:1.2,loss:.75,instant:.06,limit:true,p:[300,990],lv:2,unit:3000,news:1.4,amp:1.4,wig:2.4,
-    desc:'Tiny ticks, wildest swings',names:['Boomtown Electronics','Number One Tech','Skyline Trading','Future C&C','Eastasia Energy','Highcastle P&C']},
+    desc:'Tiny ticks, wildest swings',names:['Jackpot Electronics','Speck Tech','Handful Trading','Vroom C&C','Wiggle Energy','Bubbly P&C']},
   ipo:{e:'🎉',label:'IPOs',rate:1.7,scale:2,loss:.85,instant:.14,limit:true,p:[10000,50000],lv:4,unit:300,wig:1.4,
-    desc:'Day-one listing: soar or sink',names:['(New) RobotAI','(New) AstroLaunch','(New) Quantum Labs','(New) GreenHydrogen','(New) K-Beauty Lab']},
+    desc:'Day-one listing: soar or sink',names:['(New) RobotAI','(New) Shooting Star Space','(New) Wobbly Quantum','(New) GreenHydrogen','(New) K-Beauty Lab']},
   us:{e:LANG==='en'?'🌐':'🇺🇸',label:'Global Giants',rate:.9,scale:1.1,loss:.6,instant:.02,limit:false,usd:true,p:[20,400],lv:6,unit:25,news:.8,amp:.8,wig:.8,
-    desc:'World’s biggest names, no +30% cap',names:[['Nova Dynamics','NOVA'],['Atlas Chips','ATLC'],['BlueOcean EV','BOEV'],['Quantum Cloud','QNTC'],['Mega Social','MGSO']]},
+    desc:'World’s biggest names, no +30% cap',names:[['Marshmallow Dynamics','MSH1'],['Cookie Chips','CKC2'],['Jellybean EV','JBE3'],['Cotton Candy Cloud','CCC4'],['Chatter Social','CHT5']]},
   pump:{e:'🎭',label:'Pump Stocks',rate:1.1,scale:1.6,loss:.92,instant:.03,limit:true,p:[1000,8000],lv:8,unit:600,news:1.6,amp:1.5,warn:.35,
-    desc:'Whale pumps. The warnings are usually real',names:['Myth Tech','StarCorp','Ace Holdings','Bubble Industrial','Solar Bio']},
+    desc:'Whale pumps. The warnings are usually real',names:['Popcorn Tech','Blinky Star','Swagger Holdings','Bubble Industrial','Rainbow Bio']},
   boss:{e:'👹',label:'Boss Fight',rate:1.05,scale:1.4,loss:.7,instant:.02,limit:false,p:[5000,50000],lv:99,hidden:true,unit:500,news:1.4,amp:1.3,names:['Boss']}
 };
 const BOSSES=[{e:'👹',n:'Short Sellers'},{e:'🌑',n:'Black Monday'},{e:'🏦',n:'Rate Hike'},{e:'🎭',n:'Pump Kingpin'},{e:'⛔',n:'Circuit Breaker'},{e:'🦢',n:'Black Swan'},{e:'🐻',n:'Giant Bear'},{e:'🌪️',n:'Financial Crisis'}];
@@ -2053,7 +2054,7 @@ const ITEMS={
   insider:{short:'Tip',name:'🔍 Hot Tip',cost:.05,desc:'Crash warning (70%) · 1s if real',lv:2},
   slow:{short:'Slow',name:'⏱️ Slow-Mo',cost:.06,desc:'Chart speed 0.6×',lv:3}
 };
-const RANKS=[[0,'Newbie'],[150,'Rookie'],[400,'Day Trader'],[800,'Swing Pro'],[1300,'Pro Trader'],[2000,'Full-time Trader'],[3000,'Chart Master'],[4300,'Big Shot'],[6000,'Fund Manager'],[8200,'Whale'],[11000,'Hedge Fund'],[14500,'Wall St. Wolf'],[19000,'Market God'],[25000,'Street Legend'],[33000,'The Market Itself'],[37760,'Space Ant'],[51060,'Moon Day Trader'],[66360,'Mars Swing Pro'],[83660,'Saturn Big Shot'],[102960,'Satellite Fund Manager'],[135660,'Alien Whale'],[172860,'Galaxy Hedge Fund'],[229460,'Black Hole Wolf'],[311460,'God of Stars'],[405960,'The Universe Itself']];
+const RANKS=[[0,'Newbie'],[150,'Rookie'],[400,'Day Trader'],[800,'Swing Pro'],[1300,'Pro Trader'],[2000,'Full-time Trader'],[3000,'Chart Master'],[4300,'Big Shot'],[6000,'Fund Manager'],[8200,'Whale'],[11000,'Hedge Fund'],[14500,'Chart Alley Wolf'],[19000,'Market God'],[25000,'Street Legend'],[33000,'The Market Itself'],[37760,'Space Ant'],[51060,'Moon Day Trader'],[66360,'Mars Swing Pro'],[83660,'Saturn Big Shot'],[102960,'Satellite Fund Manager'],[135660,'Alien Whale'],[172860,'Galaxy Hedge Fund'],[229460,'Black Hole Wolf'],[311460,'God of Stars'],[405960,'The Universe Itself']];
 const ACH=[
   ['first','📈','First Profit','Lock in your first profit'],
   ['god','🙏','Golden Touch','Peak accuracy 95%+'],
@@ -2139,14 +2140,14 @@ const WEEKLY=[
 const BEAR=['BREAKING: CEO fraud rumor','Short seller report drops','Exchange demands disclosure','Rumor: big holder block sale','Whales spotted dumping','New share offering announced','Rumor: regulators probing trades','Earnings shock'];
 const SECT=[
  [/Chip|Semi|Electr/,['HyperChip supply deal signed','HBM mass production begins','Record chip exports'],['Chip inventory piles up','Hit by US export curbs','Memory prices plunge']],
- [/Space|Astro|Aero/,['Satellite launch success','Space agency partnership deal','Defense export deal signed'],['Rocket launch fails','Satellite contact lost','Launch delayed indefinitely']],
+ [/Space|Astro|Aero/,['Satellite launch success','Galaxy Space Agency deal','Defense export deal signed'],['Rocket launch fails','Satellite contact lost','Launch delayed indefinitely']],
  [/Robo/,['Humanoid prototype unveiled','Big robot supply deal','Smart factory order won'],['Demo glitch video goes viral','Key parts shortage','Tech leak allegations']],
  [/EV|Batter/,['Solid-state battery breakthrough','Huge automaker order','EV sales surge'],['Battery fire recall','EV demand slowing','Subsidy cuts announced']],
  [/Quantum|Supercond/,['Room-temp superconductor replicated','Qubit world record','Paper accepted by top journal'],['Replication fails','Review panel: "baseless"','Paper retracted']],
  [/AI|Cloud|Social/,['AI service users explode','Big Tech buyout rumor','Big data center deal'],['Massive service outage','User data breach','Users leaving fast']],
  [/Nuclear|Hydrogen|Energy|Grid/,['Overseas nuclear deal','Boosted by energy policy','Big power grid contract'],['Nuclear policy scrap rumor','Contract talks collapse','Power plant shutdown']],
- [/Obesity|Slim/,['Obesity drug trial success','Big Pharma licensing deal','FDA approval hopes'],['Phase 3 trial fails','Side effect reports spread','Licensing deal canceled']],
- [/Pharma|Medi|Bio|Cell|GenCure|Neuro/,['Phase 2 trial success','FDA approval hopes','Global licensing deal'],['Phase 3 trial fails','FDA asks for more data','Trial halt advised']],
+ [/Obesity|Slim/,['Obesity drug trial success','Big Pharma licensing deal','Drug Board approval hopes'],['Phase 3 trial fails','Side effect reports spread','Licensing deal canceled']],
+ [/Pharma|Medi|Bio|Cell|Neuro/,['Phase 2 trial success','Drug Board approval hopes','Global licensing deal'],['Phase 3 trial fails','Drug Board asks for more data','Trial halt advised']],
  [/Beauty/,['China exports surge','K-beauty sells out overseas','Global cosmetics buyout rumor'],['China exports blocked','Ingredient controversy','Duty-free sales plunge']],
  [/Heavy|Ship|Steel|Construct|Build|Trading/,['Overseas plant contract','Big shipbuilding order','Infrastructure spending boost'],['Site accident reported','Raw material prices spike','Bad project loan fears']],
  [/Chem/,['New material mass production','Cheaper oil boost','Expansion plan announced'],['Factory fire','Industry downturn warning','Tougher green rules']],
@@ -2464,7 +2465,7 @@ function rdGoal(){const n=rdNext();if(!n)return null;const pr=rdAll().filter(r=>
   return {k:'road',ic:n,t:b+(fx?' '+fx:''),b,fx,a:rk?[b]:rdShort(b),cur:n.L<=lvlOf(xp).L,lv:n.L,p:Math.max(0,Math.min(.99,p)),x:n.x,x0};}
 const rdShort=s=>{const a=[s];let t=s.replace(/ \(.*$/,'');if(t&&t!==s)a.push(t); // shorter forms of a row name for the pill: without the (ticker list / note), then without the last ' · ' part or a note title
   const u=t.includes(' · ')?t.replace(/ · [^·]*$/,''):/#\d/.test(t)?t.replace(/ [「“][^」”]*[」”]$/,''):t;if(u&&u!==t)a.push(u);return a;};
-const rdNs=(n,nm)=>{const c=Array.isArray(n)?n[1]:LANG==='en'?tkOf(nm):'';return SECT.some(q=>q[0].test(nm+' '+c));}; // makeOffers: did the drawn base name (with its code) have a news sector? newsPick then makes the same random calls for the road name that is shown instead · the exchange tail of a code and the 6-digit KO codes match no sector
+const rdNs=(n,nm)=>{const c=Array.isArray(n)?fk(n[1]):LANG==='en'?fk(tkOf(nm)):'';return SECT.some(q=>q[0].test(nm+' '+c));}; // makeOffers: did the drawn base name (with its code) have a news sector? newsPick then makes the same random calls for the road name that is shown instead · the exchange tail of a code and the 6-digit KO codes match no sector
 /* ---- frames: one per round (rank-up from rank 10 > star milestone > calm leverage note), plus the first-load recap ---- */
 const rdRound=()=>Math.floor(fin(stats.rounds));
 function rdFq(k){if(RD){RD.fq=rdRound();RD.fk=k||'road';}} // per session: a road frame and a partner card never share a round (partner cards may still follow each other as before)
@@ -2530,7 +2531,7 @@ function makeOffers(){
   const list=keys.map(k=>{const T=TIERS[k];let n,name,tries=0;
     let rr=0,ns;do{rr=Math.random();n=T.names[Math.floor(rr*T.names.length)];name=Array.isArray(n)?n[0]:n;tries++;}while(used.has(name)&&tries<12);used.add(name); // v3.1.0: same random calls as pick (base names decide the loop, as before)
     {const A=rdNames(k),B=T.names.length,nR=A.length-B;if(nR>0){const f=rr*B-Math.floor(rr*B),q=B/A.length;if(f>=q){const t0=Math.min(nR-1,Math.floor((f-q)/(1-q)*nR));for(let g=0;g<nR;g++){const m=A[B+(t0+g)%nR],nm=Array.isArray(m)?m[0]:m;if(!rdU.has(nm)){ns=rdNs(n,name);n=m;name=nm;break;}}}}rdU.add(name);} // road ticker packs: the rest of the same draw (f, even within the drawn base slot) picks a road name with the share it has in the grown list, so every name (base or road) shows 1 in A.length of the time and each pack is real from its own level · ns: the drawn name's news-sector flag (newsPick keeps the same random calls)
-    const code=Array.isArray(n)?(T.usd?n[1]+(LANG==='en'?'':' · NASDAQ'):n[1]+(LANG==='en'?'':'/KRW')):LANG==='en'?tkOf(name):String(Math.floor(rnd(100000,999999)));
+    const code=Array.isArray(n)?(T.usd?fk(n[1])+(LANG==='en'?'':' '):fk(n[1])+(LANG==='en'?'':'/KRW')):LANG==='en'?fk(tkOf(name)):String(Math.floor(rnd(100000,999999)));
     const sp=[1];for(let i=0;i<15;i++)sp.push(sp[i]*(1+rnd(-.04,.045)*(T.wig||1)));
     return {k,ni:rdNames(k).indexOf(n),ns,name,code,p0:roundTick(rnd(T.p[0],T.p[1]),T.usd),chg:(sp[15]-1)*100,spark:sp};
   }).sort((a,b)=>order.indexOf(a.k)-order.indexOf(b.k));
@@ -2554,7 +2555,7 @@ function beep(f,d=.06,type='square',vol=.035,to){
 }
 const sfx={
   tick:m=>beep(Math.min(1800,240*Math.pow(m,.75)),.04,'triangle',.025),
-  sell:()=>{beep(988,.07,'square',.04);setTimeout(()=>beep(1319,.18,'square',.04),70)},
+  sell:()=>{beep(1047,.05,'triangle',.06);setTimeout(()=>beep(1319,.05,'triangle',.06),50);setTimeout(()=>beep(1568,.16,'triangle',.06),100)},
   crash:()=>{beep(420,.7,'sawtooth',.06,45);beep(90,.5,'square',.05,40)},
   up:()=>[523,659,784,1047].forEach((f,i)=>setTimeout(()=>beep(f,.12,'square',.035),i*90)),
   news:()=>beep(660,.05,'sine',.04),
@@ -2666,7 +2667,7 @@ let bdCur=null,bdNext=null,bdGen=0,bdDrawn=-1,bdAr=1,bdN=0,ttl=false;
 const bdEl=$('buddy');
 function bdRound(){const id=petSel();petLoad(id);return id;}
 const sTop=()=>parseFloat(getComputedStyle(document.documentElement).paddingTop)||0;
-const ttlTxt='<span class="up">Stonks</span> Tycoon',ttlH=sm=>'<div class="grade ttl'+(sm?' sm':'')+'"><img src="'+ASSET+'brand/title_'+(LANG==='en'?'en':'ko')+'.webp" alt="Stonks Tycoon" width="720" height="'+(LANG==='en'?284:343)+'" draggable="false"></div>';
+const ttlTxt='<span class="up">Peakopia</span> ',ttlH=sm=>'<div class="grade ttl'+(sm?' sm':'')+'"><img src="'+ASSET+'brand/title_'+(LANG==='en'?'en':'ko')+'.webp" alt="Peakopia" width="720" height="'+(LANG==='en'?284:343)+'" draggable="false"></div>';
 function ttlFix(){card.querySelectorAll('.ttl img').forEach(im=>{const f=()=>{const d=im.parentNode;if(d){d.className='grade br';d.innerHTML=ttlTxt;}};im.onerror=f;if(im.complete&&!im.naturalWidth)f();});}
 function bdSet(nb){if(nb&&nb.s==null)nb.s=nb.t?1:petSt(nb.id);if(!(nb&&bdCur&&nb.k===bdCur.k&&nb.id===bdCur.id&&nb.s===bdCur.s&&!card.hidden))bdGen++;bdCur=nb;ttl=!!(nb&&nb.t);card.classList.toggle('tt',ttl);card.classList.toggle('bd',!!(nb&&!nb.t&&SET.chars&&card.querySelector('.hero')));}
 function tbFit(tb,pt){const ah=Math.round(innerWidth*16/9),g=pt&&card.querySelector('.ttgl'),gt=g?g.offsetTop-card.scrollTop:1e4,ay=g?Math.round(Math.min(0,gt+8-ah*.92)):0,f3=ah+ay,f0=ay?Math.max(f3-170,gt-24):f3-170,sp=f3-f0,st=tb.style;st.setProperty('--ah',ah+'px');st.setProperty('--ay',ay+'px');[f0,f0+sp*.35,f0+sp*.76,f3].forEach((v,i)=>st.setProperty('--f'+i,Math.round(v)+'px'));}
@@ -2822,7 +2823,7 @@ function unlock(id){
   const n=achStars(id),a=ACH.find(a=>a[0]===id);
   if(a&&(n.st>b.st||n.col>b.col)){setTimeout(()=>{toast('🏆 '+a[1]+' '+a[2]+' '+'★'.repeat(n.st)+(n.col>=0?' '+STAR_T[n.col][0]:'')+(achNoSP(id)?'':n.st===5&&b.st<5?' · SP +1':n.st===1?' · SP +1':''));sfx.up();},350);paintTop();}
 }
-const SRC=['Market Street Daily','Main Street Money','Chart News','Market24','Bull Times','StockTalk','Meme Wire'];
+const SRC=['Swing Daily','Ant Chatter','Candle Bulletin','Ticker Radio','Bull Run Tidings','Floor Talk','Coin Gossip'];
 const clock=()=>{const d=new Date();return [d.getHours(),d.getMinutes(),d.getSeconds()].map(n=>String(n).padStart(2,'0')).join(':')};
 function news(text,kind){
   const el=$('news');
@@ -2833,7 +2834,7 @@ function news(text,kind){
 }
 function newsIdle(){const el=$('news');clearTimeout(newsTimer);el.hidden=true;el.className='idle';el.innerHTML=icT('📰 Live news');}
 const talkLines=[];
-const NEUTRAL=['Foreign funds keep selling','Fed expected to hold rates','Dollar swings near highs','Battery stocks slide','Chip recovery hopes rise','Retail margin debt at record','Short interest rising','Big funds buying'];
+const NEUTRAL=['Hop Index: foreign funds keep selling','Fed expected to hold rates','Dollar swings near highs','Battery stocks slide','Chip recovery hopes rise','Retail margin debt at record','Short interest rising','Big funds buying'];
 function dynTalk(kind){
   const pc=nf(1).format((cur-1)*100),pr=fmtP(priceOf(cur)),n=Math.floor(rnd(10,3000)).toLocaleString('en-US');
   const H=[`+${pc}% for real?!`,`${pr}${isUsd()?'':''} broke through, wow`,`Just now: ${n} more shares bought`,`More upside from here?`,`Look at that order book!`,`Fills are insane`,`${pr}${isUsd()?'':''} bagholders can finally escape`,`Huge buy wall`];
@@ -3360,7 +3361,7 @@ let shareText='';
 const GAME_URL='https://melange-lab.github.io/en/';
 function shareOut(text){const full=ON_PC?text:text+'\n👉 '+GAME_URL;
   const copy=()=>(navigator.clipboard?navigator.clipboard.writeText(full):Promise.reject()).then(()=>toast(ON_PC?'Result copied. Paste it to your friends!':'Copied with link. Paste it to your friends!'),()=>ask('Copy the text below (long-press, or Ctrl/Cmd+C)',0,0,full));
-  if(navigator.share&&!ON_PC){navigator.share({title:'Stonks Tycoon',text,url:GAME_URL}).catch(e=>{if(!e||e.name!=='AbortError')copy();});return;}
+  if(navigator.share&&!ON_PC){navigator.share({title:'Peakopia',text,url:GAME_URL}).catch(e=>{if(!e||e.name!=='AbortError')copy();});return;}
   copy();}
 function bindShare(){const b=$('share');if(!b)return;b.onclick=()=>shareOut(shareText);}
 let gPrev=null;
@@ -3391,7 +3392,7 @@ function showWin(pct,xg){
   const close=!rc&&(crashT-sell.t)<.4?'<div class="sub gd">Crash '+gapS().toFixed(2)+'s away — escaped!</div>':'';
   const shook=sell.dip&&peak>=sell.m*1.5?'<div class="sub dn">That bad news was just a shakeout.</div>':'';
   const o=run.offer,pp=x=>nf(1).format((x-1)*100)+'%',win=run.re?lastAmt>0:sell.m>1;
-  shareText=`[Stonks Tycoon] ${o.name} ${sell.m>=1?'+':''}${pp(sell.m)} sold · peak accuracy ${pct.toFixed(0)}% · ${g[0]}${!rl&&streak>=5?' 🔥'+streak+(LANG==='en'?'-win streak':'×'):''}\nBalance ${won(balance)} (virtual)`;
+  shareText=`[Peakopia] ${o.name} ${sell.m>=1?'+':''}${pp(sell.m)} sold · peak accuracy ${pct.toFixed(0)}% · ${g[0]}${!rl&&streak>=5?' 🔥'+streak+(LANG==='en'?'-win streak':'×'):''}\nBalance ${won(balance)} (virtual)`;
   const tot=sell.gain+sell.bonus-(sell.tax||0)+(run.re?(run.re.gain||0)-(run.re.loss||0):0)-(plain?run.cost||0:0);
   gPrev={nw:totW()-lastAmt,xp:xp-xg};
   card.innerHTML=heroH(pkLine(1+(win&&!rl?1:0)+(sell.bossReward?2:0))+'<div class="grade br '+g[1]+'">'+g[0]+'</div>'+(g[2]!==soldT?'<div class="sub">'+g[2]+'</div>':''))+
@@ -3419,7 +3420,7 @@ function hintLine(){return run.hint&&!run.hint.crystal?'<div class="row"><span>T
 function showBust(loss,L,xg,rw,sh,ps){
   const lb=Math.floor(loss*.3),plain=run.lev<=1&&!Object.values(run.it||{}).some(Boolean)&&!rw;
   const early=peak<1.1,cry=!!(run.hint&&run.hint.crystal)&&!run.liq,pk=(peak-1)*100,sg=[200,100,50,30,20,10].find(v=>v<=pk*.7);
-  shareText=`[Stonks Tycoon] ${run.offer.name} Peak +${nf(1).format((peak-1)*100)}% but didn’t sell, lost ${Math.round(L*100)}% 😵\nBalance ${won(balance)} (virtual)`;
+  shareText=`[Peakopia] ${run.offer.name} Peak +${nf(1).format((peak-1)*100)}% but didn’t sell, lost ${Math.round(L*100)}% 😵\nBalance ${won(balance)} (virtual)`;
   gPrev=null;
   card.innerHTML=heroH(pkLine(1)+'<div class="grade br dn">'+(run.liq?'💀 Liquidated':cry?'🔮 As foretold':early?'Instant crash':'Caught!')+'</div>'+
    '<div class="sub">'+(run.liq?run.lev+'× leverage · hit liquidation':cry?'Crashed just past the crystal line':early?'Crashed right after you bought':Math.round(pk*10)>=500?'Held on too long':'Crashed early this time')+'</div>')+
@@ -3562,7 +3563,7 @@ function showBoss(){ // the result sheet of a boss fight (v3.1 sheet shell)
   if(B.newBest)I.push(kvH('⏱','New best',bossBef(B.best),{nf:1,c:'gd'}));
   (B.pets||[]).forEach(id=>I.push(kvH('🐾','New friend',CHARS[id]||id,{nf:1,c:'gd'})));
   if(B.prac)I.push(kvH('🎯','Practice · no records or rewards',null,{nf:1}));
-  shareText=kill?`[Stonks Tycoon] ⚔️ ${nm} ${RN[e.r-1]} ${'★'.repeat(h.st)} · ${bossBef(Math.max(1,Math.round(h.gap*100)))}\nBalance ${won(balance)} (virtual)`:'';
+  shareText=kill?`[Peakopia] ⚔️ ${nm} ${RN[e.r-1]} ${'★'.repeat(h.st)} · ${bossBef(Math.max(1,Math.round(h.gap*100)))}\nBalance ${won(balance)} (virtual)`:'';
   gPrev={nw:balance+invTotal()-debt-bv,xp:xp-(B.xg||0)};
   card.innerHTML=heroH((B.prac?'':pkLine(1+(kill?3:0)))+'<div class="grade br '+g[1]+'">'+g[0]+'</div><div class="sub">'+g[2]+'</div>')+
     '<div class="bigl">⚔️ Bounty</div><div class="big '+(bv?'gd':'mu')+'" data-v="'+bv+'">'+unitU(bv?sw(bv):won(0))+'</div>'+(bv?'':'<div class="sub bnz">No money at stake</div>')+
@@ -3707,7 +3708,7 @@ if(/^(localhost|127\.0\.0\.1)$/.test(location.hostname)&&/[?&]adsense\b/.test(lo
 const CG={on:false,S:null,last:0,noAds:0,done:0},onCG=/crazygames/.test(location.hostname)||/^(localhost|127\.0\.0\.1)$/.test(location.hostname)&&/[?&]cg\b/.test(location.search);
 const ON_PC=location.protocol==='app:';
 if(ON_PC){CFG.adClient='';CFG.donateUrl='';CFG.iap=false;}
-const BUILD='v3.1.6 · b261118a · '+LANG+'-'+(ON_PC?'pc':onCG?'cg':/(^|\.)itch\.(io|zone)$|hwcdn\.net$/.test(location.hostname)||/itch\.io/.test(document.referrer)?'itch':'web');
+const BUILD='v3.1.7 · b261118b · '+LANG+'-'+(ON_PC?'pc':onCG?'cg':/(^|\.)itch\.(io|zone)$|hwcdn\.net$/.test(location.hostname)||/itch\.io/.test(document.referrer)?'itch':'web');
 if(onCG){const sc=document.createElement('script');sc.src='https://sdk.crazygames.com/crazygames-sdk-v3.js';
   sc.onload=async()=>{try{const S=window.CrazyGames.SDK;await S.init();if(S.environment!=='disabled'){CG.S=S;CG.on=true;cgLoad();try{const ms=v=>{v=v&&typeof v==='object'?v:S.game.settings;cgMute=!!(v&&v.muteAudio);document.body.classList.toggle('noChat',!!(v&&v.disableChat));if(touched||cgMute)bgm.sync();};ms();S.game.addSettingsChangeListener(ms);}catch(e){}if(state==='holding'||state==='ghost')cgPlay(true);}}catch(e){}CG.done=1;};sc.onerror=()=>{CG.done=1;};document.head.appendChild(sc);}
 let cgG=false;
@@ -4954,7 +4955,7 @@ const PREMIUM=[
   {id:'th_paper',t:'theme',e:'📰',n:'Paper',d:'Light paper background · bold, crisp colors',pr:PRC('₩1,500','$0.99'),
     pal:{line:'rgba(70,55,30,.2)',muted:'#4f4636',ma:'#8a5a00',gold:'#a37000',rumor:'#6a3fc4',panel:'#f4eddd',volA:.38,up:LANG==='en'?'#0b8a5a':'#d81f2d',down:LANG==='en'?'#d21f2c':'#1f5fd6'}},
   {id:'rp_cyber',t:'room',e:'🌆',n:'Cyberpunk Room',d:'Neon wallpaper · grid floor · arcade cabinet · hologram planet',pr:PRC('₩2,500','$1.99'),items:['pw_cyber','pf_grid','pd_arcade','pd_holo']},
-  {id:'rp_wall',t:'room',e:'🐂',n:'Wall Street Room',d:'Mahogany walls · black marble floor · bull statue · opening bell',pr:PRC('₩2,500','$1.99'),items:['pw_maho','pf_onyx','pd_bull','pd_bell']},
+  {id:'rp_wall',t:'room',e:'🐂',n:'Trader’s Room',d:'Mahogany walls · black marble floor · bull statue · opening bell',pr:PRC('₩2,500','$1.99'),items:['pw_maho','pf_onyx','pd_bull','pd_bell']},
   {id:'t_dia',t:'title',e:'💠',n:'Diamond Holder',d:'Title + sky-blue profile frame',pr:PRC('₩1,200','$0.99')},
   {id:'t_moon',t:'title',e:'🚀',n:'To the Moon',d:'Title + purple profile frame',pr:PRC('₩1,200','$0.99')},
   {id:'t_whale',t:'title',e:'🐋',n:'Mega Whale',d:'Title + gold profile frame',pr:PRC('₩1,200','$0.99')}
@@ -4963,7 +4964,7 @@ if(PREM_ON)DECOR.push(
   {id:'pw_cyber',t:'wall',e:'🌆',n:'Cyber Neon Wallpaper',c:['#1d0b3a','#2c1157'],prem:'rp_cyber'},{id:'pf_grid',t:'floor',e:'🟪',n:'Neon Grid Floor',c:['#160a33','#2a1563'],prem:'rp_cyber'},
   {id:'pd_arcade',t:'furn',e:'🕹️',n:'Arcade Cabinet',u:.95,v:.08,s:15,prem:'rp_cyber'},{id:'pd_holo',t:'furn',e:'🪐',n:'Hologram Planet',u:.88,v:.82,s:12,prem:'rp_cyber'},
   {id:'pw_maho',t:'wall',e:'🟤',n:'Mahogany Wallpaper',c:['#4a2a17','#5c3520'],prem:'rp_wall'},{id:'pf_onyx',t:'floor',e:'⬛',n:'Black Marble Floor',c:['#1c1c22','#2e2e36'],prem:'rp_wall'},
-  {id:'pd_bull',t:'furn',e:'🐂',n:'Charging Bull Statue',u:.24,v:.68,s:16,prem:'rp_wall'},{id:'pd_bell',t:'furn',e:'🔔',n:'Opening Bell',u:.86,v:.4,s:11,prem:'rp_wall'});
+  {id:'pd_bull',t:'furn',e:'🐂',n:'Golden Bull Statue',u:.24,v:.68,s:16,prem:'rp_wall'},{id:'pd_bell',t:'furn',e:'🔔',n:'Opening Bell',u:.86,v:.4,s:11,prem:'rp_wall'});
 
 const PAY_NONE={id:'none',available:()=>false,buy:()=>Promise.resolve(false)};
 
@@ -5119,7 +5120,7 @@ function chalFinish(quiet){
   lgFix();if(inWk(d)){league.me[d]=sc;store.set('shg_league',league);}
   const full=sc<=0?0:Math.round(betCap(1)*Math.min(3,sc/100)*(1+gV('jet'))/1e4)*1e4,rw=!dup?full:same?Math.max(0,full-(+pd.rw||0)):0,tot=same?(+pd.rw||0)+rw:rw;balance+=rw;const cx=!dup?gainXp(40):same?Math.round(40*xpMul()):0;if(!dup||same)store.set('shg_chalPaid',{d,id,rw:tot,q:quiet?1:0});
   if(quiet){setTimeout(()=>toast('🏆 Challenge Complete · '+ptsL(sc)+(tot?' · '+won(tot):'')),1500);return;}
-  shareText='🏆 Stonks Tycoon Daily Challenge '+String(d).slice(4,6)+'/'+String(d).slice(6)+' · '+ptsL(sc)+'! Enter this code to compete 👉 SHG-'+d+'-'+sc+'-'+nick;
+  shareText='🏆 Peakopia Daily Challenge '+String(d).slice(4,6)+'/'+String(d).slice(6)+' · '+ptsL(sc)+'! Enter this code to compete 👉 SHG-'+d+'-'+sc+'-'+nick;
   card.innerHTML=heroH('<div class="grade gd">🏆 Challenge Complete</div>')+'<div class="big sm '+(sc>=0?'up':'dn')+'">'+ptsL(sc)+'</div><div class="sub">'+'Verdict: '+chalLast(sc)+'</div>'+(tot?'<div class="sub up">Reward '+won(tot)+(cx?' · XP +'+cx:'')+'</div>':cx?'<div class="sub">XP +'+cx+'</div>':'')+'<div class="sub">Share your result code with friends to compete in the Friend League.</div>'+actsH('',1);bdNext={k:sc>=0?'happy':'shock',id:run&&run.bd||petSel()};showCard();bindShare();
 }
 const chalLast=sc=>sc>=300?'Legendary Scalper':sc>=150?'Pro':sc>=50?'Nice Save':sc>=0?'Broke Even':'Bagholder Party';
@@ -5133,7 +5134,7 @@ function chalHtml(){lgFix();const today=dayNum(),played=store.get('shg_chalDay',
    (rows.length>1?'<details class="mmore"><summary>Full ranking</summary><div class="pan">'+rows.map(lr).join('')+'</div></details>':'')+'<button class="lnk2" type="button" id="nickSet">✏️ Name '+esc(nick)+'</button></section>';}
 function chalBind(pg){
   const g=pg.querySelector('#chalGo');if(g)g.onclick=()=>{if(chal){if(!chalOk())return;if(state==='over'&&debt<=debtLimit())resetView();tab('trade');setBtn();}else chalStart();};
-  const sh=pg.querySelector('#chalShare');if(sh){const d=dayNum();sh.onclick=()=>{const sc=league.me[d];if(sc===undefined){rerender('mission');return;}shareOut('🏆 Stonks Tycoon Daily Challenge '+ptsL(sc)+'! Enter this code to compete 👉 SHG-'+d+'-'+sc+'-'+nick);};}
+  const sh=pg.querySelector('#chalShare');if(sh){const d=dayNum();sh.onclick=()=>{const sc=league.me[d];if(sc===undefined){rerender('mission');return;}shareOut('🏆 Peakopia Daily Challenge '+ptsL(sc)+'! Enter this code to compete 👉 SHG-'+d+'-'+sc+'-'+nick);};}
   const a=pg.querySelector('#lgAdd');if(a)a.onclick=()=>ask('Paste your friend’s code (starts with SHG-)','OK',v=>{const t=v||'';setTimeout(()=>{if(tabCheck())return;const m=t.match(/SHG-(\d{8})-(-?\d{1,6})-([^\s<>&"'`\\]{1,20})/);
     if(!m||nickBad(m[3])){if(t)toast('Couldn’t find a code');return;}lgFix();const [,d,sc,n]=m;if(!lgOk(+sc)){toast('Couldn’t find a code');return;}if(n===nick){toast('That’s your own code');return;}if(!inWk(d)||+d>dayMax()){toast('Not a code from this week');return;}if(!league.fr[n])league.fr[n]=Object.create(null);league.fr[n][+d]=+sc;store.set('shg_league',league);toast('👥 '+n+' added to your league!');if(curTab==='mission')rerender('mission');},300);},'');
   const nk=pg.querySelector('#nickSet');if(nk)nk.onclick=()=>ask('Nickname (2–10 chars, no spaces)'+'\n'+'Don’t use your real name or contact info; it appears in score codes','OK',r=>{const v=nickClean(r);if(v.length>=2&&v.length<=10&&!nickBad(v)){nick=v;store.set('shg_nick',nick);rerender('mission');}else toast('Nickname must be 2–10 characters, no spaces');},nick);
@@ -5204,10 +5205,10 @@ const COL=[
   {id:'pinkd',cat:'lux',e:'💎',n:'Pink Diamond',p:3e10},{id:'egg',cat:'lux',e:'🥚',n:'Golden Jeweled Egg',p:2e11},{id:'crown',cat:'lux',e:'👑',n:'Royal Crown',p:2e12},
   {id:'lambo',cat:'ride',e:'🏎️',n:'Hypercar Collection',p:2e9},{id:'heli',cat:'ride',e:'🚁',n:'Private Helicopter',p:2e10},{id:'myacht',cat:'ride',e:'🛳️',n:'Mega Yacht',p:3e11},
   {id:'b747',cat:'ride',e:'✈️',n:'Private Jumbo Jet',p:2e12},{id:'sub',cat:'ride',e:'🤿',n:'Private Submarine',p:2e13},{id:'train',cat:'ride',e:'🚄',n:'Private Bullet Train',p:1e14},
-  {id:'pent',cat:'estate',e:'🏙️',n:'Sky Penthouse',p:1e11},{id:'tower',cat:'estate',e:'🏢',n:'A City Block of Towers',p:3e12},{id:'ny',cat:'estate',e:'🗽',n:'Manhattan Skyscraper',p:5e13},
+  {id:'pent',cat:'estate',e:'🏙️',n:'Sky Penthouse',p:1e11},{id:'tower',cat:'estate',e:'🏢',n:'A City Block of Towers',p:3e12},{id:'ny',cat:'estate',e:'🗽',n:'Cloudtop Skyscraper',p:5e13},
   {id:'isl',cat:'estate',e:'🏝️',n:'Private Island',p:1e15},{id:'resort',cat:'estate',e:'🏖️',n:'Global Resort Chain',p:1e16},{id:'city',cat:'estate',e:'🌆',n:'A Whole New City',p:1e17},
   {id:'team',cat:'sport',e:'⚾',n:'Pro Baseball Team',p:5e12},{id:'soccer',cat:'sport',e:'⚽',n:'European Soccer Club',p:5e13},{id:'nba',cat:'sport',e:'🏀',n:'Legendary Basketball Team',p:2e14},
-  {id:'f1',cat:'sport',e:'🏁',n:'Grand Prix Racing Team',p:5e14},{id:'olymp',cat:'sport',e:'🏅',n:'Global Games Rights',p:5e15},{id:'wcup',cat:'sport',e:'🏆',n:'World Final Trophy',p:3e16},
+  {id:'f1',cat:'sport',e:'🏁',n:'Zoom-Zoom Racing Team',p:5e14},{id:'olymp',cat:'sport',e:'🏅',n:'Starlight Games Rights',p:5e15},{id:'wcup',cat:'sport',e:'🏆',n:'GoalGoal Cup Trophy',p:3e16},
   {id:'paint',cat:'art',e:'🖼️',n:'Impressionist Masterpiece',p:5e11},{id:'dino',cat:'art',e:'🦖',n:'Full Dinosaur Fossil',p:5e12},{id:'statue',cat:'art',e:'🗿',n:'Ancient Statue',p:5e13},
   {id:'ship',cat:'art',e:'🏴‍☠️',n:'Sunken Treasure Ship',p:5e14},{id:'pyr',cat:'art',e:'🔺',n:'Ancient Pyramid Rights',p:1e16},{id:'atl',cat:'art',e:'🔱',n:'Map of Atlantis',p:1e18,fic:1},
   {id:'air',cat:'corp',e:'🛫',n:'Airline',p:8e13},{id:'chip',cat:'corp',e:'💾',n:'Chip Maker',p:5e14},{id:'bigt',cat:'corp',e:'📱',n:'Big Tech Company',p:5e15},
@@ -5464,7 +5465,7 @@ function pageSet(){
    '<h3>Info</h3><p class="lead">All money here is virtual, and this game is not investment advice.</p><h3>Privacy</h3><p class="lead">'+(ON_PC?'No sign-up. Your progress is stored only on this PC and is never sent to a server.':'No sign-up. Your progress is stored only in this browser and is never sent to a server. Ads load from Google AdSense (the CrazyGames SDK on CrazyGames), and the ad provider may use cookies.')+'</p>'+(onCG||ON_PC?'':'<button class="setbtn ghost" type="button" id="cmpBtn" style="width:100%" hidden>🛡️ Privacy & cookie settings</button>')+
    (ON_PC?'<h3>Game</h3><button class="setbtn ghost" type="button" id="pcQuit" style="width:100%">🚪 Quit game</button><p class="lead" style="margin-top:8px">Press Esc to open the menu</p>':'')+'<h3>Data</h3><button class="setbtn danger" type="button" id="wipe" style="width:100%">Reset All Progress</button><p class="lead" style="margin-top:8px">'+(ON_PC?'Progress is saved only on this PC. Resetting erases ranks, skills and achievements.':'Progress is saved only in this device’s browser. Resetting erases ranks, skills and achievements.')+(onCG?' Your CrazyGames cloud save is cleared too.':'')+(PREM_ON?' 💎 Purchased premium items are kept.':'')+'</p>'+
    (CFG.donateUrl?'<h3>Support the Dev</h3><a class="setbtn ghost" style="display:block;text-align:center;text-decoration:none;width:100%" href="'+CFG.donateUrl+'" target="_blank" rel="noopener">☕ Buy Me a Coffee</a><p class="lead" style="margin-top:8px">Tips are pure support and give no in-game rewards.</p>':'')+'<h3>Invite Friends</h3><button class="setbtn" type="button" id="invite" style="width:100%">📤 Share Game with Friends</button>'+
-   '<p class="lead" style="margin-top:10px">Stonks Tycoon '+BUILD+' · A virtual-money game, unrelated to real investing or cash. No real money is used.</p>';
+   '<p class="lead" style="margin-top:10px">Peakopia '+BUILD+' · A virtual-money game, unrelated to real investing or cash. No real money is used.</p>';
 }
 function ivFit(){document.querySelectorAll('#page .ivr').forEach(r=>{const s=r.querySelector('.ivs'),x=r.querySelector('.ivx');if(!s||!x)return;if(x.parentNode!==r)r.insertBefore(x,s.nextSibling);const cw=s.clientWidth;if(!cw)return;
   s.style.width=x.style.width='max-content';const a=s.offsetWidth,b=x.offsetWidth;s.style.width=x.style.width='';if(a+b+16<=cw)s.appendChild(x);});}
@@ -5492,7 +5493,7 @@ function bindPage(name){
   pg.querySelectorAll('[data-col]').forEach(b=>b.onclick=()=>{const c=COL.find(x=>x.id===b.dataset.col);if(col.includes(c.id)||balance<c.p)return;if(debt>0){toast('🏦 Pay off your debt before buying collectibles');return;}balance-=c.p;col.push(c.id);store.set('shg_col',col);sfx.up();burst(innerWidth/2,innerHeight*.4,80);stamp(c.e+' '+c.n+' acquired!');toast('🏆 Collection '+col.length+'/'+COL.length+' · SP +'+(c.fic?2:1));roomJoy();delete colPk[c.cat];if(catDone(c.cat)){const K=CATS.find(k=>k.id===c.cat);setTimeout(()=>{setDone(K);if(curTab==='account'&&!$('page').hidden)rerender('account');},900);}paintTop();paintPickers();rerender('invest');});
   pg.querySelectorAll('[data-cpk]').forEach(b=>b.onclick=()=>{const c=COL.find(x=>x.id===b.dataset.cpk);if(!c||col.includes(c.id))return;colPk[c.cat]=c.id;rerender('account');});
   pg.querySelectorAll('[data-mgo]').forEach(b=>b.onclick=()=>misGo(b.dataset.mgo));
-  const iv=$('invite');if(iv)iv.onclick=()=>shareOut('📈 Stonks Tycoon — sell before the crash to win! My account: '+won(balance)+' (virtual)'+'. Can you beat me?');
+  const iv=$('invite');if(iv)iv.onclick=()=>shareOut('📈 Peakopia — sell before the crash to win! My account: '+won(balance)+' (virtual)'+'. Can you beat me?');
   {const lg=$('ladGo');if(lg)lg.onclick=()=>ladSheet();}
   const pz=$('prestige');if(pz)pz.onclick=()=>{if(netW()<PRES_NEED())return;ask(KE('Retire and start a new run? Round XP ','Retire and start a new run?\nMoney, investments, consumables and debt reset (gear, level, skills and the asset ladder stay).\nRound XP ')+xpMS(presXpM())+' → '+xpMS(Math.min(3,Math.pow(1.1,pres+1))),'🔁 Retire',()=>{presPend=1;setTimeout(()=>{presPend=0;if(state==='holding'||state==='ghost'){toast('Finish this round, then retire again');return;}if(tabCheck()||netW()<PRES_NEED())return;
     pres++;store.set('shg_pres',pres);lowFlag=false;stats.low=0;stats.curRun=0;store.set('shg_stats',stats);streak=0;app.classList.remove('fever');$('fever').hidden=true;balance=START;debt=0;rdebt=0;credit=5;levSel=1;allin=false;inv={};armed={};invest={};delete store.keep.shg_inv2;lastHome=0;overLoss=0;

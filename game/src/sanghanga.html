@@ -1905,24 +1905,25 @@ const NF={},nf=d=>NF[d]||(NF[d]=new Intl.NumberFormat('en-US',{minimumFractionDi
 const fmtP=(p,ref=p)=>{if(isUsd())return '$'+nf(2).format(p);if(LANG!=='en')return Math.round(p).toLocaleString('ko-KR');return '$'+nf(ref>=500000?0:2).format(p/1000);}; // en: 소수 2자리까지만 (주인 규칙 v3.0.2: 모든 숫자 소수 둘째 자리까지 · 호가창은 1센트 단위), 100달러가 넘게 오르면 0자리, ref=기준 가격(호가창·등락폭을 현재가 자릿수에 맞춤)
 
 const tkOf=s=>{const w=String(s).replace(/\(.*?\)/g,'').match(/[A-Za-z0-9]+/g)||['STK'];return (w.length<2?w[0].slice(0,4):w[0].length<3?(w[0]+w[1]).slice(0,4):w[0].slice(0,3)+w[1][0]).toUpperCase();}; // 영어판 종목 코드: 이름에서 3~4글자 티커 (숫자 6자리는 한국 거래소 코드로 보여서)
+const fk=t=>/\d/.test(t=String(t))?t:t.slice(0,3)+(1+[...t].reduce((a,c)=>a+c.charCodeAt(0),0)%9); // v317: 화면에 보이는 가상 종목 코드에 숫자 하나를 섞음 (실제 상장 코드와 겹치지 않게, 같은 이름이면 항상 같은 코드)
 const crS=c=>LANG==='en'?['AAA','AA','A','BBB','BB','B','CCC','CC','C','D'][Math.min(10,Math.max(1,c|0))-1]:c+'등급'; // 영어판은 높을수록 좋은 글자 등급으로 보여 주기만 (1등급=AAA … 10등급=D, 계산은 그대로)
 const TIERS={
   blue:{e:'🏛️',label:'우량주',rate:.7,scale:.6,loss:.45,instant:.01,limit:true,p:[30000,180000],lv:0,unit:40,news:.6,amp:.7,wig:.6,
-    names:['한빛전자','대한중공업','삼진화학','국민통신','동방제철','미래금융지주','태평양건설','한국그리드']},
+    names:['꾸준전자','우직중공업','뭉게화학','소곤통신','무쇠제철','알뜰금융지주','벽돌건설','반딧불그리드']},
   theme:{e:'🔥',label:'테마주',rate:1,scale:1,loss:.7,instant:.04,limit:true,p:[1500,25000],lv:0,unit:180,
-    names:['초전도랩','대성로보틱스','K배터리텍','우주항공테크','AI반도체솔루션','양자컴퓨팅','비만치료제랩','원전에너지']},
+    names:['초전도랩','깡통로보틱스','K배터리텍','우주항공테크','AI반도체솔루션','양자컴퓨팅','비만치료제랩','원전에너지']},
   meme:{e:'🐸',label:'코인',rate:1.5,scale:1.8,loss:.92,instant:.1,limit:false,p:[200,3000],lv:0,unit:900,
-    names:[['도지킹','DOGK'],['개구리코인','FROGK'],['김치토큰','KIMCH'],['문샷','MOON'],['냥냥코인',LANG==='en'?'MEOW':'NYANG'],['가즈아',LANG==='en'?'GOGO':'GAZUA'],['로켓코인','RCKT']]},
+    names:[['멍멍킹','WOF1'],['개구리코인','FROGK'],['김치토큰','KIMCH'],['문샷','MOON'],['냥냥코인',LANG==='en'?'MEOW':'NYANG'],['가즈아',LANG==='en'?'GOGO':'GAZUA'],['로켓코인','RCKT']]},
   bio:{e:'🧬',label:'바이오',rate:.8,scale:1.4,loss:.8,instant:.05,limit:true,p:[3000,60000],lv:1,unit:120,news:2.2,amp:1.8,wig:1.2,
-    desc:'임상 뉴스 하나에 급등락',names:['한빛제약','셀메디','진바이오텍','메디포스','바이오넥스트','젠큐어','뉴로셀']},
+    desc:'임상 뉴스 하나에 급등락',names:['하품제약','말랑셀','콩나물바이오','반창고메디','방울바이오','뚝딱제약','번쩍뉴로']},
   penny:{e:'🟡',label:'동전주',rate:1.2,scale:1.2,loss:.75,instant:.06,limit:true,p:[300,990],lv:2,unit:3000,news:1.4,amp:1.4,wig:2.4,
-    desc:'호가 1원, 출렁임 최강',names:['대박전자','국일테크','삼영물산','미래씨앤씨','동아에너지','한성피앤씨']},
+    desc:'호가 1원, 출렁임 최강',names:['왕창전자','깨알테크','한줌물산','부릉씨앤씨','꼬물에너지','뽀글피앤씨']},
   ipo:{e:'🎉',label:'공모주',rate:1.7,scale:2,loss:.85,instant:.14,limit:true,p:[10000,50000],lv:4,unit:300,wig:1.4,
-    desc:'상장 첫날, 따상 아니면 폭망',names:['(신규)로봇에이아이','(신규)스페이스원','(신규)퀀텀랩스','(신규)그린수소','(신규)K뷰티랩']},
+    desc:'상장 첫날, 따상 아니면 폭망',names:['(신규)로봇에이아이','(신규)별똥스페이스','(신규)말캉퀀텀','(신규)그린수소','(신규)K뷰티랩']},
   us:{e:LANG==='en'?'🌐':'🇺🇸',label:'미국주식',rate:.9,scale:1.1,loss:.6,instant:.02,limit:false,usd:true,p:[20,400],lv:6,unit:25,news:.8,amp:.8,wig:.8,
-    desc:'달러 표시, 상한가 없음',names:[['노바 다이내믹스','NOVA'],['아틀라스 칩스','ATLC'],['블루오션 EV','BOEV'],['퀀텀 클라우드','QNTC'],['메가 소셜','MGSO']]},
+    desc:'달러 표시, 상한가 없음',names:[['마시멜로 다이내믹스','MSH1'],['쿠키 칩스','CKC2'],['젤리빈 EV','JBE3'],['솜사탕 클라우드','CCC4'],['수다 소셜','CHT5']]},
   pump:{e:'🎭',label:'작전주',rate:1.1,scale:1.6,loss:.92,instant:.03,limit:true,p:[1000,8000],lv:8,unit:600,news:1.6,amp:1.5,warn:.35,
-    desc:'세력의 펌프, 경고는 대부분 진짜',names:['신화테크','코리아스타','에이스홀딩스','세종인더','태양바이오']},
+    desc:'세력의 펌프, 경고는 대부분 진짜',names:['뻥튀기테크','깜빡스타','허세홀딩스','거품인더','무지개바이오']},
   boss:{e:'👹',label:'보스전',rate:1.05,scale:1.4,loss:.7,instant:.02,limit:false,p:[5000,50000],lv:99,hidden:true,unit:500,news:1.4,amp:1.3,names:['보스']}
 };
 const BOSSES=[{e:'👹',n:'공매도 세력'},{e:'🌑',n:'검은 월요일'},{e:'🏦',n:'금리 인상'},{e:'🎭',n:'작전 세력 총수'},{e:'⛔',n:'서킷브레이커'},{e:'🦢',n:'블랙스완'},{e:'🐻',n:'대왕 곰'},{e:'🌪️',n:'금융 위기'}];
@@ -2038,7 +2039,7 @@ const ITEMS={
   insider:{short:'찌라시',name:'🔍 찌라시',cost:.05,desc:'폭락가 힌트(70%) · 진짜면 1초 여유',lv:2},
   slow:{short:'슬로',name:'⏱️ 슬로모션',cost:.06,desc:'차트 속도 0.6배',lv:3}
 };
-const RANKS=[[0,'주린이'],[150,'개미'],[400,'단타충'],[800,'스윙러'],[1300,'슈퍼개미'],[2000,'전업투자자'],[3000,'차트 장인'],[4300,'큰손'],[6000,'펀드매니저'],[8200,'세력'],[11000,'헤지펀드'],[14500,'월가의 늑대'],[19000,'투자의 신'],[25000,'여의도 전설'],[33000,'시장 그 자체'],[37760,'우주 개미'],[51060,'달나라 단타충'],[66360,'화성 스윙러'],[83660,'토성 큰손'],[102960,'위성 펀드매니저'],[135660,'외계 세력'],[172860,'은하 헤지펀드'],[229460,'블랙홀의 늑대'],[311460,'별들의 신'],[405960,'우주 그 자체']]; // v3.1.0: 2부 「시장 너머」 10계급 (Lv.60~200) · 0~14는 그대로
+const RANKS=[[0,'주린이'],[150,'개미'],[400,'단타충'],[800,'스윙러'],[1300,'슈퍼개미'],[2000,'전업투자자'],[3000,'차트 장인'],[4300,'큰손'],[6000,'펀드매니저'],[8200,'세력'],[11000,'헤지펀드'],[14500,'차트골목 늑대'],[19000,'투자의 신'],[25000,'증권골목 전설'],[33000,'시장 그 자체'],[37760,'우주 개미'],[51060,'달나라 단타충'],[66360,'화성 스윙러'],[83660,'토성 큰손'],[102960,'위성 펀드매니저'],[135660,'외계 세력'],[172860,'은하 헤지펀드'],[229460,'블랙홀의 늑대'],[311460,'별들의 신'],[405960,'우주 그 자체']]; // v3.1.0: 2부 「시장 너머」 10계급 (Lv.60~200) · 0~14는 그대로
 const ACH=[
   ['first','📈','첫 익절','처음으로 수익 실현'], // 돈자루 대신 상승 차트 (현금처럼 보이는 보상 그림 정리)
   ['god','🙏','신의 손','고점 근접도 95% 이상'],
@@ -2125,14 +2126,14 @@ const BEAR=['속보: 대표이사 횡령설','공매도 리포트 발표','거�
 // 섹터별 뉴스: 종목 이름 키워드로 매칭 [정규식, 호재, 악재]
 const SECT=[
  [/반도체|칩스|전자/,['하이퍼칩 공급 계약 체결','HBM 양산 성공','반도체 수출 사상 최대'],['반도체 재고 급증','미국 수출 규제 대상 지정','메모리 가격 급락']],
- [/우주|스페이스|항공/,['위성 발사 성공','NASA 협력 계약','방산 수출 계약 체결'],['로켓 발사 실패','위성 교신 두절','발사 일정 무기한 연기']],
+ [/우주|스페이스|항공/,['위성 발사 성공','은하우주국 협력 계약','방산 수출 계약 체결'],['로켓 발사 실패','위성 교신 두절','발사 일정 무기한 연기']],
  [/로봇|로보/,['휴머노이드 시제품 공개','대기업 로봇 공급 계약','스마트팩토리 수주'],['시연 중 오작동 영상 확산','핵심 부품 수급 차질','기술 유출 의혹']],
  [/배터리|EV/,['전고체 배터리 개발 성공','완성차 대규모 수주','전기차 판매 급증'],['배터리 화재 리콜','전기차 수요 둔화','보조금 축소 발표']],
  [/초전도|양자|퀀텀/,['상온 초전도 재현 성공','양자컴 큐비트 신기록','학회 논문 게재 확정'],['재현 실험 실패','검증위원회 "근거 없음"','논문 철회 소식']],
  [/AI|클라우드|소셜/,['AI 서비스 이용자 폭증','빅테크 인수설','데이터센터 대형 계약'],['서비스 대규모 장애','개인정보 유출 사고','이용자 이탈 가속']],
  [/원전|수소|에너지|그리드/,['해외 원전 수주','정부 에너지 정책 수혜','전력 인프라 대형 계약'],['원전 정책 백지화설','수주 협상 결렬','발전소 가동 중단']],
- [/비만/,['비만약 임상 성공','글로벌 제약사 기술수출','FDA 승인 기대감'],['임상 3상 실패','부작용 보고 확산','기술수출 계약 해지']],
- [/제약|메디|바이오|셀|젠큐어|진바이|뉴로/,['임상 2상 성공','FDA 승인 기대감','글로벌 기술수출 계약'],['임상 3상 실패','FDA 보완 요구','임상 중단 권고']],
+ [/비만/,['비만약 임상 성공','글로벌 제약사 기술수출','약품청 승인 기대감'],['임상 3상 실패','부작용 보고 확산','기술수출 계약 해지']],
+ [/제약|메디|바이오|셀|뉴로/,['임상 2상 성공','약품청 승인 기대감','글로벌 기술수출 계약'],['임상 3상 실패','약품청 보완 요구','임상 중단 권고']],
  [/뷰티/,['중국 수출 급증','K뷰티 해외 매장 완판','글로벌 화장품사 인수설'],['중국 수출길 막혀','제품 성분 논란','면세점 매출 급감']],
  [/중공업|조선|제철|건설|물산/,['해외 플랜트 수주','조선 대형 수주','인프라 투자 수혜'],['현장 사고 발생','원자재 가격 급등','PF 부실 우려']],
  [/화학/,['신소재 양산 돌입','유가 하락 수혜','증설 투자 발표'],['공장 화재 발생','업황 악화 경고','환경 규제 강화']],
@@ -2451,7 +2452,7 @@ function rdGoal(){const n=rdNext();if(!n)return null;const pr=rdAll().filter(r=>
   return {k:'road',ic:n,t:b+(fx?' '+fx:''),b,fx,a:rk?[b]:rdShort(b),cur:n.L<=lvlOf(xp).L,lv:n.L,p:Math.max(0,Math.min(.99,p)),x:n.x,x0};} // b: the name part that may shrink · fx: the rank numeral (Ⅰ·Ⅱ·Ⅲ) + 승급 that always shows · a: shorter forms of the name for a narrow pill · cur: the goal lands inside the current level (the pill then shows no level chip)
 const rdShort=s=>{const a=[s];let t=s.replace(/ \(.*$/,'');if(t&&t!==s)a.push(t); // shorter forms of a row name for the pill: without the (ticker list / note), then without the last ' · ' part or a note title
   const u=t.includes(' · ')?t.replace(/ · [^·]*$/,''):/#\d/.test(t)?t.replace(/ [「“][^」”]*[」”]$/,''):t;if(u&&u!==t)a.push(u);return a;};
-const rdNs=(n,nm)=>{const c=Array.isArray(n)?n[1]:LANG==='en'?tkOf(nm):'';return SECT.some(q=>q[0].test(nm+' '+c));}; // makeOffers: did the drawn base name (with its code) have a news sector? newsPick then makes the same random calls for the road name that is shown instead · the exchange tail of a code and the 6-digit KO codes match no sector
+const rdNs=(n,nm)=>{const c=Array.isArray(n)?fk(n[1]):LANG==='en'?fk(tkOf(nm)):'';return SECT.some(q=>q[0].test(nm+' '+c));}; // makeOffers: did the drawn base name (with its code) have a news sector? newsPick then makes the same random calls for the road name that is shown instead · the exchange tail of a code and the 6-digit KO codes match no sector
 /* ---- frames: one per round (rank-up from rank 10 > star milestone > calm leverage note), plus the first-load recap ---- */
 const rdRound=()=>Math.floor(fin(stats.rounds));
 function rdFq(k){if(RD){RD.fq=rdRound();RD.fk=k||'road';}} // per session: a road frame and a partner card never share a round (partner cards may still follow each other as before)
@@ -2517,7 +2518,7 @@ function makeOffers(){ // 내가 고른 종류 + 해금된 종류 중 랜덤 2�
   const list=keys.map(k=>{const T=TIERS[k];let n,name,tries=0;
     let rr=0,ns;do{rr=Math.random();n=T.names[Math.floor(rr*T.names.length)];name=Array.isArray(n)?n[0]:n;tries++;}while(used.has(name)&&tries<12);used.add(name); // v3.1.0: same random calls as pick (base names decide the loop, as before)
     {const A=rdNames(k),B=T.names.length,nR=A.length-B;if(nR>0){const f=rr*B-Math.floor(rr*B),q=B/A.length;if(f>=q){const t0=Math.min(nR-1,Math.floor((f-q)/(1-q)*nR));for(let g=0;g<nR;g++){const m=A[B+(t0+g)%nR],nm=Array.isArray(m)?m[0]:m;if(!rdU.has(nm)){ns=rdNs(n,name);n=m;name=nm;break;}}}}rdU.add(name);} // road ticker packs: the rest of the same draw (f, even within the drawn base slot) picks a road name with the share it has in the grown list, so every name (base or road) shows 1 in A.length of the time and each pack is real from its own level · ns: the drawn name's news-sector flag (newsPick keeps the same random calls)
-    const code=Array.isArray(n)?(T.usd?n[1]+(LANG==='en'?'':' · NASDAQ'):n[1]+(LANG==='en'?'':'/KRW')):LANG==='en'?tkOf(name):String(Math.floor(rnd(100000,999999)));
+    const code=Array.isArray(n)?(T.usd?fk(n[1])+(LANG==='en'?'':' · 해외장'):fk(n[1])+(LANG==='en'?'':'/KRW')):LANG==='en'?fk(tkOf(name)):String(Math.floor(rnd(100000,999999)));
     const sp=[1];for(let i=0;i<15;i++)sp.push(sp[i]*(1+rnd(-.04,.045)*(T.wig||1)));
     return {k,ni:rdNames(k).indexOf(n),ns,name,code,p0:roundTick(rnd(T.p[0],T.p[1]),T.usd),chg:(sp[15]-1)*100,spark:sp};
   }).sort((a,b)=>order.indexOf(a.k)-order.indexOf(b.k));
@@ -2541,7 +2542,7 @@ function beep(f,d=.06,type='square',vol=.035,to){
 }
 const sfx={
   tick:m=>beep(Math.min(1800,240*Math.pow(m,.75)),.04,'triangle',.025),
-  sell:()=>{beep(988,.07,'square',.04);setTimeout(()=>beep(1319,.18,'square',.04),70)},
+  sell:()=>{beep(1047,.05,'triangle',.06);setTimeout(()=>beep(1319,.05,'triangle',.06),50);setTimeout(()=>beep(1568,.16,'triangle',.06),100)}, // v317: 도-미-솔 (예전 시-미 네모파는 마리오 코인 소리와 같았음)
   crash:()=>{beep(420,.7,'sawtooth',.06,45);beep(90,.5,'square',.05,40)},
   up:()=>[523,659,784,1047].forEach((f,i)=>setTimeout(()=>beep(f,.12,'square',.035),i*90)),
   news:()=>beep(660,.05,'sine',.04),
@@ -2812,7 +2813,7 @@ function unlock(id){
   const n=achStars(id),a=ACH.find(a=>a[0]===id);
   if(a&&(n.st>b.st||n.col>b.col)){setTimeout(()=>{toast('🏆 '+a[1]+' '+a[2]+' '+'★'.repeat(n.st)+(n.col>=0?' '+STAR_T[n.col][0]:'')+(achNoSP(id)?'':n.st===5&&b.st<5?' · SP +1':n.st===1?' · SP +1':''));sfx.up();},350);paintTop();}
 }
-const SRC=['여의도일보','개미경제','차트뉴스','마켓24','불장타임즈','증시톡','코인데일리'];
+const SRC=['출렁일보','개미수다','캔들소식','시세방송','불장소식','객장톡','코인수다'];
 const clock=()=>{const d=new Date();return [d.getHours(),d.getMinutes(),d.getSeconds()].map(n=>String(n).padStart(2,'0')).join(':')};
 function news(text,kind){
   const el=$('news');
@@ -2823,7 +2824,7 @@ function news(text,kind){
 }
 function newsIdle(){const el=$('news');clearTimeout(newsTimer);el.hidden=true;el.className='idle';el.innerHTML=icT('📰 실시간 뉴스');}
 const talkLines=[];
-const NEUTRAL=['코스피 외국인 순매도 지속','美 금리 동결 전망 우세','환율 1,390원대 등락','2차전지주 일제히 약세','반도체 업황 회복 기대감','개인 신용잔고 사상 최대','공매도 잔고 증가세','기관 프로그램 매수 유입'];
+const NEUTRAL=['깡충지수 외국인 순매도 지속','美 금리 동결 전망 우세','환율 1,390원대 등락','2차전지주 일제히 약세','반도체 업황 회복 기대감','개인 신용잔고 사상 최대','공매도 잔고 증가세','기관 프로그램 매수 유입'];
 function dynTalk(kind){
   const pc=nf(1).format((cur-1)*100),pr=fmtP(priceOf(cur)),n=Math.floor(rnd(10,3000)).toLocaleString('ko-KR');
   const H=[`+${pc}% 실화냐`,`${pr}${isUsd()?'':'원'} 뚫었다 ㄷㄷ`,`방금 ${n}주 추매함`,`여기서 더 감?`,`호가창 빨간 거 봐라`,`체결 속도 미쳤다`,`${pr}${isUsd()?'':'원'}에 물린 사람 탈출각`,`매수벽 두껍다`];
@@ -2876,10 +2877,10 @@ const regime=()=>{let r=0;try{r=stats.rounds}catch(e){}const b=Math.floor(r/5);i
 const GL={monitor:{k:'p',x1:1,s:'모니터',st:'익절 수익',v:[0.03,0.04,0.05,0.06,0.07,0.08,0.09],lv:[2,20,35,50,70,85,100],p:[5e7,6e8,1.2e10,2.5e11,1.2e13,2.5e14,5e15],n:['듀얼 모니터','와이드 모니터','4K 모니터','8K 모니터','프로 모니터','마스터 모니터','신의 모니터'],e:['🖥️','🖥️','🖥️','🖥️','🖥️','🖥️','🖥️']},
   chair:{k:'c',x1:1,s:'의자',st:'1배 손절 손실',v:[0,0.05,0.1,0.15,0.2,0.25,0.3],lv:[4,25,45,60,75,95,110],p:[4e8,1.5e9,8e10,1.5e12,3e13,2e15,4e16],n:['게이밍 의자','프로 의자','인체공학 의자','리클라이너','안마 소파','구름 소파','신선놀음 소파'],e:['🪑','🪑','🪑','🛋️','🛋️','🛋️','🛋️']},
   vip:{k:'v',x1:1,s:'카드',st:'1배 세금',v:[0,0.05,0.1,0.15,0.2,0.25,0.3],lv:[6,35,50,70,85,105,120],p:[3e9,1.2e10,2.5e11,1.2e13,2.5e14,1.2e16,2.5e17],n:['증권사 VIP','골드 VIP','플래티넘 VIP','블랙 VIP','프라이빗 뱅킹','패밀리 오피스','신의 회계사'],e:['💳','💳','💳','💳','💳','💼','💼']},
-  office:{k:'p',x1:0,s:'집',st:'얻는 XP',v:[0.05,0.055,0.06,0.065,0.07,0.075,0.08],lv:[7,40,60,80,100,120,140],p:[2.5e10,8e10,1.5e12,8e13,5e15,2.5e17,1.5e19],n:['여의도 오피스텔','한강뷰 오피스텔','테라스 하우스','정원 딸린 집','호숫가 별장','숲속 별장','신의 별장'],e:['🏠','🏠','🏠','🏠','🏠','🏠','🏠']},
+  office:{k:'p',x1:0,s:'집',st:'얻는 XP',v:[0.05,0.055,0.06,0.065,0.07,0.075,0.08],lv:[7,40,60,80,100,120,140],p:[2.5e10,8e10,1.5e12,8e13,5e15,2.5e17,1.5e19],n:['증권가 오피스텔','한강뷰 오피스텔','테라스 하우스','정원 딸린 집','호숫가 별장','숲속 별장','신의 별장'],e:['🏠','🏠','🏠','🏠','🏠','🏠','🏠']},
   car:{k:'p',x1:0,s:'차',st:'1배 투자 한도',v:[0.1,0.11,0.12,0.13,0.14,0.15,0.16],lv:[8,45,65,85,110,130,150],p:[2e11,5e11,5e12,2.5e14,4e16,2e18,1e20],n:['슈퍼카','튜닝카','레이싱카','하이퍼카','챔피언카','드림카','신의 슈퍼카'],e:['🏎️','🏎️','🏎️','🏎️','🏎️','🏎️','🏎️']},
   yacht:{k:'p',x1:0,s:'배',st:'1배 투자 한도',v:[0.2,0.22,0.24,0.26,0.28,0.3,0.32],lv:[10,55,75,100,120,145,165],p:[1.5e12,4e12,3e13,5e15,2.5e17,4e19,2e21],n:['요트','크루저','스피드 요트','슈퍼 요트','기가 요트','해상 궁전','신의 요트'],e:['🛥️','🛥️','🛥️','🛥️','🛥️','🛥️','🛥️']},
-  building:{k:'b',x1:0,s:'빌딩',st:'일일 미션 보너스',v:[0.02,0.03,0.04,0.06,0.08,0.1,0.12],lv:[11,60,85,110,130,155,180],p:[1e13,2.5e13,2.5e14,4e16,2e18,2.5e20,4e22],n:['강남 빌딩','역세권 빌딩','랜드마크 빌딩','초고층 빌딩','스카이 타워','구름 위 타워','신의 타워'],e:['🏢','🏢','🏢','🏢','🏢','🏢','🏢']},
+  building:{k:'b',x1:0,s:'빌딩',st:'일일 미션 보너스',v:[0.02,0.03,0.04,0.06,0.08,0.1,0.12],lv:[11,60,85,110,130,155,180],p:[1e13,2.5e13,2.5e14,4e16,2e18,2.5e20,4e22],n:['번화가 빌딩','역세권 빌딩','랜드마크 빌딩','초고층 빌딩','스카이 타워','구름 위 타워','신의 타워'],e:['🏢','🏢','🏢','🏢','🏢','🏢','🏢']},
   jet:{k:'p',x1:0,s:'비행기',st:'챌린지 보상',v:[0.1,0.15,0.2,0.25,0.3,0.4,0.5],lv:[12,70,95,120,145,170,195],p:[8e13,2e14,2e15,2.5e17,4e19,5e21,8e23],n:['전용기','비즈니스 제트','장거리 제트','초음속 제트','성층권 제트','우주 관광','신의 은하 여행'],e:['🛩️','🛩️','🛩️','🛩️','🛩️','👨‍🚀','👨‍🚀']},
   firm:{k:'p',x1:0,s:'회사',st:'1배 투자 한도',v:[0.5,0.55,0.6,0.65,0.7,0.75,0.8],lv:[14,80,105,135,160,185,210],p:[5e14,1.5e15,1.2e16,5e18,8e20,1e23,1.5e25],n:['증권사 인수','운용사 인수','투자은행 인수','금융지주 인수','거래소 인수','세계 거래소','신의 거래소'],e:['🏦','🏦','🏦','🏦','🏦','🏦','🏦']}}; // 단계별 효과 v[0..6] · 여는 조건 lv[0]=계급(D), lv[1..6]=레벨 · 가격 p · 이름 n · 그림 e (final/gear/ladder_final.js)
 const T7=[{L:'D',k:'일반',c:'#9aa6ba'},{L:'C',k:'고급',c:'#50c878'},{L:'B',k:'희귀',c:'#7ab8ff'},{L:'A',k:'에픽',c:'#b58cff'},{L:'S',k:'전설',c:'#ffc84a'},{L:'SS',k:'신화',c:'#ff5a8a'},{L:'SSS',k:'신',c:'#fff3d6'}]; // D 일반 … SSS 신: 글자 · 이름 · 테두리 색 (있던 색만)
@@ -3706,7 +3707,7 @@ if(/^(localhost|127\.0\.0\.1)$/.test(location.hostname)&&/[?&]adsense\b/.test(lo
 const CG={on:false,S:null,last:0,noAds:0,done:0},onCG=/crazygames/.test(location.hostname)||/^(localhost|127\.0\.0\.1)$/.test(location.hostname)&&/[?&]cg\b/.test(location.search); // C07: ?cg 시험 스위치는 개발 주소(localhost)에서만 · noAds: 이번 접속에서 광고 요청이 한 번이라도 실패·시간 초과 → 광고가 꺼진 것으로 보고 📺 버튼을 숨김 (Basic Launch·애드블록에서 효과 없는 버튼 금지), done: SDK 준비가 끝났거나 실패함
 const ON_PC=location.protocol==='app:'; // 스팀(PC)판: Electron 창이 app://game/ 으로 띄움 → 광고·후원·결제 없음, 웹·폰 안내 대신 PC 문구
 if(ON_PC){CFG.adClient='';CFG.donateUrl='';CFG.iap=false;}
-const BUILD='v3.1.6 · b261118a · '+LANG+'-'+(ON_PC?'pc':onCG?'cg':/(^|\.)itch\.(io|zone)$|hwcdn\.net$/.test(location.hostname)||/itch\.io/.test(document.referrer)?'itch':'web'); // 설정 맨 아래 버전 줄: 버그 신고에 정확한 빌드가 찍히게 (배포할 때 날짜 bYYMMDD를 갱신, 언어·포털은 실행 환경에서)
+const BUILD='v3.1.7 · b261118b · '+LANG+'-'+(ON_PC?'pc':onCG?'cg':/(^|\.)itch\.(io|zone)$|hwcdn\.net$/.test(location.hostname)||/itch\.io/.test(document.referrer)?'itch':'web'); // 설정 맨 아래 버전 줄: 버그 신고에 정확한 빌드가 찍히게 (배포할 때 날짜 bYYMMDD를 갱신, 언어·포털은 실행 환경에서)
 if(onCG){const sc=document.createElement('script');sc.src='https://sdk.crazygames.com/crazygames-sdk-v3.js';
   sc.onload=async()=>{try{const S=window.CrazyGames.SDK;await S.init();if(S.environment!=='disabled'){CG.S=S;CG.on=true;cgLoad();try{const ms=v=>{v=v&&typeof v==='object'?v:S.game.settings;cgMute=!!(v&&v.muteAudio);document.body.classList.toggle('noChat',!!(v&&v.disableChat));if(touched||cgMute)bgm.sync();};ms();S.game.addSettingsChangeListener(ms);}catch(e){}if(state==='holding'||state==='ghost')cgPlay(true);}}catch(e){}CG.done=1;};sc.onerror=()=>{CG.done=1;};document.head.appendChild(sc);}
 let cgG=false; // 마지막으로 보낸 gameplay 상태 (짝 안 맞는 stop·중복 호출 막기)
@@ -4901,9 +4902,9 @@ const CONSUM=[
 ];
 const GEAR=[ // 비싸고, 계급 제한까지 있음
   {id:'monitor',e:'🖥️',n:'듀얼 모니터',d:'익절 수익 +3%',p:5e7,lv:2},{id:'chair',e:'🪑',n:'게이밍 의자',d:'차트 속도 -3%',p:4e8,lv:4},
-  {id:'vip',e:'💳',n:'증권사 VIP',d:'수수료·레버리지 이자 면제',p:3e9,lv:6},{id:'office',e:'🏠',n:'여의도 오피스텔',d:'얻는 XP +5%',p:2.5e10,lv:7},
+  {id:'vip',e:'💳',n:'증권사 VIP',d:'수수료·레버리지 이자 면제',p:3e9,lv:6},{id:'office',e:'🏠',n:'증권가 오피스텔',d:'얻는 XP +5%',p:2.5e10,lv:7},
   {id:'car',e:'🏎️',n:'슈퍼카',d:'1배 투자 한도 +10%',p:2e11,lv:8},{id:'yacht',e:'🛥️',n:'요트',d:'1배 투자 한도 +20%',p:1.5e12,lv:10},
-  {id:'building',e:'🏢',n:'강남 빌딩',d:'일일 미션 현금 2배 + 한도의 2%',p:1e13,lv:11},{id:'jet',e:'🛩️',n:'전용기',d:'챌린지 보상 +10%',p:8e13,lv:12},
+  {id:'building',e:'🏢',n:'번화가 빌딩',d:'일일 미션 현금 2배 + 한도의 2%',p:1e13,lv:11},{id:'jet',e:'🛩️',n:'전용기',d:'챌린지 보상 +10%',p:8e13,lv:12},
   {id:'firm',e:'🏦',n:'증권사 인수',d:'1배 투자 한도 +50%',p:5e14,lv:14}
 ];
 GEAR.forEach(g=>{g.d=g.d.replace(/(^|\s)-(?=\d)/g,'$1\u2212');}); // 효과 글의 음수는 진짜 빼기 기호 (−3%) · 글자만 바꿈
@@ -4976,7 +4977,7 @@ const PREMIUM=[
   {id:'th_paper',t:'theme',e:'📰',n:'페이퍼',d:'밝은 종이 배경 · 진하고 또렷한 색',pr:PRC('₩1,500','$0.99'),
     pal:{line:'rgba(70,55,30,.2)',muted:'#4f4636',ma:'#8a5a00',gold:'#a37000',rumor:'#6a3fc4',panel:'#f4eddd',volA:.38,up:LANG==='en'?'#0b8a5a':'#d81f2d',down:LANG==='en'?'#d21f2c':'#1f5fd6'}}, // 밝은 배경에서도 읽히게 같은 뜻(오름·내림)의 진한 색
   {id:'rp_cyber',t:'room',e:'🌆',n:'사이버펑크 룸',d:'네온 벽지 · 그리드 바닥 · 오락기 · 홀로그램 행성',pr:PRC('₩2,500','$1.99'),items:['pw_cyber','pf_grid','pd_arcade','pd_holo']},
-  {id:'rp_wall',t:'room',e:'🐂',n:'월가 룸',d:'마호가니 벽 · 흑대리석 바닥 · 황소상 · 개장 종',pr:PRC('₩2,500','$1.99'),items:['pw_maho','pf_onyx','pd_bull','pd_bell']},
+  {id:'rp_wall',t:'room',e:'🐂',n:'증권가 룸',d:'마호가니 벽 · 흑대리석 바닥 · 황소상 · 개장 종',pr:PRC('₩2,500','$1.99'),items:['pw_maho','pf_onyx','pd_bull','pd_bell']},
   {id:'t_dia',t:'title',e:'💠',n:'다이아 홀더',d:'칭호 + 하늘빛 프로필 테두리',pr:PRC('₩1,200','$0.99')},
   {id:'t_moon',t:'title',e:'🚀',n:'투 더 문',d:'칭호 + 보랏빛 프로필 테두리',pr:PRC('₩1,200','$0.99')},
   {id:'t_whale',t:'title',e:'🐋',n:'고래',d:'칭호 + 금빛 프로필 테두리',pr:PRC('₩1,200','$0.99')}
@@ -4985,7 +4986,7 @@ if(PREM_ON)DECOR.push( // 미니룸 팩 소품: 그 팩을 보유해야만 쓸 �
   {id:'pw_cyber',t:'wall',e:'🌆',n:'사이버 네온 벽지',c:['#1d0b3a','#2c1157'],prem:'rp_cyber'},{id:'pf_grid',t:'floor',e:'🟪',n:'네온 그리드 바닥',c:['#160a33','#2a1563'],prem:'rp_cyber'},
   {id:'pd_arcade',t:'furn',e:'🕹️',n:'레트로 오락기',u:.95,v:.08,s:15,prem:'rp_cyber'},{id:'pd_holo',t:'furn',e:'🪐',n:'홀로그램 행성',u:.88,v:.82,s:12,prem:'rp_cyber'},
   {id:'pw_maho',t:'wall',e:'🟤',n:'마호가니 벽지',c:['#4a2a17','#5c3520'],prem:'rp_wall'},{id:'pf_onyx',t:'floor',e:'⬛',n:'흑대리석 바닥',c:['#1c1c22','#2e2e36'],prem:'rp_wall'},
-  {id:'pd_bull',t:'furn',e:'🐂',n:'돌진하는 황소상',u:.24,v:.68,s:16,prem:'rp_wall'},{id:'pd_bell',t:'furn',e:'🔔',n:'개장 종',u:.86,v:.4,s:11,prem:'rp_wall'});
+  {id:'pd_bull',t:'furn',e:'🐂',n:'황금 황소상',u:.24,v:.68,s:16,prem:'rp_wall'},{id:'pd_bell',t:'furn',e:'🔔',n:'개장 종',u:.86,v:.4,s:11,prem:'rp_wall'});
 /* 결제 어댑터 PAY = {available():bool, buy(id):Promise<bool>, restore?():Promise<id[]>}
    결제가 true로 끝났을 때만 grantPremium(id) 한 곳에서 지급. 지금은 결제 수단이 없어서 PAY_NONE (구매 버튼은 '곧 열려요' 안내만) */
 const PAY_NONE={id:'none',available:()=>false,buy:()=>Promise.resolve(false)};
@@ -5234,11 +5235,11 @@ const COL=[
   {id:'lambo',cat:'ride',e:'🏎️',n:'하이퍼카 컬렉션',p:2e9},{id:'heli',cat:'ride',e:'🚁',n:'개인 헬기',p:2e10},{id:'myacht',cat:'ride',e:'🛳️',n:'메가 요트',p:3e11},
   {id:'b747',cat:'ride',e:'✈️',n:'개인 점보기',p:2e12},{id:'sub',cat:'ride',e:'🤿',n:'개인 잠수함',p:2e13},{id:'train',cat:'ride',e:'🚄',n:'전용 고속열차',p:1e14},
   // 부동산
-  {id:'pent',cat:'estate',e:'🏙️',n:'스카이 펜트하우스',p:1e11},{id:'tower',cat:'estate',e:'🏢',n:'강남 빌딩 한 블록',p:3e12},{id:'ny',cat:'estate',e:'🗽',n:'맨해튼 마천루',p:5e13},
+  {id:'pent',cat:'estate',e:'🏙️',n:'스카이 펜트하우스',p:1e11},{id:'tower',cat:'estate',e:'🏢',n:'번화가 빌딩 한 블록',p:3e12},{id:'ny',cat:'estate',e:'🗽',n:'구름 위 마천루',p:5e13},
   {id:'isl',cat:'estate',e:'🏝️',n:'개인 섬',p:1e15},{id:'resort',cat:'estate',e:'🏖️',n:'글로벌 리조트 체인',p:1e16},{id:'city',cat:'estate',e:'🌆',n:'신도시 하나',p:1e17},
   // 스포츠
   {id:'team',cat:'sport',e:'⚾',n:'프로야구단',p:5e12},{id:'soccer',cat:'sport',e:'⚽',n:'유럽 명문 축구단',p:5e13},{id:'nba',cat:'sport',e:'🏀',n:'농구 명문 구단',p:2e14},
-  {id:'f1',cat:'sport',e:'🏁',n:'F1 레이싱팀',p:5e14},{id:'olymp',cat:'sport',e:'🏅',n:'올림픽 개최권',p:5e15},{id:'wcup',cat:'sport',e:'🏆',n:'월드컵 트로피',p:3e16},
+  {id:'f1',cat:'sport',e:'🏁',n:'쌩쌩 레이싱팀',p:5e14},{id:'olymp',cat:'sport',e:'🏅',n:'별빛 체전 개최권',p:5e15},{id:'wcup',cat:'sport',e:'🏆',n:'골골컵 트로피',p:3e16},
   // 예술 · 유물
   {id:'paint',cat:'art',e:'🖼️',n:'인상파 명화',p:5e11},{id:'dino',cat:'art',e:'🦖',n:'공룡 화석 전신',p:5e12},{id:'statue',cat:'art',e:'🗿',n:'고대 석상',p:5e13},
   {id:'ship',cat:'art',e:'🏴‍☠️',n:'해저 보물선',p:5e14},{id:'pyr',cat:'art',e:'🔺',n:'고대 피라미드 관리권',p:1e16},{id:'atl',cat:'art',e:'🔱',n:'아틀란티스 지도',p:1e18,fic:1},
@@ -5308,7 +5309,7 @@ const HOMES=[ // 벽(왼/오), 바닥 2톤, 창문, 바닥 소품 [이모지,u,v
   {n:'원룸 오피스텔',min:1e8,wl:'#cfc6b4',wr:'#ddd5c5',f1:'#b88b5e',f2:'#a77d52',win:'day',size:.85,deco:[['🛏️',.75,.18,18],['🌿',.08,.9,13],['🧸',.85,.55,10]]},
   {n:'국민평형 아파트',min:1e9,wl:'#e6dccb',wr:'#f1e9da',f1:'#c49a6c',f2:'#b48a5e',win:'day',size:1,deco:[['🛋️',.75,.2,20],['📺',.9,.55,14],['🌿',.08,.9,14],['🧸',.6,.8,9]]},
   {n:'리버뷰 아파트',min:1e10,wl:'#d4dfea',wr:'#e2ebf3',f1:'#d0a878',f2:'#c09867',win:'river',size:1,deco:[['🛋️',.75,.2,20],['☕',.62,.4,8],['🌿',.08,.9,14],['🖼️',.9,.6,13]]},
-  {n:'강남 펜트하우스',min:1e12,wl:'#2c2440',wr:'#382e50',f1:'#e8e8e8',f2:'#b8b8b8',win:'night',size:1,deco:[['🛋️',.75,.2,20],['🏆',.62,.4,9],['🎹',.88,.62,16],['🌿',.08,.9,14]]},
+  {n:'번화가 펜트하우스',min:1e12,wl:'#2c2440',wr:'#382e50',f1:'#e8e8e8',f2:'#b8b8b8',win:'night',size:1,deco:[['🛋️',.75,.2,20],['🏆',.62,.4,9],['🎹',.88,.62,16],['🌿',.08,.9,14]]},
   {n:'빌딩 꼭대기 회장실',min:1e14,wl:'#4a3818',wr:'#5c4620',f1:'#c9a227',f2:'#2a2a2a',win:'night',size:1,deco:[['🛋️',.75,.2,20],['🗿',.9,.62,16],['🏆',.62,.4,10],['☕',.4,.75,8]]}, // 샴페인·와인 소품은 트로피·커피로 (12세 이용가 분위기)
   {n:'우주정거장 스위트',min:1e16,wl:'#9aa6b8',wr:'#b4bfce',f1:'#7d8796',f2:'#6f7988',win:'space',size:1,deco:[['👨‍🚀',.78,.25,17],['🧪',.88,.62,11],['🛰️',.6,.82,11]]},
   {n:'달 기지',min:1e18,wl:'#2a2d40',wr:'#353950',f1:'#bdbdbd',f2:'#a8a8a8',win:'moon',size:1,deco:[['🚀',.8,.22,22],['🏳️',.88,.62,13],['🌑',.6,.85,10]]},

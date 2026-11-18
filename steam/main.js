@@ -30,6 +30,7 @@ function pickLang() {
   return sys.startsWith('ko') ? 'ko' : 'en';
 }
 const startUrl = lang => lang === 'ko' ? ORIGIN : ORIGIN + 'en/';
+const EXT_OK = /^https:\/\/(store\.steampowered\.com|steamcommunity\.com)(\/|$)/;   // 밖으로 여는 링크는 스팀 상점·커뮤니티만 (다른 상점·웹판·광고로 나가지 않게, Steam SDA 2.5)
 
 let win = null, curLang = 'en';
 function flush() { try { session.defaultSession.flushStorageData(); } catch (e) {} }
@@ -74,13 +75,13 @@ function createWindow() {
   win.once('ready-to-show', () => win.show());
   if (typeof cfg.zoom === 'number') win.webContents.on('did-finish-load', () => win.webContents.setZoomLevel(cfg.zoom));
 
-  // 게임 밖으로 나가는 이동은 막고, https 링크만 기본 브라우저로 연다
+  // 게임 밖으로 나가는 이동은 막고, 스팀 상점·커뮤니티 링크만 기본 브라우저로 연다
   win.webContents.on('will-navigate', (e, url) => {
     if (url.startsWith(ORIGIN)) return;
     e.preventDefault();
-    if (/^https:\/\//.test(url)) shell.openExternal(url);
+    if (EXT_OK.test(url)) shell.openExternal(url);
   });
-  win.webContents.setWindowOpenHandler(({ url }) => { if (/^https:\/\//.test(url)) shell.openExternal(url); return { action: 'deny' }; });
+  win.webContents.setWindowOpenHandler(({ url }) => { if (EXT_OK.test(url)) shell.openExternal(url); return { action: 'deny' }; });
 
   win.webContents.on('before-input-event', (e, i) => {
     if (i.type !== 'keyDown') return;
@@ -114,6 +115,8 @@ app.whenReady().then(() => {
   Menu.setApplicationMenu(null);
   serveGame();
   lockDown(session.defaultSession);
+  try { session.defaultSession.setSpellCheckerEnabled(false); session.defaultSession.setSpellCheckerLanguages([]); } catch (e) {}   // 맞춤법 사전을 켤 때마다 구글에서 받지 않게 (게임은 맞춤법 검사를 안 씀)
+  try { session.defaultSession.setSpellCheckerDictionaryDownloadURL('http://127.0.0.1:9/'); } catch (e) {}
   createWindow();
 });
 app.on('before-quit', flush);

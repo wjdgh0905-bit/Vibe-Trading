@@ -1,7 +1,7 @@
 {
   "name": "ddeoksang-pc",
   "productName": "Ddeoksang",
-  "version": "3.1.3",
+  "version": "3.1.7",
   "description": "떡상 계좌 키우기 PC (Steam) build — wraps ../game in a desktop window",
   "author": "melange lab",
   "main": "main.js",

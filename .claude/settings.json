@@ -111,7 +111,8 @@
     "claude-code-setup@claude-plugins-official": true,
     "headroom@headroom-marketplace": true,
     "ponytail@ponytail": true,
-    "founder-skill@founder-skill": true
+    "founder-skill@founder-skill": true,
+    "lemo-opuscar@lemolab": true
   },
   "extraKnownMarketplaces": {
     "superpowers-marketplace": {
@@ -172,6 +173,12 @@
       "source": {
         "source": "github",
         "repo": "Jakeschincariol/founder-skill"
+      }
+    },
+    "lemolab": {
+      "source": {
+        "source": "github",
+        "repo": "lemomo-ai/lemo-opuscar"
       }
     }
   },

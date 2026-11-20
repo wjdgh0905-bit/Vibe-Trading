@@ -25,7 +25,7 @@ if ($robocopyExit -ge 8) {
 }
 Write-Host "  ok"
 
-Write-Host "==> 3/3 플러그인 10개 전역 동기화"
+Write-Host "==> 3/3 플러그인 11개 전역 동기화"
 $marketplaces = @(
     "obra/superpowers-marketplace",
     "coreyhaines31/marketingskills",
@@ -36,7 +36,8 @@ $marketplaces = @(
     "anthropics/claude-plugins-official",
     "chopratejas/headroom",
     "DietrichGebert/ponytail",
-    "Jakeschincariol/founder-skill"
+    "Jakeschincariol/founder-skill",
+    "lemomo-ai/lemo-opuscar"
 )
 foreach ($m in $marketplaces) {
     Write-Host "  marketplace: $m"
@@ -53,7 +54,8 @@ $plugins = @(
     "claude-code-setup@claude-plugins-official",
     "headroom@headroom-marketplace",
     "ponytail@ponytail",
-    "founder-skill@founder-skill"
+    "founder-skill@founder-skill",
+    "lemo-opuscar@lemolab"
 )
 foreach ($p in $plugins) {
     Write-Host "  plugin: $p"
